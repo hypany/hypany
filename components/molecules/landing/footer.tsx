@@ -70,7 +70,7 @@ const Footer = () => {
 				<div className="pointer-events-none inset-0">
 					{/* Left */}
 					<div
-						className="absolute inset-y-0 my-[-5rem] w-px"
+						className="absolute inset-y-0 -my-20 w-px"
 						style={{
 							maskImage: "linear-gradient(transparent, white 5rem)",
 						}}
@@ -90,7 +90,7 @@ const Footer = () => {
 
 					{/* Right */}
 					<div
-						className="absolute inset-y-0 right-0 my-[-5rem] w-px"
+						className="absolute inset-y-0 right-0 -my-20 w-px"
 						style={{
 							maskImage: "linear-gradient(transparent, white 5rem)",
 						}}
@@ -159,7 +159,7 @@ const Footer = () => {
 								href="#"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="rounded-sm p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
+								className="rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
 							>
 								<RiTwitterXFill className="size-5" />
 							</Link>
@@ -167,7 +167,7 @@ const Footer = () => {
 								href="#"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="rounded-sm p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
+								className="rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
 							>
 								<RiYoutubeFill className="size-5" />
 							</Link>
@@ -175,7 +175,7 @@ const Footer = () => {
 								href="#"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="rounded-sm p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
+								className="rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
 							>
 								<RiGithubFill className="size-5" />
 							</Link>
@@ -183,7 +183,7 @@ const Footer = () => {
 								href="#"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="rounded-sm p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
+								className="rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900"
 							>
 								<RiSlackFill className="size-5" />
 							</Link>

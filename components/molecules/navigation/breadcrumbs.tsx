@@ -9,7 +9,7 @@ export function Breadcrumbs() {
           <li className="flex">
             <Link
               href="#"
-              className="text-gray-500 transition hover:text-gray-700 dark:text-gray-400 hover:dark:text-gray-300"
+              className="text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             >
               Home
             </Link>

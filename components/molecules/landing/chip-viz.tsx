@@ -46,7 +46,7 @@ const ChipViz = () => {
 						animate="animate"
 						className="absolute inset-1 rounded-full bg-linear-to-t from-yellow-500 via-amber-500 to-orange-500 p-0.5 shadow-xl"
 					>
-						<div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-black/40 shadow-xs shadow-white/40 will-change-transform">
+						<div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-black/40 shadow-2xs shadow-white/40 will-change-transform">
 							<div className="size-full bg-black/30" />
 							<motion.div
 								variants={createVariants({ scale: 1.04, delay: 0.3 })}

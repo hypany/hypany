@@ -41,7 +41,7 @@ function Indicator({ number }: { number: number }) {
       {[0, 1, 2].map((index) => (
         <div
           key={index}
-          className={`h-3.5 w-1 rounded-sm ${
+          className={`h-3.5 w-1 rounded-xs ${
             index < config.bars ? config.activeClass : inactiveClass
           }`}
         />

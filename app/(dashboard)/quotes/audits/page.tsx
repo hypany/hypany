@@ -104,7 +104,7 @@ export default function Audits() {
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
-                              className="hover:text-gray-900 hover:underline hover:underline-offset-4 hover:dark:text-gray-50"
+                              className="hover:text-gray-900 hover:underline hover:underline-offset-4 dark:hover:text-gray-50"
                             >
                               Edit
                             </button>
@@ -114,7 +114,7 @@ export default function Audits() {
                             />
                             <button
                               type="button"
-                              className="hover:text-gray-900 hover:underline hover:underline-offset-4 hover:dark:text-gray-50"
+                              className="hover:text-gray-900 hover:underline hover:underline-offset-4 dark:hover:text-gray-50"
                             >
                               Re-Upload
                             </button>
