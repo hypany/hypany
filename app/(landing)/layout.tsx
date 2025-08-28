@@ -3,22 +3,25 @@ import '../globals.css'
 
 import Footer from '@/components/molecules/landing/footer'
 import { NavBar } from '@/components/molecules/landing/navbar'
+import { ClerkProvider } from '@clerk/nextjs'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { siteConfig } from '../site-config'
 
 export const metadata: Metadata = {
   authors: [
     {
-      name: 'yourname',
-      url: '',
+      name: 'Sunghyun Cho',
+      url: 'https://cho.sh',
     },
   ],
-  creator: 'yourname',
+  creator: 'Sunghyun Cho',
   description: siteConfig.description,
   icons: {
     icon: '/favicon.ico',
   },
   keywords: ['Marketing', 'Database', 'Software'],
-  metadataBase: new URL('https://yoururl.com'),
+  metadataBase: new URL('https://www.hypany.com'),
   openGraph: {
     description: siteConfig.description,
     locale: 'en_US',
@@ -30,7 +33,7 @@ export const metadata: Metadata = {
   title: siteConfig.name,
   twitter: {
     card: 'summary_large_image',
-    creator: '@yourname',
+    creator: '@anaclumos',
     description: siteConfig.description,
     title: siteConfig.name,
   },
@@ -42,18 +45,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
-      <body
-        className='min-h-screen overflow-x-hidden scroll-auto bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600'
-        style={{
-          fontFamily:
-            'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        }}
-      >
-        <NavBar />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang='en'>
+        <body className='min-h-screen overflow-x-hidden scroll-auto bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600'>
+          <NavBar />
+          {children}
+          <Footer />
+          <Analytics />
+          <SpeedInsights />
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

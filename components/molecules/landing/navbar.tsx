@@ -1,13 +1,20 @@
 'use client'
 
-import { RiCloseFill, RiMenuFill } from '@remixicon/react'
-import Link from 'next/link'
-import React from 'react'
 import { siteConfig } from '@/app/site-config'
 import { Button } from '@/components/atoms/button'
 import useScroll from '@/lib/use-scroll'
 import { cx } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from '@clerk/nextjs'
+import { RiCloseFill, RiMenuFill } from '@remixicon/react'
+import Link from 'next/link'
+import React from 'react'
 
 export function NavBar() {
   const [open, setOpen] = React.useState(false)
@@ -28,12 +35,26 @@ export function NavBar() {
             <span className='sr-only'>Hypany Logo</span>
             <HypanyLogo className='w-10 h-10' />
           </Link>
-          <Button
-            variant='secondary'
-            className='hidden h-10 font-semibold sm:block'
-          >
-            Start Free
-          </Button>
+          <div className='flex items-center gap-2'>
+            <SignedOut>
+              <SignInButton mode='modal'>
+                <Button className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'>
+                  Sign In
+                </Button>
+              </SignInButton>
+              <SignUpButton mode='modal'>
+                <Button variant='primary'>Sign Up</Button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <Link href='/app'>
+                <Button variant='primary' className='mr-2'>
+                  Go to App
+                </Button>
+              </Link>
+              <UserButton />
+            </SignedIn>
+          </div>
           <Button
             onClick={() => setOpen(!open)}
             variant='secondary'
@@ -59,20 +80,28 @@ export function NavBar() {
             open ? '' : 'hidden',
           )}
         >
-          <ul className='space-y-4 font-medium'>
-            <li onClick={() => setOpen(false)}>
-              <Link href='#solutions'>How It Works</Link>
-            </li>
-            <li onClick={() => setOpen(false)}>
-              <Link href='#features'>Features</Link>
-            </li>
-            <li onClick={() => setOpen(false)}>
-              <Link href='#alumni'>Alumni Network</Link>
-            </li>
-          </ul>
-          <Button variant='secondary' className='text-lg'>
-            Start Free
-          </Button>
+          <SignedOut>
+            <SignInButton mode='modal'>
+              <Button className='w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'>
+                Sign In
+              </Button>
+            </SignInButton>
+            <SignUpButton mode='modal'>
+              <Button className='w-full px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700'>
+                Sign Up
+              </Button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <Link href='/app' className='w-full'>
+              <Button variant='primary' className='w-full mb-2'>
+                Go to App
+              </Button>
+            </Link>
+            <div className='flex justify-center'>
+              <UserButton />
+            </div>
+          </SignedIn>
         </nav>
       </div>
     </header>
