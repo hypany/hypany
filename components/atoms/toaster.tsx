@@ -1,6 +1,6 @@
 "use client";
 
-import { useToast } from "@/hooks/useToast";
+import { useToast } from "@/lib/use-toast";
 import { Toast, ToastProvider, ToastViewport } from "./toast";
 
 const Toaster = () => {

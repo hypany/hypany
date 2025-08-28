@@ -58,7 +58,6 @@ export function DropdownUserProfile({
                   <DropdownMenuRadioItem
                     aria-label="Switch to Light Mode"
                     value="light"
-                    iconType="check"
                   >
                     <Sun className="size-4 shrink-0" aria-hidden="true" />
                     Light
@@ -66,7 +65,6 @@ export function DropdownUserProfile({
                   <DropdownMenuRadioItem
                     aria-label="Switch to Dark Mode"
                     value="dark"
-                    iconType="check"
                   >
                     <Moon className="size-4 shrink-0" aria-hidden="true" />
                     Dark
@@ -74,7 +72,6 @@ export function DropdownUserProfile({
                   <DropdownMenuRadioItem
                     aria-label="Switch to System Mode"
                     value="system"
-                    iconType="check"
                   >
                     <Monitor className="size-4 shrink-0" aria-hidden="true" />
                     System

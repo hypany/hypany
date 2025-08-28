@@ -67,7 +67,7 @@ const ChartTooltip = ({
 			<div
 				className={cx(
 					// base
-					"rounded-md border text-sm shadow-md",
+					"rounded-md border text-sm shadow-md relative z-50",
 					// border color
 					"border-gray-200 dark:border-gray-800",
 					// background color
@@ -265,7 +265,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
 						/>
 						{showTooltip && (
 							<Tooltip
-								wrapperStyle={{ outline: "none" }}
+								wrapperStyle={{ outline: "none", zIndex: 50, pointerEvents: "none" }}
 								isAnimationActive={false}
 								content={({ active, payload }) => {
 									const cleanPayload = payload

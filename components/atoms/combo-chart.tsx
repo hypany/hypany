@@ -473,10 +473,10 @@ const ChartTooltip = ({
 	if (active && payload && payload.length) {
 		const filteredPayload = payload.filter((item: any) => item.type !== "none");
 		return (
-			<div
-				className={cx(
-					// base
-					"rounded-md border text-sm shadow-md",
+				<div
+					className={cx(
+						// base
+						"rounded-md border text-sm shadow-md relative z-50",
 					// border color
 					"border-gray-200 dark:border-gray-800",
 					// background color
@@ -922,7 +922,7 @@ const ComboChart = React.forwardRef<HTMLDivElement, ComboChartProps>(
 						) : null}
 
 						<Tooltip
-							wrapperStyle={{ outline: "none" }}
+							wrapperStyle={{ outline: "none", zIndex: 50, pointerEvents: "none" }}
 							isAnimationActive={true}
 							animationDuration={100}
 							cursor={{ stroke: "#d1d5db", strokeWidth: 1 }}

@@ -447,10 +447,10 @@ const ChartTooltip = ({
 }: ChartTooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
-			<div
-				className={cx(
-					// base
-					"rounded-md border text-sm shadow-md",
+				<div
+					className={cx(
+						// base
+						"rounded-md border text-sm shadow-md relative z-50",
 					// border color
 					"border-gray-200 dark:border-gray-800",
 					// background color
@@ -778,7 +778,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
 							)}
 						</YAxis>
 						<Tooltip
-							wrapperStyle={{ outline: "none" }}
+							wrapperStyle={{ outline: "none", zIndex: 50, pointerEvents: "none" }}
 							isAnimationActive={true}
 							animationDuration={100}
 							cursor={{ fill: "#d1d5db", opacity: "0.15" }}
