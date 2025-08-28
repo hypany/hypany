@@ -78,12 +78,10 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
       <Table>
         <TableHead>
           <TableRow>
-            <TableHeaderCell style={{ width: "38%" }}>Product</TableHeaderCell>
-            <TableHeaderCell style={{ width: "38%" }}>Engineering</TableHeaderCell>
-            <TableHeaderCell style={{ width: "14%" }}>Legal</TableHeaderCell>
-            <TableHeaderCell className="text-right" style={{ width: "10%" }}>
-              Vibe Check
-            </TableHeaderCell>
+            <TableHeaderCell>Product</TableHeaderCell>
+            <TableHeaderCell>Engineering</TableHeaderCell>
+            <TableHeaderCell>Legal</TableHeaderCell>
+            <TableHeaderCell className="text-right">Vibe Check</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -93,12 +91,12 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
             const glow = highlightIndex === i;
             return (
               <TableRow key={i}>
-                <TableCell style={{ width: "38%" }}>
+                <TableCell>
                   <div className={glow ? "shimmer-cell" : undefined}>
                     <span className="text-gray-800">{row.product}</span>
                   </div>
                 </TableCell>
-                <TableCell style={{ width: "38%" }}>
+                <TableCell>
                   <div className={glow ? "shimmer-cell" : undefined}>
                     <div className="flex flex-wrap gap-1.5">
                       {row.engineering?.map((tag, idx) => (
@@ -109,7 +107,7 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell style={{ width: "14%" }}>
+                <TableCell>
                   <div className={glow ? "shimmer-cell" : undefined}>
                     <div className="flex flex-wrap gap-1.5">
                       {row.legal?.map((tag, idx) => (
@@ -120,7 +118,7 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-right" style={{ width: "10%" }}>
+                <TableCell className="text-right">
                   <div className={glow ? "shimmer-cell flex justify-end" : "flex justify-end"}>
                     <SparkAreaChart
                       data={sparkData}
