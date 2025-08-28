@@ -8,7 +8,7 @@ interface Project {
   size: string
   probability: string
   duration: string
-  status: "Drafted" | "Sent" | "Closed"
+  status: 'Drafted' | 'Sent' | 'Closed'
   assigned: AssignedPerson[]
 }
 
@@ -19,301 +19,301 @@ interface Region {
 
 export const quotes: Region[] = [
   {
-    region: "Europe",
     project: [
       {
-        company: "Walton Holding",
-        size: "50K USD",
-        probability: "40%",
-        duration: "18 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Emily Smith",
-            initials: "E",
+            initials: 'E',
+            name: 'Emily Smith',
           },
           {
-            name: "Max Warmer",
-            initials: "M",
+            initials: 'M',
+            name: 'Max Warmer',
           },
           {
-            name: "Victoria Steep",
-            initials: "V",
+            initials: 'V',
+            name: 'Victoria Steep',
           },
         ],
+        company: 'Walton Holding',
+        duration: '18 months',
+        probability: '40%',
+        size: '50K USD',
+        status: 'Drafted',
       },
       {
-        company: "Zurich Coats LLC",
-        size: "100-150K USD",
-        probability: "80%",
-        duration: "24 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Emma Stone",
-            initials: "E",
+            initials: 'E',
+            name: 'Emma Stone',
           },
           {
-            name: "Chris Bold",
-            initials: "C",
+            initials: 'C',
+            name: 'Chris Bold',
           },
         ],
+        company: 'Zurich Coats LLC',
+        duration: '24 months',
+        probability: '80%',
+        size: '100-150K USD',
+        status: 'Sent',
       },
       {
-        company: "Riverflow Media Group",
-        size: "280-300K USD",
-        probability: "80%",
-        duration: "24 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Emma Stephcorn",
-            initials: "E",
+            initials: 'E',
+            name: 'Emma Stephcorn',
           },
           {
-            name: "Chris Bold",
-            initials: "C",
+            initials: 'C',
+            name: 'Chris Bold',
           },
         ],
+        company: 'Riverflow Media Group',
+        duration: '24 months',
+        probability: '80%',
+        size: '280-300K USD',
+        status: 'Sent',
       },
       {
-        company: "Nordic Solutions AG",
-        size: "175K USD",
-        probability: "60%",
-        duration: "12 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Victoria Stone",
-            initials: "V",
+            initials: 'V',
+            name: 'Victoria Stone',
           },
           {
-            name: "Max W.",
-            initials: "M",
+            initials: 'M',
+            name: 'Max W.',
           },
         ],
+        company: 'Nordic Solutions AG',
+        duration: '12 months',
+        probability: '60%',
+        size: '175K USD',
+        status: 'Drafted',
       },
       {
-        company: "Swiss Tech Innovations",
-        size: "450K USD",
-        probability: "90%",
-        duration: "36 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Emily Satally",
-            initials: "E",
+            initials: 'E',
+            name: 'Emily Satally',
           },
           {
-            name: "Chris Bold",
-            initials: "C",
+            initials: 'C',
+            name: 'Chris Bold',
           },
         ],
+        company: 'Swiss Tech Innovations',
+        duration: '36 months',
+        probability: '90%',
+        size: '450K USD',
+        status: 'Sent',
       },
       {
-        company: "Berlin Digital Hub",
-        size: "200K USD",
-        probability: "70%",
-        duration: "15 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Emma Stone",
-            initials: "E",
+            initials: 'E',
+            name: 'Emma Stone',
           },
         ],
+        company: 'Berlin Digital Hub',
+        duration: '15 months',
+        probability: '70%',
+        size: '200K USD',
+        status: 'Drafted',
       },
     ],
+    region: 'Europe',
   },
   {
-    region: "Asia",
     project: [
       {
-        company: "Real Estate Group",
-        size: "1.2M USD",
-        probability: "100%",
-        duration: "6 months",
-        status: "Closed",
         assigned: [
           {
-            name: "Lena Mayer",
-            initials: "L",
+            initials: 'L',
+            name: 'Lena Mayer',
           },
           {
-            name: "Sara Brick",
-            initials: "S",
+            initials: 'S',
+            name: 'Sara Brick',
           },
         ],
+        company: 'Real Estate Group',
+        duration: '6 months',
+        probability: '100%',
+        size: '1.2M USD',
+        status: 'Closed',
       },
       {
-        company: "Grison Appartments",
-        size: "100K USD",
-        probability: "20%",
-        duration: "12 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Jordan Afolter",
-            initials: "J",
+            initials: 'J',
+            name: 'Jordan Afolter',
           },
           {
-            name: "Corinna Bridge",
-            initials: "C",
+            initials: 'C',
+            name: 'Corinna Bridge',
           },
         ],
+        company: 'Grison Appartments',
+        duration: '12 months',
+        probability: '20%',
+        size: '100K USD',
+        status: 'Drafted',
       },
       {
-        company: "Tokyo Tech Solutions",
-        size: "750K USD",
-        probability: "85%",
-        duration: "24 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Lena Mayer",
-            initials: "L",
+            initials: 'L',
+            name: 'Lena Mayer',
           },
           {
-            name: "Jordan Corner",
-            initials: "J",
+            initials: 'J',
+            name: 'Jordan Corner',
           },
         ],
+        company: 'Tokyo Tech Solutions',
+        duration: '24 months',
+        probability: '85%',
+        size: '750K USD',
+        status: 'Sent',
       },
       {
-        company: "Singapore Systems Ltd",
-        size: "300K USD",
-        probability: "75%",
-        duration: "18 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Sara Bridge",
-            initials: "S",
+            initials: 'S',
+            name: 'Sara Bridge',
           },
         ],
+        company: 'Singapore Systems Ltd',
+        duration: '18 months',
+        probability: '75%',
+        size: '300K USD',
+        status: 'Drafted',
       },
       {
-        company: "Seoul Digital Corp",
-        size: "880K USD",
-        probability: "95%",
-        duration: "30 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Corinna Berner",
-            initials: "C",
+            initials: 'C',
+            name: 'Corinna Berner',
           },
           {
-            name: "Lena Mayer",
-            initials: "L",
+            initials: 'L',
+            name: 'Lena Mayer',
           },
         ],
+        company: 'Seoul Digital Corp',
+        duration: '30 months',
+        probability: '95%',
+        size: '880K USD',
+        status: 'Sent',
       },
       {
-        company: "Mumbai Innovations",
-        size: "450K USD",
-        probability: "40%",
-        duration: "12 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Jordan Afolter",
-            initials: "J",
+            initials: 'J',
+            name: 'Jordan Afolter',
           },
         ],
+        company: 'Mumbai Innovations',
+        duration: '12 months',
+        probability: '40%',
+        size: '450K USD',
+        status: 'Drafted',
       },
     ],
+    region: 'Asia',
   },
   {
-    region: "North America",
     project: [
       {
-        company: "Liquid Holdings Group",
-        size: "5.1M USD",
-        probability: "100%",
-        duration: "Member",
-        status: "Closed",
         assigned: [
           {
-            name: "Charlie Anuk",
-            initials: "C",
+            initials: 'C',
+            name: 'Charlie Anuk',
           },
         ],
+        company: 'Liquid Holdings Group',
+        duration: 'Member',
+        probability: '100%',
+        size: '5.1M USD',
+        status: 'Closed',
       },
       {
-        company: "Craft Labs, Inc.",
-        size: "80-90K USD",
-        probability: "80%",
-        duration: "18 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Charlie Anuk",
-            initials: "C",
+            initials: 'C',
+            name: 'Charlie Anuk',
           },
           {
-            name: "Patrick Daller",
-            initials: "P",
+            initials: 'P',
+            name: 'Patrick Daller',
           },
         ],
+        company: 'Craft Labs, Inc.',
+        duration: '18 months',
+        probability: '80%',
+        size: '80-90K USD',
+        status: 'Sent',
       },
       {
-        company: "Toronto Tech Hub",
-        size: "250K USD",
-        probability: "65%",
-        duration: "12 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Patrick Daller",
-            initials: "P",
+            initials: 'P',
+            name: 'Patrick Daller',
           },
           {
-            name: "Charlie Anuk",
-            initials: "C",
+            initials: 'C',
+            name: 'Charlie Anuk',
           },
         ],
+        company: 'Toronto Tech Hub',
+        duration: '12 months',
+        probability: '65%',
+        size: '250K USD',
+        status: 'Drafted',
       },
       {
-        company: "Silicon Valley Startups",
-        size: "1.5M USD",
-        probability: "90%",
-        duration: "24 months",
-        status: "Sent",
         assigned: [
           {
-            name: "Charlie Anuk",
-            initials: "C",
+            initials: 'C',
+            name: 'Charlie Anuk',
           },
         ],
+        company: 'Silicon Valley Startups',
+        duration: '24 months',
+        probability: '90%',
+        size: '1.5M USD',
+        status: 'Sent',
       },
       {
-        company: "NYC Digital Solutions",
-        size: "750K USD",
-        probability: "70%",
-        duration: "15 months",
-        status: "Drafted",
         assigned: [
           {
-            name: "Patrick Daller",
-            initials: "P",
+            initials: 'P',
+            name: 'Patrick Daller',
           },
         ],
+        company: 'NYC Digital Solutions',
+        duration: '15 months',
+        probability: '70%',
+        size: '750K USD',
+        status: 'Drafted',
       },
     ],
+    region: 'North America',
   },
 ]
 
 interface DataChart {
   date: string
-  "Current year": number
-  "Same period last year": number
+  'Current year': number
+  'Same period last year': number
 }
 
 interface DataChart2 {
   date: string
   Quotes: number
-  "Total deal size": number
+  'Total deal size': number
 }
 
 interface DataChart3 {
@@ -329,127 +329,127 @@ interface DataChart4 {
 
 export const dataChart: DataChart[] = [
   {
-    date: "Jan 24",
-    "Current year": 23,
-    "Same period last year": 67,
+    'Current year': 23,
+    date: 'Jan 24',
+    'Same period last year': 67,
   },
   {
-    date: "Feb 24",
-    "Current year": 31,
-    "Same period last year": 23,
+    'Current year': 31,
+    date: 'Feb 24',
+    'Same period last year': 23,
   },
   {
-    date: "Mar 24",
-    "Current year": 46,
-    "Same period last year": 78,
+    'Current year': 46,
+    date: 'Mar 24',
+    'Same period last year': 78,
   },
   {
-    date: "Apr 24",
-    "Current year": 46,
-    "Same period last year": 23,
+    'Current year': 46,
+    date: 'Apr 24',
+    'Same period last year': 23,
   },
   {
-    date: "May 24",
-    "Current year": 39,
-    "Same period last year": 32,
+    'Current year': 39,
+    date: 'May 24',
+    'Same period last year': 32,
   },
   {
-    date: "Jun 24",
-    "Current year": 65,
-    "Same period last year": 32,
+    'Current year': 65,
+    date: 'Jun 24',
+    'Same period last year': 32,
   },
 ]
 
 export const dataChart2: DataChart2[] = [
   {
-    date: "Jan 24",
+    date: 'Jan 24',
     Quotes: 120,
-    "Total deal size": 55000,
+    'Total deal size': 55000,
   },
   {
-    date: "Feb 24",
+    date: 'Feb 24',
     Quotes: 183,
-    "Total deal size": 75400,
+    'Total deal size': 75400,
   },
   {
-    date: "Mar 24",
+    date: 'Mar 24',
     Quotes: 165,
-    "Total deal size": 50450,
+    'Total deal size': 50450,
   },
   {
-    date: "Apr 24",
+    date: 'Apr 24',
     Quotes: 99,
-    "Total deal size": 41540,
+    'Total deal size': 41540,
   },
   {
-    date: "May 24",
+    date: 'May 24',
     Quotes: 194,
-    "Total deal size": 63850,
+    'Total deal size': 63850,
   },
   {
-    date: "Jun 24",
+    date: 'Jun 24',
     Quotes: 241,
-    "Total deal size": 73850,
+    'Total deal size': 73850,
   },
 ]
 
 export const dataChart3: DataChart3[] = [
   {
-    date: "Jan 24",
     Addressed: 8,
+    date: 'Jan 24',
     Unrealized: 12,
   },
   {
-    date: "Feb 24",
     Addressed: 9,
+    date: 'Feb 24',
     Unrealized: 12,
   },
   {
-    date: "Mar 24",
     Addressed: 6,
+    date: 'Mar 24',
     Unrealized: 12,
   },
   {
-    date: "Apr 24",
     Addressed: 5,
+    date: 'Apr 24',
     Unrealized: 12,
   },
   {
-    date: "May 24",
     Addressed: 12,
+    date: 'May 24',
     Unrealized: 12,
   },
   {
-    date: "Jun 24",
     Addressed: 9,
+    date: 'Jun 24',
     Unrealized: 12,
   },
 ]
 
 export const dataChart4: DataChart4[] = [
   {
-    date: "Jan 24",
     Density: 0.891,
+    date: 'Jan 24',
   },
   {
-    date: "Feb 24",
     Density: 0.084,
+    date: 'Feb 24',
   },
   {
-    date: "Mar 24",
     Density: 0.155,
+    date: 'Mar 24',
   },
   {
-    date: "Apr 24",
     Density: 0.75,
+    date: 'Apr 24',
   },
   {
-    date: "May 24",
     Density: 0.221,
+    date: 'May 24',
   },
   {
-    date: "Jun 24",
     Density: 0.561,
+    date: 'Jun 24',
   },
 ]
 
@@ -465,7 +465,7 @@ interface AuditDate {
 
 interface Document {
   name: string
-  status: "OK" | "Needs update" | "In audit"
+  status: 'OK' | 'Needs update' | 'In audit'
 }
 
 interface Section {
@@ -473,75 +473,75 @@ interface Section {
   title: string
   certified: string
   progress: Progress
-  status: "complete" | "warning"
+  status: 'complete' | 'warning'
   auditDates: AuditDate[]
   documents: Document[]
 }
 
 export const sections: Section[] = [
   {
-    id: "item-1",
-    title: "CompTIA Security+",
-    certified: "ISO",
+    auditDates: [
+      { auditor: 'Max Duster', date: 'Dec 10, 2023' },
+      { auditor: 'Emma Stone', date: 'Dec 12, 2023' },
+    ],
+    certified: 'ISO',
+    documents: [
+      { name: 'policy_overview.xlsx', status: 'OK' },
+      { name: 'employee_guidelines.xlsx', status: 'Needs update' },
+      { name: 'compliance_checklist.xlsx', status: 'In audit' },
+    ],
+    id: 'item-1',
     progress: { current: 46, total: 46 },
-    status: "complete",
-    auditDates: [
-      { date: "Dec 10, 2023", auditor: "Max Duster" },
-      { date: "Dec 12, 2023", auditor: "Emma Stone" },
-    ],
-    documents: [
-      { name: "policy_overview.xlsx", status: "OK" },
-      { name: "employee_guidelines.xlsx", status: "Needs update" },
-      { name: "compliance_checklist.xlsx", status: "In audit" },
-    ],
+    status: 'complete',
+    title: 'CompTIA Security+',
   },
   {
-    id: "item-2",
-    title: "SAFe Certifications",
-    certified: "IEC 2701",
+    auditDates: [
+      { auditor: 'Sarah Johnson', date: 'Jan 15, 2024' },
+      { auditor: 'Mike Peters', date: 'Jan 20, 2024' },
+    ],
+    certified: 'IEC 2701',
+    documents: [
+      { name: 'certification_records.xlsx', status: 'OK' },
+      { name: 'training_logs.xlsx', status: 'In audit' },
+      { name: 'assessment_results.xlsx', status: 'Needs update' },
+    ],
+    id: 'item-2',
     progress: { current: 32, total: 41 },
-    status: "warning",
-    auditDates: [
-      { date: "Jan 15, 2024", auditor: "Sarah Johnson" },
-      { date: "Jan 20, 2024", auditor: "Mike Peters" },
-    ],
-    documents: [
-      { name: "certification_records.xlsx", status: "OK" },
-      { name: "training_logs.xlsx", status: "In audit" },
-      { name: "assessment_results.xlsx", status: "Needs update" },
-    ],
+    status: 'warning',
+    title: 'SAFe Certifications',
   },
   {
-    id: "item-3",
-    title: "PMP Certifications",
-    certified: "ISO",
-    progress: { current: 21, total: 21 },
-    status: "complete",
     auditDates: [
-      { date: "Feb 5, 2024", auditor: "Lisa Chen" },
-      { date: "Feb 8, 2024", auditor: "Tom Wilson" },
+      { auditor: 'Lisa Chen', date: 'Feb 5, 2024' },
+      { auditor: 'Tom Wilson', date: 'Feb 8, 2024' },
     ],
+    certified: 'ISO',
     documents: [
-      { name: "project_documents.xlsx", status: "OK" },
-      { name: "methodology_guide.xlsx", status: "OK" },
-      { name: "best_practices.xlsx", status: "In audit" },
+      { name: 'project_documents.xlsx', status: 'OK' },
+      { name: 'methodology_guide.xlsx', status: 'OK' },
+      { name: 'best_practices.xlsx', status: 'In audit' },
     ],
+    id: 'item-3',
+    progress: { current: 21, total: 21 },
+    status: 'complete',
+    title: 'PMP Certifications',
   },
   {
-    id: "item-4",
-    title: "Cloud Certifications",
-    certified: "SOC 2",
-    progress: { current: 21, total: 21 },
-    status: "complete",
     auditDates: [
-      { date: "Mar 1, 2024", auditor: "Alex Kumar" },
-      { date: "Mar 5, 2024", auditor: "Rachel Green" },
+      { auditor: 'Alex Kumar', date: 'Mar 1, 2024' },
+      { auditor: 'Rachel Green', date: 'Mar 5, 2024' },
     ],
+    certified: 'SOC 2',
     documents: [
-      { name: "aws_certifications.xlsx", status: "OK" },
-      { name: "azure_competencies.xlsx", status: "OK" },
-      { name: "gcp_credentials.xlsx", status: "In audit" },
-      { name: "cloud_security.xlsx", status: "OK" },
+      { name: 'aws_certifications.xlsx', status: 'OK' },
+      { name: 'azure_competencies.xlsx', status: 'OK' },
+      { name: 'gcp_credentials.xlsx', status: 'In audit' },
+      { name: 'cloud_security.xlsx', status: 'OK' },
     ],
+    id: 'item-4',
+    progress: { current: 21, total: 21 },
+    status: 'complete',
+    title: 'Cloud Certifications',
   },
 ]

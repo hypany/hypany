@@ -31,32 +31,32 @@ export const Orbit = ({
     return (
       <div
         key={index}
-        className="absolute flex items-center justify-center"
+        className='absolute flex items-center justify-center'
         style={{
-          animationName: "spin",
-          animationDuration: `${durationSeconds}s`,
-          animationTimingFunction: "linear",
-          animationIterationCount: "infinite",
           animationDelay: `${delaySeconds}s`,
-          transformOrigin: `calc(50% + ${radiusPx}px) 50%`,
+          animationDuration: `${durationSeconds}s`,
+          animationIterationCount: 'infinite',
+          animationName: 'spin',
+          animationTimingFunction: 'linear',
+          height: `${defaultObjectSize}px`,
           left: `calc(50% - ${initialOffset}px)`,
           top: `calc(50% - ${defaultObjectSize / 2}px)`,
+          transformOrigin: `calc(50% + ${radiusPx}px) 50%`,
           width: `${defaultObjectSize}px`,
-          height: `${defaultObjectSize}px`,
         }}
       >
         {/* Counter-rotating container to keep object upright */}
         <div
-          className="flex h-full w-full items-center justify-center"
+          className='flex h-full w-full items-center justify-center'
           style={
             keepUpright
               ? {
-                  animationName: "spin",
-                  animationDuration: `${durationSeconds}s`,
-                  animationTimingFunction: "linear",
-                  animationIterationCount: "infinite",
                   animationDelay: `${delaySeconds}s`,
-                  animationDirection: "reverse",
+                  animationDirection: 'reverse',
+                  animationDuration: `${durationSeconds}s`,
+                  animationIterationCount: 'infinite',
+                  animationName: 'spin',
+                  animationTimingFunction: 'linear',
                 }
               : undefined
           }
@@ -69,18 +69,18 @@ export const Orbit = ({
 
   return (
     <div
-      className="relative flex items-center justify-center"
+      className='relative flex items-center justify-center'
       style={{
-        width: `${containerSize}px`,
         height: `${containerSize}px`,
+        width: `${containerSize}px`,
       }}
     >
       {/* Orbital path */}
       <div
-        className="absolute animate-pulse rounded-full border border-gray-300 bg-gray-500/5"
+        className='absolute animate-pulse rounded-full border border-gray-300 bg-gray-500/5'
         style={{
-          width: `${orbitDiameter}px`,
           height: `${orbitDiameter}px`,
+          width: `${orbitDiameter}px`,
         }}
       />
 

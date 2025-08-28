@@ -81,8 +81,7 @@
         "useArrowFunction": "error"
       },
       "correctness": {
-        "noUnusedImports": "error",
-        "noUnusedVariables": "off"
+        "noUnusedImports": "error"
       },
       "recommended": true,
       "suspicious": {

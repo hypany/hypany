@@ -1,14 +1,14 @@
 export const siteConfig = {
-  name: "Planner",
-  url: "https://planner.tremor.so",
-  description: "The simplest dashboard template.",
   baseLinks: {
     quotes: {
-      overview: "/quotes/overview",
-      monitoring: "/quotes/monitoring",
-      audits: "/quotes/audits",
+      audits: '/quotes/audits',
+      monitoring: '/quotes/monitoring',
+      overview: '/quotes/overview',
     },
   },
+  description: 'The simplest dashboard template.',
+  name: 'Planner',
+  url: 'https://planner.tremor.so',
 }
 
 export type siteConfig = typeof siteConfig

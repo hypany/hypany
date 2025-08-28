@@ -1,7 +1,5 @@
 [
   {
-    "user": "What if your IDE helper auto-completes entire functions by reading comments?",
-    "product": "VS Code extension that reads code comments and auto-completes entire functions",
     "engineering": [
       "Simple Prompt ChatGPT API",
       "Insert Snippet",
@@ -13,11 +11,11 @@
       "Review Code Privacy",
       "API Data Handling",
       "Compliance OpenAI IDE Terms"
-    ]
+    ],
+    "product": "VS Code extension that reads code comments and auto-completes entire functions",
+    "user": "What if your IDE helper auto-completes entire functions by reading comments?"
   },
   {
-    "user": "What if your calendar assistant reschedules overlapping meetings optimally?",
-    "product": "Calendar assistant that automatically reschedules overlapping meetings for optimal timing",
     "engineering": [
       "Node.js Microservice",
       "Google Calendar API",
@@ -30,11 +28,11 @@
       "User Consent Calendar Access",
       "Data Privacy",
       "Compliance Google API Terms"
-    ]
+    ],
+    "product": "Calendar assistant that automatically reschedules overlapping meetings for optimal timing",
+    "user": "What if your calendar assistant reschedules overlapping meetings optimally?"
   },
   {
-    "user": "What if an email summarizer flags essentials and suggests replies?",
-    "product": "Email summarizer that highlights key points and suggests reply drafts",
     "engineering": [
       "Python Flask",
       "Gmail API",
@@ -47,11 +45,11 @@
       "Email Data Privacy",
       "Secure Token Handling",
       "Compliance Gmail API Policies"
-    ]
+    ],
+    "product": "Email summarizer that highlights key points and suggests reply drafts",
+    "user": "What if an email summarizer flags essentials and suggests replies?"
   },
   {
-    "user": "What if your docs editor auto-formats content to company style?",
-    "product": "Docs editor extension that auto-formats content to match company style guidelines",
     "engineering": [
       "Chrome Extension",
       "Rule-Based Grammar",
@@ -64,11 +62,11 @@
       "User Data Handling",
       "Browser Extension Permissions",
       "Company IP Style Rules"
-    ]
+    ],
+    "product": "Docs editor extension that auto-formats content to match company style guidelines",
+    "user": "What if your docs editor auto-formats content to company style?"
   },
   {
-    "user": "What if a task manager smart-tags tasks based on description?",
-    "product": "Task manager that automatically tags tasks using description analysis",
     "engineering": [
       "React Frontend",
       "FastAPI Backend",
@@ -81,11 +79,11 @@
       "Data Privacy Task Content",
       "ML Model Transparency",
       "User Consent"
-    ]
+    ],
+    "product": "Task manager that automatically tags tasks using description analysis",
+    "user": "What if a task manager smart-tags tasks based on description?"
   },
   {
-    "user": "What if your travel optimizer picks flights and hotels based on your policy?",
-    "product": "Travel optimizer that selects flights and hotels according to user/company policy",
     "engineering": [
       "Web UI",
       "OAuth Travel APIs",
@@ -98,11 +96,11 @@
       "Travel Data Privacy",
       "API Terms Compliance",
       "User Consent Bookings"
-    ]
+    ],
+    "product": "Travel optimizer that selects flights and hotels according to user/company policy",
+    "user": "What if your travel optimizer picks flights and hotels based on your policy?"
   },
   {
-    "user": "What if a slide generator transforms a bullet outline into visuals?",
-    "product": "Slide generator that converts bullet outlines into presentation visuals",
     "engineering": [
       "Python Script Using python-pptx",
       "Simple Templating",
@@ -110,15 +108,11 @@
       "Formatting Consistency",
       "File I O"
     ],
-    "legal": [
-      "Content Copyright",
-      "Template Licensing",
-      "User Data Handling"
-    ]
+    "legal": ["Content Copyright", "Template Licensing", "User Data Handling"],
+    "product": "Slide generator that converts bullet outlines into presentation visuals",
+    "user": "What if a slide generator transforms a bullet outline into visuals?"
   },
   {
-    "user": "What if a budget tracker flags anomalies in spend in real time?",
-    "product": "Budget tracker that detects and flags spending anomalies in real time",
     "engineering": [
       "Serverless Function AWS Lambda",
       "Webhook From Finance API",
@@ -131,11 +125,11 @@
       "Financial Data Privacy",
       "Secure API Integration",
       "Compliance Finance Data Regulations"
-    ]
+    ],
+    "product": "Budget tracker that detects and flags spending anomalies in real time",
+    "user": "What if a budget tracker flags anomalies in spend in real time?"
   },
   {
-    "user": "What if your meeting assistant posts notes to Slack with action items?",
-    "product": "Meeting assistant that posts meeting notes and action items to Slack",
     "engineering": [
       "Node JS Bot",
       "Meeting Transcript API Like Whisper",
@@ -148,11 +142,11 @@
       "Meeting Data Privacy",
       "Slack API Compliance",
       "User Consent Note Sharing"
-    ]
+    ],
+    "product": "Meeting assistant that posts meeting notes and action items to Slack",
+    "user": "What if your meeting assistant posts notes to Slack with action items?"
   },
   {
-    "user": "What if your file manager auto-tags documents by content topics?",
-    "product": "File manager that automatically tags documents based on their content topics",
     "engineering": [
       "Local Python Daemon",
       "Watchdog Watch Files",
@@ -165,11 +159,11 @@
       "User File Privacy",
       "Local Data Processing",
       "Compliance File System Access Policies"
-    ]
+    ],
+    "product": "File manager that automatically tags documents based on their content topics",
+    "user": "What if your file manager auto-tags documents by content topics?"
   },
   {
-    "user": "What if a lint-bot creates PRs that auto-fix common code smells?",
-    "product": "Lint-bot that automatically creates pull requests to fix common code smells",
     "engineering": [
       "GitHub Action",
       "Regex Fixes",
@@ -182,11 +176,11 @@
       "Codebase Access Permissions",
       "Contribution Licensing",
       "Compliance Repository Policies"
-    ]
+    ],
+    "product": "Lint-bot that automatically creates pull requests to fix common code smells",
+    "user": "What if a lint-bot creates PRs that auto-fix common code smells?"
   },
   {
-    "user": "What if a test generator builds unit tests from function signatures?",
-    "product": "Test generator that creates unit test stubs from function signatures",
     "engineering": [
       "CLI Tool",
       "Static Analysis",
@@ -199,11 +193,11 @@
       "Generated Code Licensing",
       "User Code Privacy",
       "Compliance Test Framework Licenses"
-    ]
+    ],
+    "product": "Test generator that creates unit test stubs from function signatures",
+    "user": "What if a test generator builds unit tests from function signatures?"
   },
   {
-    "user": "What if an error monitor aggregates logs and surfaces repeating issues?",
-    "product": "Error monitor that aggregates logs and highlights recurring issues",
     "engineering": [
       "ELK Stack Elasticsearch Kibana",
       "Log Pattern Clustering",
@@ -215,11 +209,11 @@
       "Log Data Privacy",
       "Retention Policies",
       "Compliance Data Protection Regulations"
-    ]
+    ],
+    "product": "Error monitor that aggregates logs and highlights recurring issues",
+    "user": "What if an error monitor aggregates logs and surfaces repeating issues?"
   },
   {
-    "user": "What if a CI optimizer only runs relevant tests based on affected files?",
-    "product": "CI optimizer that runs only relevant tests based on changed files",
     "engineering": [
       "Git Diff",
       "Simple Dependency Graph",
@@ -232,11 +226,11 @@
       "CI CD Pipeline Access",
       "Code Privacy",
       "Compliance Open Source Licenses"
-    ]
+    ],
+    "product": "CI optimizer that runs only relevant tests based on changed files",
+    "user": "What if a CI optimizer only runs relevant tests based on affected files?"
   },
   {
-    "user": "What if a local environment manager snaps builds into reproducible containers?",
-    "product": "Local environment manager that creates reproducible build containers",
     "engineering": [
       "Dockerfile Template",
       "CLI Build Dev Containers",
@@ -248,11 +242,11 @@
       "Container Image Licensing",
       "Use Open Source Dockerfiles",
       "Compliance Software Distribution Laws"
-    ]
+    ],
+    "product": "Local environment manager that creates reproducible build containers",
+    "user": "What if a local environment manager snaps builds into reproducible containers?"
   },
   {
-    "user": "What if feature flags can be toggled in production with no redeploy?",
-    "product": "Feature flag system allowing toggling in production without redeployment",
     "engineering": [
       "LaunchDarkly-Style UI",
       "Backend Control Toggle",
@@ -265,11 +259,11 @@
       "Production Change Controls",
       "Audit Logging",
       "Compliance Change Management Policies"
-    ]
+    ],
+    "product": "Feature flag system allowing toggling in production without redeployment",
+    "user": "What if feature flags can be toggled in production with no redeploy?"
   },
   {
-    "user": "What if infrastructure drift is auto-detected and corrected?",
-    "product": "Tool that auto-detects and corrects infrastructure drift",
     "engineering": [
       "Terraform Diff Scheduled Lambda",
       "Alert",
@@ -281,11 +275,11 @@
       "Infrastructure Change Auditing",
       "Permissions Management",
       "Compliance Cloud Provider Terms"
-    ]
+    ],
+    "product": "Tool that auto-detects and corrects infrastructure drift",
+    "user": "What if infrastructure drift is auto-detected and corrected?"
   },
   {
-    "user": "What if a DB query planner suggests index improvements?",
-    "product": "DB query planner that recommends index improvements based on slow queries",
     "engineering": [
       "UI",
       "Scanning Slow Query Logs",
@@ -298,11 +292,11 @@
       "Database Access Permissions",
       "Data Privacy",
       "Compliance Database Vendor Licenses"
-    ]
+    ],
+    "product": "DB query planner that recommends index improvements based on slow queries",
+    "user": "What if a DB query planner suggests index improvements?"
   },
   {
-    "user": "What if a debugger records function calls to replay bugs?",
-    "product": "Debugger that records function calls for bug replay",
     "engineering": [
       "Proxy Wrapper",
       "Capture Inputs Outputs File",
@@ -314,11 +308,11 @@
       "User Code Data Privacy",
       "Storage Sensitive Information",
       "Compliance Debugging Tool Licenses"
-    ]
+    ],
+    "product": "Debugger that records function calls for bug replay",
+    "user": "What if a debugger records function calls to replay bugs?"
   },
   {
-    "user": "What if a cloud cost estimator forecasts billing per feature?",
-    "product": "Cloud cost estimator that forecasts billing at the feature level",
     "engineering": [
       "Cost API Calls",
       "Tag Breakdown",
@@ -331,11 +325,11 @@
       "Cloud Billing Data Privacy",
       "API Usage Compliance",
       "User Consent Cost Tracking"
-    ]
+    ],
+    "product": "Cloud cost estimator that forecasts billing at the feature level",
+    "user": "What if a cloud cost estimator forecasts billing per feature?"
   },
   {
-    "user": "What if invoice reminders auto-send at due dates via SMS or Email?",
-    "product": "Automated invoice reminder system sending notifications via SMS or email",
     "engineering": [
       "Cron Job",
       "Twilio Email Service",
@@ -348,11 +342,11 @@
       "User Communication Consent",
       "Compliance Anti-Spam Laws",
       "Data Privacy Contact Info"
-    ]
+    ],
+    "product": "Automated invoice reminder system sending notifications via SMS or email",
+    "user": "What if invoice reminders auto-send at due dates via SMS or Email?"
   },
   {
-    "user": "What if a fraud detector flags suspicious activity on transactions?",
-    "product": "Fraud detector that flags suspicious transaction activity",
     "engineering": [
       "Rule Engine Amount Threshold",
       "Location Mismatch",
@@ -364,11 +358,11 @@
       "Financial Data Privacy",
       "Compliance Anti-Fraud Regulations",
       "Audit Logging"
-    ]
+    ],
+    "product": "Fraud detector that flags suspicious transaction activity",
+    "user": "What if a fraud detector flags suspicious activity on transactions?"
   },
   {
-    "user": "What if expense approvals happen via chat in Slack or Teams?",
-    "product": "Expense approval workflow integrated with Slack or Teams chat",
     "engineering": [
       "Slack Bot",
       "Approval Buttons",
@@ -381,11 +375,11 @@
       "Expense Data Privacy",
       "User Consent",
       "Compliance Company Approval Policies"
-    ]
+    ],
+    "product": "Expense approval workflow integrated with Slack or Teams chat",
+    "user": "What if expense approvals happen via chat in Slack or Teams?"
   },
   {
-    "user": "What if accounting entries sync in real time between services?",
-    "product": "Real-time sync of accounting entries between different services",
     "engineering": [
       "Webhook Listener",
       "Transformation",
@@ -398,11 +392,11 @@
       "Financial Data Transfer Compliance",
       "Data Privacy",
       "Third-Party API Terms"
-    ]
+    ],
+    "product": "Real-time sync of accounting entries between different services",
+    "user": "What if accounting entries sync in real time between services?"
   },
   {
-    "user": "What if a savings goal tracker nudges users via notifications?",
-    "product": "Savings goal tracker that nudges users with notifications",
     "engineering": [
       "Mobile Push Email",
       "Simple Goal Logic",
@@ -414,11 +408,11 @@
       "User Consent Notifications",
       "Data Privacy",
       "Compliance Notification Regulations"
-    ]
+    ],
+    "product": "Savings goal tracker that nudges users with notifications",
+    "user": "What if a savings goal tracker nudges users via notifications?"
   },
   {
-    "user": "What if claims auto-populate from user-measured data?",
-    "product": "Claims system that auto-populates forms from user-measured data",
     "engineering": [
       "File Upload",
       "OCR",
@@ -431,11 +425,11 @@
       "Sensitive Data Handling",
       "Compliance Insurance Regulations",
       "User Consent"
-    ]
+    ],
+    "product": "Claims system that auto-populates forms from user-measured data",
+    "user": "What if claims auto-populate from user-measured data?"
   },
   {
-    "user": "What if loan underwriting uses simple risk scoring from credit APIs?",
-    "product": "Loan underwriting tool using risk scores from credit APIs",
     "engineering": [
       "Backend Microservice Calls Credit API",
       "Score Mapper",
@@ -447,11 +441,11 @@
       "Credit Data Privacy",
       "Compliance Lending Laws",
       "API Usage Terms"
-    ]
+    ],
+    "product": "Loan underwriting tool using risk scores from credit APIs",
+    "user": "What if loan underwriting uses simple risk scoring from credit APIs?"
   },
   {
-    "user": "What if payments retry smartly when failures happen?",
-    "product": "Payment system that retries failed payments using smart logic",
     "engineering": [
       "Circuit Breaker",
       "Exponential Backoff Microservice",
@@ -463,6 +457,8 @@
       "Payment Data Privacy",
       "Compliance Payment Processing Regulations",
       "Audit Trails"
-    ]
+    ],
+    "product": "Payment system that retries failed payments using smart logic",
+    "user": "What if payments retry smartly when failures happen?"
   }
 ]

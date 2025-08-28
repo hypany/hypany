@@ -1,34 +1,34 @@
-"use client"
+'use client'
 
-import { motion } from "motion/react"
+import { motion } from 'motion/react'
 
 const container = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.05,
       delayChildren: 0.2,
+      staggerChildren: 0.05,
     },
   },
 }
 
 const item = {
   hidden: {
+    filter: 'blur(4px)',
     opacity: 0,
     y: 16,
-    filter: "blur(4px)",
   },
   show: {
+    filter: 'blur(0px)',
     opacity: 1,
     scale: 1,
-    y: 0,
-    filter: "blur(0px)",
     transition: {
-      type: "spring" as const,
-      stiffness: 150,
       damping: 19,
       mass: 1.2,
+      stiffness: 150,
+      type: 'spring' as const,
     },
+    y: 0,
   },
 }
 
@@ -39,8 +39,8 @@ function FadeContainer({
   return (
     <motion.div
       variants={container}
-      initial="hidden"
-      animate="show"
+      initial='hidden'
+      animate='show'
       className={className}
     >
       {children}
