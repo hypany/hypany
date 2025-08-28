@@ -1,6 +1,4 @@
 "use client";
-
-export const dynamic = 'force-dynamic';
 import { Badge } from "@/components/atoms/badge";
 import { Button } from "@/components/atoms/button";
 import { Input } from "@/components/atoms/input";
@@ -20,10 +18,10 @@ import {
 	TableRoot,
 	TableRow,
 } from "@/components/atoms/table";
-import { quotes } from "@/app/(dashboard)/data/data";
+import { cx } from "@/lib/utils";
 import { Download } from "lucide-react";
 import { Fragment } from "react";
-import { cx } from "../../../../lib/utils";
+import { quotes } from "./data/data";
 
 const colorClasses = [
 	"bg-blue-500 dark:bg-blue-500",
