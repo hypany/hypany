@@ -5,13 +5,6 @@ import { Button } from '@/components/atoms/button'
 import useScroll from '@/lib/use-scroll'
 import { cx } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from '@clerk/nextjs'
 import { RiCloseFill, RiMenuFill } from '@remixicon/react'
 import Link from 'next/link'
 import React from 'react'
@@ -36,24 +29,11 @@ export function NavBar() {
             <HypanyLogo className='w-10 h-10' />
           </Link>
           <div className='flex items-center gap-2'>
-            <SignedOut>
-              <SignInButton mode='modal'>
-                <Button className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'>
-                  Sign In
-                </Button>
-              </SignInButton>
-              <SignUpButton mode='modal'>
-                <Button variant='primary'>Sign Up</Button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href='/app'>
-                <Button variant='primary' className='mr-2'>
-                  Go to App
-                </Button>
-              </Link>
-              <UserButton />
-            </SignedIn>
+            <Link href='/app'>
+              <Button variant='primary' className='mr-2'>
+                Go to App
+              </Button>
+            </Link>
           </div>
           <Button
             onClick={() => setOpen(!open)}
@@ -80,28 +60,11 @@ export function NavBar() {
             open ? '' : 'hidden',
           )}
         >
-          <SignedOut>
-            <SignInButton mode='modal'>
-              <Button className='w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50'>
-                Sign In
-              </Button>
-            </SignInButton>
-            <SignUpButton mode='modal'>
-              <Button className='w-full px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700'>
-                Sign Up
-              </Button>
-            </SignUpButton>
-          </SignedOut>
-          <SignedIn>
-            <Link href='/app' className='w-full'>
-              <Button variant='primary' className='w-full mb-2'>
-                Go to App
-              </Button>
-            </Link>
-            <div className='flex justify-center'>
-              <UserButton />
-            </div>
-          </SignedIn>
+          <Link href='/app' className='w-full'>
+            <Button variant='primary' className='w-full mb-2'>
+              Go to App
+            </Button>
+          </Link>
         </nav>
       </div>
     </header>
