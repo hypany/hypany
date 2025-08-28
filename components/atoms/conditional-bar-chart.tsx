@@ -1,5 +1,3 @@
-// Tremor BarChart [v0.2.1]
-
 "use client";
 
 import React from "react";
@@ -444,7 +442,6 @@ const ConditionalBarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
 			<div
 				ref={forwardedRef}
 				className={cx("h-80 w-full", className)}
-				tremor-id="tremor-raw"
 				{...other}
 			>
 				<ResponsiveContainer>
@@ -601,7 +598,11 @@ const ConditionalBarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
 									(active !== prevActiveRef.current ||
 										label !== prevLabelRef.current)
 								) {
-									tooltipCallback({ active, payload: cleanPayload, label: String(label || "") });
+									tooltipCallback({
+										active,
+										payload: cleanPayload,
+										label: String(label || ""),
+									});
 									prevActiveRef.current = active;
 									prevLabelRef.current = label;
 								}

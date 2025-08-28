@@ -1,1 +1,1 @@
-List and read /agents
+List and read ./agents/
