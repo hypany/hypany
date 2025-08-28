@@ -34,7 +34,8 @@ export function Hero() {
 					<FadeSpan>your</FadeSpan> <FadeSpan>startup</FadeSpan>
 				</h1>
 				<p className="mt-5 max-w-xl text-center text-base text-balance text-gray-700 sm:mt-8 sm:text-xl">
-					<FadeSpan>But they might like your 97th idea.</FadeSpan>{" "}
+					<FadeSpan>But they might want your 97th idea.</FadeSpan>
+					<br />
 					<FadeSpan>Hypany helps you fail fast.</FadeSpan>
 				</p>
 				<FadeDiv>

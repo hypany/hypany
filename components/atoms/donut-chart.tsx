@@ -67,11 +67,11 @@ const ChartTooltip = ({
 			<div
 				className={cx(
 					// base
-					"rounded-md border text-sm shadow-md relative z-50",
+					"rounded-md border text-sm shadow-md relative z-50 backdrop-blur-sm",
 					// border color
-					"border-gray-200 dark:border-gray-800",
+					"border-gray-200/80 dark:border-gray-800/80",
 					// background color
-					"bg-white dark:bg-gray-950",
+					"bg-white/95 dark:bg-gray-950/90",
 				)}
 			>
 				<div className={cx("space-y-1 px-4 py-2")}>

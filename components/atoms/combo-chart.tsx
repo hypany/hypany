@@ -476,13 +476,13 @@ const ChartTooltip = ({
 				<div
 					className={cx(
 						// base
-						"rounded-md border text-sm shadow-md relative z-50",
-					// border color
-					"border-gray-200 dark:border-gray-800",
-					// background color
-					"bg-white dark:bg-gray-950",
-				)}
-			>
+						"rounded-md border text-sm shadow-md relative z-50 backdrop-blur-sm",
+						// border color
+						"border-gray-200/80 dark:border-gray-800/80",
+						// background color
+						"bg-white/95 dark:bg-gray-950/90",
+					)}
+				>
 				<div className={cx("border-b border-inherit px-4 py-2")}>
 					<p
 						className={cx(
