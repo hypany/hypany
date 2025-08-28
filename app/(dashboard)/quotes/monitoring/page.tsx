@@ -1,4 +1,6 @@
 "use client";
+
+export const dynamic = 'force-dynamic';
 import { BarChart } from "@/components/atoms/bar-chart";
 import { Button } from "@/components/atoms/button";
 import { ComboChart } from "@/components/atoms/combo-chart";
