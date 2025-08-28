@@ -5,10 +5,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/Accordion"
-import { Button } from "@/components/Button"
-import { Input } from "@/components/Input"
-import { sections } from "@/data/data"
+} from "@/components/atoms/accordion"
+import { Button } from "@/components/atoms/button"
+import { Input } from "@/components/atoms/input"
+import { sections } from "../overview/data/data"
 import { RiCheckboxCircleFill, RiErrorWarningFill } from "@remixicon/react"
 import { Link, SlidersHorizontal } from "lucide-react"
 
