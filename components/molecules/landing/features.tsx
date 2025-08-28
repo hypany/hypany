@@ -130,16 +130,15 @@ export default function Features() {
 				{/* Content */}
 				<div className="col-span-2 my-auto px-2">
 					<h2 className="relative text-lg font-semibold tracking-tight text-orange-500">
-						Smart Farming Solutions
+						Rapid Idea Validation
 						<div className="absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-orange-500" />
 					</h2>
 					<p className="mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl">
-						A network of autonomous systems for complete farm monitoring
+						Test 100 ideas in the time it takes to build one
 					</p>
 					<p className="mt-4 text-balance text-gray-700">
-						Deploy intelligent monitoring and automated response systems across
-						your fields, irrigation networks, and aerial operations with our
-						integrated platform.
+						Create beautiful landing pages with WYSIWYG editor, deploy to custom domains,
+						and start collecting sign-ups from potential customers within minutes.
 					</p>
 				</div>
 				<div className="relative col-span-2 flex items-center justify-center overflow-hidden">
@@ -298,17 +297,16 @@ export default function Features() {
 
 				<div className="col-span-2 my-auto px-2">
 					<h2 className="relative text-lg font-semibold tracking-tight text-orange-500">
-						Precision Agriculture
+						Data-Driven Decisions
 						<div className="absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-orange-500" />
 					</h2>
 					<p className="mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl">
-						Turn every acre into a data-driven powerhouse
+						Turn visitor behavior into validated insights
 					</p>
 					<p className="mt-4 text-balance text-gray-700">
-						Revolutionize your farming operation with edge-computing AI that
-						transforms raw field data into actionable insights in real-time.
-						Make informed decisions faster, reduce resource waste, and maximize
-						yields.
+						Track engagement metrics, run A/B tests, and analyze conversion rates
+						in real-time. Know exactly which ideas resonate with your target market
+						before investing time and money into development.
 					</p>
 				</div>
 				<div className="relative col-span-2 flex items-center justify-center overflow-hidden">
@@ -428,16 +426,16 @@ export default function Features() {
 				</div>
 				<div className="col-span-2 my-auto px-2">
 					<h2 className="relative text-lg font-semibold tracking-tight text-orange-500">
-						Easy Expansion
+						Waitlist to Customers
 						<div className="absolute top-1 -left-[7px] h-5 w-[3px] rounded-r-sm bg-orange-500" />
 					</h2>
 					<p className="mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl">
-						Scale your smart farm with plug-and-play simplicity
+						Convert interest into paying customers from day one
 					</p>
 					<p className="mt-4 text-balance text-gray-700">
-						Add new sensors and capabilities to your farm network with zero
-						setup required. Our systems automatically connect and coordinate
-						with each other.
+						Manage waitlists, send targeted emails, and nurture leads automatically.
+						When you're ready to launch, you'll have customers ready to pay
+						instead of starting from zero.
 					</p>
 				</div>
 				<div className="relative col-span-2 flex items-center justify-center overflow-hidden">

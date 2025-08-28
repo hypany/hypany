@@ -2,9 +2,9 @@ import { CallToAction } from "@/components/molecules/landing/call-to-action";
 import FeatureDivider from "@/components/molecules/landing/feature-divider";
 import Features from "@/components/molecules/landing/features";
 import { Hero } from "@/components/molecules/landing/hero";
-import { Map } from "@/components/molecules/map/map";
 import { SolarAnalytics } from "@/components/molecules/landing/solar-analytics";
-import Testimonial from "@/components/molecules/landing/testimonial";
+import { ValidationMetrics } from "@/components/molecules/landing/validation-metrics";
+import { AlumniNetwork } from "@/components/molecules/landing/alumni-network";
 
 export default function Home() {
 	return (
@@ -15,16 +15,15 @@ export default function Home() {
 			<div className="mt-52 px-4 xl:px-0">
 				<Features />
 			</div>
-			<div className="mt-32 px-4 xl:px-0">
-				<Testimonial />
+			<div className="mt-32">
+				<ValidationMetrics />
 			</div>
 			<FeatureDivider className="my-16 max-w-6xl" />
-			<div className="px-4 xl:px-0">
-				<Map />
-			</div>
-			<FeatureDivider className="my-16 max-w-6xl" />
-			<div className="mt-12 mb-40 px-4 xl:px-0">
+			<div className="mt-12 mb-20 px-4 xl:px-0">
 				<SolarAnalytics />
+			</div>
+			<div className="mt-20 mb-20">
+				<AlumniNetwork />
 			</div>
 			<div className="mt-10 mb-40 px-4 xl:px-0">
 				<CallToAction />

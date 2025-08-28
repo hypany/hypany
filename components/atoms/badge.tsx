@@ -1,4 +1,4 @@
-// Tremor Badge [v0.0.1]
+// Tremor Badge [v1.0.0]
 
 import React from "react";
 import { tv, type VariantProps } from "tailwind-variants";

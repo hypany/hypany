@@ -1,8 +1,8 @@
 import {
-	RiDropFill,
-	RiNavigationFill,
-	RiPieChartFill,
-	RiRobot3Fill,
+	RiEditBoxFill,
+	RiMailSendFill,
+	RiLineChartFill,
+	RiTestTubeFill,
 } from "@remixicon/react";
 import AnalyticsIllustration from "./analytics-illustration";
 import { Divider } from "@/components/atoms/divider";
@@ -19,11 +19,11 @@ export function SolarAnalytics() {
 					id="solar-analytics"
 					className="relative scroll-my-24 text-lg font-semibold tracking-tight text-orange-500"
 				>
-					Solar Analytics
+					Powerful Features
 					<div className="absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-orange-500" />
 				</h2>
 				<p className="mt-2 max-w-lg text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl">
-					Turn field data into profitable harvests with real-time insights
+					Everything you need to validate ideas and launch with confidence
 				</p>
 			</div>
 			<div className="*:pointer-events-none">
@@ -32,24 +32,24 @@ export function SolarAnalytics() {
 			<Divider className="mt-0"></Divider>
 			<div className="grid grid-cols-1 grid-rows-2 gap-6 md:grid-cols-4 md:grid-rows-1">
 				<StickerCard
-					Icon={RiNavigationFill}
-					title="Autonomous Navigation"
-					description="Smart tractors that navigate fields independently using GPS."
+					Icon={RiEditBoxFill}
+					title="WYSIWYG Editor"
+					description="Create stunning landing pages without coding. Drag, drop, and customize."
 				/>
 				<StickerCard
-					Icon={RiRobot3Fill}
-					title="Robotic Harvesting"
-					description="AI-powered robots that identify and harvest crops at optimal ripeness."
+					Icon={RiTestTubeFill}
+					title="A/B Testing"
+					description="Test different versions to find what converts best with your audience."
 				/>
 				<StickerCard
-					Icon={RiDropFill}
-					title="Smart Irrigation"
-					description="Automated irrigation systems that optimize water usage."
+					Icon={RiMailSendFill}
+					title="Email Campaigns"
+					description="Nurture waitlist users with automated email sequences and updates."
 				/>
 				<StickerCard
-					Icon={RiPieChartFill}
-					title="Yield Analytics"
-					description="Advanced analytics platform that predicts crop yields."
+					Icon={RiLineChartFill}
+					title="Real-time Analytics"
+					description="Track visitor behavior, conversion rates, and engagement metrics instantly."
 				/>
 			</div>
 		</section>

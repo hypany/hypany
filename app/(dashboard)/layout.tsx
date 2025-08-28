@@ -3,21 +3,9 @@ import { AppSidebar } from "@/components/molecules/navigation/app-sidebar";
 import { Breadcrumbs } from "@/components/molecules/navigation/breadcrumbs";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import "../globals.css";
 import { siteConfig } from "./siteConfig";
-
-const geistSans = localFont({
-	src: "./fonts/GeistVF.woff",
-	variable: "--font-geist-sans",
-	weight: "100 900",
-});
-const geistMono = localFont({
-	src: "./fonts/GeistMonoVF.woff",
-	variable: "--font-geist-mono",
-	weight: "100 900",
-});
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://yoururl.com"),
@@ -61,7 +49,8 @@ export default async function RootLayout({
 	return (
 		<html lang="en" className="h-full" suppressHydrationWarning>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} bg-white-50 h-full antialiased dark:bg-gray-950`}
+				className="bg-white-50 h-full antialiased dark:bg-gray-950"
+				style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
 			>
 				<ThemeProvider
 					defaultTheme="system"

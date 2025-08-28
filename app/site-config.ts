@@ -1,7 +1,7 @@
 export const siteConfig = {
-	name: "Solar Technologies",
-	url: "https://solar.tremor.so",
-	description: "Automation for every Farm.",
+	name: "Hypany",
+	url: "https://hypany.com",
+	description: "Nobody wants your startup. But they might like your 98th idea.",
 	baseLinks: {
 		home: "/",
 		quotes: {

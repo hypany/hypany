@@ -5,7 +5,7 @@ import {
 	RiYoutubeFill,
 } from "@remixicon/react";
 import Link from "next/link";
-import { SolarLogo } from "@/public/solar-logo";
+import { HypanyLogo } from "@/public/brand/hypany-logo";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -147,9 +147,9 @@ const Footer = () => {
 						href="/"
 						className="flex items-center font-medium text-gray-700 select-none sm:text-sm"
 					>
-						<SolarLogo className="ml-2 w-20" />
+						<HypanyLogo className="ml-2 w-10 h-10" />
 
-						<span className="sr-only">Solar Logo (go home)</span>
+						<span className="sr-only">Hypany Logo (go home)</span>
 					</Link>
 
 					<div>
@@ -189,7 +189,7 @@ const Footer = () => {
 							</Link>
 						</div>
 						<div className="ml-2 hidden text-sm text-gray-700 lg:inline">
-							&copy; {CURRENT_YEAR} Solar Technologies, Inc.
+							&copy; {CURRENT_YEAR} Sunghyun Cho
 						</div>
 					</div>
 				</div>

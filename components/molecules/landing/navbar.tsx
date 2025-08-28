@@ -6,7 +6,7 @@ import { RiCloseFill, RiMenuFill } from "@remixicon/react";
 import Link from "next/link";
 import React from "react";
 import { siteConfig } from "@/app/site-config";
-import { SolarLogo } from "@/public/solar-logo";
+import { HypanyLogo } from "@/public/brand/hypany-logo";
 import { Button } from "@/components/atoms/button";
 
 export function NavBar() {
@@ -25,19 +25,19 @@ export function NavBar() {
 			<div className="w-full md:my-auto">
 				<div className="relative flex items-center justify-between">
 					<Link href={siteConfig.baseLinks.home} aria-label="Home">
-						<span className="sr-only">Solar Tech Logo</span>
-						<SolarLogo className="w-22" />
+						<span className="sr-only">Hypany Logo</span>
+						<HypanyLogo className="w-10 h-10" />
 					</Link>
 					<nav className="hidden sm:block md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:transform">
 						<div className="flex items-center gap-10 font-medium">
 							<Link className="px-2 py-1 text-gray-900" href="#solutions">
-								Solutions
+								How It Works
 							</Link>
-							<Link className="px-2 py-1 text-gray-900" href="#farm-management">
-								Farm Management
+							<Link className="px-2 py-1 text-gray-900" href="#features">
+								Features
 							</Link>
-							<Link className="px-2 py-1 text-gray-900" href="#solar-analytics">
-								Analytics
+							<Link className="px-2 py-1 text-gray-900" href="#alumni">
+								Alumni Network
 							</Link>
 						</div>
 					</nav>
@@ -45,7 +45,7 @@ export function NavBar() {
 						variant="secondary"
 						className="hidden h-10 font-semibold sm:block"
 					>
-						Get a quote
+						Start Free
 					</Button>
 					<Button
 						onClick={() => setOpen(!open)}
@@ -74,17 +74,17 @@ export function NavBar() {
 				>
 					<ul className="space-y-4 font-medium">
 						<li onClick={() => setOpen(false)}>
-							<Link href="#solutions">Solutions</Link>
+							<Link href="#solutions">How It Works</Link>
 						</li>
 						<li onClick={() => setOpen(false)}>
-							<Link href="#farm-management">Farm Management</Link>
+							<Link href="#features">Features</Link>
 						</li>
 						<li onClick={() => setOpen(false)}>
-							<Link href="#solar-analytics">Analytics</Link>
+							<Link href="#alumni">Alumni Network</Link>
 						</li>
 					</ul>
 					<Button variant="secondary" className="text-lg">
-						Get a quote
+						Start Free
 					</Button>
 				</nav>
 			</div>
