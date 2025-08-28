@@ -1,1667 +1,468 @@
 [
   {
     "user": "What if your IDE helper auto-completes entire functions by reading comments?",
-    "product": "VS Code extension that reads code comments and auto-completes entire functions.",
+    "product": "VS Code extension that reads code comments and auto-completes entire functions",
     "engineering": [
-      "simple prompt chatgpt api",
-      "insert snippet",
-      "plugin apis",
-      "rate limits",
-      "user prompt context"
+      "Simple Prompt ChatGPT API",
+      "Insert Snippet",
+      "Plugin APIs",
+      "Rate Limits",
+      "User Prompt Context"
     ],
     "legal": [
-      "review code privacy",
-      "api data handling",
-      "compliance openai ide terms"
+      "Review Code Privacy",
+      "API Data Handling",
+      "Compliance OpenAI IDE Terms"
     ]
   },
   {
     "user": "What if your calendar assistant reschedules overlapping meetings optimally?",
-    "product": "Calendar assistant that automatically reschedules overlapping meetings for optimal timing.",
+    "product": "Calendar assistant that automatically reschedules overlapping meetings for optimal timing",
     "engineering": [
-      "node js microservice",
-      "google calendar api",
-      "greedy heuristic",
-      "oauth flow",
-      "api quotas",
-      "validation double-booking"
+      "Node.js Microservice",
+      "Google Calendar API",
+      "Greedy Heuristic",
+      "OAuth Flow",
+      "API Quotas",
+      "Validation Double-Booking"
     ],
     "legal": [
-      "user consent calendar access",
-      "data privacy",
-      "compliance google api terms"
+      "User Consent Calendar Access",
+      "Data Privacy",
+      "Compliance Google API Terms"
     ]
   },
   {
     "user": "What if an email summarizer flags essentials and suggests replies?",
-    "product": "Email summarizer that highlights key points and suggests reply drafts.",
+    "product": "Email summarizer that highlights key points and suggests reply drafts",
     "engineering": [
-      "python flask",
-      "gmail api",
-      "extractive summary spacy llm",
-      "secure token storage",
-      "concurrency",
-      "model latency"
+      "Python Flask",
+      "Gmail API",
+      "Extractive Summary SpaCy LLM",
+      "Secure Token Storage",
+      "Concurrency",
+      "Model Latency"
     ],
     "legal": [
-      "email data privacy",
-      "secure token handling",
-      "compliance gmail api policies"
+      "Email Data Privacy",
+      "Secure Token Handling",
+      "Compliance Gmail API Policies"
     ]
   },
   {
     "user": "What if your docs editor auto-formats content to company style?",
-    "product": "Docs editor extension that auto-formats content to match company style guidelines.",
+    "product": "Docs editor extension that auto-formats content to match company style guidelines",
     "engineering": [
-      "chrome extension",
-      "rule-based grammar",
-      "style checklist",
-      "contenteditable dom integration",
-      "caching",
-      "local storage"
+      "Chrome Extension",
+      "Rule-Based Grammar",
+      "Style Checklist",
+      "ContentEditable DOM Integration",
+      "Caching",
+      "Local Storage"
     ],
     "legal": [
-      "user data handling",
-      "browser extension permissions",
-      "company ip style rules"
+      "User Data Handling",
+      "Browser Extension Permissions",
+      "Company IP Style Rules"
     ]
   },
   {
     "user": "What if a task manager smart-tags tasks based on description?",
-    "product": "Task manager that automatically tags tasks using description analysis.",
+    "product": "Task manager that automatically tags tasks using description analysis",
     "engineering": [
-      "react frontend",
-      "fastapi backend",
-      "keyword tagging",
-      "frontend load",
-      "debounce inputs",
-      "simple ml classifier"
+      "React Frontend",
+      "FastAPI Backend",
+      "Keyword Tagging",
+      "Frontend Load",
+      "Debounce Inputs",
+      "Simple ML Classifier"
     ],
     "legal": [
-      "data privacy task content",
-      "ml model transparency",
-      "user consent"
+      "Data Privacy Task Content",
+      "ML Model Transparency",
+      "User Consent"
     ]
   },
   {
     "user": "What if your travel optimizer picks flights and hotels based on your policy?",
-    "product": "Travel optimizer that selects flights and hotels according to user/company policy.",
+    "product": "Travel optimizer that selects flights and hotels according to user/company policy",
     "engineering": [
-      "web ui",
-      "oauth travel apis",
-      "rule filters time cost",
-      "api chaining",
-      "error handling",
-      "user preference storage"
+      "Web UI",
+      "OAuth Travel APIs",
+      "Rule Filters Time Cost",
+      "API Chaining",
+      "Error Handling",
+      "User Preference Storage"
     ],
     "legal": [
-      "travel data privacy",
-      "api terms compliance",
-      "user consent bookings"
+      "Travel Data Privacy",
+      "API Terms Compliance",
+      "User Consent Bookings"
     ]
   },
   {
     "user": "What if a slide generator transforms a bullet outline into visuals?",
-    "product": "Slide generator that converts bullet outlines into presentation visuals.",
+    "product": "Slide generator that converts bullet outlines into presentation visuals",
     "engineering": [
-      "python script using python-pptx",
-      "simple templating",
-      "template customization",
-      "formatting consistency",
-      "file i o"
+      "Python Script Using python-pptx",
+      "Simple Templating",
+      "Template Customization",
+      "Formatting Consistency",
+      "File I O"
     ],
     "legal": [
-      "content copyright",
-      "template licensing",
-      "user data handling"
+      "Content Copyright",
+      "Template Licensing",
+      "User Data Handling"
     ]
   },
   {
     "user": "What if a budget tracker flags anomalies in spend in real time?",
-    "product": "Budget tracker that detects and flags spending anomalies in real time.",
+    "product": "Budget tracker that detects and flags spending anomalies in real time",
     "engineering": [
-      "serverless function aws lambda",
-      "webhook from finance api",
-      "alert slack",
-      "webhook reliability",
-      "idempotent processing",
-      "alert throttling"
+      "Serverless Function AWS Lambda",
+      "Webhook From Finance API",
+      "Alert Slack",
+      "Webhook Reliability",
+      "Idempotent Processing",
+      "Alert Throttling"
     ],
     "legal": [
-      "financial data privacy",
-      "secure api integration",
-      "compliance finance data regulations"
+      "Financial Data Privacy",
+      "Secure API Integration",
+      "Compliance Finance Data Regulations"
     ]
   },
   {
     "user": "What if your meeting assistant posts notes to Slack with action items?",
-    "product": "Meeting assistant that posts meeting notes and action items to Slack.",
+    "product": "Meeting assistant that posts meeting notes and action items to Slack",
     "engineering": [
-      "node js bot",
-      "meeting transcript api like whisper",
-      "simple parsing",
-      "transcript- -text reliability",
-      "nlp action items",
-      "slack api"
+      "Node JS Bot",
+      "Meeting Transcript API Like Whisper",
+      "Simple Parsing",
+      "Transcript-Text Reliability",
+      "NLP Action Items",
+      "Slack API"
     ],
     "legal": [
-      "meeting data privacy",
-      "slack api compliance",
-      "user consent note sharing"
+      "Meeting Data Privacy",
+      "Slack API Compliance",
+      "User Consent Note Sharing"
     ]
   },
   {
     "user": "What if your file manager auto-tags documents by content topics?",
-    "product": "File manager that automatically tags documents based on their content topics.",
+    "product": "File manager that automatically tags documents based on their content topics",
     "engineering": [
-      "local python daemon",
-      "watchdog watch files",
-      "tf-idf clustering",
-      "file system monitoring",
-      "cpu usage",
-      "persistent metadata store"
+      "Local Python Daemon",
+      "Watchdog Watch Files",
+      "TF-IDF Clustering",
+      "File System Monitoring",
+      "CPU Usage",
+      "Persistent Metadata Store"
     ],
     "legal": [
-      "user file privacy",
-      "local data processing",
-      "compliance file system access policies"
+      "User File Privacy",
+      "Local Data Processing",
+      "Compliance File System Access Policies"
     ]
   },
   {
     "user": "What if a lint-bot creates PRs that auto-fix common code smells?",
-    "product": "Lint-bot that automatically creates pull requests to fix common code smells.",
+    "product": "Lint-bot that automatically creates pull requests to fix common code smells",
     "engineering": [
-      "github action",
-      "regex fixes",
-      "pr github api",
-      "diff consistency",
-      "conflict resolution",
-      "pr template"
+      "GitHub Action",
+      "Regex Fixes",
+      "PR GitHub API",
+      "Diff Consistency",
+      "Conflict Resolution",
+      "PR Template"
     ],
     "legal": [
-      "codebase access permissions",
-      "contribution licensing",
-      "compliance repository policies"
+      "Codebase Access Permissions",
+      "Contribution Licensing",
+      "Compliance Repository Policies"
     ]
   },
   {
     "user": "What if a test generator builds unit tests from function signatures?",
-    "product": "Test generator that creates unit test stubs from function signatures.",
+    "product": "Test generator that creates unit test stubs from function signatures",
     "engineering": [
-      "cli tool",
-      "static analysis",
-      "test stubs",
-      "ast parsing",
-      "test scaffolding",
-      "integration pytest jest"
+      "CLI Tool",
+      "Static Analysis",
+      "Test Stubs",
+      "AST Parsing",
+      "Test Scaffolding",
+      "Integration Pytest Jest"
     ],
     "legal": [
-      "generated code licensing",
-      "user code privacy",
-      "compliance test framework licenses"
+      "Generated Code Licensing",
+      "User Code Privacy",
+      "Compliance Test Framework Licenses"
     ]
   },
   {
     "user": "What if an error monitor aggregates logs and surfaces repeating issues?",
-    "product": "Error monitor that aggregates logs and highlights recurring issues.",
+    "product": "Error monitor that aggregates logs and highlights recurring issues",
     "engineering": [
-      "elk stack elasticsearch kibana",
-      "log pattern clustering",
-      "indexing performance",
-      "alert thresholds",
-      "ui dashboards"
+      "ELK Stack Elasticsearch Kibana",
+      "Log Pattern Clustering",
+      "Indexing Performance",
+      "Alert Thresholds",
+      "UI Dashboards"
     ],
     "legal": [
-      "log data privacy",
-      "retention policies",
-      "compliance data protection regulations"
+      "Log Data Privacy",
+      "Retention Policies",
+      "Compliance Data Protection Regulations"
     ]
   },
   {
     "user": "What if a CI optimizer only runs relevant tests based on affected files?",
-    "product": "CI optimizer that runs only relevant tests based on changed files.",
+    "product": "CI optimizer that runs only relevant tests based on changed files",
     "engineering": [
-      "git diff",
-      "simple dependency graph",
-      "conditional test runner",
-      "diff accuracy",
-      "mapping tests files",
-      "ci integration"
+      "Git Diff",
+      "Simple Dependency Graph",
+      "Conditional Test Runner",
+      "Diff Accuracy",
+      "Mapping Tests Files",
+      "CI Integration"
     ],
     "legal": [
-      "ci cd pipeline access",
-      "code privacy",
-      "compliance open source licenses"
+      "CI CD Pipeline Access",
+      "Code Privacy",
+      "Compliance Open Source Licenses"
     ]
   },
   {
     "user": "What if a local environment manager snaps builds into reproducible containers?",
-    "product": "Local environment manager that creates reproducible build containers.",
+    "product": "Local environment manager that creates reproducible build containers",
     "engineering": [
-      "dockerfile template",
-      "cli build dev containers",
-      "caching layers",
-      "volume mounts",
-      "performance"
+      "Dockerfile Template",
+      "CLI Build Dev Containers",
+      "Caching Layers",
+      "Volume Mounts",
+      "Performance"
     ],
     "legal": [
-      "container image licensing",
-      "use open source dockerfiles",
-      "compliance software distribution laws"
+      "Container Image Licensing",
+      "Use Open Source Dockerfiles",
+      "Compliance Software Distribution Laws"
     ]
   },
   {
     "user": "What if feature flags can be toggled in production with no redeploy?",
-    "product": "Feature flag system allowing toggling in production without redeployment.",
+    "product": "Feature flag system allowing toggling in production without redeployment",
     "engineering": [
-      "launchdarkly-style ui",
-      "backend control toggle",
-      "simple middleware",
-      "cache invalidation",
-      "config consistency",
-      "fallback handling"
+      "LaunchDarkly-Style UI",
+      "Backend Control Toggle",
+      "Simple Middleware",
+      "Cache Invalidation",
+      "Config Consistency",
+      "Fallback Handling"
     ],
     "legal": [
-      "production change controls",
-      "audit logging",
-      "compliance change management policies"
+      "Production Change Controls",
+      "Audit Logging",
+      "Compliance Change Management Policies"
     ]
   },
   {
     "user": "What if infrastructure drift is auto-detected and corrected?",
-    "product": "Tool that auto-detects and corrects infrastructure drift.",
+    "product": "Tool that auto-detects and corrects infrastructure drift",
     "engineering": [
-      "terraform diff scheduled lambda",
-      "alert",
-      "drift detection tooling",
-      "iam permissions",
-      "safe remediation"
+      "Terraform Diff Scheduled Lambda",
+      "Alert",
+      "Drift Detection Tooling",
+      "IAM Permissions",
+      "Safe Remediation"
     ],
     "legal": [
-      "infrastructure change auditing",
-      "permissions management",
-      "compliance cloud provider terms"
+      "Infrastructure Change Auditing",
+      "Permissions Management",
+      "Compliance Cloud Provider Terms"
     ]
   },
   {
     "user": "What if a DB query planner suggests index improvements?",
-    "product": "DB query planner that recommends index improvements based on slow queries.",
+    "product": "DB query planner that recommends index improvements based on slow queries",
     "engineering": [
-      "ui",
-      "scanning slow query logs",
-      "recommend simple index statements",
-      "log ingestion",
-      "sql parsing",
-      "schema permissions"
+      "UI",
+      "Scanning Slow Query Logs",
+      "Recommend Simple Index Statements",
+      "Log Ingestion",
+      "SQL Parsing",
+      "Schema Permissions"
     ],
     "legal": [
-      "database access permissions",
-      "data privacy",
-      "compliance database vendor licenses"
+      "Database Access Permissions",
+      "Data Privacy",
+      "Compliance Database Vendor Licenses"
     ]
   },
   {
     "user": "What if a debugger records function calls to replay bugs?",
-    "product": "Debugger that records function calls for bug replay.",
+    "product": "Debugger that records function calls for bug replay",
     "engineering": [
-      "proxy wrapper",
-      "capture inputs outputs file",
-      "performance overhead",
-      "storage size",
-      "privacy"
+      "Proxy Wrapper",
+      "Capture Inputs Outputs File",
+      "Performance Overhead",
+      "Storage Size",
+      "Privacy"
     ],
     "legal": [
-      "user code data privacy",
-      "storage sensitive information",
-      "compliance debugging tool licenses"
+      "User Code Data Privacy",
+      "Storage Sensitive Information",
+      "Compliance Debugging Tool Licenses"
     ]
   },
   {
     "user": "What if a cloud cost estimator forecasts billing per feature?",
-    "product": "Cloud cost estimator that forecasts billing at the feature level.",
+    "product": "Cloud cost estimator that forecasts billing at the feature level",
     "engineering": [
-      "cost api calls",
-      "tag breakdown",
-      "simple linear projection",
-      "cost api rate limits",
-      "data refresh",
-      "accuracy"
+      "Cost API Calls",
+      "Tag Breakdown",
+      "Simple Linear Projection",
+      "Cost API Rate Limits",
+      "Data Refresh",
+      "Accuracy"
     ],
     "legal": [
-      "cloud billing data privacy",
-      "api usage compliance",
-      "user consent cost tracking"
+      "Cloud Billing Data Privacy",
+      "API Usage Compliance",
+      "User Consent Cost Tracking"
     ]
   },
   {
     "user": "What if invoice reminders auto-send at due dates via SMS or Email?",
-    "product": "Automated invoice reminder system sending notifications via SMS or email.",
+    "product": "Automated invoice reminder system sending notifications via SMS or email",
     "engineering": [
-      "cron job",
-      "twilio email service",
-      "template service",
-      "scheduling",
-      "rate control",
-      "retry logic"
+      "Cron Job",
+      "Twilio Email Service",
+      "Template Service",
+      "Scheduling",
+      "Rate Control",
+      "Retry Logic"
     ],
     "legal": [
-      "user communication consent",
-      "compliance anti-spam laws",
-      "data privacy contact info"
+      "User Communication Consent",
+      "Compliance Anti-Spam Laws",
+      "Data Privacy Contact Info"
     ]
   },
   {
     "user": "What if a fraud detector flags suspicious activity on transactions?",
-    "product": "Fraud detector that flags suspicious transaction activity.",
+    "product": "Fraud detector that flags suspicious transaction activity",
     "engineering": [
-      "rule engine amount threshold",
-      "location mismatch",
-      "rule definition ui",
-      "real-time evaluation",
-      "logging"
+      "Rule Engine Amount Threshold",
+      "Location Mismatch",
+      "Rule Definition UI",
+      "Real-Time Evaluation",
+      "Logging"
     ],
     "legal": [
-      "financial data privacy",
-      "compliance anti-fraud regulations",
-      "audit logging"
+      "Financial Data Privacy",
+      "Compliance Anti-Fraud Regulations",
+      "Audit Logging"
     ]
   },
   {
     "user": "What if expense approvals happen via chat in Slack or Teams?",
-    "product": "Expense approval workflow integrated with Slack or Teams chat.",
+    "product": "Expense approval workflow integrated with Slack or Teams chat",
     "engineering": [
-      "slack bot",
-      "approval buttons",
-      "backend validation",
-      "command permission",
-      "concurrency",
-      "data consistency"
+      "Slack Bot",
+      "Approval Buttons",
+      "Backend Validation",
+      "Command Permission",
+      "Concurrency",
+      "Data Consistency"
     ],
     "legal": [
-      "expense data privacy",
-      "user consent",
-      "compliance company approval policies"
+      "Expense Data Privacy",
+      "User Consent",
+      "Compliance Company Approval Policies"
     ]
   },
   {
     "user": "What if accounting entries sync in real time between services?",
-    "product": "Real-time sync of accounting entries between different services.",
+    "product": "Real-time sync of accounting entries between different services",
     "engineering": [
-      "webhook listener",
-      "transformation",
-      "sync api",
-      "mapping schemas",
-      "idempotency",
-      "failure retries"
+      "Webhook Listener",
+      "Transformation",
+      "Sync API",
+      "Mapping Schemas",
+      "Idempotency",
+      "Failure Retries"
     ],
     "legal": [
-      "financial data transfer compliance",
-      "data privacy",
-      "third-party api terms"
+      "Financial Data Transfer Compliance",
+      "Data Privacy",
+      "Third-Party API Terms"
     ]
   },
   {
     "user": "What if a savings goal tracker nudges users via notifications?",
-    "product": "Savings goal tracker that nudges users with notifications.",
+    "product": "Savings goal tracker that nudges users with notifications",
     "engineering": [
-      "mobile push email",
-      "simple goal logic",
-      "push integration",
-      "user settings",
-      "engagement logic"
+      "Mobile Push Email",
+      "Simple Goal Logic",
+      "Push Integration",
+      "User Settings",
+      "Engagement Logic"
     ],
     "legal": [
-      "user consent notifications",
-      "data privacy",
-      "compliance notification regulations"
+      "User Consent Notifications",
+      "Data Privacy",
+      "Compliance Notification Regulations"
     ]
   },
   {
     "user": "What if claims auto-populate from user-measured data?",
-    "product": "Claims system that auto-populates forms from user-measured data.",
+    "product": "Claims system that auto-populates forms from user-measured data",
     "engineering": [
-      "file upload",
-      "ocr",
-      "form filling suggestions",
-      "ocr accuracy",
-      "validation",
-      "ux feedback"
+      "File Upload",
+      "OCR",
+      "Form Filling Suggestions",
+      "OCR Accuracy",
+      "Validation",
+      "UX Feedback"
     ],
     "legal": [
-      "sensitive data handling",
-      "compliance insurance regulations",
-      "user consent"
+      "Sensitive Data Handling",
+      "Compliance Insurance Regulations",
+      "User Consent"
     ]
   },
   {
     "user": "What if loan underwriting uses simple risk scoring from credit APIs?",
-    "product": "Loan underwriting tool using risk scores from credit APIs.",
+    "product": "Loan underwriting tool using risk scores from credit APIs",
     "engineering": [
-      "backend microservice calls credit api",
-      "score mapper",
-      "api security",
-      "scoring fairness",
-      "latency"
+      "Backend Microservice Calls Credit API",
+      "Score Mapper",
+      "API Security",
+      "Scoring Fairness",
+      "Latency"
     ],
     "legal": [
-      "credit data privacy",
-      "compliance lending laws",
-      "api usage terms"
+      "Credit Data Privacy",
+      "Compliance Lending Laws",
+      "API Usage Terms"
     ]
   },
   {
     "user": "What if payments retry smartly when failures happen?",
-    "product": "Payment system that retries failed payments using smart logic.",
+    "product": "Payment system that retries failed payments using smart logic",
     "engineering": [
-      "circuit breaker",
-      "exponential backoff microservice",
-      "retry policy",
-      "state management",
-      "idempotency"
+      "Circuit Breaker",
+      "Exponential Backoff Microservice",
+      "Retry Policy",
+      "State Management",
+      "Idempotency"
     ],
     "legal": [
-      "payment data privacy",
-      "compliance payment processing regulations",
-      "audit trails"
-    ]
-  },
-  {
-    "user": "What if budgets get auto-adjusted if spending patterns change?",
-    "product": "Budgeting tool that auto-adjusts based on changing spending patterns.",
-    "engineering": [
-      "data pipeline",
-      "anomaly detection",
-      "suggestion ui",
-      "data freshness",
-      "ml false positives",
-      "ux clarity"
-    ],
-    "legal": [
-      "financial data privacy",
-      "user consent",
-      "compliance budgeting tool regulations"
-    ]
-  },
-  {
-    "user": "What if price quotes for insurance are derived from live usage data?",
-    "product": "Insurance quoting system using live usage data for pricing.",
-    "engineering": [
-      "basic api",
-      "usage ingest",
-      "price rule engine",
-      "data ingestion",
-      "rule configurability",
-      "security"
-    ],
-    "legal": [
-      "insurance data privacy",
-      "compliance insurance pricing laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if appointment reminders confirm via chatbot automatically?",
-    "product": "Appointment reminder system with automatic chatbot confirmations.",
-    "engineering": [
-      "sms whatsapp bot",
-      "appointment database",
-      "reply parsing",
-      "message parsing",
-      "retries",
-      "emr integration"
-    ],
-    "legal": [
-      "patient data privacy",
-      "compliance healthcare communication laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if wellness apps detect daily routines and suggest changes?",
-    "product": "Wellness app that detects daily routines and suggests improvements.",
-    "engineering": [
-      "mobile app",
-      "sensor integration",
-      "simple pattern detection",
-      "sensor apis",
-      "battery usage",
-      "privacy"
-    ],
-    "legal": [
-      "user health data privacy",
-      "compliance wellness app regulations",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if remote vitals monitoring alerts when anomalies appear?",
-    "product": "Remote vitals monitoring system with anomaly alerts.",
-    "engineering": [
-      "iot sensor",
-      "upload api",
-      "threshold alert logic",
-      "sensor reliability",
-      "streaming data",
-      "alert channels"
-    ],
-    "legal": [
-      "patient data privacy",
-      "compliance medical device regulations",
-      "alerting consent"
-    ]
-  },
-  {
-    "user": "What if clinical data gets anonymized for research with one click?",
-    "product": "One-click anonymization tool for clinical data for research use.",
-    "engineering": [
-      "import csv",
-      "anonymization hash shift",
-      "export",
-      "data privacy",
-      "re-identification risk",
-      "audit logs"
-    ],
-    "legal": [
-      "hipaa gdpr compliance",
-      "data anonymization standards",
-      "research data use agreements"
-    ]
-  },
-  {
-    "user": "What if medical image uploads get auto-tagged with findings?",
-    "product": "Medical image uploader that auto-tags images with findings.",
-    "engineering": [
-      "dicom upload",
-      "cnn model inference",
-      "metadata tag",
-      "large file handling",
-      "gpu inference latency",
-      "data security"
-    ],
-    "legal": [
-      "medical image privacy",
-      "compliance healthcare data laws",
-      "model output liability"
-    ]
-  },
-  {
-    "user": "What if medication intake gets logged with phone image recognition?",
-    "product": "Medication intake logger using phone image recognition.",
-    "engineering": [
-      "image api",
-      "pill shape color detection",
-      "model accuracy",
-      "mobile performance",
-      "privacy"
-    ],
-    "legal": [
-      "user health data privacy",
-      "compliance medication tracking laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if health history gets summarized for doctors with one page?",
-    "product": "Health history summarizer that generates a one-page summary for doctors.",
-    "engineering": [
-      "api integration",
-      "extract key fields",
-      "generate summary pdf",
-      "emr integrations",
-      "data mapping",
-      "pdf rendering"
-    ],
-    "legal": [
-      "patient data privacy",
-      "compliance medical record laws",
-      "doctor-patient confidentiality"
-    ]
-  },
-  {
-    "user": "What if a care operations dashboard shows patient status at a glance?",
-    "product": "Care operations dashboard displaying real-time patient status.",
-    "engineering": [
-      "react dashboard",
-      "real-time data",
-      "alerts",
-      "real-time updates",
-      "socket connections",
-      "ux clarity"
-    ],
-    "legal": [
-      "patient data privacy",
-      "compliance healthcare dashboard regulations",
-      "access controls"
-    ]
-  },
-  {
-    "user": "What if rare disease signals get flagged via EHR pattern mining?",
-    "product": "Rare disease signal detection via EHR pattern mining.",
-    "engineering": [
-      "batch job",
-      "pattern rules",
-      "researcher alert",
-      "medical rule accuracy",
-      "alert frequency",
-      "auditability"
-    ],
-    "legal": [
-      "patient data privacy",
-      "research data use compliance",
-      "rare disease reporting laws"
-    ]
-  },
-  {
-    "user": "What if a mental health check-in chatbot prompts daily mood tracking?",
-    "product": "Mental health chatbot for daily mood tracking and check-ins.",
-    "engineering": [
-      "chatbot conversation flow",
-      "user sentiment tags",
-      "conversation design",
-      "privacy",
-      "engagement metrics"
-    ],
-    "legal": [
-      "mental health data privacy",
-      "compliance mental health app laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if contract clauses get highlighted and summarized?",
-    "product": "Contract analysis tool that highlights and summarizes clauses.",
-    "engineering": [
-      "pdf parser",
-      "nlp summarizer",
-      "ui tagging",
-      "pdf import errors",
-      "nlp precision",
-      "ux labeling"
-    ],
-    "legal": [
-      "contract data privacy",
-      "legal document handling",
-      "compliance contract analysis regulations"
-    ]
-  },
-  {
-    "user": "What if regulation changes notify you based on your products?",
-    "product": "Regulation change notifier tailored to your product portfolio.",
-    "engineering": [
-      "web scraper",
-      "keyword match",
-      "alert emails",
-      "scraper fragility",
-      "false positives",
-      "alert fatigue"
-    ],
-    "legal": [
-      "compliance web scraping laws",
-      "regulatory data accuracy",
-      "user notification consent"
-    ]
-  },
-  {
-    "user": "What if a compliance dashboard tracks requirements status?",
-    "product": "Compliance dashboard tracking requirements and deadlines.",
-    "engineering": [
-      "kanban board",
-      "manual rule checkbox",
-      "deadlines",
-      "ux simplicity",
-      "reminders",
-      "data integrity"
-    ],
-    "legal": [
-      "compliance data privacy",
-      "audit logging",
-      "regulatory reporting requirements"
-    ]
-  },
-  {
-    "user": "What if a change log for policy files shows diffs over time?",
-    "product": "Policy file change log with diff viewer and commentary.",
-    "engineering": [
-      "git",
-      "diff viewer",
-      "timestamped commentary",
-      "diff rendering",
-      "versioning",
-      "multi-user"
-    ],
-    "legal": [
-      "policy document versioning compliance",
-      "access controls",
-      "audit trails"
-    ]
-  },
-  {
-    "user": "What if legal templates get filled based on user input?",
-    "product": "Legal template filler that generates documents from user input.",
-    "engineering": [
-      "ui form",
-      "template injection",
-      "pdf export",
-      "field validation",
-      "injection safety",
-      "pdf formatting"
-    ],
-    "legal": [
-      "legal document accuracy",
-      "user data privacy",
-      "compliance e-signature laws"
-    ]
-  },
-  {
-    "user": "What if audit logs get visualized to show user activity patterns?",
-    "product": "Audit log visualization tool for user activity patterns.",
-    "engineering": [
-      "log ingestion",
-      "heatmap ui",
-      "large-scale logs",
-      "efficient queries",
-      "visual clarity"
-    ],
-    "legal": [
-      "audit log retention",
-      "user privacy",
-      "compliance audit regulations"
-    ]
-  },
-  {
-    "user": "What if lawyers get clause-level similarity suggestions across contracts?",
-    "product": "Clause similarity suggestion tool for contract analysis.",
-    "engineering": [
-      "embeddings",
-      "nearest-neighbor search",
-      "ui results",
-      "embedding accuracy",
-      "search performance",
-      "indexing"
-    ],
-    "legal": [
-      "legal document privacy",
-      "compliance legal tech regulations",
-      "ip contract data"
-    ]
-  },
-  {
-    "user": "What if overt policy violations get blocked before publication?",
-    "product": "Pre-publish policy violation blocker.",
-    "engineering": [
-      "pre-publish hook",
-      "rule checker",
-      "rule tuning",
-      "developer workflow",
-      "false positives"
-    ],
-    "legal": [
-      "policy enforcement compliance",
-      "user notification",
-      "false positive dispute process"
-    ]
-  },
-  {
-    "user": "What if model outputs get fairness scores before deployment?",
-    "product": "Model output fairness scoring tool for pre-deployment checks.",
-    "engineering": [
-      "bias detection module",
-      "simple statistical tests",
-      "fairness metrics",
-      "testing environment",
-      "report ui"
-    ],
-    "legal": [
-      "fairness reporting compliance",
-      "model auditability",
-      "anti-discrimination laws"
-    ]
-  },
-  {
-    "user": "What if user-facing forms highlight missing data and guide fixes interactively?",
-    "product": "Interactive forms that highlight missing data and guide user corrections.",
-    "engineering": [
-      "react form dynamic validation",
-      "inline suggestions",
-      "ux responsiveness",
-      "validation logic",
-      "accessibility"
-    ],
-    "legal": [
-      "user data privacy",
-      "accessibility compliance",
-      "form data retention policies"
-    ]
-  },
-  {
-    "user": "What if your laptop docks automatically based on your location?",
-    "product": "Laptop docking automation based on user location.",
-    "engineering": [
-      "bluetooth signal detect",
-      "usb dock trigger",
-      "script",
-      "hardware triggers",
-      "device compatibility",
-      "false positives"
-    ],
-    "legal": [
-      "user consent location detection",
-      "hardware integration compliance",
-      "privacy policy updates"
-    ]
-  },
-  {
-    "user": "What if a robotic arm can learn via demonstration through record and replay?",
-    "product": "Robotic arm that learns tasks via demonstration and replay.",
-    "engineering": [
-      "joystick-controlled arm",
-      "movement recorder",
-      "motion capture precision",
-      "replay sync",
-      "safety"
-    ],
-    "legal": [
-      "safety compliance robotics",
-      "user training requirements",
-      "liability misuse"
-    ]
-  },
-  {
-    "user": "What if warehouse drones inventory shelves autonomously?",
-    "product": "Autonomous warehouse drones for shelf inventory.",
-    "engineering": [
-      "drone path",
-      "camera ocr barcode scan",
-      "navigation",
-      "scanning accuracy",
-      "battery life"
-    ],
-    "legal": [
-      "drone operation compliance",
-      "workplace safety",
-      "data privacy inventory records"
-    ]
-  },
-  {
-    "user": "What if a diet robot dispenses ingredients by recipe?",
-    "product": "Diet robot that dispenses ingredients according to recipes.",
-    "engineering": [
-      "simple motor mechanism",
-      "ingredient hopper",
-      "ui",
-      "mechanical reliability",
-      "dispensing accuracy",
-      "cleaning"
-    ],
-    "legal": [
-      "food safety compliance",
-      "liability dispensing errors",
-      "user safety"
-    ]
-  },
-  {
-    "user": "What if inspection bots patrol industrial zones and report anomalies?",
-    "product": "Inspection bots for industrial zone anomaly detection.",
-    "engineering": [
-      "preprogrammed robot",
-      "anomaly flag sensor thresholds",
-      "sensor calibration",
-      "connectivity",
-      "false alarms"
-    ],
-    "legal": [
-      "workplace safety compliance",
-      "data privacy inspection records",
-      "liability missed anomalies"
-    ]
-  },
-  {
-    "user": "What if factory machines self-report maintenance needs?",
-    "product": "Factory machines with self-reporting maintenance alerts.",
-    "engineering": [
-      "sensor",
-      "local criteria",
-      "alert api",
-      "sensor noise",
-      "network reliability",
-      "alert noise"
-    ],
-    "legal": [
-      "maintenance data privacy",
-      "compliance industrial standards",
-      "alerting liability"
-    ]
-  },
-  {
-    "user": "What if school lockers unlock via face recognition?",
-    "product": "Face recognition-based school locker unlocking system.",
-    "engineering": [
-      "camera",
-      "face-recognition library",
-      "lock actuator",
-      "security",
-      "spoofing resistance",
-      "student privacy"
-    ],
-    "legal": [
-      "student biometric data privacy",
-      "parental consent",
-      "compliance school safety laws"
-    ]
-  },
-  {
-    "user": "What if drones plant seeds based on soil moisture readings?",
-    "product": "Drones that plant seeds according to soil moisture data.",
-    "engineering": [
-      "drone",
-      "moisture sensor",
-      "seeder payload",
-      "sensor accuracy",
-      "drop precision",
-      "coverage mapping"
-    ],
-    "legal": [
-      "agricultural drone operation compliance",
-      "environmental impact",
-      "data privacy farm data"
-    ]
-  },
-  {
-    "user": "What if robotic guides lead visitors at museums?",
-    "product": "Robotic guides for museum visitor tours.",
-    "engineering": [
-      "robot",
-      "path script",
-      "audio output",
-      "path planning",
-      "crowd detection",
-      "speech clarity"
-    ],
-    "legal": [
-      "visitor safety",
-      "accessibility compliance",
-      "liability robot malfunctions"
-    ]
-  },
-  {
-    "user": "What if your plants get watered exactly when soil is dry?",
-    "product": "Automated plant watering system triggered by soil dryness.",
-    "engineering": [
-      "soil-moisture sensor",
-      "microcontroller",
-      "water valve",
-      "sensor calibration",
-      "timing logic",
-      "low power"
-    ],
-    "legal": [
-      "home automation safety",
-      "water usage compliance",
-      "liability over under-watering"
-    ]
-  },
-  {
-    "user": "What if you use real-time sensors to detect factory anomalies?",
-    "product": "Real-time factory anomaly detection using sensors.",
-    "engineering": [
-      "sensor hub",
-      "alert logic",
-      "mobile notification",
-      "latency",
-      "sensor calibration",
-      "mobile reliability"
-    ],
-    "legal": [
-      "factory data privacy",
-      "compliance industrial monitoring laws",
-      "alerting liability"
-    ]
-  },
-  {
-    "user": "What if construction cameras auto-count safety gear compliance?",
-    "product": "Construction site cameras that auto-count safety gear compliance.",
-    "engineering": [
-      "image analysis model helmets",
-      "daily report",
-      "detection accuracy",
-      "low-light conditions",
-      "deployment at scale"
-    ],
-    "legal": [
-      "worker privacy",
-      "compliance workplace safety laws",
-      "data retention policies"
-    ]
-  },
-  {
-    "user": "What if machines power down during peak energy rates?",
-    "product": "Automated machine power-down during peak energy pricing.",
-    "engineering": [
-      "time-based scheduler",
-      "energy api integration",
-      "sync utility",
-      "scheduling edge cases",
-      "override options"
-    ],
-    "legal": [
-      "energy usage compliance",
-      "workplace safety",
-      "override policy documentation"
-    ]
-  },
-  {
-    "user": "What if batteries auto-charge when electricity is cheapest?",
-    "product": "Battery charging automation based on electricity pricing.",
-    "engineering": [
-      "pricing api",
-      "control relay",
-      "scheduling",
-      "price volatility",
-      "control safety",
-      "override flexibility"
-    ],
-    "legal": [
-      "energy data privacy",
-      "compliance utility regulations",
-      "user override rights"
-    ]
-  },
-  {
-    "user": "What if delivery trucks pick dynamic routes to reduce fuel?",
-    "product": "Delivery route optimizer for fuel efficiency.",
-    "engineering": [
-      "basic map api",
-      "distance-based optimization",
-      "route recalculation",
-      "traffic integration",
-      "real-time updates"
-    ],
-    "legal": [
-      "driver data privacy",
-      "compliance transportation laws",
-      "route data usage"
-    ]
-  },
-  {
-    "user": "What if you get new parts alerts from multiple suppliers automatically?",
-    "product": "Automated new parts alerts from multiple suppliers.",
-    "engineering": [
-      "supplier apis",
-      "simple matching logic",
-      "notification",
-      "api harmonization",
-      "update frequency",
-      "notification volume"
-    ],
-    "legal": [
-      "supplier data privacy",
-      "compliance procurement laws",
-      "notification consent"
-    ]
-  },
-  {
-    "user": "What if AR glasses overlay repair instructions on machines?",
-    "product": "AR glasses app overlaying repair instructions on machines.",
-    "engineering": [
-      "hololens arkit app",
-      "static overlay",
-      "alignment",
-      "frames second",
-      "user comfort"
-    ],
-    "legal": [
-      "user safety",
-      "compliance ar device regulations",
-      "ip repair instructions"
-    ]
-  },
-  {
-    "user": "What if acoustic sensors detect failing motor components early?",
-    "product": "Acoustic sensor system for early detection of failing motor components.",
-    "engineering": [
-      "microphone sensor",
-      "fft anomaly detection",
-      "alert",
-      "noise filtering",
-      "frequency accuracy",
-      "false positives"
-    ],
-    "legal": [
-      "workplace safety compliance",
-      "data privacy sensor data",
-      "liability missed detections"
-    ]
-  },
-  {
-    "user": "What if recycling robots sort materials by color or texture?",
-    "product": "Recycling robots that sort materials by color or texture.",
-    "engineering": [
-      "camera",
-      "classifier model",
-      "actuator",
-      "classification accuracy",
-      "sorting speed",
-      "calibration"
-    ],
-    "legal": [
-      "recycling compliance",
-      "workplace safety",
-      "liability sorting errors"
-    ]
-  },
-  {
-    "user": "What if production lines auto-balance load based on demand forecast?",
-    "product": "Production line load balancer using demand forecasts.",
-    "engineering": [
-      "demand api",
-      "simple balancing rules",
-      "line control",
-      "demand accuracy",
-      "control timing",
-      "safety"
-    ],
-    "legal": [
-      "production data privacy",
-      "compliance manufacturing laws",
-      "safety standards"
-    ]
-  },
-  {
-    "user": "What if smart locks send open alerts to your phone?",
-    "product": "Smart lock system that sends open alerts to your phone.",
-    "engineering": [
-      "smart lock",
-      "ble",
-      "mobile notification",
-      "power constraints",
-      "connectivity",
-      "security"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance smart home device laws",
-      "notification consent"
-    ]
-  },
-  {
-    "user": "What if your lights learn bedtime patterns and dim automatically?",
-    "product": "Smart lighting that learns bedtime patterns and dims automatically.",
-    "engineering": [
-      "smart bulb",
-      "usage data",
-      "scheduling logic",
-      "learning models",
-      "user override",
-      "power cycles"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance smart home regulations",
-      "override rights"
-    ]
-  },
-  {
-    "user": "What if farmland sensors detect water needs by soil data?",
-    "product": "Farmland irrigation system using soil data to detect water needs.",
-    "engineering": [
-      "soil sensor",
-      "threshold logic",
-      "irrigation pump trigger",
-      "sensor accuracy",
-      "remote connectivity",
-      "battery"
-    ],
-    "legal": [
-      "agricultural data privacy",
-      "compliance water usage laws",
-      "environmental impact"
-    ]
-  },
-  {
-    "user": "What if satellite modems provide seamless rural connectivity?",
-    "product": "Satellite modem solution for seamless rural internet connectivity.",
-    "engineering": [
-      "vsat",
-      "failover logic",
-      "signal reliability",
-      "latency",
-      "fallback routing"
-    ],
-    "legal": [
-      "telecom compliance",
-      "rural connectivity regulations",
-      "user data privacy"
-    ]
-  },
-  {
-    "user": "What if ships get guided via satellite-based hazard alerts?",
-    "product": "Satellite-based hazard alert system for ship navigation.",
-    "engineering": [
-      "gps",
-      "hazard feed",
-      "alert system",
-      "feed availability",
-      "integration",
-      "alert clarity"
-    ],
-    "legal": [
-      "maritime safety compliance",
-      "data privacy",
-      "liability missed alerts"
-    ]
-  },
-  {
-    "user": "What if satellites detect wildfires and alert in advance?",
-    "product": "Satellite wildfire detection and early alert system.",
-    "engineering": [
-      "thermal imagery",
-      "threshold alerts",
-      "image processing latency",
-      "cloud coverage",
-      "threshold tuning"
-    ],
-    "legal": [
-      "environmental data privacy",
-      "compliance disaster alert laws",
-      "liability false late alerts"
-    ]
-  },
-  {
-    "user": "What if your transport pass auto-charges across buses, bikes, and metros?",
-    "product": "Unified transport pass with auto-charging for multiple transit modes.",
-    "engineering": [
-      "mobile app",
-      "unified backend payment",
-      "tap logic",
-      "payment reconciliation",
-      "latency",
-      "offline handling"
-    ],
-    "legal": [
-      "payment data privacy",
-      "compliance transit authority regulations",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if your fridge orders groceries automatically?",
-    "product": "Smart fridge that automatically orders groceries when needed.",
-    "engineering": [
-      "smart scale",
-      "ordering api integration",
-      "weight detection accuracy",
-      "api reliability",
-      "private key storage"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance e-commerce laws",
-      "consent automated orders"
-    ]
-  },
-  {
-    "user": "What if your home detects storms and prepares by locking windows and dimming lights?",
-    "product": "Smart home system that prepares for storms by locking windows and dimming lights.",
-    "engineering": [
-      "weather api",
-      "control flow",
-      "alert precision",
-      "actuator speed",
-      "user overrides"
-    ],
-    "legal": [
-      "home automation safety",
-      "user override rights",
-      "compliance smart home device laws"
-    ]
-  },
-  {
-    "user": "What if smart collars translate pet barks to simple messages?",
-    "product": "Smart pet collar that translates barks into simple messages.",
-    "engineering": [
-      "audio capture",
-      "classifier model happy vs upset",
-      "audio noise",
-      "model training data",
-      "power draw"
-    ],
-    "legal": [
-      "pet data privacy",
-      "compliance animal device regulations",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if a chatbot writes first outreach messages customized per lead?",
-    "product": "Chatbot that generates customized outreach messages for leads.",
-    "engineering": [
-      "llm",
-      "company data",
-      "slack crm integration",
-      "prompt precision",
-      "lead data normalization",
-      "privacy"
-    ],
-    "legal": [
-      "lead data privacy",
-      "compliance outreach laws",
-      "anti-spam regulations"
-    ]
-  },
-  {
-    "user": "What if product demos become interactive via remote control UI?",
-    "product": "Interactive product demos with remote control UI.",
-    "engineering": [
-      "browser sandbox",
-      "user-driven ui buttons",
-      "sandbox security",
-      "response latencies",
-      "ui smoothness"
-    ],
-    "legal": [
-      "demo data privacy",
-      "compliance remote access laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if dynamic pricing updates hourly based on demand?",
-    "product": "Dynamic pricing engine that updates prices hourly based on demand.",
-    "engineering": [
-      "pricing api",
-      "demand telemetry",
-      "pricing rule engine",
-      "data freshness",
-      "rollback safety",
-      "price thrashing"
-    ],
-    "legal": [
-      "pricing transparency",
-      "compliance fair pricing laws",
-      "user notification"
-    ]
-  },
-  {
-    "user": "What if an AI help-bot resolves support tickets automatically?",
-    "product": "AI help-bot that automatically resolves support tickets.",
-    "engineering": [
-      "llm trained knowledge base",
-      "ticket system integration",
-      "accuracy",
-      "fallback escalation",
-      "ticket categorization"
-    ],
-    "legal": [
-      "support data privacy",
-      "compliance customer service laws",
-      "escalation policy"
-    ]
-  },
-  {
-    "user": "What if promised features get tracked and visibility shared with users?",
-    "product": "Feature tracking system with public visibility for users.",
-    "engineering": [
-      "internal roadmap ui",
-      "public status feed",
-      "sync tooling",
-      "permission boundaries",
-      "update consistency"
-    ],
-    "legal": [
-      "user communication compliance",
-      "ip roadmap data",
-      "transparency requirements"
-    ]
-  },
-  {
-    "user": "What if product reviews get auto-tagged for sentiment and usefulness?",
-    "product": "Product review auto-tagger for sentiment and usefulness.",
-    "engineering": [
-      "nlp sentiment",
-      "star rating combination",
-      "filter ui",
-      "sentiment accuracy",
-      "ui filtering",
-      "false positives"
-    ],
-    "legal": [
-      "review data privacy",
-      "compliance review platform policies",
-      "bias mitigation"
-    ]
-  },
-  {
-    "user": "What if returns processing triggers automated logistics labels?",
-    "product": "Returns processing system that auto-generates logistics labels.",
-    "engineering": [
-      "return request shipping label api",
-      "email",
-      "label generation reliability",
-      "return policy logic",
-      "fraud"
-    ],
-    "legal": [
-      "return data privacy",
-      "compliance shipping laws",
-      "fraud prevention"
-    ]
-  },
-  {
-    "user": "What if a customer mood tracker flags unhappy leads early?",
-    "product": "Customer mood tracker that flags unhappy leads for early intervention.",
-    "engineering": [
-      "nps email",
-      "sentiment analysis",
-      "alert ui",
-      "response bias",
-      "alert thresholds",
-      "follow-up flow"
-    ],
-    "legal": [
-      "customer data privacy",
-      "compliance feedback laws",
-      "notification consent"
-    ]
-  },
-  {
-    "user": "What if content gets personalized for user segments automatically?",
-    "product": "Content personalization engine for user segments.",
-    "engineering": [
-      "cms",
-      "segment rules",
-      "template selection",
-      "rule evaluation latency",
-      "caching",
-      "template management"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance personalization laws",
-      "consent data use"
-    ]
-  },
-  {
-    "user": "What if booking meetings happen entirely from email back-and-forth?",
-    "product": "Automated meeting booking from email conversations.",
-    "engineering": [
-      "email parser",
-      "calendar inviter",
-      "confirmation mail",
-      "nlp accuracy",
-      "conflicting scheduling",
-      "ambiguous email language"
-    ],
-    "legal": [
-      "email data privacy",
-      "compliance calendar integration laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if code learning bots teach JavaScript via interactive chat?",
-    "product": "Code learning bot for JavaScript via interactive chat.",
-    "engineering": [
-      "chat interface",
-      "step- -step hints",
-      "simple evaluator",
-      "evaluation latency",
-      "user progression tracking",
-      "sandbox safety"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance educational app laws",
-      "content licensing"
-    ]
-  },
-  {
-    "user": "What if mock interviews run with feedback scripts and scoring?",
-    "product": "Mock interview platform with feedback scripts and scoring.",
-    "engineering": [
-      "pre-written questions",
-      "answer checkers",
-      "recorded metrics",
-      "response validation",
-      "fairness",
-      "user recording storage"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance employment laws",
-      "consent recording"
-    ]
-  },
-  {
-    "user": "What if resumes get scored and improved automatically?",
-    "product": "Resume scoring and improvement tool.",
-    "engineering": [
-      "nlp parser",
-      "bullet suggestion engine",
-      "extraction accuracy",
-      "recommendation precision",
-      "bias"
-    ],
-    "legal": [
-      "resume data privacy",
-      "compliance employment laws",
-      "bias mitigation"
-    ]
-  },
-  {
-    "user": "What if a skills graph visualizes team strengths and gaps?",
-    "product": "Skills graph visualization for team strengths and gaps.",
-    "engineering": [
-      "team input form",
-      "graph rendering d3 js",
-      "data entry",
-      "ux clarity",
-      "sync across views"
-    ],
-    "legal": [
-      "employee data privacy",
-      "compliance hr data laws",
-      "consent skills tracking"
-    ]
-  },
-  {
-    "user": "What if graded assignments are auto-checked and feedback provided?",
-    "product": "Auto-grading system for assignments with feedback.",
-    "engineering": [
-      "submitted code",
-      "autotest",
-      "feedback summary",
-      "test reliability",
-      "grading fairness",
-      "ui clarity"
-    ],
-    "legal": [
-      "student data privacy",
-      "compliance educational laws",
-      "grading transparency"
-    ]
-  },
-  {
-    "user": "What if lessons turn into interactive games with live scoring?",
-    "product": "Lesson-to-game converter with live scoring.",
-    "engineering": [
-      "web quiz",
-      "scoring",
-      "immediate feedback",
-      "game loop ux",
-      "cheat prevention",
-      "performance"
-    ],
-    "legal": [
-      "student data privacy",
-      "compliance educational game laws",
-      "content licensing"
-    ]
-  },
-  {
-    "user": "What if stand-up meetings auto-summarize progress across tasks?",
-    "product": "Stand-up meeting summarizer for task progress.",
-    "engineering": [
-      "chatbot",
-      "task list",
-      "summary generator",
-      "parsing task data",
-      "summary clarity",
-      "integration"
-    ],
-    "legal": [
-      "meeting data privacy",
-      "compliance workplace communication laws",
-      "user consent"
-    ]
-  },
-  {
-    "user": "What if hiring bots pre-screen candidates from profiles?",
-    "product": "Hiring bot that pre-screens candidates from profile data.",
-    "engineering": [
-      "linkedin-like data ingestion",
-      "keyword matcher",
-      "shortlist ui",
-      "legality data sources",
-      "keyword bias",
-      "ui sorting"
-    ],
-    "legal": [
-      "candidate data privacy",
-      "compliance employment laws",
-      "anti-discrimination policies"
-    ]
-  },
-  {
-    "user": "What if meeting recordings auto-trim filler words like um and you know?",
-    "product": "Meeting recording tool that auto-trims filler words.",
-    "engineering": [
-      "transcript",
-      "filler phrase removal",
-      "re-render audio",
-      "speech recognition accuracy",
-      "audio editing quality",
-      "sync"
-    ],
-    "legal": [
-      "meeting data privacy",
-      "consent recording",
-      "compliance audio editing laws"
-    ]
-  },
-  {
-    "user": "What if a language buddy corrects your sentences while chatting?",
-    "product": "Language buddy that corrects sentences in real-time chat.",
-    "engineering": [
-      "real-time editor",
-      "llm-based grammar phrase suggestions",
-      "latency",
-      "suggestion accuracy",
-      "ux friendliness"
-    ],
-    "legal": [
-      "user data privacy",
-      "compliance language learning app laws",
-      "consent data processing"
+      "Payment Data Privacy",
+      "Compliance Payment Processing Regulations",
+      "Audit Trails"
     ]
   }
 ]

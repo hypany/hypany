@@ -1,24 +1,25 @@
+import { Orbit } from "@/components/atoms/orbit";
+import { HypanyMark } from "@/public/brand/hypany-logo";
 import {
-	RiCarFill,
+	RiAB,
+	RiBarChart2Line,
 	RiCheckLine,
 	RiCircleLine,
+	RiCloseCircleLine,
 	RiCodepenLine,
 	RiContrast2Line,
+	RiFlaskLine,
 	RiFullscreenFill,
+	RiLineChartLine,
 	RiLoaderFill,
 	RiNotification2Line,
-	RiPlaneFill,
-	RiTruckFill,
 } from "@remixicon/react";
-import { SolarMark } from "@/public/solar-mark";
 import ChipViz from "./chip-viz";
-import { Icons } from "@/components/atoms/icons";
-import { Orbit } from "@/components/atoms/orbit";
 
 export default function Features() {
 	return (
 		<section
-			aria-label="Solar Technologies Features for Farms"
+			aria-label="Hypany Features for Founders"
 			id="solutions"
 			className="relative mx-auto max-w-6xl scroll-my-24"
 		>
@@ -137,8 +138,9 @@ export default function Features() {
 						Test 100 ideas in the time it takes to build one
 					</p>
 					<p className="mt-4 text-balance text-gray-700">
-						Create beautiful landing pages with WYSIWYG editor, deploy to custom domains,
-						and start collecting sign-ups from potential customers within minutes.
+						Create beautiful landing pages with WYSIWYG editor, deploy to custom
+						domains, and start collecting sign-ups from potential customers
+						within minutes.
 					</p>
 				</div>
 				<div className="relative col-span-2 flex items-center justify-center overflow-hidden">
@@ -186,7 +188,7 @@ export default function Features() {
 										key="obj1"
 										className="relative flex items-center justify-center"
 									>
-										<RiTruckFill className="z-10 size-5 text-gray-900" />
+										<RiCloseCircleLine className="z-10 size-5 text-gray-900" />
 										<div className="absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5"></div>
 										<div className="absolute -top-5 left-4">
 											<div className="flex gap-1">
@@ -194,7 +196,7 @@ export default function Features() {
 													<RiCircleLine className="size-3 shrink-0 text-white" />
 												</div>
 												<div className="rounded-r-full bg-white/50 py-0.5 pr-1.5 pl-1 text-xs whitespace-nowrap ring-1 ring-gray-200">
-													Drivetrain Error
+													Invalidated
 												</div>
 											</div>
 										</div>
@@ -210,7 +212,7 @@ export default function Features() {
 										key="obj2"
 										className="relative flex items-center justify-center"
 									>
-										<RiPlaneFill className="z-10 size-5 rotate-90 text-gray-900" />
+										<RiFlaskLine className="z-10 size-5 text-gray-900" />
 										<div className="absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5"></div>
 										<div className="absolute -top-5 left-4">
 											<div className="flex gap-1">
@@ -218,7 +220,7 @@ export default function Features() {
 													<RiLoaderFill className="size-3 shrink-0 animate-spin text-white" />
 												</div>
 												<div className="rounded-r-full bg-white/50 py-0.5 pr-1.5 pl-1 text-xs ring-1 ring-gray-200">
-													Charging
+													Testing
 												</div>
 											</div>
 										</div>
@@ -234,7 +236,7 @@ export default function Features() {
 										key="obj3"
 										className="relative flex items-center justify-center"
 									>
-										<RiCarFill className="z-10 size-5 text-gray-900" />
+										<RiLineChartLine className="z-10 size-5 text-gray-900" />
 										<div className="absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5"></div>
 										<div
 											style={{
@@ -247,7 +249,7 @@ export default function Features() {
 										key="obj4"
 										className="relative flex items-center justify-center"
 									>
-										<Icons.QuadCopter className="z-10 size-5 rotate-90 text-gray-900" />
+										<RiAB className="z-10 size-5 text-gray-900" />
 										<div className="absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5"></div>
 										<div className="absolute -top-5 left-4">
 											<div className="flex gap-1">
@@ -255,7 +257,7 @@ export default function Features() {
 													<RiCheckLine className="size-3 shrink-0 text-white" />
 												</div>
 												<div className="rounded-r-full bg-white/50 py-0.5 pr-1.5 pl-1 text-xs ring-1 ring-gray-200">
-													Farming
+													Segmenting
 												</div>
 											</div>
 										</div>
@@ -271,7 +273,7 @@ export default function Features() {
 										key="obj5"
 										className="relative flex items-center justify-center"
 									>
-										<RiPlaneFill className="z-10 size-5 rotate-90 text-gray-900" />
+										<RiBarChart2Line className="z-10 size-5 text-gray-900" />
 										<div className="absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5"></div>
 										<div
 											style={{
@@ -285,7 +287,7 @@ export default function Features() {
 								<div className="relative flex h-48 w-48 items-center justify-center">
 									<div className="rounded-full p-1 ring-1 ring-black/10">
 										<div className="relative z-10 flex size-20 items-center justify-center rounded-full bg-white ring-1 shadow-[inset_0px_-15px_20px_rgba(0,0,0,0.1),0_7px_10px_0_rgba(0,0,0,0.15)] ring-black/20">
-											<SolarMark className="size-10" />
+											<HypanyMark className="size-10" />
 										</div>
 										<div className="absolute inset-12 animate-[spin_8s_linear_infinite] rounded-full bg-linear-to-t from-transparent via-orange-400 to-transparent blur-lg" />
 									</div>
@@ -304,9 +306,9 @@ export default function Features() {
 						Turn visitor behavior into validated insights
 					</p>
 					<p className="mt-4 text-balance text-gray-700">
-						Track engagement metrics, run A/B tests, and analyze conversion rates
-						in real-time. Know exactly which ideas resonate with your target market
-						before investing time and money into development.
+						Track engagement metrics, run A/B tests, and analyze conversion
+						rates in real-time. Know exactly which ideas resonate with your
+						target market before investing time and money into development.
 					</p>
 				</div>
 				<div className="relative col-span-2 flex items-center justify-center overflow-hidden">
@@ -353,7 +355,7 @@ export default function Features() {
 						<div className="pointer-events-none relative h-full select-none">
 							<div className="absolute top-[192px] left-[191.8px]">
 								<div className="flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
-									<SolarMark className="h-8 w-8" />
+									<HypanyMark className="h-8 w-8" />
 								</div>
 							</div>
 							<div className="absolute top-[144px] left-[48px]">
@@ -361,7 +363,7 @@ export default function Features() {
 									<div className="absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]"></div>
 									<div className="relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
 										<span className="text-sm font-medium text-gray-500">
-											14°C
+											1.4%
 										</span>
 									</div>
 								</div>
@@ -372,7 +374,7 @@ export default function Features() {
 									<div className="absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]"></div>
 									<div className="relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
 										<span className="text-sm font-medium text-gray-500">
-											18°C
+											1.8%
 										</span>
 									</div>
 								</div>
@@ -383,7 +385,7 @@ export default function Features() {
 									<div className="absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]"></div>
 									<div className="relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
 										<span className="text-sm font-medium text-gray-500">
-											17°C
+											1.7%
 										</span>
 									</div>
 								</div>
@@ -394,7 +396,7 @@ export default function Features() {
 									<div className="absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]"></div>
 									<div className="relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
 										<span className="text-sm font-medium text-gray-500">
-											14°C
+											1.4%
 										</span>
 									</div>
 								</div>
@@ -405,7 +407,7 @@ export default function Features() {
 									<div className="absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]"></div>
 									<div className="relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
 										<span className="text-sm font-medium text-gray-500">
-											12°C
+											1.2%
 										</span>
 									</div>
 								</div>
@@ -416,7 +418,7 @@ export default function Features() {
 									<div className="absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]"></div>
 									<div className="relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15">
 										<span className="text-sm font-medium text-gray-500">
-											17°C
+											1.7%
 										</span>
 									</div>
 								</div>
@@ -433,19 +435,13 @@ export default function Features() {
 						Convert interest into paying customers from day one
 					</p>
 					<p className="mt-4 text-balance text-gray-700">
-						Manage waitlists, send targeted emails, and nurture leads automatically.
-						When you're ready to launch, you'll have customers ready to pay
-						instead of starting from zero.
+						Manage waitlists, send targeted emails, and nurture leads
+						automatically. When you're ready to launch, you'll have customers
+						ready to pay instead of starting from zero.
 					</p>
 				</div>
 				<div className="relative col-span-2 flex items-center justify-center overflow-hidden">
-					<svg
-						className="absolute size-full mask-[linear-gradient(white_10rem,transparent)]"
-						// style={{
-						//   maskImage:
-						//     "linear-gradient(transparent, white 20rem, white calc(100% - 20rem), transparent)",
-						// }}
-					>
+					<svg className="absolute size-full mask-[linear-gradient(white_10rem,transparent)]">
 						<defs>
 							<pattern
 								id="diagonal-feature-pattern"

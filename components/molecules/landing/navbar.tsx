@@ -1,13 +1,13 @@
 "use client";
 
+import { siteConfig } from "@/app/site-config";
+import { Button } from "@/components/atoms/button";
 import useScroll from "@/lib/use-scroll";
 import { cx } from "@/lib/utils";
+import { HypanyLogo } from "@/public/brand/hypany-logo";
 import { RiCloseFill, RiMenuFill } from "@remixicon/react";
 import Link from "next/link";
 import React from "react";
-import { siteConfig } from "@/app/site-config";
-import { HypanyLogo } from "@/public/brand/hypany-logo";
-import { Button } from "@/components/atoms/button";
 
 export function NavBar() {
 	const [open, setOpen] = React.useState(false);
@@ -28,19 +28,6 @@ export function NavBar() {
 						<span className="sr-only">Hypany Logo</span>
 						<HypanyLogo className="w-10 h-10" />
 					</Link>
-					<nav className="hidden sm:block md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:transform">
-						<div className="flex items-center gap-10 font-medium">
-							<Link className="px-2 py-1 text-gray-900" href="#solutions">
-								How It Works
-							</Link>
-							<Link className="px-2 py-1 text-gray-900" href="#features">
-								Features
-							</Link>
-							<Link className="px-2 py-1 text-gray-900" href="#alumni">
-								Alumni Network
-							</Link>
-						</div>
-					</nav>
 					<Button
 						variant="secondary"
 						className="hidden h-10 font-semibold sm:block"

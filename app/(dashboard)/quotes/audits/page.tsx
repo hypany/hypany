@@ -93,7 +93,7 @@ export default function Audits() {
                         >
                           <a
                             href="#"
-                            className="flex items-center gap-2 text-blue-500 hover:underline hover:underline-offset-4 dark:text-blue-500"
+                            className="flex items-center gap-2 text-orange-500 hover:underline hover:underline-offset-4 dark:text-orange-500"
                           >
                             <Link
                               className="size-4 shrink-0"

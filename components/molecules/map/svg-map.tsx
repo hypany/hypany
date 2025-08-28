@@ -599,7 +599,7 @@ export const SVGMap = (props: SVGProps<SVGSVGElement>) => {
         strokeWidth="0.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="stroke-blue-400/80"
+        className="stroke-orange-400/80"
       />
 
       {/* Dashed Beams */}
@@ -650,7 +650,7 @@ export const SVGMap = (props: SVGProps<SVGSVGElement>) => {
               <path
                 key={i}
                 d={`M${-106 + offset} 110L${22 + offset} -18`}
-                className="stroke-blue-400/60"
+                className="stroke-orange-400/60"
                 strokeWidth="0.5"
               />
             )

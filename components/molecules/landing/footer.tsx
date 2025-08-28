@@ -1,3 +1,4 @@
+import { HypanyLogo } from "@/public/brand/hypany-logo";
 import {
 	RiGithubFill,
 	RiSlackFill,
@@ -5,7 +6,6 @@ import {
 	RiYoutubeFill,
 } from "@remixicon/react";
 import Link from "next/link";
-import { HypanyLogo } from "@/public/brand/hypany-logo";
 
 const CURRENT_YEAR = new Date().getFullYear();
 

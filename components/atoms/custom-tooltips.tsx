@@ -81,7 +81,7 @@ export const CustomTooltip2 = ({
 						<span
 							className={cx(
 								category === "Quotes"
-									? "bg-blue-500 dark:bg-blue-500"
+									? "bg-orange-500 dark:bg-orange-500"
 									: "bg-gray-300 dark:bg-gray-700",
 								"w-1 rounded-sm",
 							)}

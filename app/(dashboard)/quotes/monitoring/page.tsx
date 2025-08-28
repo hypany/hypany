@@ -60,7 +60,7 @@ export default function Monitoring() {
 						data={dataChart}
 						index="date"
 						categories={["Current year", "Same period last year"]}
-						colors={["blue", "lightGray"]}
+						colors={["orange", "lightGray"]}
 						yAxisWidth={45}
 						customTooltip={CustomTooltip}
 						yAxisLabel="Number of inherent risks"
@@ -72,7 +72,7 @@ export default function Monitoring() {
 						data={dataChart}
 						index="date"
 						categories={["Current year", "Same period last year"]}
-						colors={["blue", "lightGray"]}
+						colors={["orange", "lightGray"]}
 						showYAxis={false}
 						customTooltip={CustomTooltip}
 						barCategoryGap="20%"

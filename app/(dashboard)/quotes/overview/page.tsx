@@ -24,7 +24,7 @@ import { Fragment } from "react";
 import { quotes } from "./data/data";
 
 const colorClasses = [
-	"bg-blue-500 dark:bg-blue-500",
+	"bg-orange-500 dark:bg-orange-500",
 	"bg-purple-500 dark:bg-purple-500",
 	"bg-emerald-500 dark:bg-emerald-500",
 	"bg-cyan-500 dark:bg-cyan-500",
@@ -144,7 +144,7 @@ export default function Overview() {
 																item.status === "Drafted",
 														},
 														{
-															"bg-blue-500 dark:bg-blue-500":
+															"bg-orange-500 dark:bg-orange-500":
 																item.status === "Sent",
 														},
 													)}
