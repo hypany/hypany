@@ -1,8 +1,4 @@
 'use client'
-import { RiArrowDownSFill } from '@remixicon/react'
-import { ChartBar, LayoutDashboard, Lightbulb, Settings } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import * as React from 'react'
 import { Divider } from '@/components/atoms/divider'
 import { Input } from '@/components/atoms/input'
 import {
@@ -19,7 +15,10 @@ import {
   SidebarSubLink,
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
-import { HypanyLogo } from '@/public/brand/hypany-logo'
+import { RiArrowDownSFill } from '@remixicon/react'
+import { ChartBar, LayoutDashboard, Lightbulb, Settings } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import * as React from 'react'
 import OrgSwitcher from './org-switcher'
 import { UserProfile } from './user-profile'
 
@@ -125,12 +124,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props} className='bg-gray-50 dark:bg-gray-925'>
       <SidebarHeader className='px-3 py-4'>
-        <div className='flex items-center gap-3'>
-          <span className='flex size-9 items-center justify-center rounded-md bg-white p-1.5 shadow-xs ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-800'>
-            <HypanyLogo className='size-6 text-emerald-500 dark:text-emerald-500' />
-          </span>
-          <OrgSwitcher />
-        </div>
+        <OrgSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -148,7 +142,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {navigation.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarLink
-                    href='#'
+                    href={item.href}
                     isActive={item.active}
                     icon={item.icon}
                     notifications={item.notifications}

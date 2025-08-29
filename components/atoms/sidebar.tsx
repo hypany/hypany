@@ -4,6 +4,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { RiCloseLine } from '@remixicon/react'
 import { PanelLeft } from 'lucide-react'
 import * as React from 'react'
+import Link from 'next/link'
 import {
   Drawer,
   DrawerClose,
@@ -276,41 +277,43 @@ const SidebarHeader = React.forwardRef<
 })
 SidebarHeader.displayName = 'SidebarHeader'
 
-const SidebarLink = React.forwardRef<
-  HTMLAnchorElement,
-  React.ComponentProps<'a'> & {
-    children: React.ReactNode
-    icon?: React.ElementType
-    isActive?: boolean
-    notifications?: number | boolean
-  }
->(({ children, isActive, icon, notifications, className, ...props }, ref) => {
-  const Icon = icon
-  return (
-    <a
-      ref={ref}
-      aria-current={isActive ? 'page' : undefined}
-      data-active={isActive}
-      className={cx(
-        'flex items-center justify-between rounded-md p-2 text-base transition hover:bg-gray-200/50 sm:text-sm dark:hover:bg-gray-900',
-        'text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
-        'data-[active=true]:text-emerald-600 dark:data-[active=true]:text-emerald-500',
-        focusRing,
-      )}
-      {...props}
-    >
-      <span className='flex items-center gap-x-2.5'>
-        {Icon && <Icon className='size-[18px] shrink-0' aria-hidden='true' />}
-        {children}
-      </span>
-      {notifications && (
-        <span className='inline-flex size-5 items-center justify-center rounded-sm bg-emerald-100 text-sm font-medium text-emerald-600 sm:text-xs dark:bg-emerald-500/10 dark:text-emerald-500'>
-          {notifications}
+type SidebarLinkProps = React.ComponentProps<typeof Link> & {
+  children: React.ReactNode
+  icon?: React.ElementType
+  isActive?: boolean
+  notifications?: number | boolean
+}
+
+const SidebarLink = React.forwardRef<HTMLAnchorElement, SidebarLinkProps>(
+  ({ children, isActive, icon, notifications, className, ...props }, ref) => {
+    const Icon = icon
+    return (
+      <Link
+        ref={ref as any}
+        aria-current={isActive ? 'page' : undefined}
+        data-active={isActive}
+        className={cx(
+          'flex items-center justify-between rounded-md p-2 text-base transition hover:bg-gray-200/50 sm:text-sm dark:hover:bg-gray-900',
+          'text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
+          'data-[active=true]:text-emerald-600 dark:data-[active=true]:text-emerald-500',
+          focusRing,
+          className,
+        )}
+        {...props}
+      >
+        <span className='flex items-center gap-x-2.5'>
+          {Icon && <Icon className='size-[18px] shrink-0' aria-hidden='true' />}
+          {children}
         </span>
-      )}
-    </a>
-  )
-})
+        {notifications && (
+          <span className='inline-flex size-5 items-center justify-center rounded-sm bg-emerald-100 text-sm font-medium text-emerald-600 sm:text-xs dark:bg-emerald-500/10 dark:text-emerald-500'>
+            {notifications}
+          </span>
+        )}
+      </Link>
+    )
+  },
+)
 SidebarLink.displayName = 'SidebarLink'
 
 const SidebarGroup = React.forwardRef<
@@ -360,36 +363,38 @@ const SidebarMenuItem = React.forwardRef<
 >(({ ...props }, ref) => <li ref={ref} {...props} />)
 SidebarMenuItem.displayName = 'SidebarMenuItem'
 
-const SidebarSubLink = React.forwardRef<
-  HTMLAnchorElement,
-  React.ComponentProps<'a'> & {
-    children: React.ReactNode
-    isActive?: boolean
-  }
->(({ isActive, children, className, ...props }, ref) => {
-  return (
-    <a
-      ref={ref}
-      aria-current={isActive ? 'page' : undefined}
-      data-active={isActive}
-      className={cx(
-        'relative flex gap-2 rounded-md py-1.5 pl-9 pr-3 text-base transition sm:text-sm',
-        'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
-        'data-[active=true]:rounded-sm data-[active=true]:bg-white data-[active=true]:text-emerald-600 data-[active=true]:shadow-sm data-[active=true]:ring-1 data-[active=true]:ring-gray-200 dark:data-[active=true]:bg-gray-900 dark:data-[active=true]:text-emerald-500 dark:data-[active=true]:ring-gray-800',
-        focusRing,
-      )}
-      {...props}
-    >
-      {isActive && (
-        <div
-          className='absolute left-4 top-1/2 h-5 w-px -translate-y-1/2 bg-emerald-500 dark:bg-emerald-500'
-          aria-hidden='true'
-        />
-      )}
-      {children}
-    </a>
-  )
-})
+type SidebarSubLinkProps = React.ComponentProps<typeof Link> & {
+  children: React.ReactNode
+  isActive?: boolean
+}
+
+const SidebarSubLink = React.forwardRef<HTMLAnchorElement, SidebarSubLinkProps>(
+  ({ isActive, children, className, ...props }, ref) => {
+    return (
+      <Link
+        ref={ref as any}
+        aria-current={isActive ? 'page' : undefined}
+        data-active={isActive}
+        className={cx(
+          'relative flex gap-2 rounded-md py-1.5 pl-9 pr-3 text-base transition sm:text-sm',
+          'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
+          'data-[active=true]:rounded-sm data-[active=true]:bg-white data-[active=true]:text-emerald-600 data-[active=true]:shadow-sm data-[active=true]:ring-1 data-[active=true]:ring-gray-200 dark:data-[active=true]:bg-gray-900 dark:data-[active=true]:text-emerald-500 dark:data-[active=true]:ring-gray-800',
+          focusRing,
+          className,
+        )}
+        {...props}
+      >
+        {isActive && (
+          <div
+            className='absolute left-4 top-1/2 h-5 w-px -translate-y-1/2 bg-emerald-500 dark:bg-emerald-500'
+            aria-hidden='true'
+          />
+        )}
+        {children}
+      </Link>
+    )
+  },
+)
 SidebarSubLink.displayName = 'SidebarSubLink'
 
 const SidebarMenuSub = React.forwardRef<
