@@ -16,54 +16,28 @@ export const Footer = () => {
   const t = useTranslations('landing.footer')
   const tFooter = useTranslations('footer')
   const sections = {
-    company: {
+    hypotheses: {
       items: [
-        { href: '#', label: t('sections.company.items.about-us') },
-        { href: '#', label: t('sections.company.items.blog') },
-        { href: '#', label: t('sections.company.items.careers') },
-        { href: '#', label: t('sections.company.items.success-stories') },
-        { href: '#', label: t('sections.company.items.sustainability') },
+        { href: '/app/hypotheses', label: t('sections.hypotheses.items.overview') },
+        { href: '/app/assets', label: t('sections.hypotheses.items.assets') },
       ],
-      title: t('sections.company.title'),
+      title: t('sections.hypotheses.title'),
     },
-    partners: {
+    analytics: {
       items: [
-        { external: true, href: '#', label: t('sections.partners.items.dealer-network') },
-        { external: true, href: '#', label: t('sections.partners.items.system-status') },
-        { external: true, href: '#', label: t('sections.partners.items.research-partners') },
-        { href: '#', label: t('sections.partners.items.integration-guide') },
+        { href: '/app/analytics', label: t('sections.analytics.items.overview') },
+        { href: '/app/waitlists', label: t('sections.analytics.items.waitlists') },
       ],
-      title: t('sections.partners.title'),
+      title: t('sections.analytics.title'),
     },
-    resources: {
+    settings: {
       items: [
-        { href: '#', label: t('sections.resources.items.farmer-network') },
-        {
-          external: true,
-          href: '#',
-          label: t('sections.resources.items.community'),
-        },
-        { href: '#', label: t('sections.resources.items.contact') },
-        { href: '#', label: t('sections.resources.items.support') },
-        { href: '#', label: t('sections.resources.items.privacy-policy') },
-        { href: '#', label: t('sections.resources.items.terms-of-service') },
-        { href: '#', label: t('sections.resources.items.report-issue') },
+        { href: '/app/settings', label: t('sections.settings.items.general') },
+        { href: '/app/organizations', label: t('sections.settings.items.organizations') },
       ],
-      title: t('sections.resources.title'),
+      title: t('sections.settings.title'),
     },
-    solutions: {
-      items: [
-        { href: '#', label: t('sections.solutions.items.crop-monitoring') },
-        { href: '#', label: t('sections.solutions.items.irrigation-control') },
-        { href: '#', label: t('sections.solutions.items.soil-analytics') },
-        { href: '#', label: t('sections.solutions.items.weather-integration') },
-        { href: '#', label: t('sections.solutions.items.documentation') },
-        { href: '#', label: t('sections.solutions.items.smart-farming-guide') },
-        { href: '#', label: t('sections.solutions.items.equipment') },
-      ],
-      title: t('sections.solutions.title'),
-    },
-  }
+  } as const
 
   return (
     <div className='px-4 xl:px-0'>

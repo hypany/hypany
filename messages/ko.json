@@ -25,8 +25,8 @@
     },
     "sign-in": {
       "aside": {
-        "desc": "랜딩 페이지를 빠르게 배포하고, 관심을 측정하고, 데이터로 반복하세요.",
-        "title": "빌드 전에 스타트업 아이디어를 검증하세요"
+        "desc": "랜딩 페이지 배포, 관심 측정, 데이터 수집을 반복하세요.",
+        "title": "스타트업 개발 전에 아이디어를 검증하세요"
       },
       "footer-link": "회원가입",
       "footer-text": "계정이 없으신가요?",
@@ -108,6 +108,18 @@
             "weather-integration": "날씨 연동"
           },
           "title": "솔루션"
+        },
+        "hypotheses": {
+          "title": "가설",
+          "items": { "overview": "개요", "assets": "에셋" }
+        },
+        "analytics": {
+          "title": "애널리틱스",
+          "items": { "overview": "개요", "waitlists": "전체 웨이트리스트" }
+        },
+        "settings": {
+          "title": "설정",
+          "items": { "general": "일반", "organizations": "조직" }
         }
       }
     },
@@ -215,7 +227,7 @@
   "app": {
     "metrics": {
       "title": "개요",
-      "visitorToSignup": "방문자→가입 전환",
+      "visitorToSignup": "가입자/방문자 전환율",
       "projectLoad": "프로젝트 부하",
       "winProbability": "승률"
     },

@@ -66,48 +66,17 @@
     "footer": {
       "logo-alt": "Hypany Logo",
       "sections": {
-        "company": {
-          "items": {
-            "about-us": "About us",
-            "blog": "Blog",
-            "careers": "Careers",
-            "success-stories": "Success Stories",
-            "sustainability": "Sustainability"
-          },
-          "title": "Company"
+        "hypotheses": {
+          "title": "Hypotheses",
+          "items": { "overview": "Overview", "assets": "Assets" }
         },
-        "partners": {
-          "items": {
-            "dealer-network": "Dealer Network",
-            "integration-guide": "Integration Guide",
-            "research-partners": "Research Partners",
-            "system-status": "System Status"
-          },
-          "title": "Partners"
+        "analytics": {
+          "title": "Analytics",
+          "items": { "overview": "Overview", "waitlists": "All Waitlists" }
         },
-        "resources": {
-          "items": {
-            "community": "Community",
-            "contact": "Contact",
-            "farmer-network": "Farmer Network",
-            "privacy-policy": "Privacy Policy",
-            "report-issue": "Report an Issue",
-            "support": "Support",
-            "terms-of-service": "Terms of Service"
-          },
-          "title": "Resources"
-        },
-        "solutions": {
-          "items": {
-            "crop-monitoring": "Crop Monitoring",
-            "documentation": "Documentation",
-            "equipment": "Equipment",
-            "irrigation-control": "Irrigation Control",
-            "smart-farming-guide": "Smart Farming Guide",
-            "soil-analytics": "Soil Analytics",
-            "weather-integration": "Weather Integration"
-          },
-          "title": "Solutions"
+        "settings": {
+          "title": "Settings",
+          "items": { "general": "General", "organizations": "Organizations" }
         }
       }
     },
