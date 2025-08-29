@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 
 export default function DomainForm({
   hypothesisId,
@@ -32,9 +32,9 @@ export default function DomainForm({
       if (!d) return
       setAvailability({ ok: d.available, normalized: d.normalizedSlug, error: d.error })
       if (d.available) {
-        toast.success('Subdomain is available')
+        toast({ title: 'Subdomain is available', variant: 'success' })
       } else {
-        toast.error(d.error || 'Subdomain unavailable')
+        toast({ title: d.error || 'Subdomain unavailable', variant: 'error' })
       }
     } finally {
       setChecking(false)
@@ -51,12 +51,12 @@ export default function DomainForm({
         .hypothesis({ hypothesisId })
         .patch(body)
       if (r.data?.success) {
-        toast.success('Domain settings saved')
+        toast({ title: 'Domain settings saved', variant: 'success' })
       } else {
-        toast.error('Failed to save domain settings')
+        toast({ title: 'Failed to save domain settings', variant: 'error' })
       }
     } catch {
-      toast.error('Failed to save domain settings')
+      toast({ title: 'Failed to save domain settings', variant: 'error' })
     } finally {
       setSaving(false)
     }

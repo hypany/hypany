@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import * as z from 'zod'
 
 import { client } from '@/auth/client'
@@ -48,38 +48,30 @@ export function ResetPasswordForm({
 
   async function onSubmit(data: ResetFormData) {
     if (!token) {
-      toast.error('Invalid or missing token.')
+      toast({ title: 'Invalid or missing token.', variant: 'error' })
       return
     }
 
+    const t = toast({ title: 'Updating password...', variant: 'loading' })
     try {
-      const promise = (async () => {
-        const { error } = await client.resetPassword({
-          newPassword: data.password,
-          token,
-        })
-
-        if (error) {
-          throw new Error(error.message || 'Failed to reset password')
-        }
-        return true
-      })()
-
-      toast.promise(promise, {
-        error: (err) =>
-          err.message || 'Failed to reset password. Please try again.',
-        loading: 'Updating password...',
-        success: 'Your password has been updated. You can sign in now.',
+      const { error } = await client.resetPassword({
+        newPassword: data.password,
+        token,
       })
-
-      await promise
+      if (error) {
+        throw new Error(error.message || 'Failed to reset password')
+      }
+      t.update({
+        title: 'Your password has been updated. You can sign in now.',
+        variant: 'success',
+      })
       router.push('/sign-in')
     } catch (e) {
       const message =
         e instanceof Error
           ? e.message
-          : 'Something went wrong. Please try again.'
-      toast.error(message)
+          : 'Failed to reset password. Please try again.'
+      t.update({ title: message, variant: 'error' })
     }
   }
 

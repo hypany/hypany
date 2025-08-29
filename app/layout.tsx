@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { getLocale, getMessages } from 'next-intl/server'
-import { Toaster } from 'sonner'
+import { Toaster } from '@/components/atoms/toaster'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -59,7 +59,7 @@ export default async function RootLayout({
         </Providers>
         <Analytics />
         <SpeedInsights />
-        <Toaster richColors position='top-right' />
+        <Toaster />
       </body>
     </html>
   )

@@ -5,7 +5,7 @@ import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Textarea } from '@/components/atoms/textarea'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 
 export default function CreateHypothesisForm() {
   const router = useRouter()
@@ -27,15 +27,20 @@ export default function CreateHypothesisForm() {
     const s = slug.trim()
     if (!s) {
       setSlugStatus(null)
-      toast('Enter a subdomain to check')
+      toast({ title: 'Enter a subdomain to check' })
       return
     }
     setChecking(true)
     try {
-      const res = await api.v1.landing_pages['check-slug'].post({ body: { slug: s } })
+      const res = await api.v1['landing-pages']['check-slug'].post({ slug: s })
       if (res.data) setSlugStatus(res.data)
-      if (res.data?.available) toast('Subdomain is available')
-      else toast(res.data?.error || 'Subdomain unavailable')
+      if (res.data?.available)
+        toast({ title: 'Subdomain is available', variant: 'success' })
+      else
+        toast({
+          title: res.data?.error || 'Subdomain unavailable',
+          variant: 'error',
+        })
     } finally {
       setChecking(false)
     }
@@ -45,7 +50,7 @@ export default function CreateHypothesisForm() {
     const n = name.trim()
     const s = slug.trim()
     if (!n) {
-      toast('Please enter a name')
+      toast({ title: 'Please enter a name', variant: 'warning' })
       return
     }
     if (s) {
@@ -58,21 +63,22 @@ export default function CreateHypothesisForm() {
     setCreating(true)
     try {
       const res = await api.v1.hypotheses.post({
-        body: {
-          name: n,
-          description: description.trim() || undefined,
-          slug: s || undefined,
-        },
+        name: n,
+        description: description.trim() || undefined,
+        slug: s || undefined,
       })
-      const id = res.data?.hypothesis?.id
+      const id =
+        res.data && typeof res.data === 'object' && 'hypothesis' in res.data
+          ? (res.data as { hypothesis: { id: string } }).hypothesis.id
+          : undefined
       if (id) {
-        toast('Hypothesis created')
+        toast({ title: 'Hypothesis created', variant: 'success' })
         router.push(`/app/hypotheses/${id}/editor`)
       } else {
-        toast('Failed to create hypothesis')
+        toast({ title: 'Failed to create hypothesis', variant: 'error' })
       }
     } catch {
-      toast('Failed to create hypothesis')
+      toast({ title: 'Failed to create hypothesis', variant: 'error' })
     } finally {
       setCreating(false)
     }
@@ -132,4 +138,3 @@ export default function CreateHypothesisForm() {
     </div>
   )
 }
-

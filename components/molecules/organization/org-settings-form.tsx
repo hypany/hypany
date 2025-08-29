@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
@@ -34,10 +34,10 @@ export function OrgSettingsForm({
         slug: slug.trim(),
       })
       if (!res.ok) {
-        toast.error(res.error || 'Failed to update organization')
+        toast({ title: res.error || 'Failed to update organization', variant: 'error' })
         return
       }
-      toast.success('Organization updated')
+      toast({ title: 'Organization updated', variant: 'success' })
     })
   }
 
@@ -72,4 +72,3 @@ export function OrgSettingsForm({
 }
 
 export default OrgSettingsForm
-

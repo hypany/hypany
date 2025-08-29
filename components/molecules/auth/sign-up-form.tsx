@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import * as z from 'zod'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
@@ -51,23 +51,28 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           error.message?.toLowerCase().includes('already exists') ||
           error.message?.toLowerCase().includes('already registered')
         ) {
-          toast.error(
-            'An account with this email already exists. Please sign in instead.',
-          )
+          toast({
+            title:
+              'An account with this email already exists. Please sign in instead.',
+            variant: 'error',
+          })
         } else if (error.message?.toLowerCase().includes('password')) {
-          toast.error('Password must be at least 8 characters long.')
+          toast({ title: 'Password must be at least 8 characters long.', variant: 'error' })
         } else if (error.message?.toLowerCase().includes('email')) {
-          toast.error('Please enter a valid email address.')
+          toast({ title: 'Please enter a valid email address.', variant: 'error' })
         } else {
-          toast.error(
-            error.message || 'Failed to create account. Please try again.',
-          )
+          toast({
+            title: error.message || 'Failed to create account. Please try again.',
+            variant: 'error',
+          })
         }
       } else if (signUpData) {
-        toast.success('Account created successfully!', {
+        toast({
+          title: 'Account created successfully!',
           description:
             'Please check your email to verify your account before signing in.',
           duration: 5000,
+          variant: 'success',
         })
         router.push('/sign-in')
       }
@@ -78,11 +83,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         errorMessage.toLowerCase().includes('already exists') ||
         errorMessage.toLowerCase().includes('already registered')
       ) {
-        toast.error(
-          'An account with this email already exists. Please sign in instead.',
-        )
+        toast({
+          title:
+            'An account with this email already exists. Please sign in instead.',
+          variant: 'error',
+        })
       } else {
-        toast.error('Something went wrong. Please try again.')
+        toast({ title: 'Something went wrong. Please try again.', variant: 'error' })
       }
     }
   }

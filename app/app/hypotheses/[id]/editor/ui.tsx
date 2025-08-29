@@ -6,7 +6,7 @@ import { Input } from '@/components/atoms/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
 import { Textarea } from '@/components/atoms/textarea'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 
 type BlockType = 'hero' | 'features' | 'cta' | 'faq' | 'pricing' | 'footer'
 type Block = { id: string; type: BlockType; order: string; content: string }
@@ -34,9 +34,9 @@ export default function BlocksEditor({
         .blocks.post({ content, order, type })
       const id = r.data && typeof r.data === 'object' && 'id' in r.data ? (r.data as { id: string }).id : undefined
       if (id) setBlocks((b) => [...b, { id, content, order, type }])
-      toast.success('Block added')
+      toast({ title: 'Block added', variant: 'success' })
     } catch (e) {
-      toast.error('Invalid content or failed to add')
+      toast({ title: 'Invalid content or failed to add', variant: 'error' })
     }
   }
 
@@ -47,9 +47,9 @@ export default function BlocksEditor({
         .blocks({ blockId: id })
         .delete()
       setBlocks((b) => b.filter((x) => x.id !== id))
-      toast.success('Block removed')
+      toast({ title: 'Block removed', variant: 'success' })
     } catch {
-      toast.error('Failed to remove block')
+      toast({ title: 'Failed to remove block', variant: 'error' })
     }
   }
 
@@ -63,9 +63,9 @@ export default function BlocksEditor({
       setBlocks((b) =>
         b.map((x) => (x.id === id ? { ...x, ...next } : x)),
       )
-      toast.success('Block updated')
+      toast({ title: 'Block updated', variant: 'success' })
     } catch {
-      toast.error('Failed to update block')
+      toast({ title: 'Failed to update block', variant: 'error' })
     }
   }
 
@@ -76,9 +76,9 @@ export default function BlocksEditor({
         ['blocks']['reorder'].post({
           blocks: next.map((b) => ({ id: b.id, order: b.order })),
         })
-      toast.success('Order updated')
+      toast({ title: 'Order updated', variant: 'success' })
     } catch {
-      toast.error('Failed to update order')
+      toast({ title: 'Failed to update order', variant: 'error' })
     }
   }
 

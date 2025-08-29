@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import * as z from 'zod'
 
 const signInSchema = z.object({
@@ -42,25 +42,30 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
 
   async function resendVerificationEmail() {
     const email = getValues('email')
-    const resendPromise = (async () => {
+    const t = toast({
+      title: 'Sending verification email...',
+      variant: 'loading',
+    })
+    try {
       const { error } = await client.sendVerificationEmail({
         callbackURL: '/dashboard',
         email,
       })
-
       if (error) {
-        throw new Error(error.message || 'Failed to send verification email')
+        throw new Error(
+          error.message || 'Failed to send verification email',
+        )
       }
-      return { email }
-    })()
-
-    toast.promise(resendPromise, {
-      error: 'Failed to send verification email. Please try again.',
-      loading: 'Sending verification email...',
-      success: (data: { email: string }) => {
-        return `Verification email sent to ${data.email}`
-      },
-    })
+      t.update({
+        title: `Verification email sent to ${email}`,
+        variant: 'success',
+      })
+    } catch {
+      t.update({
+        title: 'Failed to send verification email. Please try again.',
+        variant: 'error',
+      })
+    }
   }
 
   async function onSubmit(data: SignInFormData) {
@@ -78,36 +83,48 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           error.message?.toLowerCase().includes('not verified') ||
           error.message?.toLowerCase().includes('verify')
         ) {
-          toast.error('Email not verified', {
-            action: {
-              label: 'Resend verification email',
-              onClick: () => resendVerificationEmail(),
-            },
+          toast({
+            title: 'Email not verified',
             description: 'Please verify your email before signing in.',
             duration: 10000,
+            variant: 'error',
+            action: {
+              label: 'Resend verification email',
+              altText: 'Resend verification email',
+              onClick: () => resendVerificationEmail(),
+            },
           })
         } else if (
           error.status === 401 ||
           error.message?.toLowerCase().includes('invalid') ||
           error.message?.toLowerCase().includes('incorrect')
         ) {
-          toast.error('Invalid email or password. Please try again.')
+          toast({
+            title: 'Invalid email or password. Please try again.',
+            variant: 'error',
+          })
         } else if (
           error.message?.toLowerCase().includes('not found') ||
           error.message?.toLowerCase().includes('no user')
         ) {
-          toast.error('No account found with this email. Please sign up first.')
+          toast({
+            title: 'No account found with this email. Please sign up first.',
+            variant: 'error',
+          })
         } else {
-          toast.error(error.message || 'Failed to sign in. Please try again.')
+          toast({
+            title: error.message || 'Failed to sign in. Please try again.',
+            variant: 'error',
+          })
         }
       } else if (signInData) {
-        toast.success('Signed in successfully!')
+        toast({ title: 'Signed in successfully!', variant: 'success' })
         router.push(next || '/app')
       }
     } catch (error) {
       // Handle network or unexpected errors
       console.error('Sign-in error:', error)
-      toast.error('Something went wrong. Please try again.')
+      toast({ title: 'Something went wrong. Please try again.', variant: 'error' })
     }
   }
 

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import * as z from 'zod'
 
 import { client } from '@/auth/client'
@@ -36,34 +36,26 @@ export function ForgotPasswordForm({
   })
 
   async function onSubmit(data: ForgotFormData) {
+    const redirectTo = `${window.location.origin}/reset-password`
+    const t = toast({ title: 'Sending reset link...', variant: 'loading' })
     try {
-      const redirectTo = `${window.location.origin}/reset-password`
-
-      const promise = (async () => {
-        const { error } = await client.forgetPassword({
-          email: data.email,
-          redirectTo,
-        })
-
-        if (error) {
-          throw new Error(error.message || 'Failed to send reset email')
-        }
-        return { email: data.email }
-      })()
-
-      toast.promise(promise, {
-        error: (err) =>
-          err.message || 'Failed to send reset email. Please try again.',
-        loading: 'Sending reset link...',
-        success: ({ email }) =>
-          `If an account exists, a reset link was sent to ${email}.`,
+      const { error } = await client.forgetPassword({
+        email: data.email,
+        redirectTo,
+      })
+      if (error) {
+        throw new Error(error.message || 'Failed to send reset email')
+      }
+      t.update({
+        title: `If an account exists, a reset link was sent to ${data.email}.`,
+        variant: 'success',
       })
     } catch (e) {
       const message =
         e instanceof Error
           ? e.message
-          : 'Something went wrong. Please try again.'
-      toast.error(message)
+          : 'Failed to send reset email. Please try again.'
+      t.update({ title: message, variant: 'error' })
     }
   }
 

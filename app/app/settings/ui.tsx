@@ -2,10 +2,9 @@
 import { useState } from 'react'
 import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
-import { Input } from '@/components/atoms/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
 import { Switch } from '@/components/atoms/switch'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 
 type Settings = {
   id: string
@@ -29,12 +28,19 @@ export default function SettingsForm({ initial }: { initial?: Partial<Settings> 
   async function save() {
     setSaving(true)
     try {
+      const safeTheme = (
+        theme === 'light' || theme === 'dark' || theme === 'system'
+          ? theme
+          : 'system'
+      ) as 'light' | 'dark' | 'system'
       await api.v1.settings.me.patch({
-        body: { theme, emailNotifications, onboardingComplete },
+        theme: safeTheme,
+        emailNotifications,
+        onboardingComplete,
       })
-      toast({ description: 'Settings saved', variant: 'default' })
+      toast({ title: 'Settings saved', variant: 'success' })
     } catch {
-      toast({ description: 'Failed to save settings', variant: 'destructive' })
+      toast({ title: 'Failed to save settings', variant: 'error' })
     } finally {
       setSaving(false)
     }

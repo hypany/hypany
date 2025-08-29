@@ -1,0 +1,3 @@
+ALTER TABLE "hypotheses" ADD COLUMN "organization_id" text NOT NULL;--> statement-breakpoint
+ALTER TABLE "hypotheses" ADD CONSTRAINT "hypotheses_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "hypotheses_org_id_idx" ON "hypotheses" USING btree ("organization_id");
