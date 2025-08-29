@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { token?: string }
+  searchParams: Promise<{ token?: string }>
 }) {
   const t = await getTranslations('auth.reset-password')
-  const token = searchParams?.token
+  const params = await searchParams
+  const token = params?.token
 
   return (
     <>
@@ -71,4 +72,3 @@ export default async function ResetPasswordPage({
     </>
   )
 }
-

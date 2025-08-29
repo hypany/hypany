@@ -5,7 +5,6 @@ import { Providers } from './providers'
 import { siteConfig } from './site-config'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.hypany.com'),
   authors: [
     {
       name: 'Sunghyun Cho',
@@ -18,6 +17,7 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
   },
   keywords: ['Marketing', 'Database', 'Software'],
+  metadataBase: new URL('https://www.hypany.com'),
   openGraph: {
     description: siteConfig.description,
     locale: 'en_US',

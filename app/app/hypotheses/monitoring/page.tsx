@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
 import { SlidersHorizontal } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { Button } from '@/components/atoms/button'
@@ -23,17 +23,28 @@ import { formatters } from '@/lib/utils'
 
 export default function Monitoring() {
   const [range, setRange] = useState<'30d' | '90d' | '180d' | '365d'>('365d')
-  const [daily, setDaily] = useState<Array<{ date: string; visitors: number; signups: number }>>([])
+  const [daily, setDaily] = useState<
+    Array<{ date: string; visitors: number; signups: number }>
+  >([])
 
   useEffect(() => {
     let ignore = false
     async function load() {
       const r = range === '30d' ? '30d' : range === '90d' ? '90d' : '30d'
       try {
-        const res = await api.v1.analytics.metrics.$get({ query: { range: r as '7d' | '30d' | '90d' } })
+        const res = await api.v1.analytics.metrics.get({
+          query: { range: r as '7d' | '30d' | '90d' },
+        })
         const d = res.data
         if (!d || !d.daily) return
-        if (!ignore) setDaily(d.daily.map((x) => ({ date: x.date, signups: x.signups, visitors: x.visitors })))
+        if (!ignore)
+          setDaily(
+            d.daily.map((x) => ({
+              date: x.date,
+              signups: x.signups,
+              visitors: x.visitors,
+            })),
+          )
       } catch {
         if (!ignore) setDaily([])
       }
@@ -46,8 +57,8 @@ export default function Monitoring() {
 
   const dataChart = useMemo(() => {
     return daily.map((d) => ({
-      date: d.date,
       'Current year': d.visitors,
+      date: d.date,
       'Same period last year': d.signups,
     }))
   }, [daily])
@@ -64,21 +75,34 @@ export default function Monitoring() {
     return daily.map((d) => {
       const addressed = Math.min(d.signups, d.visitors)
       const unrealized = Math.max(d.visitors - d.signups, 0)
-      return { date: d.date, Addressed: addressed, Unrealized: unrealized }
+      return { Addressed: addressed, date: d.date, Unrealized: unrealized }
     })
   }, [daily])
 
   const dataChart4 = useMemo(() => {
     return daily.map((d) => ({
-      date: d.date,
       Density: d.visitors > 0 ? d.signups / d.visitors : 0,
+      date: d.date,
     }))
   }, [daily])
 
   return (
     <section aria-label='App Monitoring'>
       <div className='flex flex-col items-center justify-between gap-2 p-6 sm:flex-row'>
-        <Select defaultValue='365-days' onValueChange={(v) => setRange(v === '30-days' ? '30d' : v === '90-days' ? '90d' : v === '180-days' ? '180d' : '365d')}>
+        <Select
+          defaultValue='365-days'
+          onValueChange={(v) =>
+            setRange(
+              v === '30-days'
+                ? '30d'
+                : v === '90-days'
+                  ? '90d'
+                  : v === '180-days'
+                    ? '180d'
+                    : '365d',
+            )
+          }
+        >
           <SelectTrigger className='py-1.5 sm:w-44'>
             <SelectValue placeholder='Assigned to...' />
           </SelectTrigger>

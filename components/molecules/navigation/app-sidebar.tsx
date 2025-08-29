@@ -1,4 +1,7 @@
 'use client'
+import { RiArrowDownSFill } from '@remixicon/react'
+import { BookText, House, PackageSearch } from 'lucide-react'
+import * as React from 'react'
 import { Divider } from '@/components/atoms/divider'
 import { Input } from '@/components/atoms/input'
 import {
@@ -16,9 +19,6 @@ import {
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
 import { SolarLogo } from '@/public/solar-logo'
-import { RiArrowDownSFill } from '@remixicon/react'
-import { BookText, House, PackageSearch } from 'lucide-react'
-import * as React from 'react'
 import { UserProfile } from './user-profile'
 
 const navigation = [

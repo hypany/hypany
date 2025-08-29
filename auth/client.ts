@@ -5,11 +5,11 @@ const getBaseURL = () => {
   if (typeof window !== 'undefined') {
     return window.location.origin
   }
-  
+
   if (process.env.NEXT_PUBLIC_APP_URL) {
     return process.env.NEXT_PUBLIC_APP_URL
   }
-  
+
   if (process.env.VERCEL_URL) {
     // Handle VERCEL_URL whether it has protocol or not
     const url = process.env.VERCEL_URL
@@ -18,7 +18,7 @@ const getBaseURL = () => {
     }
     return `http://${url}`
   }
-  
+
   return 'http://localhost:3000'
 }
 

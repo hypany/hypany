@@ -1,5 +1,8 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
+import { useTransition } from 'react'
 import {
   Select,
   SelectContent,
@@ -7,9 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/atoms/select'
-import { useLocale, useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
 
 export function LocaleSwitcher() {
   const router = useRouter()

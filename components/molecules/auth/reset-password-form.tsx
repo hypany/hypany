@@ -16,8 +16,8 @@ import { cx } from '@/lib/utils'
 
 const resetSchema = z
   .object({
-    password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string().min(8, 'Please confirm your password'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
   })
   .refine((v) => v.password === v.confirmPassword, {
     message: 'Passwords do not match',
@@ -30,7 +30,11 @@ interface ResetPasswordFormProps extends React.HTMLAttributes<HTMLDivElement> {
   token?: string
 }
 
-export function ResetPasswordForm({ className, token, ...props }: ResetPasswordFormProps) {
+export function ResetPasswordForm({
+  className,
+  token,
+  ...props
+}: ResetPasswordFormProps) {
   const passwordId = useId()
   const confirmId = useId()
   const router = useRouter()
@@ -51,8 +55,8 @@ export function ResetPasswordForm({ className, token, ...props }: ResetPasswordF
     try {
       const promise = (async () => {
         const { error } = await client.resetPassword({
-          token,
           newPassword: data.password,
+          token,
         })
 
         if (error) {
@@ -62,15 +66,19 @@ export function ResetPasswordForm({ className, token, ...props }: ResetPasswordF
       })()
 
       toast.promise(promise, {
+        error: (err) =>
+          err.message || 'Failed to reset password. Please try again.',
         loading: 'Updating password...',
         success: 'Your password has been updated. You can sign in now.',
-        error: (err) => err.message || 'Failed to reset password. Please try again.',
       })
 
       await promise
       router.push('/sign-in')
     } catch (e) {
-      const message = e instanceof Error ? e.message : 'Something went wrong. Please try again.'
+      const message =
+        e instanceof Error
+          ? e.message
+          : 'Something went wrong. Please try again.'
       toast.error(message)
     }
   }
@@ -121,4 +129,3 @@ export function ResetPasswordForm({ className, token, ...props }: ResetPasswordF
     </div>
   )
 }
-

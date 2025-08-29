@@ -1,7 +1,6 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
 import { Download } from 'lucide-react'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
@@ -69,21 +68,24 @@ type Region = {
 }
 
 const statusToRegion: Record<string, string> = {
+  archived: 'Archived',
   draft: 'Draft',
   published: 'Published',
-  archived: 'Archived',
 }
 
 const statusToBadge: Record<string, Project['status']> = {
+  archived: 'Closed',
   draft: 'Drafted',
   published: 'Sent',
-  archived: 'Closed',
 }
 
 function slugToInitials(slug?: string | null) {
   if (!slug) return 'HP'
   const parts = slug.split('-').filter(Boolean)
-  const init = parts.slice(0, 2).map((p) => p[0]?.toUpperCase() || '').join('')
+  const init = parts
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() || '')
+    .join('')
   return init || 'HP'
 }
 
@@ -96,17 +98,18 @@ export default function Overview() {
     async function load() {
       setLoading(true)
       try {
-        const res = await api.v1.hypotheses['/'].$get({
+        const res = await api.v1.hypotheses.get({
           // keep defaults (pagination); UI shows first page
+          query: {},
         })
         const data = res.data
         if (!data || !data.hypotheses) return
 
         // Fetch per-hypothesis metrics in parallel to enrich rows
-        const metricsEntries: Array<Promise<[string, HypothesisMetrics]>> = data.hypotheses.map(
-          async (h: HypothesisItem) => {
+        const metricsEntries: Array<Promise<[string, HypothesisMetrics]>> =
+          data.hypotheses.map(async (h: HypothesisItem) => {
             try {
-              const det = await api.v1.hypotheses({ id: h.id }).$get()
+              const det = await api.v1.hypotheses({ id: h.id }).get()
               const md = det.data?.metrics
               return [
                 h.id,
@@ -114,12 +117,14 @@ export default function Overview() {
                   conversionRate30d: Number(md?.conversionRate30d ?? 0),
                   pageViews30d: Number(md?.pageViews30d ?? 0),
                 },
-              ]
+              ] as [string, HypothesisMetrics]
             } catch {
-              return [h.id, { conversionRate30d: 0, pageViews30d: 0 }]
+              return [h.id, { conversionRate30d: 0, pageViews30d: 0 }] as [
+                string,
+                HypothesisMetrics,
+              ]
             }
-          },
-        )
+          })
         const resolved = await Promise.all(metricsEntries)
         const metricsById = new Map<string, HypothesisMetrics>(resolved)
 
@@ -150,7 +155,10 @@ export default function Overview() {
         }
 
         const regions: Region[] = Array.from(grouped.entries())
-          .map(([key, project]) => ({ region: statusToRegion[key] ?? key, project }))
+          .map(([key, project]) => ({
+            project,
+            region: statusToRegion[key] ?? key,
+          }))
           .sort((a, b) => a.region.localeCompare(b.region))
 
         if (!ignore) setGroups(regions)

@@ -66,7 +66,7 @@ const BarLabels = ({ values }: { values: number[] }) => {
       )}
     >
       <div className='absolute bottom-0 left-0 flex items-center'>0</div>
-      {values.map((widthPercentage, index) => {
+      {values.map((widthPercentage) => {
         prefixSum += widthPercentage
 
         const showLabel =

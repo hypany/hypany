@@ -1,4 +1,3 @@
-import { HypanyLogo } from '@/public/brand/hypany-logo'
 import {
   RiGithubFill,
   RiSlackFill,
@@ -6,11 +5,14 @@ import {
   RiYoutubeFill,
 } from '@remixicon/react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { HypanyLogo } from '@/public/brand/hypany-logo'
 import { LocaleSwitcher } from '../locale-switcher'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export const Footer = () => {
+  const t = useTranslations('landing.footer')
   const sections = {
     company: {
       items: [
@@ -63,11 +65,7 @@ export const Footer = () => {
 
   return (
     <div className='px-4 xl:px-0'>
-      <footer
-        id='footer'
-        className='relative mx-auto flex max-w-6xl flex-wrap pt-4'
-      >
-        {/* Vertical Lines */}
+      <footer className='relative mx-auto flex max-w-6xl flex-wrap pt-4'>
         <div className='pointer-events-none inset-0'>
           {/* Left */}
           <div
@@ -77,6 +75,7 @@ export const Footer = () => {
             }}
           >
             <svg className='h-full w-full' preserveAspectRatio='none'>
+              <title>{t('footer-pattern-alt')}</title>
               <line
                 x1='0'
                 y1='0'
@@ -97,6 +96,7 @@ export const Footer = () => {
             }}
           >
             <svg className='h-full w-full' preserveAspectRatio='none'>
+              <title>{t('footer-pattern-alt')}</title>
               <line
                 x1='0'
                 y1='0'
@@ -109,25 +109,15 @@ export const Footer = () => {
             </svg>
           </div>
         </div>
-        <svg
-          className='mb-10 h-20 w-full border-y border-dashed border-gray-300 stroke-gray-300'
-          // style={{
-          //   maskImage:
-          //     "linear-gradient(transparent, white 10rem, white calc(100% - 10rem), transparent)",
-          // }}
-        >
+        <svg className='mb-10 h-20 w-full border-y border-dashed border-gray-300 stroke-gray-300'>
+          <title>{t('footer-pattern-alt')}</title>
           <defs>
-            <pattern
-              id='diagonal-footer-pattern'
-              patternUnits='userSpaceOnUse'
-              width='64'
-              height='64'
-            >
+            <pattern patternUnits='userSpaceOnUse' width='64' height='64'>
               {Array.from({ length: 17 }, (_, i) => {
                 const offset = i * 8
                 return (
                   <path
-                    key={i}
+                    key={`${i}-${offset}`}
                     d={`M${-106 + offset} 110L${22 + offset} -18`}
                     stroke=''
                     strokeWidth='1'
@@ -150,7 +140,7 @@ export const Footer = () => {
           >
             <HypanyLogo className='ml-2 w-10 h-10' />
 
-            <span className='sr-only'>Hypany Logo (go home)</span>
+            <span className='sr-only'>{t('logo-alt')}</span>
           </Link>
 
           <LocaleSwitcher />
@@ -192,7 +182,7 @@ export const Footer = () => {
               </Link>
             </div>
             <div className='ml-2 hidden text-sm text-gray-700 lg:inline'>
-              &copy; {CURRENT_YEAR} Sunghyun Cho
+              &copy; {CURRENT_YEAR} {t('creator-name')}
             </div>
           </div>
         </div>

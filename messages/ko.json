@@ -1,94 +1,98 @@
 {
-  "nav": {
-    "home-aria": "홈",
-    "logo-sr": "Hypany 로고",
-    "go-to-app": "앱으로 이동",
-    "sign-in": "로그인",
-    "sign-up": "회원가입",
-    "open-menu-aria": "내비게이션 메뉴 열기",
-    "close-menu-aria": "내비게이션 메뉴 닫기",
-    "language-aria": "언어 변경",
-    "lang-en": "English",
-    "lang-ko": "한국어"
-  },
   "auth": {
     "common": {
       "back": "← 돌아가기"
     },
-    "sign-in": {
-      "title": "다시 오신 것을 환영해요",
-      "subtitle": "계정에 접근하려면 정보를 입력하세요"
-    },
-    "sign-up": {
-      "title": "계정 만들기",
-      "subtitle": "시작하려면 정보를 입력하세요"
-    },
     "forgot-password": {
-      "title": "비밀번호 찾기",
-      "subtitle": "이메일을 입력하시면 비밀번호 재설정 링크를 보내드려요"
+      "subtitle": "이메일을 입력하시면 비밀번호 재설정 링크를 보내드려요",
+      "title": "비밀번호 찾기"
     },
     "reset-password": {
-      "title": "새 비밀번호 설정",
-      "subtitle": "계정을 안전하게 보호할 강력한 비밀번호를 설정하세요"
+      "subtitle": "계정을 안전하게 보호할 강력한 비밀번호를 설정하세요",
+      "title": "새 비밀번호 설정"
+    },
+    "sign-in": {
+      "subtitle": "계정에 접근하려면 정보를 입력하세요",
+      "title": "다시 오신 것을 환영해요"
+    },
+    "sign-up": {
+      "subtitle": "시작하려면 정보를 입력하세요",
+      "title": "계정 만들기"
     }
+  },
+  "footer": {
+    "creator-name": "조성현",
+    "footer-pattern-alt": "Hypany 로고 패턴"
   },
   "landing": {
     "banner": {
+      "aria": "최신 업데이트를 변경 기록 페이지에서 보기",
       "new": "새 소식",
-      "text": "이번 달에 100개 이상의 아이디어 검증",
-      "aria": "최신 업데이트를 변경 기록 페이지에서 보기"
+      "text": "이번 달에 100개 이상의 아이디어 검증"
+    },
+    "cta-section": {
+      "desc": "수개월을 개발에 쏟기 전에 아이디어를 검증한 수천 명의 창업가들과 함께하세요.",
+      "primary-cta": "아이디어 테스트 시작",
+      "secondary-cta": "성공 사례 보기",
+      "title": "결제 의사가 있는 사용자를 모으고 싶으신가요?"
+    },
+    "features": {
+      "aria-label": "창업자를 위한 Hypany 기능",
+      "data-driven-decisions": {
+        "h1": "방문자 행동을 검증된 인사이트로 전환",
+        "p": "참여 지표를 추적하고 A/B 테스트를 실행하며 실시간으로 전환율을 분석하세요. 개발에 시간과 비용을 투자하기 전에 어떤 아이디어가 시장에 반응하는지 정확히 알 수 있습니다.",
+        "title": "데이터 기반 의사결정"
+      },
+      "rapid-idea-validation": {
+        "chips": {
+          "invalidated": "무효화됨",
+          "segmenting": "세분화",
+          "testing": "테스트 중"
+        },
+        "h1": "하나를 만드는 시간에 100개의 아이디어를 테스트하세요",
+        "p": "WYSIWYG 에디터로 아름다운 랜딩 페이지를 만들고, 커스텀 도메인에 배포하여 잠재 고객의 가입을 몇 분 만에 모으세요.",
+        "title": "빠른 아이디어 검증"
+      }
     },
     "hero": {
+      "cta": "아이디어 검증하기",
+      "sub": {
+        "line-1": "하지만 97번째 아이디어는 성공할지도 몰라요.",
+        "line-2": "하이퍼니가 빠르게 도달하도록 도와드릴게요."
+      },
       "title": {
         "part-1": "그",
         "part-2": "스타트업",
         "part-3": "아마",
         "part-4": "망할걸요?"
-      },
-      "sub": {
-        "line-1": "하지만 97번째 아이디어는 성공할지도 몰라요.",
-        "line-2": "하이퍼니가 빠르게 도달하도록 도와드릴게요."
-      },
-      "cta": "아이디어 검증하기"
-    },
-    "cta-section": {
-      "title": "결제 의사가 있는 사용자를 모으고 싶으신가요?",
-      "desc": "수개월을 개발에 쏟기 전에 아이디어를 검증한 수천 명의 창업가들과 함께하세요.",
-      "primary-cta": "아이디어 테스트 시작",
-      "secondary-cta": "성공 사례 보기"
+      }
     },
     "random-ideas": {
       "heading": "Hypany AI",
       "subheading": "아이디어를 실행 가능한 스타트업 계획으로 확장합니다",
       "table": {
         "header": {
-          "product": "제품",
           "engineering": "엔지니어링",
           "legal": "법률",
+          "product": "제품",
           "vibe-check": "분위기 체크"
         }
       },
       "tooltip": {
         "vibe-ratio": "웨이트리스트/방문자 비율"
       }
-    },
-    "features": {
-      "rapid-idea-validation": {
-        "title": "빠른 아이디어 검증",
-        "h1": "하나를 만드는 시간에 100개의 아이디어를 테스트하세요",
-        "p": "WYSIWYG 에디터로 아름다운 랜딩 페이지를 만들고, 커스텀 도메인에 배포하여 잠재 고객의 가입을 몇 분 만에 모으세요.",
-        "chips": {
-          "invalidated": "무효화됨",
-          "testing": "테스트 중",
-          "segmenting": "세분화"
-        }
-      },
-      "data-driven-decisions": {
-        "title": "데이터 기반 의사결정",
-        "h1": "방문자 행동을 검증된 인사이트로 전환",
-        "p": "참여 지표를 추적하고 A/B 테스트를 실행하며 실시간으로 전환율을 분석하세요. 개발에 시간과 비용을 투자하기 전에 어떤 아이디어가 시장에 반응하는지 정확히 알 수 있습니다."
-      },
-      "aria-label": "창업자를 위한 Hypany 기능"
     }
+  },
+  "nav": {
+    "close-menu-aria": "내비게이션 메뉴 닫기",
+    "go-to-app": "앱으로 이동",
+    "home-aria": "홈",
+    "lang-en": "English",
+    "lang-ko": "한국어",
+    "language-aria": "언어 변경",
+    "logo-sr": "Hypany 로고",
+    "open-menu-aria": "내비게이션 메뉴 열기",
+    "sign-in": "로그인",
+    "sign-up": "회원가입"
   }
 }

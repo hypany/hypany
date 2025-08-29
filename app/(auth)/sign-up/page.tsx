@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { SignUpForm } from '@/components/molecules/auth/sign-up-form'
-import { Divider } from '@/components/atoms/divider'
 import { getTranslations } from 'next-intl/server'
+import { Divider } from '@/components/atoms/divider'
+import { SignUpForm } from '@/components/molecules/auth/sign-up-form'
 
 export const metadata: Metadata = {
   description: 'Create a new Hypany account',

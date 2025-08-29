@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react'
 import { Link, SlidersHorizontal } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { api } from '@/app/api'
 import {
   Accordion,
@@ -41,7 +41,11 @@ export default function Audits() {
     let ignore = false
     async function load() {
       try {
-        const res = await api.v1.hypotheses['/'].$get()
+        const res = await api.v1.hypotheses.get({
+          query: {
+            limit: 100,
+          },
+        })
         const d = res.data
         if (!d || !d.hypotheses) return
         const total = Math.max(d.hypotheses.length, 1)

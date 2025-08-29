@@ -1,4 +1,4 @@
-import {createNavigation} from 'next-intl/navigation'
+import { createNavigation } from 'next-intl/navigation'
 
 export const locales = ['en', 'ko'] as const
 export type Locale = (typeof locales)[number]
@@ -10,9 +10,8 @@ export const pathnames = {
   '/': '/',
 } as const
 
-export const {Link, redirect, usePathname, useRouter} = createNavigation({
-  locales,
+export const { Link, redirect, usePathname, useRouter } = createNavigation({
   localePrefix,
+  locales,
   pathnames,
 })
-

@@ -1,8 +1,8 @@
+import type { Metadata } from 'next'
+import { cookies } from 'next/headers'
 import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
-import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
 import '../globals.css'
 import { siteConfig } from '../site-config'
 

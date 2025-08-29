@@ -1,17 +1,17 @@
 'use client'
 
+import { RiCloseFill, RiMenuFill } from '@remixicon/react'
+import type { User } from 'better-auth'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import React from 'react'
 import { siteConfig } from '@/app/site-config'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import useScroll from '@/lib/use-scroll'
 import { cx } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
-import { RiCloseFill, RiMenuFill } from '@remixicon/react'
-import type { User } from 'better-auth'
-import { useTranslations } from 'next-intl'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
 
 export function NavBar() {
   const t = useTranslations('nav')

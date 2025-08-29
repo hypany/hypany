@@ -68,10 +68,11 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
 
       if (error) {
         // Check for EMAIL_NOT_VERIFIED error specifically
-        if (error.code === 'EMAIL_NOT_VERIFIED' || 
-            error.status === 403 ||
-            error.message?.toLowerCase().includes('not verified') ||
-            error.message?.toLowerCase().includes('verify')
+        if (
+          error.code === 'EMAIL_NOT_VERIFIED' ||
+          error.status === 403 ||
+          error.message?.toLowerCase().includes('not verified') ||
+          error.message?.toLowerCase().includes('verify')
         ) {
           toast.error('Email not verified', {
             action: {

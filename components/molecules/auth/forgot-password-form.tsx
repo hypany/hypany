@@ -1,7 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
@@ -20,11 +19,14 @@ const forgotSchema = z.object({
 
 type ForgotFormData = z.infer<typeof forgotSchema>
 
-interface ForgotPasswordFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface ForgotPasswordFormProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormProps) {
+export function ForgotPasswordForm({
+  className,
+  ...props
+}: ForgotPasswordFormProps) {
   const emailId = useId()
-  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -50,12 +52,17 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
       })()
 
       toast.promise(promise, {
+        error: (err) =>
+          err.message || 'Failed to send reset email. Please try again.',
         loading: 'Sending reset link...',
-        success: ({ email }) => `If an account exists, a reset link was sent to ${email}.`,
-        error: (err) => err.message || 'Failed to send reset email. Please try again.',
+        success: ({ email }) =>
+          `If an account exists, a reset link was sent to ${email}.`,
       })
     } catch (e) {
-      const message = e instanceof Error ? e.message : 'Something went wrong. Please try again.'
+      const message =
+        e instanceof Error
+          ? e.message
+          : 'Something went wrong. Please try again.'
       toast.error(message)
     }
   }
@@ -89,4 +96,3 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
     </div>
   )
 }
-

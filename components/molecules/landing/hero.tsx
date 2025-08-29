@@ -1,6 +1,6 @@
-import { FadeContainer, FadeDiv, FadeSpan } from '@/components/atoms/fade'
 import { RiArrowRightUpLine } from '@remixicon/react'
 import { getTranslations } from 'next-intl/server'
+import { FadeContainer, FadeDiv, FadeSpan } from '@/components/atoms/fade'
 import GameOfLife from './hero-background'
 
 export async function Hero() {

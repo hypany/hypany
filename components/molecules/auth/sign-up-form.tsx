@@ -65,7 +65,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         }
       } else if (signUpData) {
         toast.success('Account created successfully!', {
-          description: 'Please check your email to verify your account before signing in.',
+          description:
+            'Please check your email to verify your account before signing in.',
           duration: 5000,
         })
         router.push('/sign-in')

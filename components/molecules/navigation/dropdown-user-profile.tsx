@@ -1,5 +1,9 @@
 'use client'
 
+import { ArrowUpRight, Monitor, Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { client } from '@/auth/client'
 import {
   DropdownMenu,
@@ -15,10 +19,6 @@ import {
   DropdownMenuSubMenuTrigger,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
-import { ArrowUpRight, Monitor, Moon, Sun } from 'lucide-react'
-import { useTheme } from 'next-themes'
-import { useCallback, useEffect, useState } from 'react'
-import { toast } from 'sonner'
 
 export type DropdownUserProfileProps = {
   children: React.ReactNode

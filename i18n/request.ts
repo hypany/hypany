@@ -1,5 +1,5 @@
-import {cookies} from 'next/headers'
-import {getRequestConfig} from 'next-intl/server'
+import { cookies } from 'next/headers'
+import { getRequestConfig } from 'next-intl/server'
 
 export default getRequestConfig(async () => {
   // Get locale from cookie, default to 'en' if not set

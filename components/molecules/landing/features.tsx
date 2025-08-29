@@ -12,10 +12,10 @@ import {
   RiLoaderFill,
   RiNotification2Line,
 } from '@remixicon/react'
+import { getTranslations } from 'next-intl/server'
 import { Orbit } from '@/components/atoms/orbit'
 import { HypanyMark } from '@/public/brand/hypany-logo'
 import ChipViz from './chip-viz'
-import { getTranslations } from 'next-intl/server'
 
 export default async function Features() {
   const t = await getTranslations('landing.features')
