@@ -6,41 +6,41 @@
     "forgot-password": {
       "aside": {
         "desc": "새 비밀번호를 만들 수 있는 링크를 이메일로 보내드려요.",
-        "title": "안전하게 접근 권한을 재설정하세요"
+        "title": "접근 권한을 안전하게 다시 설정해요"
       },
       "footer-link": "로그인으로 돌아가기",
-      "footer-text": "비밀번호가 기억나셨나요?",
+      "footer-text": "비밀번호가 기억났나요?",
       "subtitle": "이메일을 입력하시면 비밀번호 재설정 링크를 보내드려요",
       "title": "비밀번호 찾기"
     },
     "reset-password": {
       "aside": {
-        "desc": "계정을 안전하게 보호할 강력한 암호문구를 선택하세요.",
-        "title": "비밀번호 재설정을 마무리하세요"
+        "desc": "계정을 안전하게 지킬 강력한 비밀번호를 골라요.",
+        "title": "비밀번호 재설정을 마무리해요"
       },
       "footer-link": "로그인으로 돌아가기",
-      "footer-text": "돌아갈 준비가 되셨나요?",
-      "subtitle": "계정을 안전하게 보호할 강력한 비밀번호를 설정하세요",
+      "footer-text": "돌아갈 준비됐나요?",
+      "subtitle": "계정을 안전하게 지킬 강력한 비밀번호를 설정해요",
       "title": "새 비밀번호 설정"
     },
     "sign-in": {
       "aside": {
-        "desc": "랜딩 페이지 배포, 관심 측정, 데이터 수집을 반복하세요.",
-        "title": "스타트업 개발 전에 아이디어를 검증하세요"
+        "desc": "랜딩 페이지를 빠르게 배포하고, 관심을 확인하고, 데이터로 더 나은 결정을 해요.",
+        "title": "개발 전에 아이디어를 먼저 검증해요"
       },
       "footer-link": "회원가입",
-      "footer-text": "계정이 없으신가요?",
-      "subtitle": "계정에 접근하려면 정보를 입력하세요",
+      "footer-text": "아직 계정이 없나요?",
+      "subtitle": "이메일과 비밀번호를 입력해 로그인해요",
       "title": "다시 오신 것을 환영해요"
     },
     "sign-up": {
       "aside": {
-        "desc": "실제 수요 시그널로 빌드하고, 측정하고, 학습하세요.",
-        "title": "아이디어를 더 빠르게 검증 중인 창업자들과 함께하세요"
+        "desc": "실제 수요 신호를 바탕으로 만들고, 측정하고, 배워요.",
+        "title": "아이디어를 빠르게 검증하는 창업자들과 함께해요"
       },
       "footer-link": "로그인",
-      "footer-text": "이미 계정이 있으신가요?",
-      "subtitle": "시작하려면 정보를 입력하세요",
+      "footer-text": "이미 계정이 있나요?",
+      "subtitle": "시작하려면 정보를 입력해요",
       "title": "계정 만들기"
     },
     "form": {
@@ -54,7 +54,7 @@
       "forgot-password": "비밀번호를 잊으셨나요?",
       "password": {
         "label": "비밀번호",
-        "placeholder": "비밀번호를 입력하세요"
+        "placeholder": "비밀번호를 입력해요"
       }
     }
   },
@@ -64,51 +64,12 @@
   },
   "landing": {
     "footer": {
-      "logo-alt": "Hypany 로고",
-      "sections": {
-        "company": {
-          "items": {
-            "about-us": "회사 소개",
-            "blog": "블로그",
-            "careers": "채용",
-            "success-stories": "성공 사례",
-            "sustainability": "지속 가능성"
-          },
-          "title": "회사"
-        },
-        "partners": {
-          "items": {
-            "dealer-network": "딜러 네트워크",
-            "integration-guide": "연동 가이드",
-            "research-partners": "연구 파트너",
-            "system-status": "시스템 상태"
-          },
-          "title": "파트너"
-        },
-        "resources": {
-          "items": {
-            "community": "커뮤니티",
-            "contact": "문의하기",
-            "farmer-network": "농가 네트워크",
-            "privacy-policy": "개인정보 처리방침",
-            "report-issue": "문제 신고",
-            "support": "지원",
-            "terms-of-service": "서비스 약관"
-          },
-          "title": "리소스"
-        },
-        "solutions": {
-          "items": {
-            "crop-monitoring": "작물 모니터링",
-            "documentation": "문서",
-            "equipment": "장비",
-            "irrigation-control": "관개 제어",
-            "smart-farming-guide": "스마트 팜 가이드",
-            "soil-analytics": "토양 분석",
-            "weather-integration": "날씨 연동"
-          },
-          "title": "솔루션"
-        },
+        "logo-alt": "Hypany 로고",
+        "sections": {
+
+       
+
+        
         "hypotheses": {
           "title": "가설",
           "items": { "overview": "개요", "assets": "에셋" }
@@ -129,7 +90,7 @@
       "text": "이번 달에 100개 이상의 아이디어 검증"
     },
     "cta-section": {
-      "desc": "수개월을 개발에 쏟기 전에, 수천 명의 선배 창업가들처럼 아이디어를 먼저 검증해보세요.",
+      "desc": "개발에 시간 쓰기 전에, 수천 명의 창업가처럼 먼저 아이디어를 검증해요.",
       "primary-cta": "아이디어 테스트 시작",
       "secondary-cta": "성공 사례 보기",
       "title": "잠재 고객을 모으고 싶으신가요?"
@@ -138,7 +99,7 @@
       "aria-label": "창업자를 위한 Hypany 기능",
       "data-driven-decisions": {
         "h1": "방문자 행동을 검증된 인사이트로 전환",
-        "p": "참여 지표를 추적하고 A/B 테스트를 실행하며 실시간으로 전환율을 분석하세요. 개발에 시간과 비용을 투자하기 전에 어떤 아이디어가 시장에 반응하는지 정확히 알 수 있습니다.",
+        "p": "참여 지표를 추적하고 A/B 테스트를 실행하며 실시간으로 전환율을 분석해요. 개발에 시간과 비용을 쓰기 전에 어떤 아이디어가 시장에서 통하는지 정확히 알 수 있어요.",
         "title": "데이터 기반 의사결정"
       },
       "rapid-idea-validation": {
@@ -147,21 +108,21 @@
           "segmenting": "세분화",
           "testing": "테스트"
         },
-        "h1": "하나를 만드는 시간에 100개의 아이디어를 테스트하세요",
-        "p": "WYSIWYG 에디터로 아름다운 랜딩 페이지를 만들고, 커스텀 도메인에 배포하여 잠재 고객의 가입을 몇 분 만에 모으세요.",
+        "h1": "하나 만드는 시간에 100개의 아이디어를 테스트해요",
+        "p": "WYSIWYG 에디터로 랜딩 페이지를 만들고, 커스텀 도메인에 배포해 잠재 고객의 가입을 몇 분 만에 모아요.",
         "title": "빠른 아이디어 검증"
       },
       "waitlist-to-customers": {
-        "h1": "첫날부터 관심을 유료 고객으로 전환하세요",
-        "p": "웨이트리스트를 관리하고 타깃 이메일을 보내며 리드를 자동으로 육성하세요. 출시할 때에는 처음부터 시작하는 대신 결제할 준비가 된 고객이 모여 있습니다.",
+        "h1": "첫날부터 관심을 유료 고객으로 전환해요",
+        "p": "웨이트리스트를 관리하고 타깃 메일을 보내며 리드를 자동으로 키워요. 출시할 때는 처음부터 시작하는 대신 결제할 준비가 된 고객이 있어요.",
         "title": "웨이트리스트에서 유료 고객으로"
       }
     },
     "hero": {
       "cta": "아이디어 검증하기",
       "sub": {
-        "line-1": "하지만 97번째 아이디어는 성공할 듯해요.",
-        "line-2": "하이퍼니가 빠르게 실패하고 배울 수 있도록 도와드릴게요."
+        "line-1": "하지만 97번째 아이디어는 통할지도 몰라요.",
+        "line-2": "하이퍼니가 더 빨리 배우고 성장할 수 있게 도와드려요."
       },
       "title": {
         "part-1": "그",
@@ -206,18 +167,18 @@
       "dark": "다크",
       "light": "라이트",
       "system": "시스템",
-      "toggle-aria": "테마 전환"
+      "toggle-aria": "테마 바꾸기"
     }
   },
   
   "nav": {
-    "close-menu-aria": "내비게이션 메뉴 닫기",
-    "go-to-app": "앱으로 이동",
+    "close-menu-aria": "메뉴 닫기",
+    "go-to-app": "앱으로 가기",
     "home-aria": "홈",
     "language": "언어",
     "lang-en": "English",
     "lang-ko": "한국어",
-    "language-aria": "언어 변경",
+    "language-aria": "언어 바꾸기",
     "logo-sr": "Hypany 로고",
     "open-menu-aria": "내비게이션 메뉴 열기",
     "sign-in": "로그인",
@@ -227,7 +188,7 @@
   "app": {
     "metrics": {
       "title": "개요",
-      "visitorToSignup": "가입자/방문자 전환율",
+      "visitorToSignup": "방문자→가입 전환율",
       "projectLoad": "프로젝트 부하",
       "winProbability": "승률"
     },
@@ -241,43 +202,43 @@
     },
     "userMenu": {
       "theme": "테마",
-      "changelog": "변경 기록",
+      "changelog": "변경 사항",
       "documentation": "문서",
-      "joinSlack": "Slack 커뮤니티 참여",
-      "signOut": "로그아웃"
+      "joinSlack": "Slack 커뮤니티에 참여하기",
+      "signOut": "로그아웃하기"
     },
     "pages": {
       "root": { "title": "대시보드" },
       "settings": {
         "aria": "설정",
         "title": "설정",
-        "subtitle": "워크스페이스, 환경설정, 계정을 구성하세요."
+        "subtitle": "워크스페이스, 설정, 계정을 관리해요."
       },
       "organizations": {
         "aria": "조직",
         "title": "조직",
-        "subtitle": "조직, 구성원, 권한을 관리하세요."
+        "subtitle": "조직, 구성원, 권한을 관리해요."
       },
       "analytics": {
         "aria": "애널리틱스",
         "title": "애널리틱스",
-        "subtitle": "성과, 전환율, 사용자 참여를 추적하세요."
+        "subtitle": "성과, 전환율, 참여도를 확인해요."
       },
       "assets": {
         "aria": "에셋",
         "title": "에셋",
-        "subtitle": "가설과 캠페인 관련 에셋을 관리하세요."
+        "subtitle": "가설과 캠페인 에셋을 관리해요."
       },
       "waitlists": {
         "aria": "웨이트리스트",
         "title": "웨이트리스트",
-        "subtitle": "모든 제품 웨이트리스트를 관리하세요."
+        "subtitle": "모든 웨이트리스트를 관리해요."
       },
       "hypotheses": {
         "aria": "가설",
-        "subtitle": "가설을 탐색하고 관리하세요.",
+        "subtitle": "가설을 살펴보고 관리해요.",
         "overview-link": "개요",
-        "subtitle-2": "테이블 보기입니다."
+        "subtitle-2": "테이블 보기예요."
       }
     },
     "hypotheses": {
@@ -289,9 +250,9 @@
         "table": {
           "columns": {
             "hypothesis": "가설",
-            "signups": "가입 수",
-            "conv30d": "전환 (30일)",
-            "pageViews30d": "페이지 조회 (30일)",
+            "signups": "가입",
+            "conv30d": "전환율 (30일)",
+            "pageViews30d": "페이지뷰 (30일)",
             "landing": "랜딩",
             "status": "상태"
           }
@@ -308,9 +269,9 @@
       ,
       "monitoring": {
         "aria": "앱 모니터링",
-        "rangePlaceholder": "기간 선택...",
+        "rangePlaceholder": "기간을 선택해요",
         "ranges": { "30": "최근 30일", "90": "최근 90일", "180": "최근 180일", "365": "최근 365일" },
-        "filters": "보고서 필터",
+        "filters": "필터",
         "series": {
           "currentYear": "올해",
           "lastYear": "작년 동기간",
@@ -328,22 +289,22 @@
         },
         "yAxis": {
           "inherentRisk": "고유 위험 수",
-          "signupsVisitors": "가입 / 방문자",
+          "signupsVisitors": "가입/방문자",
           "esgImpact": "충족 기준 비율(%)",
           "bidderDensity": "경쟁 밀도(%)"
         }
       }
       ,
       "audits": {
-        "aria": "감사 개요",
+        "aria": "감사 현황",
         "searchPlaceholder": "감사 검색...",
         "filters": "필터",
         "auditRound": "감사 회차",
         "auditor": "감사자",
         "relatedDocs": "관련 문서",
         "status": "상태",
-        "edit": "편집",
-        "reupload": "재업로드",
+        "edit": "편집하기",
+        "reupload": "다시 업로드",
         "system": "시스템",
         "noSlug": "슬러그 없음",
         "docStatus": { "ok": "정상", "needsUpdate": "업데이트 필요", "inAudit": "감사 중" }

@@ -14,7 +14,7 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { useTranslations } from 'next-intl'
 
-const getStatusIcon = (status: string) => {
+const getStatusIcon = (status: 'complete' | 'warning') => {
   if (status === 'complete') {
     return (
       <RiCheckboxCircleFill className='size-[18px] shrink-0 text-emerald-600 dark:text-emerald-400' />
@@ -39,6 +39,19 @@ export default function Audits() {
   const t = useTranslations('app.hypotheses.audits')
   const [sections, setSections] = useState<Section[]>([])
 
+  const getDocStatusLabel = (
+    status: Section['documents'][number]['status']
+  ): string => {
+    switch (status) {
+      case 'OK':
+        return t('docStatus.ok')
+      case 'Needs update':
+        return t('docStatus.needsUpdate')
+      case 'In audit':
+        return t('docStatus.inAudit')
+    }
+  }
+
   useEffect(() => {
     let ignore = false
     async function load() {
@@ -62,7 +75,8 @@ export default function Audits() {
           documents: [
             {
               name: h.landingPage?.slug ?? t('noSlug'),
-              status: h.landingPage?.slug ? t('docStatus.ok') : t('docStatus.needsUpdate'),
+              // Use literal union values to satisfy Section type
+              status: h.landingPage?.slug ? 'OK' : 'Needs update',
             },
           ],
           id: h.id,
@@ -159,6 +173,9 @@ export default function Audits() {
                             {doc.name}
                           </a>
                           <div className='flex items-center gap-2'>
+                            <span className='text-xs text-gray-500 dark:text-gray-400'>
+                              {getDocStatusLabel(doc.status)}
+                            </span>
                             <button
                               type='button'
                               className='hover:text-gray-900 hover:underline hover:underline-offset-4 dark:hover:text-gray-50'

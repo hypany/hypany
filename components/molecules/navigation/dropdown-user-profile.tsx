@@ -112,12 +112,19 @@ export function DropdownUserProfile({
               <DropdownMenuRadioGroup
                 value={locale}
                 onValueChange={(value) => setLocaleCookie(value)}
-                disabled={isPending}
               >
-                <DropdownMenuRadioItem aria-label={t('lang-en')} value='en'>
+                <DropdownMenuRadioItem
+                  aria-label={t('lang-en')}
+                  value='en'
+                  disabled={isPending}
+                >
                   {t('lang-en')}
                 </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem aria-label={t('lang-ko')} value='ko'>
+                <DropdownMenuRadioItem
+                  aria-label={t('lang-ko')}
+                  value='ko'
+                  disabled={isPending}
+                >
                   {t('lang-ko')}
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>

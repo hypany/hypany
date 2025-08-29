@@ -3,7 +3,6 @@ import { useTranslations } from 'next-intl'
 import { RiArrowDownSFill } from '@remixicon/react'
 import {
   ChartBar,
-  House,
   LayoutDashboard,
   Lightbulb,
   Settings,
@@ -28,10 +27,15 @@ import { cx, focusRing } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
 import { UserProfile } from './user-profile'
 
+type IconComponent = React.ComponentType<{
+  className?: string
+  'aria-hidden'?: boolean | 'true' | 'false'
+}>
+
 type NavItem = {
   active: boolean
   href: string
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: string | boolean }>
+  icon: IconComponent
   name: string
   notifications: boolean
 }
@@ -51,7 +55,7 @@ type GroupItem = {
   active: boolean
 }
 type NavGroup = {
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: string | boolean }>
+  icon: IconComponent
   name: string
   href: string
   children: ReadonlyArray<GroupItem>
