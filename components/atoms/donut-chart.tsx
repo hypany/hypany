@@ -79,9 +79,9 @@ const ChartTooltip = ({
         )}
       >
         <div className={cx('space-y-1 px-4 py-2')}>
-          {payload.map(({ value, category, color }, index) => (
+          {payload.map(({ value, category, color }) => (
             <div
-              key={`id-${index}`}
+              key={`id-${category}-${value}`}
               className='flex items-center justify-between space-x-8'
             >
               <div className='flex items-center space-x-2'>

@@ -3,6 +3,9 @@
  * - Read and update waitlist configuration per hypothesis
  * - List and export entries, analytics insights
  */
+
+import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { getWaitlistIdForUser } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
@@ -10,8 +13,6 @@ import { toCsv } from '@/lib/csv'
 import { jsonError, jsonOk } from '@/lib/http'
 import { resolveRange } from '@/lib/time-range'
 import { hypotheses, waitlistEntries, waitlists } from '@/schema'
-import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import 'server-only'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
 import { authPlugin } from './auth-plugin'
@@ -286,13 +287,16 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
       params: t.Object({ hypothesisId: UlidParam }),
       query: t.Object({ format: t.Optional(WaitlistSchema.exportFormat) }),
       response: {
-        200: t.Object({
-          entries: t.Array(t.Record(t.String(), t.Any())),
-          exportedAt: t.Date(),
-          exportedEntries: t.Number(),
-          hypothesis: t.Optional(t.String()),
-          totalEntries: t.Number(),
-        }),
+        200: t.Union([
+          t.String(),
+          t.Object({
+            entries: t.Array(t.Record(t.String(), t.Any())),
+            exportedAt: t.Date(),
+            exportedEntries: t.Number(),
+            hypothesis: t.Optional(t.String()),
+            totalEntries: t.Number(),
+          }),
+        ]),
         401: ErrorResponse,
         404: ErrorResponse,
       },
@@ -432,12 +436,15 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         format: t.Optional(WaitlistSchema.exportFormat),
       }),
       response: {
-        200: t.Object({
-          entries: t.Array(t.Record(t.String(), t.Any())),
-          exportedAt: t.Date(),
-          exportedEntries: t.Number(),
-          totalWaitlists: t.Number(),
-        }),
+        200: t.Union([
+          t.String(),
+          t.Object({
+            entries: t.Array(t.Record(t.String(), t.Any())),
+            exportedAt: t.Date(),
+            exportedEntries: t.Number(),
+            totalWaitlists: t.Number(),
+          }),
+        ]),
         401: ErrorResponse,
       },
     },

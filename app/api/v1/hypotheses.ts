@@ -4,17 +4,7 @@
  * - Aggregated dashboard metrics (signups, growth, readiness)
  * - Per-hypothesis metrics and related resources (landing page, waitlist)
  */
-import { db } from '@/drizzle'
-import { HTTP_STATUS, ULID_PATTERN, WAITLIST_THRESHOLD } from '@/lib/constants'
-import { jsonError, jsonOk } from '@/lib/http'
-import { logger } from '@/lib/logger'
-import {
-  hypotheses,
-  landingPages,
-  pageVisits,
-  waitlistEntries,
-  waitlists,
-} from '@/schema'
+
 import {
   and,
   count,
@@ -27,6 +17,17 @@ import {
   lte,
 } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
+import { db } from '@/drizzle'
+import { HTTP_STATUS, ULID_PATTERN, WAITLIST_THRESHOLD } from '@/lib/constants'
+import { jsonError, jsonOk } from '@/lib/http'
+import { logger } from '@/lib/logger'
+import {
+  hypotheses,
+  landingPages,
+  pageVisits,
+  waitlistEntries,
+  waitlists,
+} from '@/schema'
 import 'server-only'
 import { ulid } from 'ulid'
 import {

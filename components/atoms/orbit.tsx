@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: Atoms */
 interface OrbitingObjectProps {
   /** Radius of the orbit in pixels */
   radiusPx?: number

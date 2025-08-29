@@ -4,6 +4,11 @@
  * - Waitlist signup, email verification, and position lookup
  * - No authentication required
  */
+
+import crypto from 'node:crypto'
+import { render } from '@react-email/render'
+import { and, eq, gt } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { VerificationEmail } from '@/emails/verification-email'
 import { computeWaitlistPositionByCreatedAt } from '@/lib/api-utils'
@@ -21,13 +26,8 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
-import { render } from '@react-email/render'
-import { and, eq, gt } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import crypto from 'node:crypto'
 import 'server-only'
 import { ulid } from 'ulid'
-import { ErrorResponse } from '../docs'
 
 // Public API for landing pages (no auth required)
 function parseCookie(cookieHeader?: string | null): Record<string, string> {
@@ -125,32 +125,6 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
       params: t.Object({
         id: t.String({ pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$' }), // ULID pattern
       }),
-      response: {
-        200: t.Object({
-          blocks: t.Array(
-            t.Object({
-              id: t.String(),
-              type: t.String(),
-              order: t.String(),
-              content: t.String(),
-            }),
-          ),
-          hypothesis: t.Object({
-            name: t.String(),
-            description: t.Nullable(t.String()),
-          }),
-          landingPage: t.Object({
-            customCss: t.Nullable(t.String()),
-            favicon: t.Nullable(t.String()),
-            metaDescription: t.Nullable(t.String()),
-            metaTitle: t.Nullable(t.String()),
-            ogImage: t.Nullable(t.String()),
-            template: t.String(),
-          }),
-          waitlist: t.Object({ id: t.Optional(t.String()) }),
-        }),
-        404: ErrorResponse,
-      },
     },
   )
 
@@ -314,11 +288,6 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
       params: t.Object({
         id: t.String({ pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$' }), // ULID pattern
       }),
-      response: {
-        200: t.Object({ success: t.Boolean(), position: t.Number() }),
-        404: ErrorResponse,
-        409: ErrorResponse,
-      },
     },
   )
 
@@ -447,11 +416,6 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         email: t.String({ format: 'email' }),
         token: t.String(),
       }),
-      response: {
-        200: t.Object({ success: t.Boolean(), message: t.String() }),
-        400: ErrorResponse,
-        404: ErrorResponse,
-      },
     },
   )
 
@@ -532,9 +496,5 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         email: t.String({ format: 'email' }),
         id: t.String({ pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$' }), // ULID pattern
       }),
-      response: {
-        200: t.Object({ position: t.Number(), verified: t.Boolean() }),
-        404: ErrorResponse,
-      },
     },
   )

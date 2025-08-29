@@ -78,13 +78,13 @@ const BarLabels = ({ values }: { values: number[] }) => {
 
         sumConsecutiveHiddenLabels = showLabel
           ? 0
-          : (sumConsecutiveHiddenLabels += widthPercentage)
+          : sumConsecutiveHiddenLabels + widthPercentage
 
         const widthPositionLeft = getPositionLeft(widthPercentage, sumValues)
 
         return (
           <div
-            key={`item-${index}`}
+            key={`item-${prefixSum}-${widthPercentage}`}
             className='flex items-center justify-end pr-0.5'
             style={{ width: `${widthPositionLeft}%` }}
           >
@@ -144,13 +144,7 @@ const CategoryBar = React.forwardRef<HTMLDivElement, CategoryBarProps>(
     )
 
     return (
-      <div
-        ref={forwardedRef}
-        className={cx(className)}
-        aria-label='Category bar'
-        aria-valuenow={marker?.value}
-        {...props}
-      >
+      <div ref={forwardedRef} className={cx(className)} {...props}>
         {showLabels ? <BarLabels values={values} /> : null}
         <div className='relative flex h-2 w-full items-center'>
           <div className='flex h-full flex-1 items-center gap-0.5 overflow-hidden rounded-full'>
@@ -159,7 +153,7 @@ const CategoryBar = React.forwardRef<HTMLDivElement, CategoryBarProps>(
               const percentage = (value / maxValue) * 100
               return (
                 <div
-                  key={`item-${index}`}
+                  key={`item-${value}`}
                   className={cx(
                     'h-full',
                     getColorClassName(

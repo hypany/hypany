@@ -1,3 +1,6 @@
+import { and, eq, isNull } from 'drizzle-orm'
+import { cookies, headers } from 'next/headers'
+import { notFound } from 'next/navigation'
 import { db } from '@/drizzle'
 import { BOT_UA_REGEX } from '@/lib/constants'
 import { logger } from '@/lib/logger'
@@ -10,9 +13,6 @@ import {
 } from '@/schema'
 import { Template1 } from '@/templates/template-1'
 import type { LandingConfig } from '@/templates/types'
-import { and, eq, isNull } from 'drizzle-orm'
-import { cookies, headers } from 'next/headers'
-import { notFound } from 'next/navigation'
 
 export default async function PublicBySlug({
   params,

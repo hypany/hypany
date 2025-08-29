@@ -17,11 +17,18 @@ export function jsonError(
   return reason ? { error, reason } : { error }
 }
 
+// Overloads to keep return type precise for Swagger typing
+export function jsonOk(set: SetLike): { success: true }
+export function jsonOk<T extends object>(
+  set: SetLike,
+  status: number,
+  body: T,
+): T
 export function jsonOk<T extends object>(
   set: SetLike,
   status: number = HTTP_STATUS.OK,
   body?: T,
 ) {
   set.status = status
-  return (body ?? { success: true }) as T | { success: true }
+  return body ?? { success: true }
 }

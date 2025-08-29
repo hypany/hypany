@@ -4,15 +4,15 @@
  * - Traffic sources (UTM & referrers)
  * - Aggregated metrics per hypothesis
  */
+
+import { and, desc, eq, gte, inArray, lt, lte } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { BOT_UA_REGEX, HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { resolveRange } from '@/lib/time-range'
 import { hypotheses, pageVisits, waitlistEntries, waitlists } from '@/schema'
-import { and, desc, eq, gte, inArray, lt, lte } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import 'server-only'
-import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 function extractReferrerDomain(referrer?: string | null): string {
@@ -259,6 +259,25 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         ),
         to: t.Optional(t.String()),
       }),
+      response: {
+        200: t.Object({
+          items: t.Array(
+            t.Object({
+              email: t.Nullable(t.String()),
+              hypothesisId: t.String(),
+              source: t.String(),
+              timestamp: t.Date(),
+              type: t.Union([
+                t.Literal('page_view'),
+                t.Literal('signup'),
+                t.Literal('verification'),
+              ]),
+            }),
+          ),
+          nextCursor: t.Nullable(t.String()),
+        }),
+        401: t.Object({ error: t.String(), reason: t.Optional(t.String()) }),
+      },
     },
   )
 
@@ -376,6 +395,18 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         ),
         to: t.Optional(t.String()),
       }),
+      response: {
+        200: t.Object({
+          range: t.Object({ from: t.Date(), to: t.Date() }),
+          referrers: t.Array(
+            t.Object({ count: t.Number(), referrer: t.String() }),
+          ),
+          utmSources: t.Array(
+            t.Object({ count: t.Number(), source: t.String() }),
+          ),
+        }),
+        401: t.Object({ error: t.String(), reason: t.Optional(t.String()) }),
+      },
     },
   )
 
@@ -688,6 +719,38 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         ),
         to: t.Optional(t.String()),
       }),
+      response: {
+        200: t.Object({
+          daily: t.Array(
+            t.Object({
+              date: t.String(),
+              signups: t.Number(),
+              visitors: t.Number(),
+            }),
+          ),
+          perHypothesis: t.Array(
+            t.Object({
+              conversionVisitorsToSignups: t.Number(),
+              conversionVisitorsToVerified: t.Number(),
+              hypothesisId: t.String(),
+              pageViews: t.Number(),
+              signups: t.Number(),
+              uniqueVisitors: t.Number(),
+              verifiedSignups: t.Number(),
+            }),
+          ),
+          range: t.Object({ from: t.Date(), to: t.Date() }),
+          totals: t.Object({
+            conversionVisitorsToSignups: t.Number(),
+            conversionVisitorsToVerified: t.Number(),
+            pageViews: t.Number(),
+            signups: t.Number(),
+            uniqueVisitors: t.Number(),
+            verifiedSignups: t.Number(),
+          }),
+        }),
+        401: t.Object({ error: t.String(), reason: t.Optional(t.String()) }),
+      },
     },
   )
 

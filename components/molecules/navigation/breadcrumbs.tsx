@@ -5,7 +5,7 @@ export function Breadcrumbs() {
   return (
     <>
       <nav aria-label='Breadcrumb' className='ml-2'>
-        <ol role='list' className='flex items-center space-x-3 text-sm'>
+        <ol className='flex items-center space-x-3 text-sm'>
           <li className='flex'>
             <Link
               href='#'

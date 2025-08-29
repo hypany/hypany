@@ -1,5 +1,6 @@
 // Elysia macro that injects Better Auth session/user into route context
 // when `auth: true` is present in the route options. Replies 401 otherwise.
+
 import { Elysia } from 'elysia'
 import { auth } from '@/auth'
 

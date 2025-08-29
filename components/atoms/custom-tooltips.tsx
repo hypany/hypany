@@ -12,7 +12,12 @@ export const CustomTooltip = ({ payload, active }: TooltipProps) => {
     const firstValue = payload[1].value
     const secondValue = payload[0].value
 
-    if (isNaN(firstValue) || isNaN(secondValue) || firstValue === 0) return null
+    if (
+      Number.isNaN(firstValue) ||
+      Number.isNaN(secondValue) ||
+      firstValue === 0
+    )
+      return null
 
     const percentageDiff = ((secondValue - firstValue) / firstValue) * 100
     const sign = percentageDiff > 0 ? '+' : ''
@@ -24,8 +29,8 @@ export const CustomTooltip = ({ payload, active }: TooltipProps) => {
   return (
     <div className='flex w-56 items-start justify-between rounded-md border border-gray-200 bg-white p-2 text-sm shadow-md dark:border-gray-800 dark:bg-gray-950'>
       <div className='space-y-2'>
-        {payload.map((category, index) => (
-          <div key={index} className='flex space-x-2.5'>
+        {payload.map((category) => (
+          <div key={category.category} className='flex space-x-2.5'>
             <span
               className={cx(
                 getColorClassName(category.color, 'bg'),
@@ -68,15 +73,15 @@ export const CustomTooltip2 = ({
   if (!active || !payload || payload.length === 0) return null
 
   const data = payload[0].payload
-  const ratio = (data['Quotes'] / data['Total deal size']) * 100
+  const ratio = (data.Quotes / data.Total_deal_size) * 100
 
   const categoriesToShow = ['Quotes', 'Total deal size']
 
   return (
     <div className='w-56 rounded-md border border-gray-200 bg-white text-sm shadow-md dark:border-gray-800 dark:bg-gray-950'>
-      <ul role='list' className='grid grid-cols-2 gap-x-4 p-2'>
-        {categoriesToShow.map((category, index) => (
-          <li key={index} className='flex space-x-2.5'>
+      <ul className='grid grid-cols-2 gap-x-4 p-2'>
+        {categoriesToShow.map((category) => (
+          <li key={category} className='flex space-x-2.5'>
             <span
               className={cx(
                 category === 'Quotes'
@@ -123,7 +128,11 @@ export const CustomTooltip3 = ({ payload, active }: TooltipProps) => {
 
   const firstValue = payload[0]?.value
 
-  if (typeof firstValue !== 'number' || isNaN(firstValue) || firstValue === 0)
+  if (
+    typeof firstValue !== 'number' ||
+    Number.isNaN(firstValue) ||
+    firstValue === 0
+  )
     return null
 
   const percentageDiff = ((firstValue - PEER_AVERAGE) / PEER_AVERAGE) * 100
@@ -132,9 +141,9 @@ export const CustomTooltip3 = ({ payload, active }: TooltipProps) => {
 
   return (
     <div className='w-56 rounded-md border border-gray-200 bg-white text-sm shadow-md dark:border-gray-800 dark:bg-gray-950'>
-      <ul role='list' className='grid grid-cols-2 gap-x-4 p-2'>
-        {payload.map((category, index) => (
-          <li key={index} className='flex space-x-2.5'>
+      <ul className='grid grid-cols-2 gap-x-4 p-2'>
+        {payload.map((category) => (
+          <li key={category.category} className='flex space-x-2.5'>
             <span
               className={cx(chartColors[category.color].bg, 'w-1 rounded-sm')}
               aria-hidden='true'
@@ -208,7 +217,7 @@ export const CustomTooltip4 = ({ payload, active }: TooltipProps) => {
 
   return (
     <div className='w-56 rounded-md border border-gray-200 bg-white text-sm shadow-md dark:border-gray-800 dark:bg-gray-950'>
-      <ul role='list' className='grid grid-cols-2 gap-x-4 p-2'>
+      <ul className='grid grid-cols-2 gap-x-4 p-2'>
         <li className='flex space-x-2.5'>
           <span
             className={cx(

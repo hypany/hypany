@@ -88,6 +88,7 @@ const ProgressCircle = React.forwardRef<SVGSVGElement, ProgressCircleProps>(
           className={cx('-rotate-90 transform', className)}
           {...props}
         >
+          <title>Progress circle</title>
           <circle
             r={normalizedRadius}
             cx={radius}

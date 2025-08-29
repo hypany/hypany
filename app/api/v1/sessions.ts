@@ -2,12 +2,13 @@
  * Sessions API (v1)
  * - Revoke sessions for the authenticated user
  */
+
+import { and, eq } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { sessions } from '@/schema'
-import { and, eq } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import 'server-only'
 import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'

@@ -4,6 +4,9 @@
  * - Manage content blocks (create/update/delete/reorder/replace)
  * - Resolve and verify domain connectivity
  */
+
+import { and, eq, isNull, ne } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { getLandingPageIdForUser } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
@@ -16,8 +19,6 @@ import {
   removeVercelProjectDomains,
 } from '@/lib/vercel'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
-import { and, eq, isNull, ne } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import 'server-only'
 import { ulid } from 'ulid'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'

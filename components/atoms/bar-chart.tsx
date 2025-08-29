@@ -115,6 +115,14 @@ const LegendItem = ({
         e.stopPropagation()
         onClick?.(name, color)
       }}
+      onKeyUp={(e) => {
+        e.stopPropagation()
+        onClick?.(name, color)
+      }}
+      onKeyDown={(e) => {
+        e.stopPropagation()
+        onClick?.(name, color)
+      }}
     >
       <span
         className={cx(

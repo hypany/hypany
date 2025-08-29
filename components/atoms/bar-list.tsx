@@ -52,7 +52,6 @@ function BarListInner<T>(
     <div
       ref={forwardedRef}
       className={cx('flex justify-between space-x-6', className)}
-      aria-sort={sortOrder}
       {...props}
     >
       <div className='relative w-full space-y-1.5'>

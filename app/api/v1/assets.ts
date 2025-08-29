@@ -2,12 +2,13 @@
  * Assets API (v1)
  * - List and soft-delete uploaded assets
  */
+
+import { and, eq, isNull } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { assets } from '@/schema'
-import { and, eq, isNull } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import 'server-only'
 import { ErrorResponse, SuccessResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
@@ -46,6 +47,10 @@ export const assetsApi = new Elysia({ prefix: '/v1/assets' })
         hypothesisId: t.Optional(t.String()),
         includeDeleted: t.Optional(t.Boolean()),
       }),
+      response: {
+        200: t.Object({ assets: t.Array(t.Record(t.String(), t.Any())) }),
+        401: ErrorResponse,
+      },
     },
   )
   // Soft delete an asset
@@ -80,5 +85,10 @@ export const assetsApi = new Elysia({ prefix: '/v1/assets' })
         tags: ['Uploads'],
       },
       params: t.Object({ id: t.String() }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )

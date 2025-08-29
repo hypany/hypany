@@ -82,7 +82,8 @@
     "dev": "next dev",
     "format": "biome check --write .",
     "lint": "next lint",
-    "start": "next start"  },
+    "start": "next start"
+  },
   "trustedDependencies": [
     "@tailwindcss/oxide",
     "@vercel/speed-insights",

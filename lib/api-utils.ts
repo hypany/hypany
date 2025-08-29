@@ -1,6 +1,6 @@
+import { and, eq, isNull, lte } from 'drizzle-orm'
 import { db } from '@/drizzle'
 import { hypotheses, landingPages, waitlistEntries, waitlists } from '@/schema'
-import { and, eq, isNull, lte } from 'drizzle-orm'
 
 export async function getLandingPageIdForUser(
   userId: string,
