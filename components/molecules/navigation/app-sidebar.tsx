@@ -1,12 +1,7 @@
 'use client'
-import { useTranslations } from 'next-intl'
 import { RiArrowDownSFill } from '@remixicon/react'
-import {
-  ChartBar,
-  LayoutDashboard,
-  Lightbulb,
-  Settings,
-} from 'lucide-react'
+import { ChartBar, LayoutDashboard, Lightbulb, Settings } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import * as React from 'react'
 import { Divider } from '@/components/atoms/divider'
 import { Input } from '@/components/atoms/input'
@@ -25,8 +20,8 @@ import {
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
-import { UserProfile } from './user-profile'
 import OrgSwitcher from './org-switcher'
+import { UserProfile } from './user-profile'
 
 type IconComponent = React.ComponentType<{
   className?: string

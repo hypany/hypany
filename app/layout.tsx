@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { getLocale, getMessages } from 'next-intl/server'
+import { Toaster } from 'sonner'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -49,11 +50,16 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className='overflow-x-hidden scroll-auto bg-gray-50 dark:bg-gray-925 selection:bg-emerald-100 selection:text-emerald-600'>
-        <Providers i18nMessages={messages} i18nLocale={locale} i18nTimeZone='UTC'>
+        <Providers
+          i18nMessages={messages}
+          i18nLocale={locale}
+          i18nTimeZone='UTC'
+        >
           {children}
         </Providers>
         <Analytics />
         <SpeedInsights />
+        <Toaster richColors position='top-right' />
       </body>
     </html>
   )

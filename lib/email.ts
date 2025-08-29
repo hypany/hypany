@@ -1,4 +1,3 @@
-import 'server-only'
 import Plunk from '@plunk/node'
 import { getEnv } from '@/lib/env'
 import { logger } from '@/lib/logger'

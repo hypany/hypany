@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { auth } from '@/auth'
 import { getSession } from '@/auth/server'
 import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
@@ -48,6 +49,12 @@ export default async function RootLayout({
   const session = await getSession()
   if (!session) {
     redirect('/sign-in')
+  }
+  // Ensure user has at least one organization
+  const hdrs = await headers()
+  const orgs = await auth.api.listOrganizations({ headers: hdrs })
+  if (!orgs || (Array.isArray(orgs) && orgs.length === 0)) {
+    redirect('/create-organization')
   }
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get('sidebar:state')?.value !== 'false'

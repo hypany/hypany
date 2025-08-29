@@ -1,7 +1,7 @@
 'use client'
 import { Download } from 'lucide-react'
-import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
@@ -207,7 +207,9 @@ export default function Overview() {
               <TableHeaderCell>{t('table.columns.hypothesis')}</TableHeaderCell>
               <TableHeaderCell>{t('table.columns.signups')}</TableHeaderCell>
               <TableHeaderCell>{t('table.columns.conv30d')}</TableHeaderCell>
-              <TableHeaderCell>{t('table.columns.pageViews30d')}</TableHeaderCell>
+              <TableHeaderCell>
+                {t('table.columns.pageViews30d')}
+              </TableHeaderCell>
               <TableHeaderCell>{t('table.columns.landing')}</TableHeaderCell>
               <TableHeaderCell>{t('table.columns.status')}</TableHeaderCell>
             </TableRow>

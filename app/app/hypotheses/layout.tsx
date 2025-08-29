@@ -1,8 +1,8 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import type React from 'react'
 import { useTranslations } from 'next-intl'
+import type React from 'react'
 import {
   TabNavigation,
   TabNavigationLink,

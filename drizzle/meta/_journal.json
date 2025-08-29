@@ -7,6 +7,13 @@
       "tag": "0000_ancient_hex",
       "version": "7",
       "when": 1756471398071
+    },
+    {
+      "breakpoints": true,
+      "idx": 1,
+      "tag": "0001_fresh_puma",
+      "version": "7",
+      "when": 1756492458267
     }
   ],
   "version": "7"

@@ -9,65 +9,47 @@ import {
 import { ulid } from 'ulid'
 
 // BETTER AUTH SCHEMA START. DO NOT TOUCH.
-export const users = pgTable(
-  'users',
-  {
-    banExpires: timestamp('ban_expires'),
-    banned: boolean('banned'),
-    banReason: text('ban_reason'),
-    createdAt: timestamp('created_at')
-      .$defaultFn(() => /* @__PURE__ */ new Date())
-      .notNull(),
-    email: text('email').notNull().unique(),
-    emailVerified: boolean('email_verified')
-      .$defaultFn(() => false)
-      .notNull(),
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => ulid()),
-    image: text('image'),
-    name: text('name').notNull(),
-    role: text('role'),
-    updatedAt: timestamp('updated_at')
-      .$defaultFn(() => /* @__PURE__ */ new Date())
-      .notNull(),
-  },
-  (table) => ({
-    emailIdx: index('users_email_idx').on(table.email),
-  }),
-)
+export const users = pgTable('users', {
+  banExpires: timestamp('ban_expires'),
+  banned: boolean('banned'),
+  banReason: text('ban_reason'),
+  createdAt: timestamp('created_at')
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('email_verified')
+    .$defaultFn(() => false)
+    .notNull(),
+  id: text('id').primaryKey(),
+  image: text('image'),
+  name: text('name').notNull(),
+  role: text('role'),
+  updatedAt: timestamp('updated_at')
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+})
 
-export const sessions = pgTable(
-  'sessions',
-  {
-    createdAt: timestamp('created_at').notNull(),
-    expiresAt: timestamp('expires_at').notNull(),
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => ulid()),
-    impersonatedBy: text('impersonated_by'),
-    ipAddress: text('ip_address'),
-    token: text('token').notNull().unique(),
-    updatedAt: timestamp('updated_at').notNull(),
-    userAgent: text('user_agent'),
-    userId: text('user_id')
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-  },
-  (table) => ({
-    tokenIdx: index('sessions_token_idx').on(table.token),
-    userIdIdx: index('sessions_user_id_idx').on(table.userId),
-  }),
-)
+export const sessions = pgTable('sessions', {
+  activeOrganizationId: text('active_organization_id'),
+  createdAt: timestamp('created_at').notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  id: text('id').primaryKey(),
+  impersonatedBy: text('impersonated_by'),
+  ipAddress: text('ip_address'),
+  token: text('token').notNull().unique(),
+  updatedAt: timestamp('updated_at').notNull(),
+  userAgent: text('user_agent'),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+})
 
 export const accounts = pgTable('accounts', {
   accessToken: text('access_token'),
   accessTokenExpiresAt: timestamp('access_token_expires_at'),
   accountId: text('account_id').notNull(),
   createdAt: timestamp('created_at').notNull(),
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => ulid()),
+  id: text('id').primaryKey(),
   idToken: text('id_token'),
   password: text('password'),
   providerId: text('provider_id').notNull(),
@@ -85,9 +67,7 @@ export const verifications = pgTable('verifications', {
     () => /* @__PURE__ */ new Date(),
   ),
   expiresAt: timestamp('expires_at').notNull(),
-  id: text('id')
-    .primaryKey()
-    .$defaultFn(() => ulid()),
+  id: text('id').primaryKey(),
   identifier: text('identifier').notNull(),
   updatedAt: timestamp('updated_at').$defaultFn(
     () => /* @__PURE__ */ new Date(),
@@ -95,6 +75,40 @@ export const verifications = pgTable('verifications', {
   value: text('value').notNull(),
 })
 
+export const organizations = pgTable('organizations', {
+  createdAt: timestamp('created_at').notNull(),
+  id: text('id').primaryKey(),
+  logo: text('logo'),
+  metadata: text('metadata'),
+  name: text('name').notNull(),
+  slug: text('slug').unique(),
+})
+
+export const members = pgTable('members', {
+  createdAt: timestamp('created_at').notNull(),
+  id: text('id').primaryKey(),
+  organizationId: text('organization_id')
+    .notNull()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
+  role: text('role').default('member').notNull(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+})
+
+export const invitations = pgTable('invitations', {
+  email: text('email').notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  id: text('id').primaryKey(),
+  inviterId: text('inviter_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  organizationId: text('organization_id')
+    .notNull()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
+  role: text('role'),
+  status: text('status').default('pending').notNull(),
+})
 // BETTER AUTH SCHEMA END.
 
 // APPLICATION SCHEMA START

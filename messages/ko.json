@@ -1,4 +1,162 @@
 {
+  "app": {
+    "breadcrumbs": { "home": "홈", "hypotheses": "가설" },
+    "hypotheses": {
+      "audits": {
+        "aria": "감사 현황",
+        "auditor": "감사자",
+        "auditRound": "감사 회차",
+        "docStatus": {
+          "inAudit": "감사 중",
+          "needsUpdate": "업데이트 필요",
+          "ok": "정상"
+        },
+        "edit": "편집하기",
+        "filters": "필터",
+        "noSlug": "슬러그 없음",
+        "relatedDocs": "관련 문서",
+        "reupload": "다시 업로드",
+        "searchPlaceholder": "감사 검색...",
+        "status": "상태",
+        "system": "시스템"
+      },
+      "monitoring": {
+        "aria": "앱 모니터링",
+        "cards": {
+          "bidderDensity": {
+            "desc": "시간 경과에 따른 입찰자 수와 규모로 측정한 경쟁 수준",
+            "title": "입찰자 밀도"
+          },
+          "esgImpact": {
+            "desc": "입찰에서 충족된 ESG 기준의 시간별 평가",
+            "title": "ESG 영향"
+          },
+          "inherentRisk": {
+            "desc": "위험 수준별 시간 경과에 따른 시나리오",
+            "title": "고유 위험"
+          },
+          "signupsVsVisitors": {
+            "desc": "선택한 기간의 일일 가입 수와 고유 방문자 비교",
+            "title": "가입 vs 방문자"
+          }
+        },
+        "filters": "필터",
+        "rangePlaceholder": "기간을 선택해요",
+        "ranges": {
+          "30": "최근 30일",
+          "90": "최근 90일",
+          "180": "최근 180일",
+          "365": "최근 365일"
+        },
+        "series": {
+          "addressed": "해결됨",
+          "currentYear": "올해",
+          "density": "밀도",
+          "lastYear": "작년 동기간",
+          "signups": "가입",
+          "unrealized": "미실현",
+          "visitors": "방문자"
+        },
+        "yAxis": {
+          "bidderDensity": "경쟁 밀도(%)",
+          "esgImpact": "충족 기준 비율(%)",
+          "inherentRisk": "고유 위험 수",
+          "signupsVisitors": "가입/방문자"
+        }
+      },
+      "overview": {
+        "aria": "개요 테이블",
+        "assignedPlaceholder": "담당자...",
+        "export": "내보내기",
+        "noSlug": "슬러그 없음",
+        "regions": {
+          "archived": "보관됨",
+          "draft": "초안",
+          "published": "게시됨"
+        },
+        "row": {
+          "conversionRate30d": "{value}% 전환 (30일)",
+          "pageViews30d": "{count} 페이지 조회 (30일)",
+          "signupCount": "가입 {count}명"
+        },
+        "searchPlaceholder": "가설 검색...",
+        "statusLabel": {
+          "closed": "종료",
+          "drafted": "초안",
+          "sent": "전송됨"
+        },
+        "table": {
+          "columns": {
+            "conv30d": "전환율 (30일)",
+            "hypothesis": "가설",
+            "landing": "랜딩",
+            "pageViews30d": "페이지뷰 (30일)",
+            "signups": "가입",
+            "status": "상태"
+          }
+        }
+      },
+      "tabs": { "audits": "감사", "monitoring": "모니터링", "overview": "개요" }
+    },
+    "metrics": {
+      "projectLoad": "프로젝트 부하",
+      "title": "개요",
+      "visitorToSignup": "방문자→가입 전환율",
+      "winProbability": "승률"
+    },
+    "pages": {
+      "analytics": {
+        "aria": "애널리틱스",
+        "subtitle": "성과, 전환율, 참여도를 확인해요.",
+        "title": "애널리틱스"
+      },
+      "assets": {
+        "aria": "에셋",
+        "subtitle": "가설과 캠페인 에셋을 관리해요.",
+        "title": "에셋"
+      },
+      "hypotheses": {
+        "aria": "가설",
+        "overview-link": "개요",
+        "subtitle": "가설을 살펴보고 관리해요.",
+        "subtitle-2": "테이블 보기예요."
+      },
+      "organizations": {
+        "aria": "조직",
+        "subtitle": "조직, 구성원, 권한을 관리해요.",
+        "title": "조직"
+      },
+      "root": { "title": "대시보드" },
+      "settings": {
+        "aria": "설정",
+        "subtitle": "워크스페이스, 설정, 계정을 관리해요.",
+        "title": "설정"
+      },
+      "waitlists": {
+        "aria": "웨이트리스트",
+        "subtitle": "모든 웨이트리스트를 관리해요.",
+        "title": "웨이트리스트"
+      }
+    },
+    "sidebar": {
+      "analytics": {
+        "_": "애널리틱스",
+        "overview": "개요",
+        "waitlists": "전체 웨이트리스트"
+      },
+      "hypotheses": { "_": "가설", "assets": "에셋", "overview": "개요" },
+      "overview": "개요",
+      "search": "항목 검색...",
+      "settings": { "_": "설정", "general": "일반", "organizations": "조직" }
+    },
+    "userMenu": {
+      "changelog": "변경 사항",
+      "documentation": "문서",
+      "joinSlack": "Slack 커뮤니티에 참여하기",
+      "signOut": "로그아웃하기",
+      "theme": "테마"
+    }
+  },
   "auth": {
     "common": {
       "back": "돌아가기"
@@ -12,6 +170,20 @@
       "footer-text": "비밀번호가 기억났나요?",
       "subtitle": "이메일을 입력하시면 비밀번호 재설정 링크를 보내드려요",
       "title": "비밀번호 찾기"
+    },
+    "form": {
+      "actions": {
+        "continue": "계속하기"
+      },
+      "email": {
+        "label": "이메일",
+        "placeholder": "name@example.com"
+      },
+      "forgot-password": "비밀번호를 잊으셨나요?",
+      "password": {
+        "label": "비밀번호",
+        "placeholder": "비밀번호를 입력해요"
+      }
     },
     "reset-password": {
       "aside": {
@@ -42,20 +214,29 @@
       "footer-text": "이미 계정이 있나요?",
       "subtitle": "시작하려면 정보를 입력해요",
       "title": "계정 만들기"
+    }
+  },
+  "common": {
+    "aria": {
+      "product-showcase": "제품 쇼케이스"
     },
-    "form": {
-      "actions": {
-        "continue": "계속하기"
-      },
-      "email": {
-        "label": "이메일",
-        "placeholder": "name@example.com"
-      },
-      "forgot-password": "비밀번호를 잊으셨나요?",
+    "input": {
       "password": {
-        "label": "비밀번호",
-        "placeholder": "비밀번호를 입력해요"
+        "hide": "비밀번호 숨기기",
+        "show": "비밀번호 표시",
+        "toggle-aria": "비밀번호 표시 전환"
       }
+    },
+    "theme": {
+      "aria": {
+        "dark": "다크 테마",
+        "light": "라이트 테마",
+        "system": "시스템 테마"
+      },
+      "dark": "다크",
+      "light": "라이트",
+      "system": "시스템",
+      "toggle-aria": "테마 바꾸기"
     }
   },
   "footer": {
@@ -63,27 +244,6 @@
     "footer-pattern-alt": "Hypany 로고 패턴"
   },
   "landing": {
-    "footer": {
-        "logo-alt": "Hypany 로고",
-        "sections": {
-
-       
-
-        
-        "hypotheses": {
-          "title": "가설",
-          "items": { "overview": "개요", "assets": "에셋" }
-        },
-        "analytics": {
-          "title": "애널리틱스",
-          "items": { "overview": "개요", "waitlists": "전체 웨이트리스트" }
-        },
-        "settings": {
-          "title": "설정",
-          "items": { "general": "일반", "organizations": "조직" }
-        }
-      }
-    },
     "banner": {
       "aria": "최신 업데이트를 변경 기록 페이지에서 보기",
       "new": "소식",
@@ -118,6 +278,24 @@
         "title": "웨이트리스트에서 유료 고객으로"
       }
     },
+    "footer": {
+      "logo-alt": "Hypany 로고",
+      "sections": {
+        "analytics": {
+          "items": { "overview": "개요", "waitlists": "전체 웨이트리스트" },
+          "title": "애널리틱스"
+        },
+
+        "hypotheses": {
+          "items": { "assets": "에셋", "overview": "개요" },
+          "title": "가설"
+        },
+        "settings": {
+          "items": { "general": "일반", "organizations": "조직" },
+          "title": "설정"
+        }
+      }
+    },
     "hero": {
       "cta": "아이디어 검증하기",
       "sub": {
@@ -147,171 +325,19 @@
       }
     }
   },
-  "common": {
-    "aria": {
-      "product-showcase": "제품 쇼케이스"
-    },
-    "input": {
-      "password": {
-        "toggle-aria": "비밀번호 표시 전환",
-        "show": "비밀번호 표시",
-        "hide": "비밀번호 숨기기"
-      }
-    },
-    "theme": {
-      "aria": {
-        "dark": "다크 테마",
-        "light": "라이트 테마",
-        "system": "시스템 테마"
-      },
-      "dark": "다크",
-      "light": "라이트",
-      "system": "시스템",
-      "toggle-aria": "테마 바꾸기"
-    }
-  },
-  
+
   "nav": {
+    "brand": "하이퍼니",
     "close-menu-aria": "메뉴 닫기",
     "go-to-app": "앱으로 가기",
     "home-aria": "홈",
-    "brand": "하이퍼니",
-    "language": "언어",
     "lang-en": "English",
     "lang-ko": "한국어",
+    "language": "언어",
     "language-aria": "언어 바꾸기",
     "logo-sr": "Hypany 로고",
     "open-menu-aria": "내비게이션 메뉴 열기",
     "sign-in": "로그인",
     "sign-up": "회원가입"
-  }
-  ,
-  "app": {
-    "metrics": {
-      "title": "개요",
-      "visitorToSignup": "방문자→가입 전환율",
-      "projectLoad": "프로젝트 부하",
-      "winProbability": "승률"
-    },
-    "breadcrumbs": { "home": "홈", "hypotheses": "가설" },
-    "sidebar": {
-      "overview": "개요",
-      "search": "항목 검색...",
-      "hypotheses": { "_": "가설", "overview": "개요", "assets": "에셋" },
-      "analytics": { "_": "애널리틱스", "overview": "개요", "waitlists": "전체 웨이트리스트" },
-      "settings": { "_": "설정", "general": "일반", "organizations": "조직" }
-    },
-    "userMenu": {
-      "theme": "테마",
-      "changelog": "변경 사항",
-      "documentation": "문서",
-      "joinSlack": "Slack 커뮤니티에 참여하기",
-      "signOut": "로그아웃하기"
-    },
-    "pages": {
-      "root": { "title": "대시보드" },
-      "settings": {
-        "aria": "설정",
-        "title": "설정",
-        "subtitle": "워크스페이스, 설정, 계정을 관리해요."
-      },
-      "organizations": {
-        "aria": "조직",
-        "title": "조직",
-        "subtitle": "조직, 구성원, 권한을 관리해요."
-      },
-      "analytics": {
-        "aria": "애널리틱스",
-        "title": "애널리틱스",
-        "subtitle": "성과, 전환율, 참여도를 확인해요."
-      },
-      "assets": {
-        "aria": "에셋",
-        "title": "에셋",
-        "subtitle": "가설과 캠페인 에셋을 관리해요."
-      },
-      "waitlists": {
-        "aria": "웨이트리스트",
-        "title": "웨이트리스트",
-        "subtitle": "모든 웨이트리스트를 관리해요."
-      },
-      "hypotheses": {
-        "aria": "가설",
-        "subtitle": "가설을 살펴보고 관리해요.",
-        "overview-link": "개요",
-        "subtitle-2": "테이블 보기예요."
-      }
-    },
-    "hypotheses": {
-      "overview": {
-        "aria": "개요 테이블",
-        "searchPlaceholder": "가설 검색...",
-        "assignedPlaceholder": "담당자...",
-        "export": "내보내기",
-        "table": {
-          "columns": {
-            "hypothesis": "가설",
-            "signups": "가입",
-            "conv30d": "전환율 (30일)",
-            "pageViews30d": "페이지뷰 (30일)",
-            "landing": "랜딩",
-            "status": "상태"
-          }
-        },
-        "regions": { "draft": "초안", "published": "게시됨", "archived": "보관됨" },
-        "statusLabel": { "drafted": "초안", "sent": "전송됨", "closed": "종료" },
-        "row": {
-          "pageViews30d": "{count} 페이지 조회 (30일)",
-          "conversionRate30d": "{value}% 전환 (30일)",
-          "signupCount": "가입 {count}명"
-        },
-        "noSlug": "슬러그 없음"
-      }
-      ,
-      "monitoring": {
-        "aria": "앱 모니터링",
-        "rangePlaceholder": "기간을 선택해요",
-        "ranges": { "30": "최근 30일", "90": "최근 90일", "180": "최근 180일", "365": "최근 365일" },
-        "filters": "필터",
-        "series": {
-          "currentYear": "올해",
-          "lastYear": "작년 동기간",
-          "signups": "가입",
-          "visitors": "방문자",
-          "addressed": "해결됨",
-          "unrealized": "미실현",
-          "density": "밀도"
-        },
-        "cards": {
-          "inherentRisk": { "title": "고유 위험", "desc": "위험 수준별 시간 경과에 따른 시나리오" },
-          "signupsVsVisitors": { "title": "가입 vs 방문자", "desc": "선택한 기간의 일일 가입 수와 고유 방문자 비교" },
-          "esgImpact": { "title": "ESG 영향", "desc": "입찰에서 충족된 ESG 기준의 시간별 평가" },
-          "bidderDensity": { "title": "입찰자 밀도", "desc": "시간 경과에 따른 입찰자 수와 규모로 측정한 경쟁 수준" }
-        },
-        "yAxis": {
-          "inherentRisk": "고유 위험 수",
-          "signupsVisitors": "가입/방문자",
-          "esgImpact": "충족 기준 비율(%)",
-          "bidderDensity": "경쟁 밀도(%)"
-        }
-      }
-      ,
-      "audits": {
-        "aria": "감사 현황",
-        "searchPlaceholder": "감사 검색...",
-        "filters": "필터",
-        "auditRound": "감사 회차",
-        "auditor": "감사자",
-        "relatedDocs": "관련 문서",
-        "status": "상태",
-        "edit": "편집하기",
-        "reupload": "다시 업로드",
-        "system": "시스템",
-        "noSlug": "슬러그 없음",
-        "docStatus": { "ok": "정상", "needsUpdate": "업데이트 필요", "inAudit": "감사 중" }
-      }
-      ,
-      "tabs": { "overview": "개요", "monitoring": "모니터링", "audits": "감사" }
-    }
   }
 }

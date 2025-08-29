@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
 
 export function AcceptInvitationToast() {
@@ -30,4 +30,3 @@ export function AcceptInvitationToast() {
 }
 
 export default AcceptInvitationToast
-

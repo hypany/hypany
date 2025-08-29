@@ -32,7 +32,7 @@ export function NavBar() {
             <span className='sr-only'>{t('logo-sr')}</span>
             <span className='flex items-center gap-2'>
               <HypanyLogo className='w-10 h-10' />
-              <span className='hidden text-base font-semibold text-gray-900 sm:inline dark:text-gray-50'>
+              <span className='hidden text-lg font-semibold text-gray-900 sm:inline dark:text-gray-50'>
                 {t('brand')}
               </span>
             </span>

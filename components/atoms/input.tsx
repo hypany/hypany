@@ -1,7 +1,7 @@
 "use client"
 import { RiEyeFill, RiEyeOffFill, RiSearchLine } from '@remixicon/react'
-import React from 'react'
 import { useTranslations } from 'next-intl'
+import React from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cx, focusInput, focusRing, hasErrorInput } from '@/lib/utils'
 

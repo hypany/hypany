@@ -16,24 +16,36 @@ export const Footer = () => {
   const t = useTranslations('landing.footer')
   const tFooter = useTranslations('footer')
   const sections = {
+    analytics: {
+      items: [
+        {
+          href: '/app/analytics',
+          label: t('sections.analytics.items.overview'),
+        },
+        {
+          href: '/app/waitlists',
+          label: t('sections.analytics.items.waitlists'),
+        },
+      ],
+      title: t('sections.analytics.title'),
+    },
     hypotheses: {
       items: [
-        { href: '/app/hypotheses', label: t('sections.hypotheses.items.overview') },
+        {
+          href: '/app/hypotheses',
+          label: t('sections.hypotheses.items.overview'),
+        },
         { href: '/app/assets', label: t('sections.hypotheses.items.assets') },
       ],
       title: t('sections.hypotheses.title'),
     },
-    analytics: {
-      items: [
-        { href: '/app/analytics', label: t('sections.analytics.items.overview') },
-        { href: '/app/waitlists', label: t('sections.analytics.items.waitlists') },
-      ],
-      title: t('sections.analytics.title'),
-    },
     settings: {
       items: [
         { href: '/app/settings', label: t('sections.settings.items.general') },
-        { href: '/app/organizations', label: t('sections.settings.items.organizations') },
+        {
+          href: '/app/organizations',
+          label: t('sections.settings.items.organizations'),
+        },
       ],
       title: t('sections.settings.title'),
     },

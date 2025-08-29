@@ -1,9 +1,9 @@
 'use client'
 
 import { Monitor, Moon, Sun } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useEffect, useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import {
   DropdownMenu,
@@ -30,7 +30,11 @@ export function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button aria-label={t('theme.toggle-aria')} variant='secondary' className='p-2'>
+        <Button
+          aria-label={t('theme.toggle-aria')}
+          variant='secondary'
+          className='p-2'
+        >
           <Icon className='size-4 shrink-0' aria-hidden='true' />
         </Button>
       </DropdownMenuTrigger>
@@ -39,7 +43,10 @@ export function ThemeToggle() {
           value={theme}
           onValueChange={(value) => setTheme(value)}
         >
-          <DropdownMenuRadioItem aria-label={t('theme.aria.light')} value='light'>
+          <DropdownMenuRadioItem
+            aria-label={t('theme.aria.light')}
+            value='light'
+          >
             <Sun className='size-4 shrink-0' aria-hidden='true' />
             {t('theme.light')}
           </DropdownMenuRadioItem>
@@ -47,7 +54,10 @@ export function ThemeToggle() {
             <Moon className='size-4 shrink-0' aria-hidden='true' />
             {t('theme.dark')}
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem aria-label={t('theme.aria.system')} value='system'>
+          <DropdownMenuRadioItem
+            aria-label={t('theme.aria.system')}
+            value='system'
+          >
             <Monitor className='size-4 shrink-0' aria-hidden='true' />
             {t('theme.system')}
           </DropdownMenuRadioItem>

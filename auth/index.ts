@@ -11,7 +11,6 @@ import { sendEmail } from '@/lib/email'
 import { getEnv } from '@/lib/env'
 import { serviceUrl } from '@/lib/url'
 import * as schema from '@/schema'
-import 'server-only'
 
 const { AUTH_SECRET } = getEnv()
 

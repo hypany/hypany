@@ -19,7 +19,9 @@ export default async function AcceptInvitationPage({
   // Ensure user is authenticated before accepting
   const session = await auth.api.getSession({ headers: hdrs })
   if (!session) {
-    const next = encodeURIComponent(`/organization/accept-invitation?id=${invitationId}`)
+    const next = encodeURIComponent(
+      `/organization/accept-invitation?id=${invitationId}`,
+    )
     redirect(`/sign-in?next=${next}`)
   }
 

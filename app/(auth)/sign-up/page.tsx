@@ -53,9 +53,7 @@ export default async function SignUpPage() {
             <h2 className='max-w-lg text-2xl font-semibold leading-9 text-white'>
               {t('aside.title')}
             </h2>
-            <p className='mt-4 text-white/90'>
-              {t('aside.desc')}
-            </p>
+            <p className='mt-4 text-white/90'>{t('aside.desc')}</p>
             <div className='mt-10 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20'>
               <div className='h-48 w-[28rem] rounded-md bg-white/5 shadow-2xl shadow-black/40 ring-1 ring-black/10' />
             </div>

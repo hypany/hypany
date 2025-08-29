@@ -1,4 +1,174 @@
 {
+  "app": {
+    "breadcrumbs": { "home": "Home", "hypotheses": "Hypotheses" },
+    "hypotheses": {
+      "audits": {
+        "aria": "Audits overview",
+        "auditor": "Auditor",
+        "auditRound": "Audit round",
+        "docStatus": {
+          "inAudit": "In audit",
+          "needsUpdate": "Needs update",
+          "ok": "OK"
+        },
+        "edit": "Edit",
+        "filters": "Filters",
+        "noSlug": "no-slug",
+        "relatedDocs": "Related documents",
+        "reupload": "Re-Upload",
+        "searchPlaceholder": "Search audits...",
+        "status": "Status",
+        "system": "System"
+      },
+      "monitoring": {
+        "aria": "App Monitoring",
+        "cards": {
+          "bidderDensity": {
+            "desc": "Competition level measured by number and size of bidders over time",
+            "title": "Bidder density"
+          },
+          "esgImpact": {
+            "desc": "Evaluation of addressed ESG criteria in biddings over time",
+            "title": "ESG impact"
+          },
+          "inherentRisk": {
+            "desc": "Risk scenarios over time grouped by risk level",
+            "title": "Inherent risk"
+          },
+          "signupsVsVisitors": {
+            "desc": "Daily signups compared to unique visitors in selected range",
+            "title": "Signups vs Visitors"
+          }
+        },
+        "filters": "Report Filters",
+        "rangePlaceholder": "Select range...",
+        "ranges": {
+          "30": "Last 30 days",
+          "90": "Last 90 days",
+          "180": "Last 180 days",
+          "365": "Last 365 days"
+        },
+        "series": {
+          "addressed": "Addressed",
+          "currentYear": "Current year",
+          "density": "Density",
+          "lastYear": "Same period last year",
+          "signups": "Signups",
+          "unrealized": "Unrealized",
+          "visitors": "Visitors"
+        },
+        "yAxis": {
+          "bidderDensity": "Competition density (%)",
+          "esgImpact": "% of criteria addressed",
+          "inherentRisk": "Number of inherent risks",
+          "signupsVisitors": "Signups / Visitors"
+        }
+      },
+      "overview": {
+        "aria": "Overview Table",
+        "assignedPlaceholder": "Assigned to...",
+        "export": "Export",
+        "noSlug": "no-slug",
+        "regions": {
+          "archived": "Archived",
+          "draft": "Draft",
+          "published": "Published"
+        },
+        "row": {
+          "conversionRate30d": "{value}% conv (30d)",
+          "pageViews30d": "{count} page views (30d)",
+          "signupCount": "{count} signups"
+        },
+        "searchPlaceholder": "Search hypotheses...",
+        "statusLabel": {
+          "closed": "Closed",
+          "drafted": "Drafted",
+          "sent": "Sent"
+        },
+        "table": {
+          "columns": {
+            "conv30d": "Conv. (30d)",
+            "hypothesis": "Hypothesis",
+            "landing": "Landing",
+            "pageViews30d": "Page Views (30d)",
+            "signups": "Signups",
+            "status": "Status"
+          }
+        }
+      },
+      "tabs": {
+        "audits": "Audits",
+        "monitoring": "Monitoring",
+        "overview": "Overview"
+      }
+    },
+    "metrics": {
+      "projectLoad": "Project Load",
+      "title": "Overview",
+      "visitorToSignup": "Visitor-to-Signup Conversion",
+      "winProbability": "Win Probability"
+    },
+    "pages": {
+      "analytics": {
+        "aria": "Analytics",
+        "subtitle": "Track performance, conversion, and user engagement.",
+        "title": "Analytics"
+      },
+      "assets": {
+        "aria": "Assets",
+        "subtitle": "Manage assets related to your hypotheses and campaigns.",
+        "title": "Assets"
+      },
+      "hypotheses": {
+        "aria": "Hypotheses",
+        "overview-link": "Overview",
+        "subtitle": "Explore and manage your hypotheses.",
+        "subtitle-2": "for a table view."
+      },
+      "organizations": {
+        "aria": "Organizations",
+        "subtitle": "Manage organizations, members, and permissions.",
+        "title": "Organizations"
+      },
+      "root": { "title": "Dashboard" },
+      "settings": {
+        "aria": "Settings",
+        "subtitle": "Configure your workspace, preferences, and account.",
+        "title": "Settings"
+      },
+      "waitlists": {
+        "aria": "Waitlists",
+        "subtitle": "Review and manage all product waitlists.",
+        "title": "Waitlists"
+      }
+    },
+    "sidebar": {
+      "analytics": {
+        "_": "Analytics",
+        "overview": "Overview",
+        "waitlists": "All Waitlists"
+      },
+      "hypotheses": {
+        "_": "Hypotheses",
+        "assets": "Assets",
+        "overview": "Overview"
+      },
+      "overview": "Overview",
+      "search": "Search items...",
+      "settings": {
+        "_": "Settings",
+        "general": "General",
+        "organizations": "Organizations"
+      }
+    },
+    "userMenu": {
+      "changelog": "Changelog",
+      "documentation": "Documentation",
+      "joinSlack": "Join Slack community",
+      "signOut": "Sign out",
+      "theme": "Theme"
+    }
+  },
   "auth": {
     "common": {
       "back": "← Back"
@@ -12,6 +182,20 @@
       "footer-text": "Remembered your password?",
       "subtitle": "Enter your email and we'll send a reset link",
       "title": "Forgot password"
+    },
+    "form": {
+      "actions": {
+        "continue": "Continue"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "name@example.com"
+      },
+      "forgot-password": "Forgot password?",
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password"
+      }
     },
     "reset-password": {
       "aside": {
@@ -42,20 +226,29 @@
       "footer-text": "Already have an account?",
       "subtitle": "Enter your information to get started",
       "title": "Create an account"
+    }
+  },
+  "common": {
+    "aria": {
+      "product-showcase": "Product showcase"
     },
-    "form": {
-      "actions": {
-        "continue": "Continue"
-      },
-      "email": {
-        "label": "Email",
-        "placeholder": "name@example.com"
-      },
-      "forgot-password": "Forgot password?",
+    "input": {
       "password": {
-        "label": "Password",
-        "placeholder": "Enter your password"
+        "hide": "Hide password",
+        "show": "Show password",
+        "toggle-aria": "Toggle password visibility"
       }
+    },
+    "theme": {
+      "aria": {
+        "dark": "Dark Theme",
+        "light": "Light Theme",
+        "system": "System Theme"
+      },
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System",
+      "toggle-aria": "Toggle theme"
     }
   },
   "footer": {
@@ -63,23 +256,6 @@
     "footer-pattern-alt": "Hypany Logo Pattern"
   },
   "landing": {
-    "footer": {
-      "logo-alt": "Hypany Logo",
-      "sections": {
-        "hypotheses": {
-          "title": "Hypotheses",
-          "items": { "overview": "Overview", "assets": "Assets" }
-        },
-        "analytics": {
-          "title": "Analytics",
-          "items": { "overview": "Overview", "waitlists": "All Waitlists" }
-        },
-        "settings": {
-          "title": "Settings",
-          "items": { "general": "General", "organizations": "Organizations" }
-        }
-      }
-    },
     "banner": {
       "aria": "View latest update the changelog page",
       "new": "New",
@@ -114,6 +290,23 @@
         "title": "Waitlist to Customers"
       }
     },
+    "footer": {
+      "logo-alt": "Hypany Logo",
+      "sections": {
+        "analytics": {
+          "items": { "overview": "Overview", "waitlists": "All Waitlists" },
+          "title": "Analytics"
+        },
+        "hypotheses": {
+          "items": { "assets": "Assets", "overview": "Overview" },
+          "title": "Hypotheses"
+        },
+        "settings": {
+          "items": { "general": "General", "organizations": "Organizations" },
+          "title": "Settings"
+        }
+      }
+    },
     "hero": {
       "cta": "Start Testing Ideas",
       "sub": {
@@ -143,171 +336,19 @@
       }
     }
   },
-  "common": {
-    "aria": {
-      "product-showcase": "Product showcase"
-    },
-    "input": {
-      "password": {
-        "toggle-aria": "Toggle password visibility",
-        "show": "Show password",
-        "hide": "Hide password"
-      }
-    },
-    "theme": {
-      "aria": {
-        "dark": "Dark Theme",
-        "light": "Light Theme",
-        "system": "System Theme"
-      },
-      "dark": "Dark",
-      "light": "Light",
-      "system": "System",
-      "toggle-aria": "Toggle theme"
-    }
-  },
-  
+
   "nav": {
+    "brand": "Hypany",
     "close-menu-aria": "Close Navigation Menu",
     "go-to-app": "Go to App",
     "home-aria": "Home",
-    "brand": "Hypany",
-    "language": "Language",
     "lang-en": "English",
     "lang-ko": "한국어",
+    "language": "Language",
     "language-aria": "Change language",
     "logo-sr": "Hypany Logo",
     "open-menu-aria": "Open Navigation Menu",
     "sign-in": "Sign in",
     "sign-up": "Sign up"
-  }
-  ,
-  "app": {
-    "metrics": {
-      "title": "Overview",
-      "visitorToSignup": "Visitor-to-Signup Conversion",
-      "projectLoad": "Project Load",
-      "winProbability": "Win Probability"
-    },
-    "breadcrumbs": { "home": "Home", "hypotheses": "Hypotheses" },
-    "sidebar": {
-      "overview": "Overview",
-      "search": "Search items...",
-      "hypotheses": { "_": "Hypotheses", "overview": "Overview", "assets": "Assets" },
-      "analytics": { "_": "Analytics", "overview": "Overview", "waitlists": "All Waitlists" },
-      "settings": { "_": "Settings", "general": "General", "organizations": "Organizations" }
-    },
-    "userMenu": {
-      "theme": "Theme",
-      "changelog": "Changelog",
-      "documentation": "Documentation",
-      "joinSlack": "Join Slack community",
-      "signOut": "Sign out"
-    },
-    "pages": {
-      "root": { "title": "Dashboard" },
-      "settings": {
-        "aria": "Settings",
-        "title": "Settings",
-        "subtitle": "Configure your workspace, preferences, and account."
-      },
-      "organizations": {
-        "aria": "Organizations",
-        "title": "Organizations",
-        "subtitle": "Manage organizations, members, and permissions."
-      },
-      "analytics": {
-        "aria": "Analytics",
-        "title": "Analytics",
-        "subtitle": "Track performance, conversion, and user engagement."
-      },
-      "assets": {
-        "aria": "Assets",
-        "title": "Assets",
-        "subtitle": "Manage assets related to your hypotheses and campaigns."
-      },
-      "waitlists": {
-        "aria": "Waitlists",
-        "title": "Waitlists",
-        "subtitle": "Review and manage all product waitlists."
-      },
-      "hypotheses": {
-        "aria": "Hypotheses",
-        "subtitle": "Explore and manage your hypotheses.",
-        "overview-link": "Overview",
-        "subtitle-2": "for a table view."
-      }
-    },
-    "hypotheses": {
-      "overview": {
-        "aria": "Overview Table",
-        "searchPlaceholder": "Search hypotheses...",
-        "assignedPlaceholder": "Assigned to...",
-        "export": "Export",
-        "table": {
-          "columns": {
-            "hypothesis": "Hypothesis",
-            "signups": "Signups",
-            "conv30d": "Conv. (30d)",
-            "pageViews30d": "Page Views (30d)",
-            "landing": "Landing",
-            "status": "Status"
-          }
-        },
-        "regions": { "draft": "Draft", "published": "Published", "archived": "Archived" },
-        "statusLabel": { "drafted": "Drafted", "sent": "Sent", "closed": "Closed" },
-        "row": {
-          "pageViews30d": "{count} page views (30d)",
-          "conversionRate30d": "{value}% conv (30d)",
-          "signupCount": "{count} signups"
-        },
-        "noSlug": "no-slug"
-      }
-      ,
-      "monitoring": {
-        "aria": "App Monitoring",
-        "rangePlaceholder": "Select range...",
-        "ranges": { "30": "Last 30 days", "90": "Last 90 days", "180": "Last 180 days", "365": "Last 365 days" },
-        "filters": "Report Filters",
-        "series": {
-          "currentYear": "Current year",
-          "lastYear": "Same period last year",
-          "signups": "Signups",
-          "visitors": "Visitors",
-          "addressed": "Addressed",
-          "unrealized": "Unrealized",
-          "density": "Density"
-        },
-        "cards": {
-          "inherentRisk": { "title": "Inherent risk", "desc": "Risk scenarios over time grouped by risk level" },
-          "signupsVsVisitors": { "title": "Signups vs Visitors", "desc": "Daily signups compared to unique visitors in selected range" },
-          "esgImpact": { "title": "ESG impact", "desc": "Evaluation of addressed ESG criteria in biddings over time" },
-          "bidderDensity": { "title": "Bidder density", "desc": "Competition level measured by number and size of bidders over time" }
-        },
-        "yAxis": {
-          "inherentRisk": "Number of inherent risks",
-          "signupsVisitors": "Signups / Visitors",
-          "esgImpact": "% of criteria addressed",
-          "bidderDensity": "Competition density (%)"
-        }
-      }
-      ,
-      "audits": {
-        "aria": "Audits overview",
-        "searchPlaceholder": "Search audits...",
-        "filters": "Filters",
-        "auditRound": "Audit round",
-        "auditor": "Auditor",
-        "relatedDocs": "Related documents",
-        "status": "Status",
-        "edit": "Edit",
-        "reupload": "Re-Upload",
-        "system": "System",
-        "noSlug": "no-slug",
-        "docStatus": { "ok": "OK", "needsUpdate": "Needs update", "inAudit": "In audit" }
-      }
-      ,
-      "tabs": { "overview": "Overview", "monitoring": "Monitoring", "audits": "Audits" }
-    }
   }
 }

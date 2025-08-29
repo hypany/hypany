@@ -1,8 +1,8 @@
 'use client'
 import { SlidersHorizontal } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
-import { useTranslations } from 'next-intl'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { Button } from '@/components/atoms/button'
 import { ComboChart } from '@/components/atoms/combo-chart'
@@ -60,7 +60,11 @@ export default function Monitoring() {
   const dataChart = useMemo(() => {
     const cur = t('series.currentYear')
     const prev = t('series.lastYear')
-    return daily.map((d) => ({ [cur]: d.visitors, date: d.date, [prev]: d.signups }))
+    return daily.map((d) => ({
+      [cur]: d.visitors,
+      date: d.date,
+      [prev]: d.signups,
+    }))
   }, [daily, t])
 
   const dataChart2 = useMemo(() => {
@@ -81,7 +85,10 @@ export default function Monitoring() {
 
   const dataChart4 = useMemo(() => {
     const dKey = t('series.density')
-    return daily.map((d) => ({ [dKey]: d.visitors > 0 ? d.signups / d.visitors : 0, date: d.date }))
+    return daily.map((d) => ({
+      [dKey]: d.visitors > 0 ? d.signups / d.visitors : 0,
+      date: d.date,
+    }))
   }, [daily, t])
 
   return (

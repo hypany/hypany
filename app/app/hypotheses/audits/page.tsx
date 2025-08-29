@@ -2,6 +2,7 @@
 
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react'
 import { Link, SlidersHorizontal } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { api } from '@/app/api'
 import {
@@ -12,7 +13,6 @@ import {
 } from '@/components/atoms/accordion'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
-import { useTranslations } from 'next-intl'
 
 const getStatusIcon = (status: 'complete' | 'warning') => {
   if (status === 'complete') {
@@ -40,7 +40,7 @@ export default function Audits() {
   const [sections, setSections] = useState<Section[]>([])
 
   const getDocStatusLabel = (
-    status: Section['documents'][number]['status']
+    status: Section['documents'][number]['status'],
   ): string => {
     switch (status) {
       case 'OK':

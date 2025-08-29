@@ -3,9 +3,8 @@
 import { ArrowUpRight, Monitor, Moon, Sun } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { useTransition } from 'react'
 import { useTheme } from 'next-themes'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { client } from '@/auth/client'
 import {
@@ -72,7 +71,9 @@ export function DropdownUserProfile({
         <DropdownMenuLabel>{data?.user?.email ?? ''}</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuSubMenu>
-            <DropdownMenuSubMenuTrigger>{tApp('theme')}</DropdownMenuSubMenuTrigger>
+            <DropdownMenuSubMenuTrigger>
+              {tApp('theme')}
+            </DropdownMenuSubMenuTrigger>
             <DropdownMenuSubMenuContent>
               <DropdownMenuRadioGroup
                 value={theme}
@@ -157,7 +158,9 @@ export function DropdownUserProfile({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleSignOut}>{tApp('signOut')}</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleSignOut}>
+            {tApp('signOut')}
+          </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
