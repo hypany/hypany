@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -29,7 +29,7 @@ export function CreateOrganizationForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) {
-      toast.error('Please enter an organization name')
+      toast({ title: 'Please enter an organization name', variant: 'error' })
       return
     }
     setSubmitting(true)
@@ -39,16 +39,16 @@ export function CreateOrganizationForm() {
         slug: derivedSlug,
       })
       if (error || !org) {
-        toast.error(error?.message || 'Failed to create organization')
+        toast({ title: error?.message || 'Failed to create organization', variant: 'error' })
         return
       }
       await client.organization.setActive({ organizationId: org.id })
-      toast.success('Organization created')
+      toast({ title: 'Organization created', variant: 'success' })
       router.push('/app')
       router.refresh()
     } catch (error) {
       console.error(error)
-      toast.error('Failed to create organization')
+      toast({ title: 'Failed to create organization', variant: 'error' })
     } finally {
       setSubmitting(false)
     }
