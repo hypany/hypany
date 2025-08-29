@@ -1,8 +1,3 @@
-import { render } from '@react-email/render'
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { nextCookies } from 'better-auth/next-js'
-import { admin, openAPI } from 'better-auth/plugins'
 import { db } from '@/drizzle'
 import ResetPasswordEmail from '@/emails/reset-password-email'
 import VerificationEmail from '@/emails/verification-email'
@@ -10,14 +5,19 @@ import { sendEmail } from '@/lib/email'
 import { getEnv } from '@/lib/env'
 import { serviceUrl } from '@/lib/url'
 import * as schema from '@/schema'
+import { render } from '@react-email/render'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nextCookies } from 'better-auth/next-js'
+import { admin, openAPI } from 'better-auth/plugins'
 import 'server-only'
 
 const { AUTH_SECRET } = getEnv()
-const BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || serviceUrl
+const VERCEL_URL = process.env.VERCEL_URL || serviceUrl
 
 export const auth = betterAuth({
   appName: 'Hypany',
-  baseURL: BETTER_AUTH_URL,
+  baseURL: VERCEL_URL,
   basePath: '/api/auth',
   database: drizzleAdapter(db, {
     provider: 'pg',
