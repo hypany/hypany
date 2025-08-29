@@ -1,6 +1,6 @@
+import { FadeContainer, FadeDiv, FadeSpan } from '@/components/atoms/fade'
 import { RiArrowRightUpLine } from '@remixicon/react'
 import { getTranslations } from 'next-intl/server'
-import { FadeContainer, FadeDiv, FadeSpan } from '@/components/atoms/fade'
 import GameOfLife from './hero-background'
 
 export async function Hero() {
@@ -17,7 +17,7 @@ export async function Hero() {
             rel='noopener noreferrer'
             className='mx-auto w-full'
           >
-            <div className='inline-flex max-w-full items-center gap-3 rounded-full bg-white/5 px-2.5 py-0.5 pr-3 pl-0.5 font-medium text-gray-900 ring-1 shadow-lg shadow-emerald-400/20 ring-black/10 filter backdrop-blur-[1px] transition-colors hover:bg-emerald-500/2.5 focus:outline-hidden sm:text-sm'>
+            <div className='inline-flex max-w-full items-center gap-3 rounded-full bg-white/5 px-2.5 py-0.5 pr-3 pl-0.5 font-medium text-gray-900 ring-1 shadow-lg shadow-emerald-400/20 ring-black/10 filter backdrop-blur-[1px] transition-colors hover:bg-emerald-500/2.5 focus:outline-hidden sm:text-sm border bg-emerald-500'>
               <span className='shrink-0 truncate rounded-full border bg-gray-50 px-2.5 py-1 text-sm text-gray-600 sm:text-xs'>
                 {tBanner('new')}
               </span>
