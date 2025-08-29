@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 
 export function AcceptInvitationToast() {
   const params = useSearchParams()
@@ -15,10 +15,12 @@ export function AcceptInvitationToast() {
     if (!accepted) return
 
     if (accepted === '1') {
-      toast.success('Invitation accepted')
+      toast({ title: 'Invitation accepted', variant: 'success' })
     } else {
-      toast.error('Failed to accept invitation', {
+      toast({
+        title: 'Failed to accept invitation',
         description: reason ? `Reason: ${reason}` : undefined,
+        variant: 'error',
       })
     }
 

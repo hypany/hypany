@@ -39,10 +39,6 @@ const DrawerPortal = DrawerPrimitives.Portal
 DrawerPortal.displayName = 'DrawerPortal'
 
 type DataStateProps = { 'data-state'?: 'open' | 'closed' }
-type HtmlDivAttributes = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  'onDrag' | 'onDragStart' | 'onDragEnd' | 'onDragEnter' | 'onDragLeave' | 'onDragOver' | 'onAnimationStart'
->
 
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitives.Overlay>,

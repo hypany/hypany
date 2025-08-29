@@ -144,7 +144,7 @@ const [user, org, members] = await Promise.all([
 
 ### UI Components
 - Use Shadcn components - they're already installed
-- Use Sonner for toast notifications (not inline messages)
+- Use the built-in toast (`@/lib/use-toast` + `<Toaster />`) for notifications (not inline messages)
 - Server components by default, client components only when necessary
 - Pass data down, not fetch up
 
@@ -175,7 +175,7 @@ Before submitting code, ensure:
 - [ ] All TypeScript errors resolved
 - [ ] Direct database access from server components
 - [ ] Proper error handling with type safety
-- [ ] Toast notifications using Sonner, not inline messages
+- [ ] Toast notifications using the built-in toast (not inline messages)
 - [ ] Parallel data fetching where possible
 - [ ] Server components used by default
 

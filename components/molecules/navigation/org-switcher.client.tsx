@@ -21,7 +21,7 @@ import { RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 
 type Organization = { id: string; name: string; logo?: string | null }
 
@@ -66,9 +66,9 @@ export function OrgSwitcherClient({
   async function setActive(organizationId: string) {
     const res = await client.organization.setActive({ organizationId })
     if ((res as any)?.error) {
-      toast.error('Failed to switch organization')
+      toast({ title: 'Failed to switch organization', variant: 'error' })
     } else {
-      toast.success('Organization switched')
+      toast({ title: 'Organization switched', variant: 'success' })
       client.$store.notify('$sessionSignal')
       router.refresh()
     }
@@ -181,4 +181,3 @@ export function OrgSwitcherClient({
 }
 
 export default OrgSwitcherClient
-

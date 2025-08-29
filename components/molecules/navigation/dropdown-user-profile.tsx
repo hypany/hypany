@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useState, useTransition } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/use-toast'
 import { client } from '@/auth/client'
 import {
   DropdownMenu,
@@ -46,7 +46,7 @@ export function DropdownUserProfile({
 
   const handleSignOut = useCallback(async () => {
     await client.signOut()
-    toast.success('Signed out successfully')
+    toast({ title: 'Signed out successfully', variant: 'success' })
     router.replace('/sign-in')
     router.refresh()
   }, [router])
