@@ -213,6 +213,13 @@
   }
   ,
   "app": {
+    "metrics": {
+      "title": "Overview",
+      "visitorToSignup": "Visitor-to-Signup Conversion",
+      "projectLoad": "Project Load",
+      "winProbability": "Win Probability"
+    },
+    "breadcrumbs": { "home": "Home", "hypotheses": "Hypotheses" },
     "sidebar": {
       "overview": "Overview",
       "search": "Search items...",

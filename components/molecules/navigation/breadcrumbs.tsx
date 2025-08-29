@@ -1,7 +1,9 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
-export function Breadcrumbs() {
+export async function Breadcrumbs() {
+  const t = await getTranslations('app.breadcrumbs')
   return (
     <>
       <nav aria-label='Breadcrumb' className='ml-2'>
@@ -11,7 +13,7 @@ export function Breadcrumbs() {
               href='#'
               className='text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
             >
-              Home
+              {t('home')}
             </Link>
           </li>
           <ChevronRight
@@ -25,7 +27,7 @@ export function Breadcrumbs() {
                 // aria-current={page.current ? 'page' : undefined}
                 className='text-gray-900 dark:text-gray-50'
               >
-                Hypotheses
+                {t('hypotheses')}
               </Link>
             </div>
           </li>

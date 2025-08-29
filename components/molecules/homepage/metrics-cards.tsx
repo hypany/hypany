@@ -50,25 +50,12 @@ function Indicator({ number }: { number: number }) {
   )
 }
 
-const metrics: Metric[] = [
-  {
-    fraction: '450/752',
-    label: 'Visitor-to-Signup Conversion',
-    percentage: '59.8%',
-    value: 0.61,
-  },
-  {
-    fraction: '129/1K',
-    label: 'Project Load',
-    percentage: '12.9%',
-    value: 0.24,
-  },
-  {
-    fraction: '280/329',
-    label: 'Win Probability',
-    percentage: '85.1%',
-    value: 0.8,
-  },
+import { useTranslations } from 'next-intl'
+
+const metricsBase: Array<Omit<Metric, 'label'>> = [
+  { fraction: '450/752', percentage: '59.8%', value: 0.61 },
+  { fraction: '129/1K', percentage: '12.9%', value: 0.24 },
+  { fraction: '280/329', percentage: '85.1%', value: 0.8 },
 ]
 
 function MetricCard({ metric }: { metric: Metric }) {
@@ -91,10 +78,16 @@ function MetricCard({ metric }: { metric: Metric }) {
 }
 
 export function MetricsCards() {
+  const t = useTranslations('app.metrics')
+  const metrics: Metric[] = [
+    { ...metricsBase[0], label: t('visitorToSignup') },
+    { ...metricsBase[1], label: t('projectLoad') },
+    { ...metricsBase[2], label: t('winProbability') },
+  ]
   return (
     <>
       <h1 className='text-lg font-semibold text-gray-900 dark:text-gray-50'>
-        Overview
+        {t('title')}
       </h1>
       <dl className='mt-6 flex flex-wrap items-center gap-x-12 gap-y-8'>
         {metrics.map((metric) => (
