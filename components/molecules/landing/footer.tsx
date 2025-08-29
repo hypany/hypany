@@ -1,3 +1,4 @@
+import { HypanyLogo } from '@/public/brand/hypany-logo'
 import {
   RiGithubFill,
   RiSlackFill,
@@ -5,11 +6,11 @@ import {
   RiYoutubeFill,
 } from '@remixicon/react'
 import Link from 'next/link'
-import { HypanyLogo } from '@/public/brand/hypany-logo'
+import { LocaleSwitcher } from '../locale-switcher'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
-const Footer = () => {
+export const Footer = () => {
   const sections = {
     company: {
       items: [
@@ -152,6 +153,8 @@ const Footer = () => {
             <span className='sr-only'>Hypany Logo (go home)</span>
           </Link>
 
+          <LocaleSwitcher />
+
           <div>
             <div className='mt-4 flex items-center'>
               {/* Social Icons */}
@@ -218,5 +221,3 @@ const Footer = () => {
     </div>
   )
 }
-
-export default Footer

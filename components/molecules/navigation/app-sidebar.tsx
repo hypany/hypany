@@ -1,7 +1,4 @@
 'use client'
-import { RiArrowDownSFill } from '@remixicon/react'
-import { BookText, House, PackageSearch } from 'lucide-react'
-import * as React from 'react'
 import { Divider } from '@/components/atoms/divider'
 import { Input } from '@/components/atoms/input'
 import {
@@ -19,6 +16,9 @@ import {
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
 import { SolarLogo } from '@/public/solar-logo'
+import { RiArrowDownSFill } from '@remixicon/react'
+import { BookText, House, PackageSearch } from 'lucide-react'
+import * as React from 'react'
 import { UserProfile } from './user-profile'
 
 const navigation = [
@@ -150,8 +150,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu className='space-y-4'>
               {navigation2.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  {/* @CHRIS/SEV: discussion whether to componentize (-> state mgmt) */}
                   <button
+                    type='button'
                     onClick={() => toggleMenu(item.name)}
                     className={cx(
                       'flex w-full items-center justify-between gap-x-2.5 rounded-md p-2 text-base text-gray-900 transition hover:bg-gray-200/50 sm:text-sm dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-50',

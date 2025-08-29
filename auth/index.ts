@@ -13,22 +13,28 @@ import * as schema from '@/schema'
 import 'server-only'
 
 const { AUTH_SECRET } = getEnv()
+const BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || serviceUrl
 
 export const auth = betterAuth({
-  account: {
-    accountLinking: {
-      enabled: true,
-    },
-  },
-  appName: '@hypany/auth',
+  appName: 'Hypany',
+  baseURL: BETTER_AUTH_URL,
   basePath: '/api/auth',
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema,
     usePlural: true,
   }),
+  secret: AUTH_SECRET,
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['email'],
+    },
+  },
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 8,
+    maxPasswordLength: 128,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
       const emailHtml = await render(
@@ -46,13 +52,13 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
+    enabled: true,
     sendOnSignUp: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url, token }) => {
-      // Parse the URL to get the token and update the callback
       const urlObj = new URL(url)
       const tokenParam = urlObj.searchParams.get('token')
 
-      // Construct the proper verification URL with /dashboard as the callback
       const baseUrl = serviceUrl
       const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${tokenParam || token}&callbackURL=/app`
 
@@ -70,14 +76,26 @@ export const auth = betterAuth({
       })
     },
   },
-  plugins: [admin(), openAPI(), nextCookies()],
-  secret: AUTH_SECRET,
   session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 days
+    updateAge: 60 * 60 * 24, // 1 day
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60, // Cache for 5 minutes
     },
   },
+  rateLimit: {
+    enabled: true,
+    window: 60, // 1 minute
+    max: 10, // 10 requests per minute
+  },
+  plugins: [
+    admin({
+      impersonationSessionDuration: 60 * 60 * 24, // 1 day
+    }),
+    openAPI(),
+    nextCookies(),
+  ],
 })
 
 export type AuthType = {

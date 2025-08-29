@@ -3,7 +3,6 @@
 import { siteConfig } from '@/app/site-config'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
-import { LanguageSwitcher } from '@/components/molecules/locale-switcher'
 import useScroll from '@/lib/use-scroll'
 import { cx } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
@@ -29,8 +28,6 @@ export function NavBar() {
     return (a + b).toUpperCase() || (src[0]?.toUpperCase() ?? 'U')
   }, [user])
 
-  console.log(user)
-
   return (
     <header
       className={cx(
@@ -46,8 +43,7 @@ export function NavBar() {
             <span className='sr-only'>{t('logo-sr')}</span>
             <HypanyLogo className='w-10 h-10' />
           </Link>
-          <div className='flex items-center gap-3'>
-            <LanguageSwitcher />
+          <div className='flex items-center gap-2'>
             {isAuthenticated ? (
               <>
                 <div className='hidden sm:flex items-center gap-2 rounded-full border border-gray-200 bg-white px-2 py-1 pr-3 text-sm text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200'>

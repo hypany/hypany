@@ -1,8 +1,5 @@
 'use client'
 
-import {useTransition} from 'react'
-import {useLocale, useTranslations} from 'next-intl'
-import {useRouter} from 'next/navigation'
 import {
   Select,
   SelectContent,
@@ -10,8 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/atoms/select'
+import { useLocale, useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
 
-export function LanguageSwitcher() {
+export function LocaleSwitcher() {
   const router = useRouter()
   const locale = useLocale()
   const t = useTranslations('nav')
@@ -27,7 +27,7 @@ export function LanguageSwitcher() {
 
   return (
     <Select value={locale} onValueChange={setLocaleCookie} disabled={isPending}>
-      <SelectTrigger aria-label={t('language-aria')} className='w-[92px]'>
+      <SelectTrigger aria-label={t('language-aria')}>
         <SelectValue>
           {locale === 'ko' ? t('lang-ko') : t('lang-en')}
         </SelectValue>
@@ -39,4 +39,3 @@ export function LanguageSwitcher() {
     </Select>
   )
 }
-

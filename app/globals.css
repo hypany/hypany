@@ -235,10 +235,6 @@
   }
 }
 
-.mask {
-  mask-image: radial-gradient(rgba(0, 0, 0, 1) 0%, transparent 80%);
-}
-
 @keyframes gridMovingLine {
   0% {
     transform: translateX(100%);
@@ -251,4 +247,9 @@
     transform: translateX(-100%);
     opacity: 100;
   }
+}
+
+* {
+  word-wrap: break-word;
+  word-break: keep-all;
 }
