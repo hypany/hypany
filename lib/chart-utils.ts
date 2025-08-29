@@ -56,10 +56,10 @@ export const chartColors = {
     text: 'text-gray-300 dark:text-gray-700',
   },
   orange: {
-    bg: 'bg-emerald-500 dark:bg-emerald-400',
-    fill: 'fill-emerald-500 dark:fill-emerald-400',
-    stroke: 'stroke-emerald-500 dark:stroke-emerald-400',
-    text: 'text-emerald-500 dark:text-emerald-400',
+    bg: 'bg-orange-500 dark:bg-orange-400',
+    fill: 'fill-orange-500 dark:fill-orange-400',
+    stroke: 'stroke-orange-500 dark:stroke-orange-400',
+    text: 'text-orange-500 dark:text-orange-400',
   },
   pink: {
     bg: 'bg-pink-500 dark:bg-pink-500',
@@ -113,7 +113,7 @@ export const chartGradientColors = {
     'from-emerald-200 to-emerald-500 dark:from-emerald-200/10 dark:to-emerald-400',
   lightGray: 'from-gray-200 to-gray-500 dark:from-gray-200/10 dark:to-gray-400',
   orange:
-    'from-emerald-200 to-emerald-500 dark:from-emerald-200/10 dark:to-emerald-400',
+    'from-orange-200 to-orange-500 dark:from-orange-200/10 dark:to-orange-400',
   pink: 'from-pink-200 to-pink-500 dark:from-pink-200/10 dark:to-pink-400',
   red: 'from-red-200 to-red-500 dark:from-red-200/10 dark:to-red-400',
   rose: 'from-rose-200 to-rose-500 dark:from-rose-200/10 dark:to-rose-400',
@@ -178,10 +178,10 @@ export const chartConditionalColors = {
     medium: 'fill-gray-300 dark:fill-gray-400',
   },
   orange: {
-    critical: 'fill-emerald-500 dark:fill-emerald-600',
-    high: 'fill-emerald-400 dark:fill-emerald-500',
-    low: 'fill-emerald-200 dark:fill-emerald-300',
-    medium: 'fill-emerald-300 dark:fill-emerald-400',
+    critical: 'fill-orange-500 dark:fill-orange-600',
+    high: 'fill-orange-400 dark:fill-orange-500',
+    low: 'fill-orange-200 dark:fill-orange-300',
+    medium: 'fill-orange-300 dark:fill-orange-400',
   },
   pink: {
     critical: 'fill-pink-500 dark:fill-pink-600',
