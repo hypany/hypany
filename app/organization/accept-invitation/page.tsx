@@ -5,9 +5,10 @@ import { auth } from '@/auth'
 export default async function AcceptInvitationPage({
   searchParams,
 }: {
-  searchParams: { id?: string }
+  searchParams: Promise<{ id?: string }>
 }) {
-  const invitationId = searchParams?.id
+  const params = await searchParams
+  const invitationId = params?.id
 
   if (!invitationId) {
     redirect('/app/organizations?accepted=0&reason=missing_id')
@@ -32,4 +33,3 @@ export default async function AcceptInvitationPage({
     redirect('/app/organizations?accepted=0')
   }
 }
-

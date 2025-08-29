@@ -17,14 +17,14 @@ export async function Hero() {
             rel='noopener noreferrer'
             className='mx-auto w-full'
           >
-            <div className='inline-flex max-w-full items-center gap-3 rounded-full bg-white/5 px-2.5 py-0.5 pr-3 pl-0.5 font-medium text-gray-900 ring-1 shadow-lg shadow-emerald-400/20 ring-black/10 filter backdrop-blur-[1px] transition-colors hover:bg-emerald-500/2.5 focus:outline-hidden sm:text-sm border bg-emerald-500'>
-              <span className='shrink-0 truncate rounded-full border bg-gray-50 px-2.5 py-1 text-sm text-gray-600 sm:text-xs'>
+            <div className='inline-flex max-w-full items-center gap-3 rounded-full px-2.5 py-0.5 pr-3 pl-0.5 font-medium text-gray-900 dark:text-gray-50 ring-1 ring-gray-900/10 dark:ring-white/10 shadow-lg shadow-emerald-400/20 dark:shadow-emerald-500/20 transition-colors bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 focus:outline-hidden sm:text-sm'>
+              <span className='shrink-0 truncate rounded-full px-2.5 py-1 text-sm sm:text-xs bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200'>
                 {tBanner('new')}
               </span>
               <span className='flex items-center gap-1 truncate'>
                 <span className='w-full truncate'>{tBanner('text')}</span>
 
-                <RiArrowRightUpLine className='size-4 shrink-0 text-gray-700' />
+                <RiArrowRightUpLine className='size-4 shrink-0 text-gray-900 dark:text-gray-50' />
               </span>
             </div>
           </a>

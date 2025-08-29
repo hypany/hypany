@@ -22,9 +22,11 @@ const signInSchema = z.object({
 
 type SignInFormData = z.infer<typeof signInSchema>
 
-interface SignInFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SignInFormProps extends React.HTMLAttributes<HTMLDivElement> {
+  next?: string
+}
 
-export function SignInForm({ className, ...props }: SignInFormProps) {
+export function SignInForm({ className, next, ...props }: SignInFormProps) {
   const emailId = useId()
   const passwordId = useId()
   const router = useRouter()
@@ -100,7 +102,7 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
         }
       } else if (signInData) {
         toast.success('Signed in successfully!')
-        router.push('/app')
+        router.push(next || '/app')
       }
     } catch (error) {
       // Handle network or unexpected errors

@@ -9,9 +9,15 @@ export const metadata: Metadata = {
   title: 'Sign In - Hypany',
 }
 
-export default async function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>
+}) {
   const t = await getTranslations('auth.sign-in')
   const tCommon = await getTranslations('common')
+  const params = await searchParams
+  const next = params?.next
 
   return (
     <>
@@ -32,7 +38,7 @@ export default async function SignInPage() {
             {/* <Divider>or</Divider> */}
 
             <div className='mt-6'>
-              <SignInForm />
+              <SignInForm next={next} />
             </div>
 
             <Divider />
