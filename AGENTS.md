@@ -5,12 +5,10 @@ For UI Engineering, follow the instructions in ./agents/ui/index.md.
 
 This document outlines the engineering principles and patterns used in this codebase. When making changes or additions, follow these guidelines to maintain consistency and quality.
 
-
-
 ## Core Principles
 
 ### 1. Server-First Architecture
-**Do NOT fetch on the client what you can fetch on the server.**
+**Do NOT fetch on the client what you can fetch on the server through Elysia Eden Treaty.**
 
 ❌ **Wrong:**
 ```tsx
@@ -31,9 +29,9 @@ export function BadComponent() {
 
 ✅ **Right:**
 ```tsx
-// Server component with direct database access
+// Server component with Elysia Eden Treaty
 export async function GoodComponent() {
-  const data = await db.select().from(table)
+  const data = await client.api.get('...')
   return <div>{data}</div>
 }
 ```
@@ -42,7 +40,7 @@ export async function GoodComponent() {
 **Never use `any`. Ever.**
 
 - Use Better Auth's inferred types: `typeof auth.$Infer.Session`
-- Use Elysia Eden Treaty for type-safe API clients
+- Use Elysia Eden Treaty for type-safe API clients and Drizzle ORM for database access
 - Infer database types from Drizzle schemas
 - If you need a type, derive it from the source of truth
 
