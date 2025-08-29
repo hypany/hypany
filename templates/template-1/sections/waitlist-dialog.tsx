@@ -1,5 +1,7 @@
 'use client'
 
+import { useId, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Button } from '@/components/atoms/button'
 import {
   Dialog,
@@ -10,8 +12,6 @@ import {
   DialogTrigger,
 } from '@/components/atoms/dialog'
 import { Input } from '@/components/atoms/input'
-import { useId, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import type { WaitlistForm as WaitlistFormType } from '../../types'
 
 interface WaitlistDialogProps {
@@ -144,11 +144,7 @@ export function WaitlistDialog({
             />
           </div>
 
-          <Button
-            type='submit'
-            className='w-full'
-            disabled={isSubmitting}
-          >
+          <Button type='submit' className='w-full' disabled={isSubmitting}>
             {isSubmitting
               ? 'Joining...'
               : config.submitLabel || 'Join Waitlist'}

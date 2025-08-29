@@ -1,10 +1,5 @@
 'use client'
 
-import { client } from '@/auth/client'
-import { Button } from '@/components/atoms/button'
-import { Input } from '@/components/atoms/input'
-import { Label } from '@/components/atoms/label'
-import { cx } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -13,6 +8,11 @@ import { useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
+import { client } from '@/auth/client'
+import { Button } from '@/components/atoms/button'
+import { Input } from '@/components/atoms/input'
+import { Label } from '@/components/atoms/label'
+import { cx } from '@/lib/utils'
 
 const signUpSchema = z.object({
   email: z.email('Invalid email address'),

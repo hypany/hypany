@@ -1,13 +1,19 @@
-import 'server-only'
-import { Elysia, t } from 'elysia'
-import { and, desc, eq, gte, inArray, lt, lte } from 'drizzle-orm'
-import { db } from '@/database'
-import { HTTP_STATUS } from '@/lib/constants'
+/**
+ * Analytics API (v1)
+ * - Recent activity feed (page views, signups, verifications)
+ * - Traffic sources (UTM & referrers)
+ * - Aggregated metrics per hypothesis
+ */
+import { db } from '@/drizzle'
+import { BOT_UA_REGEX, HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
-import { hypotheses, pageVisits, waitlistEntries, waitlists } from '@/schema'
-import { authPlugin } from './auth-plugin'
 import { resolveRange } from '@/lib/time-range'
-import { BOT_UA_REGEX } from '@/lib/constants'
+import { hypotheses, pageVisits, waitlistEntries, waitlists } from '@/schema'
+import { and, desc, eq, gte, inArray, lt, lte } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ErrorResponse } from '../docs'
+import { authPlugin } from './auth-plugin'
 
 function extractReferrerDomain(referrer?: string | null): string {
   if (!referrer) return 'direct'
@@ -15,7 +21,8 @@ function extractReferrerDomain(referrer?: string | null): string {
   if (!r) return 'direct'
   try {
     // If it looks like a URL with scheme
-    const url = r.startsWith('http://') || r.startsWith('https://') ? new URL(r) : null
+    const url =
+      r.startsWith('http://') || r.startsWith('https://') ? new URL(r) : null
     if (url?.hostname) return url.hostname
   } catch {}
   // Fallback: strip scheme manually and take first segment before '/'
@@ -48,7 +55,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       const { from, to } = resolveRange(query)
       const limit = Math.min(Math.max(Number(query.limit ?? 50), 1), 100)
       const cursorDate = query.cursor ? new Date(String(query.cursor)) : null
-      const hypothesisId = query.hypothesisId ? String(query.hypothesisId) : null
+      const hypothesisId = query.hypothesisId
+        ? String(query.hypothesisId)
+        : null
 
       // Get all user's hypotheses
       const userHypotheses = await db
@@ -56,11 +65,11 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .from(hypotheses)
         .where(eq(hypotheses.userId, user.id))
 
-      const hypothesisIds = userHypotheses.map(h => h.id)
-      
+      const hypothesisIds = userHypotheses.map((h) => h.id)
+
       // Filter by specific hypothesis if provided
-      const targetHypothesisIds = hypothesisId 
-        ? hypothesisIds.filter(id => id === hypothesisId)
+      const targetHypothesisIds = hypothesisId
+        ? hypothesisIds.filter((id) => id === hypothesisId)
         : hypothesisIds
 
       if (targetHypothesisIds.length === 0) {
@@ -93,13 +102,13 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .limit(limit)
 
       const pageViewsData = rawPageViews
-        .filter(pv => !pv.userAgent || !BOT_UA_REGEX.test(pv.userAgent))
-        .map(pv => ({
-          type: 'page_view' as const,
-          timestamp: pv.createdAt,
+        .filter((pv) => !pv.userAgent || !BOT_UA_REGEX.test(pv.userAgent))
+        .map((pv) => ({
+          email: null as string | null,
           hypothesisId: pv.hypothesisId,
           source: extractReferrerDomain(pv.referrer),
-          email: null as string | null,
+          timestamp: pv.createdAt,
+          type: 'page_view' as const,
         }))
 
       // Get waitlists for hypotheses
@@ -108,7 +117,7 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .from(waitlists)
         .where(inArray(waitlists.hypothesisId, targetHypothesisIds))
 
-      const waitlistIds = userWaitlists.map(w => w.id)
+      const waitlistIds = userWaitlists.map((w) => w.id)
 
       let signupsData: Array<{
         type: 'signup'
@@ -139,11 +148,11 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
 
         const signups = await db
           .select({
-            timestamp: waitlistEntries.createdAt,
-            waitlistId: waitlistEntries.waitlistId,
-            utmSource: waitlistEntries.utmSource,
-            source: waitlistEntries.source,
             email: waitlistEntries.email,
+            source: waitlistEntries.source,
+            timestamp: waitlistEntries.createdAt,
+            utmSource: waitlistEntries.utmSource,
+            waitlistId: waitlistEntries.waitlistId,
           })
           .from(waitlistEntries)
           .where(and(...signupConditions))
@@ -151,13 +160,15 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
           .limit(limit)
 
         // Map signups to include hypothesis ID
-        const waitlistToHypothesis = new Map(userWaitlists.map(w => [w.id, w.hypothesisId]))
-        signupsData = signups.map(s => ({
-          type: 'signup' as const,
-          timestamp: s.timestamp,
+        const waitlistToHypothesis = new Map(
+          userWaitlists.map((w) => [w.id, w.hypothesisId]),
+        )
+        signupsData = signups.map((s) => ({
+          email: s.email,
           hypothesisId: waitlistToHypothesis.get(s.waitlistId) || '',
           source: coalesceUtmSource(s.utmSource, s.source, 'organic'),
-          email: s.email,
+          timestamp: s.timestamp,
+          type: 'signup' as const,
         }))
 
         // Get verifications
@@ -173,39 +184,39 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
 
         const verifications = await db
           .select({
-            timestamp: waitlistEntries.updatedAt,
-            waitlistId: waitlistEntries.waitlistId,
-            utmSource: waitlistEntries.utmSource,
-            source: waitlistEntries.source,
             email: waitlistEntries.email,
+            source: waitlistEntries.source,
+            timestamp: waitlistEntries.updatedAt,
+            utmSource: waitlistEntries.utmSource,
+            waitlistId: waitlistEntries.waitlistId,
           })
           .from(waitlistEntries)
           .where(and(...verificationConditions))
           .orderBy(desc(waitlistEntries.updatedAt))
           .limit(limit)
 
-        verificationsData = verifications.map(v => ({
-          type: 'verification' as const,
-          timestamp: v.timestamp,
+        verificationsData = verifications.map((v) => ({
+          email: v.email,
           hypothesisId: waitlistToHypothesis.get(v.waitlistId) || '',
           source: coalesceUtmSource(v.utmSource, v.source, 'organic'),
-          email: v.email,
+          timestamp: v.timestamp,
+          type: 'verification' as const,
         }))
       }
 
       // Combine and sort all activities
       const allActivities = [
-        ...pageViewsData.map(pv => ({
-          type: pv.type,
-          timestamp: pv.timestamp,
+        ...pageViewsData.map((pv) => ({
+          email: pv.email,
           hypothesisId: pv.hypothesisId,
           source: pv.source,
-          email: pv.email,
+          timestamp: pv.timestamp,
+          type: pv.type,
         })),
         ...signupsData,
         ...verificationsData,
       ]
-        .filter(a => a.timestamp !== null)
+        .filter((a) => a.timestamp !== null)
         .sort((a, b) => {
           const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0
           const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0
@@ -213,16 +224,17 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         })
         .slice(0, limit)
 
-      const items = allActivities.map(a => ({
-        type: a.type,
-        timestamp: a.timestamp!,
+      const items = allActivities.map((a) => ({
+        email: a.email,
         hypothesisId: a.hypothesisId,
         source: a.source || 'direct',
-        email: a.email,
+        timestamp: a.timestamp!,
+        type: a.type,
       }))
 
       const lastItem = items[items.length - 1]
-      const nextCursor = items.length === limit && lastItem ? lastItem.timestamp : null
+      const nextCursor =
+        items.length === limit && lastItem ? lastItem.timestamp : null
 
       return jsonOk(set, HTTP_STATUS.OK, {
         items,
@@ -242,7 +254,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         from: t.Optional(t.String()),
         hypothesisId: t.Optional(t.String()),
         limit: t.Optional(t.Number({ default: 50, maximum: 100, minimum: 1 })),
-        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')])),
+        range: t.Optional(
+          t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]),
+        ),
         to: t.Optional(t.String()),
       }),
     },
@@ -256,7 +270,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
 
       const { from, to } = resolveRange(query)
-      const hypothesisId = query.hypothesisId ? String(query.hypothesisId) : null
+      const hypothesisId = query.hypothesisId
+        ? String(query.hypothesisId)
+        : null
 
       // Get user's hypotheses
       const userHypotheses = await db
@@ -264,25 +280,28 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .from(hypotheses)
         .where(eq(hypotheses.userId, user.id))
 
-      const hypothesisIds = userHypotheses.map(h => h.id)
-      const targetHypothesisIds = hypothesisId 
-        ? hypothesisIds.filter(id => id === hypothesisId)
+      const hypothesisIds = userHypotheses.map((h) => h.id)
+      const targetHypothesisIds = hypothesisId
+        ? hypothesisIds.filter((id) => id === hypothesisId)
         : hypothesisIds
 
       // Get UTM sources from signups
       let utmSources: Array<{ source: string; count: number }> = []
-      
+
       if (targetHypothesisIds.length > 0) {
         const userWaitlists = await db
           .select()
           .from(waitlists)
           .where(inArray(waitlists.hypothesisId, targetHypothesisIds))
 
-        const waitlistIds = userWaitlists.map(w => w.id)
+        const waitlistIds = userWaitlists.map((w) => w.id)
 
         if (waitlistIds.length > 0) {
           const utmRows = await db
-            .select({ utmSource: waitlistEntries.utmSource, createdAt: waitlistEntries.createdAt })
+            .select({
+              createdAt: waitlistEntries.createdAt,
+              utmSource: waitlistEntries.utmSource,
+            })
             .from(waitlistEntries)
             .where(
               and(
@@ -298,7 +317,7 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
             counter.set(src, (counter.get(src) ?? 0) + 1)
           }
           utmSources = Array.from(counter.entries())
-            .map(([source, count]) => ({ source, count }))
+            .map(([source, count]) => ({ count, source }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 10)
         }
@@ -306,10 +325,14 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
 
       // Get referrers from page visits
       let referrers: Array<{ referrer: string; count: number }> = []
-      
+
       if (targetHypothesisIds.length > 0) {
         const pvRows = await db
-          .select({ referrer: pageVisits.referrer, userAgent: pageVisits.userAgent, createdAt: pageVisits.createdAt })
+          .select({
+            createdAt: pageVisits.createdAt,
+            referrer: pageVisits.referrer,
+            userAgent: pageVisits.userAgent,
+          })
           .from(pageVisits)
           .where(
             and(
@@ -326,7 +349,7 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
           counter.set(domain, (counter.get(domain) ?? 0) + 1)
         }
         referrers = Array.from(counter.entries())
-          .map(([referrer, count]) => ({ referrer, count }))
+          .map(([referrer, count]) => ({ count, referrer }))
           .sort((a, b) => b.count - a.count)
           .slice(0, 10)
       }
@@ -348,7 +371,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       query: t.Object({
         from: t.Optional(t.String()),
         hypothesisId: t.Optional(t.String()),
-        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')])),
+        range: t.Optional(
+          t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]),
+        ),
         to: t.Optional(t.String()),
       }),
     },
@@ -362,7 +387,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
 
       const { from, to } = resolveRange(query)
-      const hypothesisId = query.hypothesisId ? String(query.hypothesisId) : null
+      const hypothesisId = query.hypothesisId
+        ? String(query.hypothesisId)
+        : null
 
       // Get user's hypotheses
       const userHypotheses = await db
@@ -370,9 +397,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .from(hypotheses)
         .where(eq(hypotheses.userId, user.id))
 
-      const hypothesisIds = userHypotheses.map(h => h.id)
-      const targetHypothesisIds = hypothesisId 
-        ? hypothesisIds.filter(id => id === hypothesisId)
+      const hypothesisIds = userHypotheses.map((h) => h.id)
+      const targetHypothesisIds = hypothesisId
+        ? hypothesisIds.filter((id) => id === hypothesisId)
         : hypothesisIds
 
       if (targetHypothesisIds.length === 0) {
@@ -394,10 +421,10 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       // Get page views and unique visitors per hypothesis
       const pvRows = await db
         .select({
-          hypothesisId: pageVisits.hypothesisId,
-          visitorId: pageVisits.visitorId,
-          userAgent: pageVisits.userAgent,
           createdAt: pageVisits.createdAt,
+          hypothesisId: pageVisits.hypothesisId,
+          userAgent: pageVisits.userAgent,
+          visitorId: pageVisits.visitorId,
         })
         .from(pageVisits)
         .where(
@@ -424,11 +451,13 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         if (row.visitorId) entry.visitorsSet.add(row.visitorId)
         pvByHypothesis.set(hId, entry)
       }
-      const pvData = Array.from(pvByHypothesis.entries()).map(([hypothesisId, v]) => ({
-        hypothesisId,
-        pageViews: v.pageViews,
-        uniqueVisitors: v.visitorsSet.size,
-      }))
+      const pvData = Array.from(pvByHypothesis.entries()).map(
+        ([hypothesisId, v]) => ({
+          hypothesisId,
+          pageViews: v.pageViews,
+          uniqueVisitors: v.visitorsSet.size,
+        }),
+      )
 
       // Get waitlists and signups
       const userWaitlists = await db
@@ -436,17 +465,23 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .from(waitlists)
         .where(inArray(waitlists.hypothesisId, targetHypothesisIds))
 
-      const waitlistIds = userWaitlists.map(w => w.id)
-      const waitlistToHypothesis = new Map(userWaitlists.map(w => [w.id, w.hypothesisId]))
+      const waitlistIds = userWaitlists.map((w) => w.id)
+      const waitlistToHypothesis = new Map(
+        userWaitlists.map((w) => [w.id, w.hypothesisId]),
+      )
 
-      let signupData: Array<{ waitlistId: string; signups: number; verifiedSignups: number }> = []
-      
+      let signupData: Array<{
+        waitlistId: string
+        signups: number
+        verifiedSignups: number
+      }> = []
+
       if (waitlistIds.length > 0) {
         const rows = await db
           .select({
-            waitlistId: waitlistEntries.waitlistId,
             createdAt: waitlistEntries.createdAt,
             emailVerified: waitlistEntries.emailVerified,
+            waitlistId: waitlistEntries.waitlistId,
           })
           .from(waitlistEntries)
           .where(
@@ -457,7 +492,10 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
             ),
           )
 
-        const agg = new Map<string, { signups: number; verifiedSignups: number }>()
+        const agg = new Map<
+          string,
+          { signups: number; verifiedSignups: number }
+        >()
         for (const r of rows) {
           const a = agg.get(r.waitlistId) ?? { signups: 0, verifiedSignups: 0 }
           a.signups += 1
@@ -465,9 +503,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
           agg.set(r.waitlistId, a)
         }
         signupData = Array.from(agg.entries()).map(([waitlistId, v]) => ({
-          waitlistId,
           signups: v.signups,
           verifiedSignups: v.verifiedSignups,
+          waitlistId,
         }))
       }
 
@@ -489,10 +527,13 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       )
 
       let dailySignups: Array<{ date: string; signups: number }> = []
-      
+
       if (waitlistIds.length > 0) {
         const rows = await db
-          .select({ createdAt: waitlistEntries.createdAt, waitlistId: waitlistEntries.waitlistId })
+          .select({
+            createdAt: waitlistEntries.createdAt,
+            waitlistId: waitlistEntries.waitlistId,
+          })
           .from(waitlistEntries)
           .where(
             and(
@@ -516,22 +557,22 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
 
       // Merge daily data
       const dailyMap = new Map<string, { visitors: number; signups: number }>()
-      
+
       for (const dv of dailyVisitors) {
-        dailyMap.set(dv.date, { 
-          visitors: Number(dv.visitors || 0), 
-          signups: 0 
+        dailyMap.set(dv.date, {
+          signups: 0,
+          visitors: Number(dv.visitors || 0),
         })
       }
-      
+
       for (const ds of dailySignups) {
         const existing = dailyMap.get(ds.date)
         if (existing) {
           existing.signups = Number(ds.signups || 0)
         } else {
-          dailyMap.set(ds.date, { 
-            visitors: 0, 
-            signups: Number(ds.signups || 0) 
+          dailyMap.set(ds.date, {
+            signups: Number(ds.signups || 0),
+            visitors: 0,
           })
         }
       }
@@ -541,15 +582,18 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         .sort((a, b) => a.date.localeCompare(b.date))
 
       // Merge per-hypothesis metrics
-      const perHypothesisMap = new Map<string, {
-        conversionVisitorsToSignups: number
-        conversionVisitorsToVerified: number
-        hypothesisId: string
-        pageViews: number
-        signups: number
-        uniqueVisitors: number
-        verifiedSignups: number
-      }>()
+      const perHypothesisMap = new Map<
+        string,
+        {
+          conversionVisitorsToSignups: number
+          conversionVisitorsToVerified: number
+          hypothesisId: string
+          pageViews: number
+          signups: number
+          uniqueVisitors: number
+          verifiedSignups: number
+        }
+      >()
 
       // Initialize with all target hypotheses
       for (const hId of targetHypothesisIds) {
@@ -588,8 +632,10 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       // Calculate conversion rates
       for (const metrics of perHypothesisMap.values()) {
         if (metrics.uniqueVisitors > 0) {
-          metrics.conversionVisitorsToSignups = (metrics.signups / metrics.uniqueVisitors) * 100
-          metrics.conversionVisitorsToVerified = (metrics.verifiedSignups / metrics.uniqueVisitors) * 100
+          metrics.conversionVisitorsToSignups =
+            (metrics.signups / metrics.uniqueVisitors) * 100
+          metrics.conversionVisitorsToVerified =
+            (metrics.verifiedSignups / metrics.uniqueVisitors) * 100
         }
       }
 
@@ -637,7 +683,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       query: t.Object({
         from: t.Optional(t.String()),
         hypothesisId: t.Optional(t.String()),
-        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')])),
+        range: t.Optional(
+          t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]),
+        ),
         to: t.Optional(t.String()),
       }),
     },

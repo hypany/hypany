@@ -1,13 +1,19 @@
-import 'server-only'
-import { and, desc, eq, inArray, gte, lte } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { db } from '@/database'
+/**
+ * Waitlists API (v1)
+ * - Read and update waitlist configuration per hypothesis
+ * - List and export entries, analytics insights
+ */
+import { db } from '@/drizzle'
 import { getWaitlistIdForUser } from '@/lib/api-utils'
-import { resolveRange } from '@/lib/time-range'
 import { HTTP_STATUS } from '@/lib/constants'
 import { toCsv } from '@/lib/csv'
 import { jsonError, jsonOk } from '@/lib/http'
+import { resolveRange } from '@/lib/time-range'
 import { hypotheses, waitlistEntries, waitlists } from '@/schema'
+import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 // Validation schemas
@@ -80,9 +86,22 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         summary: 'Get waitlist by hypothesis',
         tags: ['Waitlists'],
       },
-      params: t.Object({
-        hypothesisId: t.String(),
-      }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: t.Object({
+          stats: t.Object({
+            totalEntries: t.Number(),
+            verifiedEntries: t.Number(),
+          }),
+          waitlist: t.Object({
+            hypothesisId: t.String(),
+            id: t.String(),
+            name: t.String(),
+          }),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -117,9 +136,12 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         summary: 'Update waitlist (by hypothesis)',
         tags: ['Waitlists'],
       },
-      params: t.Object({
-        hypothesisId: t.String(),
-      }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -164,13 +186,29 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         summary: 'Get entries (by hypothesis)',
         tags: ['Waitlist Entries'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
       query: t.Object({
         emailVerified: t.Optional(t.Boolean()),
         limit: t.Optional(t.Number({ default: 50, maximum: 100, minimum: 1 })),
         offset: t.Optional(t.Number({ default: 0, minimum: 0 })),
         source: t.Optional(t.String()),
       }),
+      response: {
+        200: t.Object({
+          entries: t.Array(
+            t.Object({
+              createdAt: t.Date(),
+              email: t.String(),
+              emailVerified: t.Nullable(t.Boolean()),
+              id: t.String(),
+              name: t.Nullable(t.String()),
+              source: t.Nullable(t.String()),
+            }),
+          ),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -245,8 +283,19 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         summary: 'Export waitlist (by hypothesis)',
         tags: ['Waitlist Analytics'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
       query: t.Object({ format: t.Optional(WaitlistSchema.exportFormat) }),
+      response: {
+        200: t.Object({
+          entries: t.Array(t.Record(t.String(), t.Any())),
+          exportedAt: t.Date(),
+          exportedEntries: t.Number(),
+          hypothesis: t.Optional(t.String()),
+          totalEntries: t.Number(),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -382,6 +431,15 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
       query: t.Object({
         format: t.Optional(WaitlistSchema.exportFormat),
       }),
+      response: {
+        200: t.Object({
+          entries: t.Array(t.Record(t.String(), t.Any())),
+          exportedAt: t.Date(),
+          exportedEntries: t.Number(),
+          totalWaitlists: t.Number(),
+        }),
+        401: ErrorResponse,
+      },
     },
   )
 
@@ -437,10 +495,12 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         const key = e.source || 'direct'
         sourceMap.set(key, (sourceMap.get(key) || 0) + 1)
       }
-      const sources = Array.from(sourceMap.entries()).map(([source, count]) => ({
-        source,
-        count,
-      }))
+      const sources = Array.from(sourceMap.entries()).map(
+        ([source, count]) => ({
+          count,
+          source,
+        }),
+      )
 
       // Compute daily signups
       const dailyMap = new Map<string, number>()
@@ -450,14 +510,15 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
       }
       const dailySignups = Array.from(dailyMap.entries())
         .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-        .map(([date, count]) => ({ date, count }))
+        .map(([date, count]) => ({ count, date }))
 
       return jsonOk(set, HTTP_STATUS.OK, {
         dailySignups,
         sources,
         stats: {
           total,
-          verificationRate: total > 0 ? ((verified / total) * 100).toFixed(1) : 0,
+          verificationRate:
+            total > 0 ? ((verified / total) * 100).toFixed(1) : 0,
           verified,
         },
       })
@@ -470,13 +531,28 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         summary: 'Analytics (by hypothesis)',
         tags: ['Waitlist Analytics'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
       query: t.Object({
         from: t.Optional(t.String()),
-        to: t.Optional(t.String()),
         range: t.Optional(
           t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]),
         ),
+        to: t.Optional(t.String()),
       }),
+      response: {
+        200: t.Object({
+          dailySignups: t.Array(
+            t.Object({ count: t.Number(), date: t.String() }),
+          ),
+          sources: t.Array(t.Object({ count: t.Number(), source: t.String() })),
+          stats: t.Object({
+            total: t.Number(),
+            verificationRate: t.Union([t.String(), t.Number()]),
+            verified: t.Number(),
+          }),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )

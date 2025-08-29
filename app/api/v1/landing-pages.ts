@@ -1,8 +1,10 @@
-import 'server-only'
-import { and, eq, isNull, ne } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { ulid } from 'ulid'
-import { db } from '@/database'
+/**
+ * Landing Pages API (v1)
+ * - Configure landing page metadata, domain, and template
+ * - Manage content blocks (create/update/delete/reorder/replace)
+ * - Resolve and verify domain connectivity
+ */
+import { db } from '@/drizzle'
 import { getLandingPageIdForUser } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
 import { normalizeHostname } from '@/lib/domains'
@@ -14,6 +16,11 @@ import {
   removeVercelProjectDomains,
 } from '@/lib/vercel'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
+import { and, eq, isNull, ne } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ulid } from 'ulid'
+import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 // Block types for landing pages
@@ -177,7 +184,13 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Update landing page (by hypothesis)',
         tags: ['Landing Pages'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        400: ErrorResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
   // Check slug availability
@@ -234,6 +247,14 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         description: 'Check if a subdomain slug is available',
         summary: 'Check slug availability',
         tags: ['Landing Pages'],
+      },
+      response: {
+        200: t.Object({
+          available: t.Boolean(),
+          error: t.Optional(t.String()),
+          normalizedSlug: t.String(),
+        }),
+        401: ErrorResponse,
       },
     },
   )
@@ -300,9 +321,27 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Get landing page by hypothesis',
         tags: ['Landing Pages'],
       },
-      params: t.Object({
-        hypothesisId: t.String(),
-      }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: t.Object({
+          blocks: t.Array(
+            t.Object({
+              content: t.String(),
+              id: t.String(),
+              order: t.String(),
+              type: t.String(),
+            }),
+          ),
+          landingPage: t.Object({
+            customDomain: t.Nullable(t.String()),
+            id: t.String(),
+            slug: t.Nullable(t.String()),
+            template: t.String(),
+          }),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -374,7 +413,13 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Verify custom domain',
         tags: ['Landing Pages'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: t.Object({ ok: t.Boolean() }),
+        400: ErrorResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -414,7 +459,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Add block (by hypothesis)',
         tags: ['Landing Page Blocks'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        201: t.Object({ id: t.String(), order: t.String(), type: t.String() }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -461,7 +511,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Update block (by hypothesis)',
         tags: ['Landing Page Blocks'],
       },
-      params: t.Object({ blockId: t.String(), hypothesisId: t.String() }),
+      params: t.Object({ blockId: t.String(), hypothesisId: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -508,7 +563,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Delete block (by hypothesis)',
         tags: ['Landing Page Blocks'],
       },
-      params: t.Object({ blockId: t.String(), hypothesisId: t.String() }),
+      params: t.Object({ blockId: t.String(), hypothesisId: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -564,7 +624,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Replace blocks (by hypothesis)',
         tags: ['Landing Page Blocks'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -611,6 +676,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         summary: 'Reorder blocks (by hypothesis)',
         tags: ['Landing Page Blocks'],
       },
-      params: t.Object({ hypothesisId: t.String() }),
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )

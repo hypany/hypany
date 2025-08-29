@@ -1,18 +1,18 @@
-import 'server-only'
-import crypto from 'node:crypto'
-import { render } from '@react-email/render'
-import { and, eq, gt } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { ulid } from 'ulid'
-import { db } from '@/database'
+/**
+ * Public API (v1)
+ * - Read-only landing page data
+ * - Waitlist signup, email verification, and position lookup
+ * - No authentication required
+ */
+import { db } from '@/drizzle'
 import { VerificationEmail } from '@/emails/verification-email'
 import { computeWaitlistPositionByCreatedAt } from '@/lib/api-utils'
 import { EMAIL_VERIFICATION_TOKEN_TTL_MS, HTTP_STATUS } from '@/lib/constants'
 import { sendEmail } from '@/lib/email'
 import { jsonError, jsonOk } from '@/lib/http'
 import { logger } from '@/lib/logger'
-import { serviceUrl } from '@/lib/url'
 import { normalizeReferrerHost } from '@/lib/referrer'
+import { serviceUrl } from '@/lib/url'
 import {
   hypotheses,
   landingPageBlocks,
@@ -21,6 +21,13 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
+import { render } from '@react-email/render'
+import { and, eq, gt } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import crypto from 'node:crypto'
+import 'server-only'
+import { ulid } from 'ulid'
+import { ErrorResponse } from '../docs'
 
 // Public API for landing pages (no auth required)
 function parseCookie(cookieHeader?: string | null): Record<string, string> {
@@ -118,6 +125,32 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
       params: t.Object({
         id: t.String({ pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$' }), // ULID pattern
       }),
+      response: {
+        200: t.Object({
+          blocks: t.Array(
+            t.Object({
+              id: t.String(),
+              type: t.String(),
+              order: t.String(),
+              content: t.String(),
+            }),
+          ),
+          hypothesis: t.Object({
+            name: t.String(),
+            description: t.Nullable(t.String()),
+          }),
+          landingPage: t.Object({
+            customCss: t.Nullable(t.String()),
+            favicon: t.Nullable(t.String()),
+            metaDescription: t.Nullable(t.String()),
+            metaTitle: t.Nullable(t.String()),
+            ogImage: t.Nullable(t.String()),
+            template: t.String(),
+          }),
+          waitlist: t.Object({ id: t.Optional(t.String()) }),
+        }),
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -191,13 +224,13 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         metadata: body.metadata ? JSON.stringify(body.metadata) : null,
         name: body.name || null,
         source: resolvedSource,
-        visitorId,
         updatedAt: new Date(),
         utmCampaign: body.utmCampaign || null,
         utmContent: body.utmContent || null,
         utmMedium: body.utmMedium || null,
         utmSource: body.utmSource || null,
         utmTerm: body.utmTerm || null,
+        visitorId,
         waitlistId: waitlist.id,
       })
 
@@ -281,6 +314,11 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
       params: t.Object({
         id: t.String({ pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$' }), // ULID pattern
       }),
+      response: {
+        200: t.Object({ success: t.Boolean(), position: t.Number() }),
+        404: ErrorResponse,
+        409: ErrorResponse,
+      },
     },
   )
 
@@ -409,6 +447,11 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         email: t.String({ format: 'email' }),
         token: t.String(),
       }),
+      response: {
+        200: t.Object({ success: t.Boolean(), message: t.String() }),
+        400: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -489,5 +532,9 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         email: t.String({ format: 'email' }),
         id: t.String({ pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$' }), // ULID pattern
       }),
+      response: {
+        200: t.Object({ position: t.Number(), verified: t.Boolean() }),
+        404: ErrorResponse,
+      },
     },
   )

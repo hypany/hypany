@@ -1,13 +1,18 @@
-import 'server-only'
-import { put } from '@vercel/blob'
-import { and, eq, isNull } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { ulid } from 'ulid'
-import { db } from '@/database'
+/**
+ * Uploads API (v1)
+ * - Upload images to Vercel Blob and persist metadata
+ */
+import { db } from '@/drizzle'
 import { HTTP_STATUS, ULID_PATTERN } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { logger } from '@/lib/logger'
 import { assets, hypotheses } from '@/schema'
+import { put } from '@vercel/blob'
+import { and, eq, isNull } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ulid } from 'ulid'
+import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 const MAX_BYTES = 2 * 1024 * 1024 // 2MB
@@ -113,6 +118,12 @@ export const uploadsApi = new Elysia({ prefix: '/v1/uploads' })
         description: 'Upload an image to Vercel Blob (max 2MB)',
         summary: 'Upload image',
         tags: ['Uploads'],
+      },
+      response: {
+        200: t.Object({ url: t.String() }),
+        400: ErrorResponse,
+        401: ErrorResponse,
+        500: ErrorResponse,
       },
     },
   )

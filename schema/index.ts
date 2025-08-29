@@ -236,7 +236,6 @@ export const waitlistEntries = pgTable(
     name: text('name'),
     revealedAt: timestamp('revealed_at'), // When the email was revealed
     source: text('source'), // organic, social, ad
-    visitorId: text('visitor_id'),
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),
@@ -245,18 +244,19 @@ export const waitlistEntries = pgTable(
     utmMedium: text('utm_medium'),
     utmSource: text('utm_source'),
     utmTerm: text('utm_term'),
+    visitorId: text('visitor_id'),
     waitlistId: text('waitlist_id')
       .notNull()
       .references(() => waitlists.id, { onDelete: 'cascade' }),
   },
   (table) => ({
+    visitorIdx: index('waitlist_entries_visitor_idx').on(table.visitorId),
     waitlistIdCreatedIdx: index(
       'waitlist_entries_waitlist_id_created_at_idx',
     ).on(table.waitlistId, table.createdAt),
     waitlistIdIdx: index('waitlist_entries_waitlist_id_idx').on(
       table.waitlistId,
     ),
-    visitorIdx: index('waitlist_entries_visitor_idx').on(table.visitorId),
   }),
 )
 

@@ -1,7 +1,7 @@
-import { Button } from '@/components/atoms/button'
-import { cx } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Button } from '@/components/atoms/button'
+import { cx } from '@/lib/utils'
 import type { CallToAction, Hero as HeroType, Media } from '../../types'
 import { WaitlistDialog } from './waitlist-dialog'
 

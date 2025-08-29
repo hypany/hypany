@@ -1,6 +1,6 @@
-import { Button } from '@/components/atoms/button'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Button } from '@/components/atoms/button'
 import type {
   CallToAction,
   FinalCallToAction as FinalCTAType,
@@ -120,11 +120,7 @@ function renderCTA(cta: CallToAction) {
           : 'primary'
 
   return (
-    <Button
-      variant={variant}
-      asChild
-      data-analytics-id={cta.analyticsId}
-    >
+    <Button variant={variant} asChild data-analytics-id={cta.analyticsId}>
       <Link
         href={cta.href}
         target={cta.newTab ? '_blank' : undefined}

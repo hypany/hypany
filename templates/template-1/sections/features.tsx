@@ -1,6 +1,6 @@
-import { cx } from '@/lib/utils'
 import { CheckCircle2 } from 'lucide-react'
 import Image from 'next/image'
+import { cx } from '@/lib/utils'
 import type { FeatureCard, Features as FeaturesType, Media } from '../../types'
 
 interface FeaturesProps {

@@ -1,10 +1,15 @@
-import 'server-only'
-import { and, eq, isNull } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { db } from '@/database'
+/**
+ * Assets API (v1)
+ * - List and soft-delete uploaded assets
+ */
+import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { assets } from '@/schema'
+import { and, eq, isNull } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ErrorResponse, SuccessResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 export const assetsApi = new Elysia({ prefix: '/v1/assets' })

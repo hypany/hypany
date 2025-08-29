@@ -4,7 +4,17 @@
  * - Aggregated dashboard metrics (signups, growth, readiness)
  * - Per-hypothesis metrics and related resources (landing page, waitlist)
  */
-import 'server-only'
+import { db } from '@/drizzle'
+import { HTTP_STATUS, ULID_PATTERN, WAITLIST_THRESHOLD } from '@/lib/constants'
+import { jsonError, jsonOk } from '@/lib/http'
+import { logger } from '@/lib/logger'
+import {
+  hypotheses,
+  landingPages,
+  pageVisits,
+  waitlistEntries,
+  waitlists,
+} from '@/schema'
 import {
   and,
   count,
@@ -17,20 +27,15 @@ import {
   lte,
 } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
+import 'server-only'
 import { ulid } from 'ulid'
-import { db } from '@/database'
-import { HTTP_STATUS, ULID_PATTERN, WAITLIST_THRESHOLD } from '@/lib/constants'
-import { jsonError, jsonOk } from '@/lib/http'
-import { logger } from '@/lib/logger'
 import {
-  hypotheses,
-  landingPages,
-  pageVisits,
-  waitlistEntries,
-  waitlists,
-} from '@/schema'
+  ErrorResponse,
+  PaginationQuery,
+  SuccessResponse,
+  UlidParam,
+} from '../docs'
 import { authPlugin } from './auth-plugin'
-import { ErrorResponse, PaginationQuery, UlidParam, SuccessResponse } from '../docs'
 
 // Validation schemas
 const HypothesisSchema = {
@@ -118,7 +123,9 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         const todayUtcMidnight = new Date(
           Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
         )
-        const sevenDaysAgo = new Date(todayUtcMidnight.getTime() - 7 * 24 * 60 * 60 * 1000)
+        const sevenDaysAgo = new Date(
+          todayUtcMidnight.getTime() - 7 * 24 * 60 * 60 * 1000,
+        )
         const fourteenDaysAgo = new Date(
           todayUtcMidnight.getTime() - 14 * 24 * 60 * 60 * 1000,
         )
@@ -188,20 +195,20 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         200: t.Object({
           hypotheses: t.Array(
             t.Object({
-              id: t.String(),
-              name: t.String(),
               description: t.Nullable(t.String()),
-              status: t.String(),
-              signupCount: t.Number(),
+              id: t.String(),
               landingPage: t.Nullable(
                 t.Object({ id: t.String(), slug: t.Nullable(t.String()) }),
               ),
+              name: t.String(),
+              signupCount: t.Number(),
+              status: t.String(),
             }),
           ),
           metrics: t.Object({
-            totalSignups: t.Number(),
-            readyToLaunch: t.Number(),
             growthRate7d: t.Number(),
+            readyToLaunch: t.Number(),
+            totalSignups: t.Number(),
           }),
         }),
         401: ErrorResponse,
@@ -366,18 +373,23 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       params: t.Object({ id: UlidParam }),
       response: {
         200: t.Object({
-          hypothesis: t.Object({ id: t.String(), name: t.String(), description: t.Nullable(t.String()), status: t.String() }),
+          hypothesis: t.Object({
+            description: t.Nullable(t.String()),
+            id: t.String(),
+            name: t.String(),
+            status: t.String(),
+          }),
           landingPage: t.Nullable(
             t.Object({ id: t.String(), slug: t.Nullable(t.String()) }),
           ),
-          waitlist: t.Nullable(t.Object({ id: t.String() })),
-          signupCount: t.Number(),
           metrics: t.Object({
-            pageViews30d: t.Number(),
-            uniqueVisitors30d: t.Number(),
-            signupsLast30d: t.Number(),
             conversionRate30d: t.Number(),
+            pageViews30d: t.Number(),
+            signupsLast30d: t.Number(),
+            uniqueVisitors30d: t.Number(),
           }),
+          signupCount: t.Number(),
+          waitlist: t.Nullable(t.Object({ id: t.String() })),
         }),
         401: ErrorResponse,
         403: ErrorResponse,
@@ -456,9 +468,9 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       response: {
         201: t.Object({
           hypothesis: t.Object({
+            description: t.Nullable(t.String()),
             id: t.String(),
             name: t.String(),
-            description: t.Nullable(t.String()),
             status: t.String(),
           }),
           landingPageId: t.String(),
@@ -516,7 +528,14 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       },
       params: t.Object({ id: UlidParam }),
       response: {
-        200: t.Object({ hypothesis: t.Object({ id: t.String(), name: t.String(), description: t.Nullable(t.String()), status: t.String() }) }),
+        200: t.Object({
+          hypothesis: t.Object({
+            description: t.Nullable(t.String()),
+            id: t.String(),
+            name: t.String(),
+            status: t.String(),
+          }),
+        }),
         401: ErrorResponse,
         404: ErrorResponse,
       },

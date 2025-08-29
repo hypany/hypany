@@ -1,7 +1,8 @@
-import 'server-only'
-import { and, eq, inArray, isNull } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { db } from '@/database'
+/**
+ * GDPR API (v1)
+ * - User data export and account deletion
+ */
+import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import {
@@ -14,6 +15,10 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
+import { and, eq, inArray, isNull } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ErrorResponse, SuccessResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 export const gdprApi = new Elysia({ prefix: '/v1/gdpr' })
@@ -212,6 +217,19 @@ export const gdprApi = new Elysia({ prefix: '/v1/gdpr' })
       query: t.Object({
         download: t.Optional(t.Union([t.Boolean(), t.Literal('1')])),
       }),
+      response: {
+        200: t.Object({
+          account: t.Record(t.String(), t.Any()),
+          accounts: t.Array(t.Record(t.String(), t.Any())),
+          hypotheses: t.Array(t.Record(t.String(), t.Any())),
+          landingPages: t.Array(t.Record(t.String(), t.Any())),
+          landingPageBlocks: t.Array(t.Record(t.String(), t.Any())),
+          sessions: t.Array(t.Record(t.String(), t.Any())),
+          waitlists: t.Array(t.Record(t.String(), t.Any())),
+          exportGeneratedAt: t.String(),
+        }),
+        401: ErrorResponse,
+      },
     },
   )
 
@@ -235,5 +253,6 @@ export const gdprApi = new Elysia({ prefix: '/v1/gdpr' })
         summary: 'Delete account',
         tags: ['Auth'],
       },
+      response: { 200: SuccessResponse, 401: ErrorResponse },
     },
   )

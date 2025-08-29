@@ -1,8 +1,8 @@
+import { unstable_noStore as noStore } from 'next/cache'
 import RandomIdeasClient, {
   type IdeaItem,
 } from '@/components/molecules/landing/random-ideas-client'
 import allIdeas from '@/public/ideas.json'
-import { unstable_noStore as noStore } from 'next/cache'
 
 type RawIdea = {
   user?: string

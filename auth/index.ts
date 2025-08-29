@@ -1,4 +1,4 @@
-import { db } from '@/database'
+import { db } from '@/drizzle'
 import ResetPasswordEmail from '@/emails/reset-password-email'
 import VerificationEmail from '@/emails/verification-email'
 import { sendEmail } from '@/lib/email'

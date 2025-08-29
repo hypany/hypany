@@ -1,13 +1,13 @@
 'use client'
 
+import { RiCloseFill, RiMenuFill } from '@remixicon/react'
+import Link from 'next/link'
+import React from 'react'
 import { siteConfig } from '@/app/site-config'
 import { Button } from '@/components/atoms/button'
 import useScroll from '@/lib/use-scroll'
 import { cx } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
-import { RiCloseFill, RiMenuFill } from '@remixicon/react'
-import Link from 'next/link'
-import React from 'react'
 
 export function NavBar() {
   const [open, setOpen] = React.useState(false)

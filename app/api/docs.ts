@@ -46,8 +46,8 @@ export const SuccessResponse = t.Object({ success: t.Literal(true) })
 
 // Common helpers for path/query params
 export const UlidParam = t.String({
-  pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$',
   description: 'ULID identifier',
+  pattern: '^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$',
 })
 
 export const PaginationQuery = t.Object({

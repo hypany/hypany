@@ -1,11 +1,11 @@
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { ThemeProvider } from 'next-themes'
 import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import '../globals.css'
 import { siteConfig } from './siteConfig'
 

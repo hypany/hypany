@@ -12,4 +12,3 @@ export function normalizeReferrerHost(
     return host || null
   }
 }
-

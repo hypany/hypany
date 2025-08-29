@@ -1,4 +1,4 @@
-import { db } from '@/database'
+import { db } from '@/drizzle'
 import { BOT_UA_REGEX } from '@/lib/constants'
 import { logger } from '@/lib/logger'
 import { normalizeReferrerHost } from '@/lib/referrer'

@@ -1,10 +1,15 @@
-import 'server-only'
-import { and, eq } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import { db } from '@/database'
+/**
+ * Sessions API (v1)
+ * - Revoke sessions for the authenticated user
+ */
+import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { sessions } from '@/schema'
+import { and, eq } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import 'server-only'
+import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 export const sessionsApi = new Elysia({ prefix: '/v1/sessions' })
@@ -41,6 +46,12 @@ export const sessionsApi = new Elysia({ prefix: '/v1/sessions' })
         description: 'Revoke a session by ID for current user',
         summary: 'Revoke session',
         tags: ['Auth'],
+      },
+      response: {
+        200: t.Object({ id: t.String(), revoked: t.Boolean() }),
+        400: ErrorResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
       },
     },
   )
