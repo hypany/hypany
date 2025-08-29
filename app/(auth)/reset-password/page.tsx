@@ -1,16 +1,23 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { SignUpForm } from '@/components/molecules/auth/sign-up-form'
-import { Divider } from '@/components/atoms/divider'
 import { getTranslations } from 'next-intl/server'
 
+import { Divider } from '@/components/atoms/divider'
+import { ResetPasswordForm } from '@/components/molecules/auth/reset-password-form'
+
 export const metadata: Metadata = {
-  description: 'Create a new Hypany account',
-  title: 'Create an account - Hypany',
+  description: 'Set a new Hypany password',
+  title: 'Reset Password - Hypany',
 }
 
-export default async function SignUpPage() {
-  const t = await getTranslations('auth.sign-up')
+export default async function ResetPasswordPage({
+  searchParams,
+}: {
+  searchParams: { token?: string }
+}) {
+  const t = await getTranslations('auth.reset-password')
+  const token = searchParams?.token
+
   return (
     <>
       <main className='flex-1'>
@@ -26,18 +33,18 @@ export default async function SignUpPage() {
             </div>
 
             <div className='mt-6'>
-              <SignUpForm />
+              <ResetPasswordForm token={token} />
             </div>
 
             <Divider />
 
             <p className='mt-2 text-sm text-gray-700 dark:text-gray-400'>
-              <span>Already have an account? </span>
+              <span>Ready to go back? </span>
               <Link
                 href='/sign-in'
                 className='font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 hover:dark:text-emerald-600'
               >
-                Sign in
+                Back to sign in
               </Link>
             </p>
           </div>
@@ -50,10 +57,10 @@ export default async function SignUpPage() {
         <div className='flex h-full w-full items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-16 dark:from-emerald-600 dark:to-emerald-500'>
           <div>
             <h2 className='max-w-lg text-2xl font-semibold leading-9 text-white'>
-              Join founders validating ideas faster
+              Finish resetting your password
             </h2>
             <p className='mt-4 text-white/90'>
-              Build, measure, and learn with real demand signals.
+              Choose a strong passphrase to keep your account secure.
             </p>
             <div className='mt-10 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20'>
               <div className='h-48 w-[28rem] rounded-md bg-white/5 shadow-2xl shadow-black/40 ring-1 ring-black/10' />
@@ -64,3 +71,4 @@ export default async function SignUpPage() {
     </>
   )
 }
+

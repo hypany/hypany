@@ -1,8 +1,6 @@
 'use client'
 
-import { ArrowUpRight, Monitor, Moon, Sun } from 'lucide-react'
-import { useTheme } from 'next-themes'
-import * as React from 'react'
+import { client } from '@/auth/client'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +15,10 @@ import {
   DropdownMenuSubMenuTrigger,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
+import { ArrowUpRight, Monitor, Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export type DropdownUserProfileProps = {
   children: React.ReactNode
@@ -27,15 +29,21 @@ export function DropdownUserProfile({
   children,
   align = 'start',
 }: DropdownUserProfileProps) {
-  const [mounted, setMounted] = React.useState(false)
+  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true)
+  }, [])
+
+  const handleSignOut = useCallback(async () => {
+    await client.signOut()
+    toast.success('Signed out successfully')
   }, [])
 
   if (!mounted) {
     return null
   }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
@@ -105,11 +113,7 @@ export function DropdownUserProfile({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <a href='/api/auth/logout' className='w-full'>
-              Sign out
-            </a>
-          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,10 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
-import { ThemeProvider } from 'next-themes'
 import { cookies } from 'next/headers'
 import '../globals.css'
 import { siteConfig } from '../site-config'
@@ -49,28 +46,16 @@ export default async function RootLayout({
   const defaultOpen = cookieStore.get('sidebar:state')?.value !== 'false'
 
   return (
-    <html lang='en' className='h-full' suppressHydrationWarning>
-      <body>
-        <ThemeProvider
-          defaultTheme='system'
-          disableTransitionOnChange
-          attribute='class'
-        >
-          <SidebarProvider defaultOpen={defaultOpen}>
-            <AppSidebar />
-            <div className='w-full'>
-              <header className='sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950'>
-                <SidebarTrigger className='-ml-1' />
-                <div className='mr-2 h-4 w-px bg-gray-200 dark:bg-gray-800' />
-                <Breadcrumbs />
-              </header>
-              <main>{children}</main>
-            </div>
-          </SidebarProvider>
-        </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
-      </body>
-    </html>
+    <SidebarProvider defaultOpen={defaultOpen}>
+      <AppSidebar />
+      <div className='w-full'>
+        <header className='sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950'>
+          <SidebarTrigger className='-ml-1' />
+          <div className='mr-2 h-4 w-px bg-gray-200 dark:bg-gray-800' />
+          <Breadcrumbs />
+        </header>
+        <main>{children}</main>
+      </div>
+    </SidebarProvider>
   )
 }

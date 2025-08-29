@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SignInForm } from '@/components/molecules/auth/sign-in-form'
+import { Divider } from '@/components/atoms/divider'
 import { getTranslations } from 'next-intl/server'
 
 export const metadata: Metadata = {
@@ -9,23 +10,62 @@ export const metadata: Metadata = {
 }
 
 export default async function SignInPage() {
-  const tCommon = await getTranslations('auth.common')
   const t = await getTranslations('auth.sign-in')
+
   return (
-    <div className='container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:px-0'>
-      <Link
-        href='/'
-        className='absolute left-4 top-4 md:left-8 md:top-8 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2'
-      >
-        {tCommon('back')}
-      </Link>
-      <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
-        <div className='flex flex-col space-y-2 text-center'>
-          <h1 className='text-2xl font-semibold'>{t('title')}</h1>
-          <p className='text-sm text-muted-foreground'>{t('subtitle')}</p>
+    <>
+      <main className='flex-1'>
+        <div className='flex h-full flex-col items-center justify-center'>
+          <div className='w-full px-4 sm:max-w-sm sm:px-0'>
+            <div className='space-y-1'>
+              <h2 className='text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-50'>
+                {t('title')}
+              </h2>
+              <p className='text-sm text-gray-700 dark:text-gray-400'>
+                {t('subtitle')}
+              </p>
+            </div>
+
+            {/** Optional social logins could go here */}
+            {/* <div className='mt-8 flex w-full gap-4'>...</div> */}
+            {/* <Divider>or</Divider> */}
+
+            <div className='mt-6'>
+              <SignInForm />
+            </div>
+
+            <Divider />
+
+            <p className='mt-2 text-sm text-gray-700 dark:text-gray-400'>
+              <span>Don&apos;t have an account? </span>
+              <Link
+                href='/sign-up'
+                className='font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 hover:dark:text-emerald-600'
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
         </div>
-        <SignInForm />
-      </div>
-    </div>
+      </main>
+      <aside
+        className='hidden flex-1 overflow-hidden p-6 lg:flex'
+        aria-label='Product showcase'
+      >
+        <div className='flex h-full w-full items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-16 dark:from-emerald-600 dark:to-emerald-500'>
+          <div>
+            <h2 className='max-w-lg text-2xl font-semibold leading-9 text-white'>
+              Validate startup ideas before you build
+            </h2>
+            <p className='mt-4 text-white/90'>
+              Ship landing pages fast, measure interest, and iterate with data.
+            </p>
+            <div className='mt-10 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20'>
+              <div className='h-48 w-[28rem] rounded-md bg-white/5 shadow-2xl shadow-black/40 ring-1 ring-black/10' />
+            </div>
+          </div>
+        </div>
+      </aside>
+    </>
   )
 }

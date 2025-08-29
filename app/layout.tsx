@@ -45,7 +45,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className='min-h-screen overflow-x-hidden scroll-auto bg-gray-50 antialiased selection:bg-emerald-100 selection:text-emerald-600'>
+      <body className='overflow-x-hidden scroll-auto bg-gray-50 selection:bg-emerald-100 selection:text-emerald-600'>
         <Providers i18nMessages={messages} i18nLocale={locale}>
           {children}
         </Providers>

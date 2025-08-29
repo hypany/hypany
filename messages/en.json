@@ -22,6 +22,14 @@
     "sign-up": {
       "title": "Create an account",
       "subtitle": "Enter your information to get started"
+    },
+    "forgot-password": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email and we'll send a reset link"
+    },
+    "reset-password": {
+      "title": "Set a new password",
+      "subtitle": "Create a strong password to secure your account"
     }
   },
   "landing": {

@@ -13,11 +13,10 @@ import { admin, openAPI } from 'better-auth/plugins'
 import 'server-only'
 
 const { AUTH_SECRET } = getEnv()
-const VERCEL_URL = process.env.VERCEL_URL || serviceUrl
 
 export const auth = betterAuth({
   appName: 'Hypany',
-  baseURL: VERCEL_URL,
+  baseURL: serviceUrl,
   basePath: '/api/auth',
   database: drizzleAdapter(db, {
     provider: 'pg',

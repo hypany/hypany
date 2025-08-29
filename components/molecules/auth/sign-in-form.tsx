@@ -40,7 +40,7 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
     const email = getValues('email')
     const resendPromise = (async () => {
       const { error } = await client.sendVerificationEmail({
-        callbackURL: '/app',
+        callbackURL: '/dashboard',
         email,
       })
 
@@ -67,18 +67,19 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
       })
 
       if (error) {
-        // Check for specific error types
-        if (
-          error.status === 403 ||
-          error.message?.toLowerCase().includes('not verified') ||
-          error.message?.toLowerCase().includes('verify')
+        // Check for EMAIL_NOT_VERIFIED error specifically
+        if (error.code === 'EMAIL_NOT_VERIFIED' || 
+            error.status === 403 ||
+            error.message?.toLowerCase().includes('not verified') ||
+            error.message?.toLowerCase().includes('verify')
         ) {
-          toast.error('Verify your email before signing in.', {
+          toast.error('Email not verified', {
             action: {
-              label: 'Resend',
+              label: 'Resend verification email',
               onClick: () => resendVerificationEmail(),
             },
-            description: 'Check your inbox for the verification link.',
+            description: 'Please verify your email before signing in.',
+            duration: 10000,
           })
         } else if (
           error.status === 401 ||
@@ -106,76 +107,55 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
   }
 
   return (
-    <div className={cx('grid gap-6', className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='grid gap-4'>
-          <div className='grid gap-2'>
-            <Label htmlFor={emailId}>Email</Label>
-            <Input
-              id={emailId}
-              placeholder='name@example.com'
-              type='email'
-              autoCapitalize='none'
-              autoComplete='email'
-              autoCorrect='off'
-              disabled={isSubmitting}
-              {...register('email')}
-            />
-            {errors.email && (
-              <p className='text-sm text-destructive'>{errors.email.message}</p>
-            )}
-          </div>
-          <div className='grid gap-2'>
-            <div className='flex items-center justify-between'>
-              <Label htmlFor={passwordId}>Password</Label>
-              <Link
-                href='/auth/forgot-password'
-                className='text-sm text-muted-foreground underline underline-offset-4 hover:text-primary'
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input
-              id={passwordId}
-              placeholder='Enter your password'
-              type='password'
-              autoCapitalize='none'
-              autoComplete='current-password'
-              disabled={isSubmitting}
-              {...register('password')}
-            />
-            {errors.password && (
-              <p className='text-sm text-destructive'>
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-          <Button disabled={isSubmitting} className='w-full'>
-            {isSubmitting ? 'Signing in...' : 'Sign In'}
-          </Button>
+    <div className={cx('w-full', className)} {...props}>
+      <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+        <div className='space-y-2'>
+          <Label htmlFor={emailId}>Email</Label>
+          <Input
+            id={emailId}
+            placeholder='name@example.com'
+            type='email'
+            autoCapitalize='none'
+            autoComplete='email'
+            autoCorrect='off'
+            disabled={isSubmitting}
+            {...register('email')}
+          />
+          {errors.email && (
+            <p className='text-sm text-red-600 dark:text-red-500'>
+              {errors.email.message}
+            </p>
+          )}
         </div>
+        <div className='space-y-2'>
+          <div className='flex items-center justify-between'>
+            <Label htmlFor={passwordId}>Password</Label>
+            <Link
+              href='/forgot-password'
+              className='text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 hover:dark:text-emerald-600'
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <Input
+            id={passwordId}
+            placeholder='Enter your password'
+            type='password'
+            autoCapitalize='none'
+            autoComplete='current-password'
+            disabled={isSubmitting}
+            {...register('password')}
+          />
+          {errors.password && (
+            <p className='text-sm text-red-600 dark:text-red-500'>
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+        <Button disabled={isSubmitting} className='w-full'>
+          {isSubmitting ? 'Signing in...' : 'Continue'}
+        </Button>
       </form>
-
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <span className='w-full border-t' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background px-2 text-muted-foreground'>Or</span>
-        </div>
-      </div>
-
-      <div className='text-center text-sm'>
-        <span className='text-muted-foreground'>
-          Don&apos;t have an account?{' '}
-        </span>
-        <Link
-          href='/sign-up'
-          className='text-primary underline underline-offset-4 hover:text-primary/80'
-        >
-          Sign up
-        </Link>
-      </div>
     </div>
   )
 }
