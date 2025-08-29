@@ -146,7 +146,6 @@ export function WaitlistDialog({
 
           <Button
             type='submit'
-            size='lg'
             className='w-full'
             disabled={isSubmitting}
           >

@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from 'drizzle-orm'
+import { and, eq, isNull, lte } from 'drizzle-orm'
 import { db } from '@/database'
 import { hypotheses, landingPages, waitlistEntries, waitlists } from '@/schema'
 
@@ -38,15 +38,18 @@ export async function computeWaitlistPositionByCreatedAt(
   waitlistId: string,
   createdAt: Date,
 ) {
-  const [pos] = await db
-    .select({ position: sql<number>`COUNT(*)::int` })
+  // Use Drizzle query builder and compute count on server
+  const rows = await db
+    .select({ id: waitlistEntries.id })
     .from(waitlistEntries)
     .where(
       and(
         eq(waitlistEntries.waitlistId, waitlistId),
         isNull(waitlistEntries.deletedAt),
-        sql`${waitlistEntries.createdAt} <= ${createdAt}`,
+        lte(waitlistEntries.createdAt, createdAt),
       ),
     )
-  return Number(pos?.position || 1)
+
+  const position = rows.length
+  return position > 0 ? position : 1
 }

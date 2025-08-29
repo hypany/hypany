@@ -112,17 +112,16 @@ function renderCTA(cta: CallToAction) {
   // Regular buttons
   const variant =
     cta.style === 'primary'
-      ? 'default'
+      ? 'primary'
       : cta.style === 'secondary'
         ? 'secondary'
         : cta.style === 'link'
-          ? 'link'
-          : 'default'
+          ? 'ghost'
+          : 'primary'
 
   return (
     <Button
       variant={variant}
-      size='lg'
       asChild
       data-analytics-id={cta.analyticsId}
     >

@@ -1,3 +1,9 @@
+// Central API router bridging Next.js App Router to an Elysia app.
+//
+// - Prefixes everything with `/api` so paths below mount as `/api/v1/...`.
+// - Attaches Swagger to expose OpenAPI at `/api/docs` in development.
+// - Composes the versioned sub-routers from `./v1/*`.
+// - Mounts the Better Auth handler last so it doesn’t intercept other routes.
 import 'server-only'
 import swagger from '@elysiajs/swagger'
 import { Elysia } from 'elysia'

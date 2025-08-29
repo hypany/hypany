@@ -1,5 +1,5 @@
 import 'server-only'
-import { and, desc, eq, inArray, sql } from 'drizzle-orm'
+import { and, desc, eq, inArray, gte, lte } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { db } from '@/database'
 import { getWaitlistIdForUser } from '@/lib/api-utils'
@@ -52,19 +52,22 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
       if (!waitlist)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Waitlist not found')
 
-      // Get entry counts (total, verified)
-      const [counts] = await db
-        .select({
-          total: sql<number>`count(*)`,
-          verified: sql<number>`count(*) filter (where ${waitlistEntries.emailVerified} = true)`,
-        })
+      // Get entries and compute counts server-side
+      const entryFlags = await db
+        .select({ emailVerified: waitlistEntries.emailVerified })
         .from(waitlistEntries)
         .where(eq(waitlistEntries.waitlistId, waitlist.id))
 
+      const totalEntries = entryFlags.length
+      const verifiedEntries = entryFlags.reduce(
+        (acc, e) => acc + (e.emailVerified ? 1 : 0),
+        0,
+      )
+
       return jsonOk(set, HTTP_STATUS.OK, {
         stats: {
-          totalEntries: Number(counts.total),
-          verifiedEntries: Number(counts.verified),
+          totalEntries,
+          verifiedEntries,
         },
         waitlist,
       })
@@ -406,66 +409,56 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
 
       const { from, to } = resolveRange(query)
 
-      const [stats] = await db
+      const filtered = await db
         .select({
-          total: sql<number>`count(*)`,
-          verified: sql<number>`count(*) filter (where ${waitlistEntries.emailVerified} = true)`,
-        })
-        .from(waitlistEntries)
-        .where(
-          and(
-            eq(waitlistEntries.waitlistId, wl.id),
-            sql`${waitlistEntries.createdAt} >= ${from} AND ${waitlistEntries.createdAt} <= ${to}`,
-          ),
-        )
-
-      const sources = await db
-        .select({
-          count: sql<number>`count(*)`,
+          createdAt: waitlistEntries.createdAt,
+          emailVerified: waitlistEntries.emailVerified,
           source: waitlistEntries.source,
         })
         .from(waitlistEntries)
         .where(
           and(
             eq(waitlistEntries.waitlistId, wl.id),
-            sql`${waitlistEntries.createdAt} >= ${from} AND ${waitlistEntries.createdAt} <= ${to}`,
+            gte(waitlistEntries.createdAt, from),
+            lte(waitlistEntries.createdAt, to),
           ),
         )
-        .groupBy(waitlistEntries.source)
 
-      const dailySignups = await db
-        .select({
-          count: sql<number>`count(*)`,
-          date: sql<string>`date(${waitlistEntries.createdAt})`,
-        })
-        .from(waitlistEntries)
-        .where(
-          and(
-            eq(waitlistEntries.waitlistId, wl.id),
-            sql`${waitlistEntries.createdAt} >= ${from} AND ${waitlistEntries.createdAt} <= ${to}`,
-          ),
-        )
-        .groupBy(sql`date(${waitlistEntries.createdAt})`)
-        .orderBy(sql`date(${waitlistEntries.createdAt})`)
+      // Compute stats
+      const total = filtered.length
+      const verified = filtered.reduce(
+        (acc, e) => acc + (e.emailVerified ? 1 : 0),
+        0,
+      )
+
+      // Compute sources breakdown
+      const sourceMap = new Map<string, number>()
+      for (const e of filtered) {
+        const key = e.source || 'direct'
+        sourceMap.set(key, (sourceMap.get(key) || 0) + 1)
+      }
+      const sources = Array.from(sourceMap.entries()).map(([source, count]) => ({
+        source,
+        count,
+      }))
+
+      // Compute daily signups
+      const dailyMap = new Map<string, number>()
+      for (const e of filtered) {
+        const day = e.createdAt.toISOString().slice(0, 10)
+        dailyMap.set(day, (dailyMap.get(day) || 0) + 1)
+      }
+      const dailySignups = Array.from(dailyMap.entries())
+        .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+        .map(([date, count]) => ({ date, count }))
 
       return jsonOk(set, HTTP_STATUS.OK, {
-        dailySignups: dailySignups.map((d) => ({
-          count: Number(d.count),
-          date: d.date,
-        })),
-        sources: sources.map((s) => ({
-          count: Number(s.count),
-          source: s.source || 'direct',
-        })),
+        dailySignups,
+        sources,
         stats: {
-          total: Number(stats.total),
-          verificationRate:
-            stats.total > 0
-              ? ((Number(stats.verified) / Number(stats.total)) * 100).toFixed(
-                  1,
-                )
-              : 0,
-          verified: Number(stats.verified),
+          total,
+          verificationRate: total > 0 ? ((verified / total) * 100).toFixed(1) : 0,
+          verified,
         },
       })
     },
@@ -483,7 +476,7 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         to: t.Optional(t.String()),
         range: t.Optional(
           t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]),
-        ).default('30d'),
+        ),
       }),
     },
   )

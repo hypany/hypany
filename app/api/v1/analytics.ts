@@ -1,24 +1,39 @@
 import 'server-only'
 import { Elysia, t } from 'elysia'
-import { sql } from 'drizzle-orm'
+import { and, desc, eq, gte, inArray, lt, lte } from 'drizzle-orm'
 import { db } from '@/database'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { hypotheses, pageVisits, waitlistEntries, waitlists } from '@/schema'
 import { authPlugin } from './auth-plugin'
 import { resolveRange } from '@/lib/time-range'
+import { BOT_UA_REGEX } from '@/lib/constants'
 
-
-function normalizeHostExpr(column: any) {
-  // postgres expr to normalize referrer host -> host or 'direct'
-  return sql<string>`COALESCE(NULLIF(split_part(regexp_replace(${column}, '^https?://', ''), '/', 1), ''), 'direct')`
+function extractReferrerDomain(referrer?: string | null): string {
+  if (!referrer) return 'direct'
+  const r = String(referrer).trim()
+  if (!r) return 'direct'
+  try {
+    // If it looks like a URL with scheme
+    const url = r.startsWith('http://') || r.startsWith('https://') ? new URL(r) : null
+    if (url?.hostname) return url.hostname
+  } catch {}
+  // Fallback: strip scheme manually and take first segment before '/'
+  const withoutScheme = r.replace(/^https?:\/\//i, '')
+  const domain = withoutScheme.split('/')[0]?.trim()
+  return domain || 'direct'
 }
 
-// Basic bot filtering (case-insensitive regex matches common bots)
-import { BOT_UA_PATTERN } from '@/lib/constants'
-
-function notBotExpr() {
-  return sql`(${pageVisits.userAgent} IS NULL OR ${pageVisits.userAgent} !~* ${BOT_UA_PATTERN})`
+function coalesceUtmSource(
+  utmSource?: string | null,
+  source?: string | null,
+  fallback: 'direct' | 'organic' = 'direct',
+): string {
+  const u = (utmSource ?? '').trim()
+  if (u) return u
+  const s = (source ?? '').trim()
+  if (s) return s
+  return fallback
 }
 
 export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
@@ -35,79 +50,179 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       const cursorDate = query.cursor ? new Date(String(query.cursor)) : null
       const hypothesisId = query.hypothesisId ? String(query.hypothesisId) : null
 
-      const filterHypothesis = hypothesisId
-        ? sql`AND h.id = ${hypothesisId}`
-        : sql``
-      const cursorPv = cursorDate ? sql`AND pv.created_at < ${cursorDate}` : sql``
-      const cursorSignup = cursorDate
-        ? sql`AND e.created_at < ${cursorDate}`
-        : sql``
-      const cursorVerify = cursorDate
-        ? sql`AND e.updated_at < ${cursorDate}`
-        : sql``
+      // Get all user's hypotheses
+      const userHypotheses = await db
+        .select()
+        .from(hypotheses)
+        .where(eq(hypotheses.userId, user.id))
 
-      const rows = await db.execute(sql<
-        Array<{
-          type: 'page_view' | 'signup' | 'verification'
-          ts: Date
-          hypothesis_id: string
-          source: string | null
-          email: string | null
-        }>
-      >`SELECT type, ts, hypothesis_id, source, email
-        FROM (
-          SELECT 'page_view'::text AS type,
-                 pv.created_at AS ts,
-                 h.id AS hypothesis_id,
-                 ${normalizeHostExpr(pageVisits.referrer)} AS source,
-                 NULL::text AS email
-          FROM ${pageVisits} pv
-          JOIN ${hypotheses} h ON h.id = pv.hypothesis_id
-          WHERE h.user_id = ${user.id}
-            AND pv.created_at >= ${from} AND pv.created_at <= ${to}
-            AND ${notBotExpr()}
-            ${cursorPv}
-            ${filterHypothesis}
-          UNION ALL
-          SELECT 'signup'::text AS type,
-                 e.created_at AS ts,
-                 w.hypothesis_id AS hypothesis_id,
-                 COALESCE(NULLIF(e.utm_source, ''), NULLIF(e.source, ''), 'organic') AS source,
-                 e.email AS email
-          FROM ${waitlistEntries} e
-          JOIN ${waitlists} w ON w.id = e.waitlist_id
-          JOIN ${hypotheses} h ON h.id = w.hypothesis_id
-          WHERE h.user_id = ${user.id}
-            AND e.created_at >= ${from} AND e.created_at <= ${to}
-            ${cursorSignup}
-            ${filterHypothesis}
-          UNION ALL
-          SELECT 'verification'::text AS type,
-                 e.updated_at AS ts,
-                 w.hypothesis_id AS hypothesis_id,
-                 COALESCE(NULLIF(e.utm_source, ''), NULLIF(e.source, ''), 'organic') AS source,
-                 e.email AS email
-          FROM ${waitlistEntries} e
-          JOIN ${waitlists} w ON w.id = e.waitlist_id
-          JOIN ${hypotheses} h ON h.id = w.hypothesis_id
-          WHERE h.user_id = ${user.id}
-            AND e.email_verified = true
-            AND e.updated_at >= ${from} AND e.updated_at <= ${to}
-            ${cursorVerify}
-            ${filterHypothesis}
-        ) t
-        ORDER BY ts DESC
-        LIMIT ${limit}`)
+      const hypothesisIds = userHypotheses.map(h => h.id)
+      
+      // Filter by specific hypothesis if provided
+      const targetHypothesisIds = hypothesisId 
+        ? hypothesisIds.filter(id => id === hypothesisId)
+        : hypothesisIds
 
-      const items = rows.rows.map((r) => ({
-        email: r.email,
-        hypothesisId: r.hypothesis_id,
-        source: r.source || 'direct',
-        timestamp: r.ts,
-        type: r.type,
+      if (targetHypothesisIds.length === 0) {
+        return jsonOk(set, HTTP_STATUS.OK, {
+          items: [],
+          nextCursor: null,
+        })
+      }
+
+      // Get page views (filter bot UAs in JS)
+      const pageViewConditions = [
+        inArray(pageVisits.hypothesisId, targetHypothesisIds),
+        gte(pageVisits.createdAt, from),
+        lte(pageVisits.createdAt, to),
+      ]
+      if (cursorDate) {
+        pageViewConditions.push(lt(pageVisits.createdAt, cursorDate))
+      }
+
+      const rawPageViews = await db
+        .select({
+          createdAt: pageVisits.createdAt,
+          hypothesisId: pageVisits.hypothesisId,
+          referrer: pageVisits.referrer,
+          userAgent: pageVisits.userAgent,
+        })
+        .from(pageVisits)
+        .where(and(...pageViewConditions))
+        .orderBy(desc(pageVisits.createdAt))
+        .limit(limit)
+
+      const pageViewsData = rawPageViews
+        .filter(pv => !pv.userAgent || !BOT_UA_REGEX.test(pv.userAgent))
+        .map(pv => ({
+          type: 'page_view' as const,
+          timestamp: pv.createdAt,
+          hypothesisId: pv.hypothesisId,
+          source: extractReferrerDomain(pv.referrer),
+          email: null as string | null,
+        }))
+
+      // Get waitlists for hypotheses
+      const userWaitlists = await db
+        .select()
+        .from(waitlists)
+        .where(inArray(waitlists.hypothesisId, targetHypothesisIds))
+
+      const waitlistIds = userWaitlists.map(w => w.id)
+
+      let signupsData: Array<{
+        type: 'signup'
+        timestamp: Date | null
+        hypothesisId: string
+        source: string
+        email: string | null
+      }> = []
+
+      let verificationsData: Array<{
+        type: 'verification'
+        timestamp: Date | null
+        hypothesisId: string
+        source: string
+        email: string | null
+      }> = []
+
+      if (waitlistIds.length > 0) {
+        // Get signups
+        const signupConditions = [
+          inArray(waitlistEntries.waitlistId, waitlistIds),
+          gte(waitlistEntries.createdAt, from),
+          lte(waitlistEntries.createdAt, to),
+        ]
+        if (cursorDate) {
+          signupConditions.push(lt(waitlistEntries.createdAt, cursorDate))
+        }
+
+        const signups = await db
+          .select({
+            timestamp: waitlistEntries.createdAt,
+            waitlistId: waitlistEntries.waitlistId,
+            utmSource: waitlistEntries.utmSource,
+            source: waitlistEntries.source,
+            email: waitlistEntries.email,
+          })
+          .from(waitlistEntries)
+          .where(and(...signupConditions))
+          .orderBy(desc(waitlistEntries.createdAt))
+          .limit(limit)
+
+        // Map signups to include hypothesis ID
+        const waitlistToHypothesis = new Map(userWaitlists.map(w => [w.id, w.hypothesisId]))
+        signupsData = signups.map(s => ({
+          type: 'signup' as const,
+          timestamp: s.timestamp,
+          hypothesisId: waitlistToHypothesis.get(s.waitlistId) || '',
+          source: coalesceUtmSource(s.utmSource, s.source, 'organic'),
+          email: s.email,
+        }))
+
+        // Get verifications
+        const verificationConditions = [
+          inArray(waitlistEntries.waitlistId, waitlistIds),
+          eq(waitlistEntries.emailVerified, true),
+          gte(waitlistEntries.updatedAt, from),
+          lte(waitlistEntries.updatedAt, to),
+        ]
+        if (cursorDate) {
+          verificationConditions.push(lt(waitlistEntries.updatedAt, cursorDate))
+        }
+
+        const verifications = await db
+          .select({
+            timestamp: waitlistEntries.updatedAt,
+            waitlistId: waitlistEntries.waitlistId,
+            utmSource: waitlistEntries.utmSource,
+            source: waitlistEntries.source,
+            email: waitlistEntries.email,
+          })
+          .from(waitlistEntries)
+          .where(and(...verificationConditions))
+          .orderBy(desc(waitlistEntries.updatedAt))
+          .limit(limit)
+
+        verificationsData = verifications.map(v => ({
+          type: 'verification' as const,
+          timestamp: v.timestamp,
+          hypothesisId: waitlistToHypothesis.get(v.waitlistId) || '',
+          source: coalesceUtmSource(v.utmSource, v.source, 'organic'),
+          email: v.email,
+        }))
+      }
+
+      // Combine and sort all activities
+      const allActivities = [
+        ...pageViewsData.map(pv => ({
+          type: pv.type,
+          timestamp: pv.timestamp,
+          hypothesisId: pv.hypothesisId,
+          source: pv.source,
+          email: pv.email,
+        })),
+        ...signupsData,
+        ...verificationsData,
+      ]
+        .filter(a => a.timestamp !== null)
+        .sort((a, b) => {
+          const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0
+          const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0
+          return dateB - dateA
+        })
+        .slice(0, limit)
+
+      const items = allActivities.map(a => ({
+        type: a.type,
+        timestamp: a.timestamp!,
+        hypothesisId: a.hypothesisId,
+        source: a.source || 'direct',
+        email: a.email,
       }))
 
-      const nextCursor = items.length === limit ? items[items.length - 1].timestamp : null
+      const lastItem = items[items.length - 1]
+      const nextCursor = items.length === limit && lastItem ? lastItem.timestamp : null
 
       return jsonOk(set, HTTP_STATUS.OK, {
         items,
@@ -123,13 +238,12 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         tags: ['Analytics'],
       },
       query: t.Object({
-        from: t.Optional(t.String()),
-        to: t.Optional(t.String()),
-        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]))
-          .default('30d'),
-        hypothesisId: t.Optional(t.String()),
         cursor: t.Optional(t.String()),
+        from: t.Optional(t.String()),
+        hypothesisId: t.Optional(t.String()),
         limit: t.Optional(t.Number({ default: 50, maximum: 100, minimum: 1 })),
+        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')])),
+        to: t.Optional(t.String()),
       }),
     },
   )
@@ -144,51 +258,83 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       const { from, to } = resolveRange(query)
       const hypothesisId = query.hypothesisId ? String(query.hypothesisId) : null
 
-      const filterHypothesisW = hypothesisId
-        ? sql`AND h.id = ${hypothesisId}`
-        : sql``
-      const filterHypothesisPv = hypothesisId
-        ? sql`AND h.id = ${hypothesisId}`
-        : sql``
+      // Get user's hypotheses
+      const userHypotheses = await db
+        .select()
+        .from(hypotheses)
+        .where(eq(hypotheses.userId, user.id))
 
-      const utmRows = await db.execute(sql<
-        Array<{ source: string | null; count: number }>
-      >`SELECT COALESCE(NULLIF(e.utm_source, ''), 'direct') AS source,
-           COUNT(*)::int AS count
-         FROM ${waitlistEntries} e
-         JOIN ${waitlists} w ON w.id = e.waitlist_id
-         JOIN ${hypotheses} h ON h.id = w.hypothesis_id
-         WHERE h.user_id = ${user.id}
-           AND e.created_at >= ${from} AND e.created_at <= ${to}
-           ${filterHypothesisW}
-         GROUP BY COALESCE(NULLIF(e.utm_source, ''), 'direct')
-         ORDER BY count DESC
-         LIMIT 10`)
+      const hypothesisIds = userHypotheses.map(h => h.id)
+      const targetHypothesisIds = hypothesisId 
+        ? hypothesisIds.filter(id => id === hypothesisId)
+        : hypothesisIds
 
-      const refRows = await db.execute(sql<
-        Array<{ referrer: string | null; count: number }>
-      >`SELECT ${normalizeHostExpr(pageVisits.referrer)} AS referrer,
-           COUNT(*)::int AS count
-         FROM ${pageVisits} pv
-         JOIN ${hypotheses} h ON h.id = pv.hypothesis_id
-         WHERE h.user_id = ${user.id}
-           AND pv.created_at >= ${from} AND pv.created_at <= ${to}
-           AND ${notBotExpr()}
-           ${filterHypothesisPv}
-         GROUP BY ${normalizeHostExpr(pageVisits.referrer)}
-         ORDER BY count DESC
-         LIMIT 10`)
+      // Get UTM sources from signups
+      let utmSources: Array<{ source: string; count: number }> = []
+      
+      if (targetHypothesisIds.length > 0) {
+        const userWaitlists = await db
+          .select()
+          .from(waitlists)
+          .where(inArray(waitlists.hypothesisId, targetHypothesisIds))
+
+        const waitlistIds = userWaitlists.map(w => w.id)
+
+        if (waitlistIds.length > 0) {
+          const utmRows = await db
+            .select({ utmSource: waitlistEntries.utmSource, createdAt: waitlistEntries.createdAt })
+            .from(waitlistEntries)
+            .where(
+              and(
+                inArray(waitlistEntries.waitlistId, waitlistIds),
+                gte(waitlistEntries.createdAt, from),
+                lte(waitlistEntries.createdAt, to),
+              ),
+            )
+
+          const counter = new Map<string, number>()
+          for (const row of utmRows) {
+            const src = coalesceUtmSource(row.utmSource, null, 'direct')
+            counter.set(src, (counter.get(src) ?? 0) + 1)
+          }
+          utmSources = Array.from(counter.entries())
+            .map(([source, count]) => ({ source, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 10)
+        }
+      }
+
+      // Get referrers from page visits
+      let referrers: Array<{ referrer: string; count: number }> = []
+      
+      if (targetHypothesisIds.length > 0) {
+        const pvRows = await db
+          .select({ referrer: pageVisits.referrer, userAgent: pageVisits.userAgent, createdAt: pageVisits.createdAt })
+          .from(pageVisits)
+          .where(
+            and(
+              inArray(pageVisits.hypothesisId, targetHypothesisIds),
+              gte(pageVisits.createdAt, from),
+              lte(pageVisits.createdAt, to),
+            ),
+          )
+
+        const counter = new Map<string, number>()
+        for (const row of pvRows) {
+          if (row.userAgent && BOT_UA_REGEX.test(row.userAgent)) continue
+          const domain = extractReferrerDomain(row.referrer)
+          counter.set(domain, (counter.get(domain) ?? 0) + 1)
+        }
+        referrers = Array.from(counter.entries())
+          .map(([referrer, count]) => ({ referrer, count }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 10)
+      }
 
       return jsonOk(set, HTTP_STATUS.OK, {
         range: { from, to },
-        utmSources: utmRows.rows.map((r) => ({
-          count: Number(r.count || 0),
-          source: r.source || 'direct',
-        })),
-        referrers: refRows.rows.map((r) => ({
-          count: Number(r.count || 0),
-          referrer: r.referrer || 'direct',
-        })),
+        referrers,
+        utmSources,
       })
     },
     {
@@ -201,10 +347,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       },
       query: t.Object({
         from: t.Optional(t.String()),
-        to: t.Optional(t.String()),
-        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]))
-          .default('30d'),
         hypothesisId: t.Optional(t.String()),
+        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')])),
+        to: t.Optional(t.String()),
       }),
     },
   )
@@ -219,112 +364,238 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       const { from, to } = resolveRange(query)
       const hypothesisId = query.hypothesisId ? String(query.hypothesisId) : null
 
-      // Base hypothesis filter
-      const hypoFilter = hypothesisId ? sql`AND h.id = ${hypothesisId}` : sql``
+      // Get user's hypotheses
+      const userHypotheses = await db
+        .select()
+        .from(hypotheses)
+        .where(eq(hypotheses.userId, user.id))
 
-      // Page views + unique visitors per hypothesis
-      const pvRows = await db.execute(sql<
-        Array<{ hypothesis_id: string; page_views: number; unique_visitors: number }>
-      >`SELECT h.id AS hypothesis_id,
-           COUNT(*)::int AS page_views,
-           COUNT(DISTINCT pv.visitor_id)::int AS unique_visitors
-         FROM ${hypotheses} h
-         JOIN ${pageVisits} pv ON pv.hypothesis_id = h.id
-         WHERE h.user_id = ${user.id}
-           AND pv.created_at >= ${from} AND pv.created_at <= ${to}
-           AND ${notBotExpr()}
-           ${hypoFilter}
-         GROUP BY h.id`)
+      const hypothesisIds = userHypotheses.map(h => h.id)
+      const targetHypothesisIds = hypothesisId 
+        ? hypothesisIds.filter(id => id === hypothesisId)
+        : hypothesisIds
 
-      // Signups + verified signups per hypothesis
-      const signupRows = await db.execute(sql<
-        Array<{ hypothesis_id: string; signups: number; verified_signups: number }>
-      >`SELECT h.id AS hypothesis_id,
-           COUNT(*)::int AS signups,
-           COUNT(*) FILTER (WHERE e.email_verified = true)::int AS verified_signups
-         FROM ${hypotheses} h
-         JOIN ${waitlists} w ON w.hypothesis_id = h.id
-         JOIN ${waitlistEntries} e ON e.waitlist_id = w.id
-         WHERE h.user_id = ${user.id}
-           AND e.created_at >= ${from} AND e.created_at <= ${to}
-           ${hypoFilter}
-         GROUP BY h.id`)
+      if (targetHypothesisIds.length === 0) {
+        return jsonOk(set, HTTP_STATUS.OK, {
+          daily: [],
+          perHypothesis: [],
+          range: { from, to },
+          totals: {
+            conversionVisitorsToSignups: 0,
+            conversionVisitorsToVerified: 0,
+            pageViews: 0,
+            signups: 0,
+            uniqueVisitors: 0,
+            verifiedSignups: 0,
+          },
+        })
+      }
 
-      // Daily aggregated across selection (for charts)
-      const dailyRows = await db.execute(sql<
-        Array<{ date: string; visitors: number; signups: number }>
-      >`WITH visitors AS (
-           SELECT date(pv.created_at) AS d, COUNT(DISTINCT pv.visitor_id)::int AS v
-           FROM ${pageVisits} pv
-           JOIN ${hypotheses} h ON h.id = pv.hypothesis_id
-           WHERE h.user_id = ${user.id}
-             AND pv.created_at >= ${from} AND pv.created_at <= ${to}
-             AND ${notBotExpr()}
-             ${hypoFilter}
-           GROUP BY date(pv.created_at)
-         ),
-         signups AS (
-           SELECT date(e.created_at) AS d, COUNT(*)::int AS s
-           FROM ${waitlistEntries} e
-           JOIN ${waitlists} w ON w.id = e.waitlist_id
-           JOIN ${hypotheses} h ON h.id = w.hypothesis_id
-           WHERE h.user_id = ${user.id}
-             AND e.created_at >= ${from} AND e.created_at <= ${to}
-             ${hypoFilter}
-           GROUP BY date(e.created_at)
-         )
-         SELECT COALESCE(v.d, s.d) AS date,
-                COALESCE(v.v, 0)::int AS visitors,
-                COALESCE(s.s, 0)::int AS signups
-         FROM visitors v
-         FULL OUTER JOIN signups s ON v.d = s.d
-         ORDER BY date`)
+      // Get page views and unique visitors per hypothesis
+      const pvRows = await db
+        .select({
+          hypothesisId: pageVisits.hypothesisId,
+          visitorId: pageVisits.visitorId,
+          userAgent: pageVisits.userAgent,
+          createdAt: pageVisits.createdAt,
+        })
+        .from(pageVisits)
+        .where(
+          and(
+            inArray(pageVisits.hypothesisId, targetHypothesisIds),
+            gte(pageVisits.createdAt, from),
+            lte(pageVisits.createdAt, to),
+          ),
+        )
+
+      const pvByHypothesis = new Map<
+        string,
+        { pageViews: number; uniqueVisitors: number; visitorsSet: Set<string> }
+      >()
+      for (const row of pvRows) {
+        if (row.userAgent && BOT_UA_REGEX.test(row.userAgent)) continue
+        const hId = row.hypothesisId
+        const entry = pvByHypothesis.get(hId) ?? {
+          pageViews: 0,
+          uniqueVisitors: 0,
+          visitorsSet: new Set<string>(),
+        }
+        entry.pageViews += 1
+        if (row.visitorId) entry.visitorsSet.add(row.visitorId)
+        pvByHypothesis.set(hId, entry)
+      }
+      const pvData = Array.from(pvByHypothesis.entries()).map(([hypothesisId, v]) => ({
+        hypothesisId,
+        pageViews: v.pageViews,
+        uniqueVisitors: v.visitorsSet.size,
+      }))
+
+      // Get waitlists and signups
+      const userWaitlists = await db
+        .select()
+        .from(waitlists)
+        .where(inArray(waitlists.hypothesisId, targetHypothesisIds))
+
+      const waitlistIds = userWaitlists.map(w => w.id)
+      const waitlistToHypothesis = new Map(userWaitlists.map(w => [w.id, w.hypothesisId]))
+
+      let signupData: Array<{ waitlistId: string; signups: number; verifiedSignups: number }> = []
+      
+      if (waitlistIds.length > 0) {
+        const rows = await db
+          .select({
+            waitlistId: waitlistEntries.waitlistId,
+            createdAt: waitlistEntries.createdAt,
+            emailVerified: waitlistEntries.emailVerified,
+          })
+          .from(waitlistEntries)
+          .where(
+            and(
+              inArray(waitlistEntries.waitlistId, waitlistIds),
+              gte(waitlistEntries.createdAt, from),
+              lte(waitlistEntries.createdAt, to),
+            ),
+          )
+
+        const agg = new Map<string, { signups: number; verifiedSignups: number }>()
+        for (const r of rows) {
+          const a = agg.get(r.waitlistId) ?? { signups: 0, verifiedSignups: 0 }
+          a.signups += 1
+          if (r.emailVerified) a.verifiedSignups += 1
+          agg.set(r.waitlistId, a)
+        }
+        signupData = Array.from(agg.entries()).map(([waitlistId, v]) => ({
+          waitlistId,
+          signups: v.signups,
+          verifiedSignups: v.verifiedSignups,
+        }))
+      }
+
+      // Daily aggregated data
+      const dailyVisitorsMap = new Map<string, Set<string>>()
+      for (const row of pvRows) {
+        if (row.userAgent && BOT_UA_REGEX.test(row.userAgent)) continue
+        const d = row.createdAt ? new Date(row.createdAt) : null
+        if (!d) continue
+        const dateStr = d.toISOString().slice(0, 10)
+        if (row.visitorId) {
+          const set = dailyVisitorsMap.get(dateStr) ?? new Set<string>()
+          set.add(row.visitorId)
+          dailyVisitorsMap.set(dateStr, set)
+        }
+      }
+      const dailyVisitors = Array.from(dailyVisitorsMap.entries()).map(
+        ([date, set]) => ({ date, visitors: set.size }),
+      )
+
+      let dailySignups: Array<{ date: string; signups: number }> = []
+      
+      if (waitlistIds.length > 0) {
+        const rows = await db
+          .select({ createdAt: waitlistEntries.createdAt, waitlistId: waitlistEntries.waitlistId })
+          .from(waitlistEntries)
+          .where(
+            and(
+              inArray(waitlistEntries.waitlistId, waitlistIds),
+              gte(waitlistEntries.createdAt, from),
+              lte(waitlistEntries.createdAt, to),
+            ),
+          )
+        const map = new Map<string, number>()
+        for (const r of rows) {
+          const d = r.createdAt ? new Date(r.createdAt) : null
+          if (!d) continue
+          const dateStr = d.toISOString().slice(0, 10)
+          map.set(dateStr, (map.get(dateStr) ?? 0) + 1)
+        }
+        dailySignups = Array.from(map.entries()).map(([date, signups]) => ({
+          date,
+          signups,
+        }))
+      }
+
+      // Merge daily data
+      const dailyMap = new Map<string, { visitors: number; signups: number }>()
+      
+      for (const dv of dailyVisitors) {
+        dailyMap.set(dv.date, { 
+          visitors: Number(dv.visitors || 0), 
+          signups: 0 
+        })
+      }
+      
+      for (const ds of dailySignups) {
+        const existing = dailyMap.get(ds.date)
+        if (existing) {
+          existing.signups = Number(ds.signups || 0)
+        } else {
+          dailyMap.set(ds.date, { 
+            visitors: 0, 
+            signups: Number(ds.signups || 0) 
+          })
+        }
+      }
+
+      const daily = Array.from(dailyMap.entries())
+        .map(([date, data]) => ({ date, ...data }))
+        .sort((a, b) => a.date.localeCompare(b.date))
 
       // Merge per-hypothesis metrics
       const perHypothesisMap = new Map<string, {
-        hypothesisId: string
-        pageViews: number
-        uniqueVisitors: number
-        signups: number
-        verifiedSignups: number
         conversionVisitorsToSignups: number
         conversionVisitorsToVerified: number
+        hypothesisId: string
+        pageViews: number
+        signups: number
+        uniqueVisitors: number
+        verifiedSignups: number
       }>()
 
-      const addOrGet = (id: string) => {
-        const existing = perHypothesisMap.get(id)
-        if (existing) return existing
-        const obj = {
-          hypothesisId: id,
-          pageViews: 0,
-          uniqueVisitors: 0,
-          signups: 0,
-          verifiedSignups: 0,
+      // Initialize with all target hypotheses
+      for (const hId of targetHypothesisIds) {
+        perHypothesisMap.set(hId, {
           conversionVisitorsToSignups: 0,
           conversionVisitorsToVerified: 0,
-        }
-        perHypothesisMap.set(id, obj)
-        return obj
+          hypothesisId: hId,
+          pageViews: 0,
+          signups: 0,
+          uniqueVisitors: 0,
+          verifiedSignups: 0,
+        })
       }
 
-      for (const r of pvRows.rows) {
-        const m = addOrGet(r.hypothesis_id)
-        m.pageViews = Number(r.page_views || 0)
-        m.uniqueVisitors = Number(r.unique_visitors || 0)
+      // Add page view data
+      for (const pv of pvData) {
+        const metrics = perHypothesisMap.get(pv.hypothesisId)
+        if (metrics) {
+          metrics.pageViews = Number(pv.pageViews || 0)
+          metrics.uniqueVisitors = Number(pv.uniqueVisitors || 0)
+        }
       }
-      for (const r of signupRows.rows) {
-        const m = addOrGet(r.hypothesis_id)
-        m.signups = Number(r.signups || 0)
-        m.verifiedSignups = Number(r.verified_signups || 0)
+
+      // Add signup data
+      for (const sd of signupData) {
+        const hypothesisId = waitlistToHypothesis.get(sd.waitlistId)
+        if (hypothesisId) {
+          const metrics = perHypothesisMap.get(hypothesisId)
+          if (metrics) {
+            metrics.signups = Number(sd.signups || 0)
+            metrics.verifiedSignups = Number(sd.verifiedSignups || 0)
+          }
+        }
       }
-      for (const m of perHypothesisMap.values()) {
-        m.conversionVisitorsToSignups =
-          m.uniqueVisitors > 0 ? (m.signups / m.uniqueVisitors) * 100 : 0
-        m.conversionVisitorsToVerified =
-          m.uniqueVisitors > 0 ? (m.verifiedSignups / m.uniqueVisitors) * 100 : 0
+
+      // Calculate conversion rates
+      for (const metrics of perHypothesisMap.values()) {
+        if (metrics.uniqueVisitors > 0) {
+          metrics.conversionVisitorsToSignups = (metrics.signups / metrics.uniqueVisitors) * 100
+          metrics.conversionVisitorsToVerified = (metrics.verifiedSignups / metrics.uniqueVisitors) * 100
+        }
       }
 
       const perHypothesis = Array.from(perHypothesisMap.values())
+
+      // Calculate totals
       const totals = perHypothesis.reduce(
         (acc, m) => {
           acc.pageViews += m.pageViews
@@ -333,8 +604,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
           acc.verifiedSignups += m.verifiedSignups
           return acc
         },
-        { pageViews: 0, uniqueVisitors: 0, signups: 0, verifiedSignups: 0 },
+        { pageViews: 0, signups: 0, uniqueVisitors: 0, verifiedSignups: 0 },
       )
+
       const totalsWithConv = {
         ...totals,
         conversionVisitorsToSignups:
@@ -348,14 +620,10 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       }
 
       return jsonOk(set, HTTP_STATUS.OK, {
-        range: { from, to },
+        daily,
         perHypothesis,
+        range: { from, to },
         totals: totalsWithConv,
-        daily: dailyRows.rows.map((r) => ({
-          date: r.date,
-          visitors: Number(r.visitors || 0),
-          signups: Number(r.signups || 0),
-        })),
       })
     },
     {
@@ -368,10 +636,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       },
       query: t.Object({
         from: t.Optional(t.String()),
-        to: t.Optional(t.String()),
-        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')]))
-          .default('30d'),
         hypothesisId: t.Optional(t.String()),
+        range: t.Optional(t.Union([t.Literal('7d'), t.Literal('30d'), t.Literal('90d')])),
+        to: t.Optional(t.String()),
       }),
     },
   )

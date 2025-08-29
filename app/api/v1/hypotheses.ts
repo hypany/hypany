@@ -1,5 +1,21 @@
+/**
+ * Hypotheses API (v1)
+ * - CRUD for hypotheses owned by the authenticated user
+ * - Aggregated dashboard metrics (signups, growth, readiness)
+ * - Per-hypothesis metrics and related resources (landing page, waitlist)
+ */
 import 'server-only'
-import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNull,
+  lte,
+} from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { ulid } from 'ulid'
 import { db } from '@/database'
@@ -14,6 +30,7 @@ import {
   waitlists,
 } from '@/schema'
 import { authPlugin } from './auth-plugin'
+import { ErrorResponse, PaginationQuery, UlidParam, SuccessResponse } from '../docs'
 
 // Validation schemas
 const HypothesisSchema = {
@@ -72,7 +89,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       if (waitlistIds.length > 0) {
         const counts = await db
           .select({
-            count: sql<number>`count(*)::int`,
+            count: count(),
             waitlistId: waitlistEntries.waitlistId,
           })
           .from(waitlistEntries)
@@ -97,22 +114,33 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       // Growth rate: last 7d vs previous 7d
       let growthRate7d = 0
       if (waitlistIds.length > 0) {
+        const now = new Date()
+        const todayUtcMidnight = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        )
+        const sevenDaysAgo = new Date(todayUtcMidnight.getTime() - 7 * 24 * 60 * 60 * 1000)
+        const fourteenDaysAgo = new Date(
+          todayUtcMidnight.getTime() - 14 * 24 * 60 * 60 * 1000,
+        )
+
         const [{ count: last7 } = { count: 0 }] = await db
-          .select({ count: sql<number>`count(*)::int` })
+          .select({ count: count() })
           .from(waitlistEntries)
           .where(
             and(
               inArray(waitlistEntries.waitlistId, waitlistIds),
-              sql`${waitlistEntries.createdAt} > current_date - interval '7 days'`,
+              gt(waitlistEntries.createdAt, sevenDaysAgo),
             ),
           )
+
         const [{ count: prev7 } = { count: 0 }] = await db
-          .select({ count: sql<number>`count(*)::int` })
+          .select({ count: count() })
           .from(waitlistEntries)
           .where(
             and(
               inArray(waitlistEntries.waitlistId, waitlistIds),
-              sql`${waitlistEntries.createdAt} > current_date - interval '14 days' and ${waitlistEntries.createdAt} <= current_date - interval '7 days'`,
+              gt(waitlistEntries.createdAt, fourteenDaysAgo),
+              lte(waitlistEntries.createdAt, sevenDaysAgo),
             ),
           )
 
@@ -144,17 +172,40 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         summary: 'List all hypotheses',
         tags: ['Hypotheses'],
       },
-      query: t.Object({
-        limit: t.Optional(t.Number({ default: 20, maximum: 100, minimum: 1 })),
-        offset: t.Optional(t.Number({ default: 0, minimum: 0 })),
-        status: t.Optional(
-          t.Union([
-            t.Literal('draft'),
-            t.Literal('published'),
-            t.Literal('archived'),
-          ]),
-        ),
-      }),
+      query: t.Composite([
+        PaginationQuery,
+        t.Object({
+          status: t.Optional(
+            t.Union([
+              t.Literal('draft'),
+              t.Literal('published'),
+              t.Literal('archived'),
+            ]),
+          ),
+        }),
+      ]),
+      response: {
+        200: t.Object({
+          hypotheses: t.Array(
+            t.Object({
+              id: t.String(),
+              name: t.String(),
+              description: t.Nullable(t.String()),
+              status: t.String(),
+              signupCount: t.Number(),
+              landingPage: t.Nullable(
+                t.Object({ id: t.String(), slug: t.Nullable(t.String()) }),
+              ),
+            }),
+          ),
+          metrics: t.Object({
+            totalSignups: t.Number(),
+            readyToLaunch: t.Number(),
+            growthRate7d: t.Number(),
+          }),
+        }),
+        401: ErrorResponse,
+      },
     },
   )
 
@@ -228,18 +279,26 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       let signupsLast30d = 0
       if (row.waitlist?.id) {
         const [countAll] = await db
-          .select({ count: sql<number>`COUNT(*)::int` })
+          .select({ count: count() })
           .from(waitlistEntries)
           .where(eq(waitlistEntries.waitlistId, row.waitlist.id))
         signupCount = Number(countAll?.count || 0)
 
+        const now = new Date()
+        const todayUtcMidnight = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        )
+        const thirtyDaysAgo = new Date(
+          todayUtcMidnight.getTime() - 30 * 24 * 60 * 60 * 1000,
+        )
+
         const [count30] = await db
-          .select({ count: sql<number>`COUNT(*)::int` })
+          .select({ count: count() })
           .from(waitlistEntries)
           .where(
             and(
               eq(waitlistEntries.waitlistId, row.waitlist.id),
-              sql`${waitlistEntries.createdAt} > current_date - interval '30 days'`,
+              gt(waitlistEntries.createdAt, thirtyDaysAgo),
             ),
           )
         signupsLast30d = Number(count30?.count || 0)
@@ -249,26 +308,32 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       let pageViews30d = 0
       let uniqueVisitors30d = 0
       if (row.landingPage?.id) {
+        const now = new Date()
+        const todayUtcMidnight = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        )
+        const thirtyDaysAgo = new Date(
+          todayUtcMidnight.getTime() - 30 * 24 * 60 * 60 * 1000,
+        )
+
         const [pv] = await db
-          .select({ count: sql<number>`COUNT(*)::int` })
+          .select({ count: count() })
           .from(pageVisits)
           .where(
             and(
               eq(pageVisits.landingPageId, row.landingPage.id),
-              sql`${pageVisits.createdAt} > current_date - interval '30 days'`,
+              gt(pageVisits.createdAt, thirtyDaysAgo),
             ),
           )
         pageViews30d = Number(pv?.count || 0)
 
         const [uv] = await db
-          .select({
-            count: sql<number>`COUNT(DISTINCT ${pageVisits.visitorId})::int`,
-          })
+          .select({ count: countDistinct(pageVisits.visitorId) })
           .from(pageVisits)
           .where(
             and(
               eq(pageVisits.landingPageId, row.landingPage.id),
-              sql`${pageVisits.createdAt} > current_date - interval '30 days'`,
+              gt(pageVisits.createdAt, thirtyDaysAgo),
             ),
           )
         uniqueVisitors30d = Number(uv?.count || 0)
@@ -298,7 +363,26 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         summary: 'Get hypothesis details',
         tags: ['Hypotheses'],
       },
-      params: HypothesisSchema.params,
+      params: t.Object({ id: UlidParam }),
+      response: {
+        200: t.Object({
+          hypothesis: t.Object({ id: t.String(), name: t.String(), description: t.Nullable(t.String()), status: t.String() }),
+          landingPage: t.Nullable(
+            t.Object({ id: t.String(), slug: t.Nullable(t.String()) }),
+          ),
+          waitlist: t.Nullable(t.Object({ id: t.String() })),
+          signupCount: t.Number(),
+          metrics: t.Object({
+            pageViews30d: t.Number(),
+            uniqueVisitors30d: t.Number(),
+            signupsLast30d: t.Number(),
+            conversionRate30d: t.Number(),
+          }),
+        }),
+        401: ErrorResponse,
+        403: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -369,6 +453,20 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         summary: 'Create new hypothesis',
         tags: ['Hypotheses'],
       },
+      response: {
+        201: t.Object({
+          hypothesis: t.Object({
+            id: t.String(),
+            name: t.String(),
+            description: t.Nullable(t.String()),
+            status: t.String(),
+          }),
+          landingPageId: t.String(),
+          waitlistId: t.String(),
+        }),
+        401: ErrorResponse,
+        500: ErrorResponse,
+      },
     },
   )
 
@@ -416,7 +514,12 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         summary: 'Update hypothesis',
         tags: ['Hypotheses'],
       },
-      params: HypothesisSchema.params,
+      params: t.Object({ id: UlidParam }),
+      response: {
+        200: t.Object({ hypothesis: t.Object({ id: t.String(), name: t.String(), description: t.Nullable(t.String()), status: t.String() }) }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -457,6 +560,11 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         summary: 'Delete hypothesis',
         tags: ['Hypotheses'],
       },
-      params: HypothesisSchema.params,
+      params: t.Object({ id: UlidParam }),
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
