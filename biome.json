@@ -43,7 +43,8 @@
       "!**/build/**",
       "!**/.next/**",
       "!**/public/**",
-      "!**/*.md"
+      "!**/*.md",
+      "!**/components/atoms/**"
     ],
     "indentStyle": "space",
     "indentWidth": 2,
@@ -74,7 +75,8 @@
       "!**/build/**",
       "!**/.cache/**",
       "!**/public/**",
-      "!**/*.esm.js"
+      "!**/*.esm.js",
+      "!**/components/atoms/**"
     ],
     "rules": {
       "complexity": {

@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 import type { ToastActionElement, ToastProps } from '@/components/atoms/toast'
 
@@ -71,7 +71,9 @@ export const reducer = (state: State, action: Action): State => {
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
-        state.toasts.forEach((toast) => addToRemoveQueue(toast.id))
+        state.toasts.forEach((toast) => {
+          addToRemoveQueue(toast.id)
+        })
       }
       return {
         ...state,
@@ -101,7 +103,9 @@ function dispatch(action: Action) {
     if (toastExists) return
   }
   memoryState = reducer(memoryState, action)
-  listeners.forEach((listener) => listener(memoryState))
+  listeners.forEach((listener) => {
+    listener(memoryState)
+  })
 }
 
 type Toast = Omit<ToasterToast, 'id'>
@@ -130,15 +134,15 @@ function toast({ ...props }: Toast & { id?: string }) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState)
+  const [state, setState] = useState<State>(memoryState)
 
-  React.useEffect(() => {
+  useEffect(() => {
     listeners.push(setState)
     return () => {
       const index = listeners.indexOf(setState)
       if (index > -1) listeners.splice(index, 1)
     }
-  }, [state])
+  }, [])
 
   return {
     ...state,

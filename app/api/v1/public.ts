@@ -5,10 +5,6 @@
  * - No authentication required
  */
 
-import crypto from 'node:crypto'
-import { render } from '@react-email/render'
-import { and, eq, gt } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { VerificationEmail } from '@/emails/verification-email'
 import { computeWaitlistPositionByCreatedAt } from '@/lib/api-utils'
@@ -26,6 +22,10 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
+import { render } from '@react-email/render'
+import { and, eq, gt } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import crypto from 'node:crypto'
 import 'server-only'
 import { ulid } from 'ulid'
 
@@ -181,7 +181,7 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
       // Derive visitor ID from cookie and default source from UTM or referrer
       const cookieHeader = request.headers.get('cookie')
       const cookies = parseCookie(cookieHeader || undefined)
-      const visitorId = cookies['hp_vid'] || null
+      const visitorId = cookies.hp_vid || null
 
       const referrerHeader = request.headers.get('referer')
       const normalizedReferrer = normalizeReferrerHost(referrerHeader)

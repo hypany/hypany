@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import { Button } from '@/components/atoms/button'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 export async function CallToAction() {
   const t = await getTranslations('landing.cta-section')
@@ -8,10 +8,7 @@ export async function CallToAction() {
     <section aria-labelledby='cta-title' className='mx-auto max-w-6xl'>
       <div className='flex flex-col items-center justify-center gap-8 text-center'>
         <div className='sm:col-span-2'>
-          <h2
-            id='cta-title'
-            className='scroll-my-60 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'
-          >
+          <h2 className='scroll-my-60 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
             {t('title')}
           </h2>
           <p className='mt-3 mb-8 text-lg text-gray-600'>{t('desc')}</p>

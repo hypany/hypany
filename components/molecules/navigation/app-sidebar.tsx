@@ -1,7 +1,4 @@
 'use client'
-import { RiArrowDownSFill } from '@remixicon/react'
-import { BookText, House, PackageSearch } from 'lucide-react'
-import * as React from 'react'
 import { Divider } from '@/components/atoms/divider'
 import { Input } from '@/components/atoms/input'
 import {
@@ -19,22 +16,31 @@ import {
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
+import { RiArrowDownSFill } from '@remixicon/react'
+import { 
+  House, 
+  LayoutDashboard, 
+  Lightbulb, 
+  ChartBar, 
+  Settings 
+} from 'lucide-react'
+import * as React from 'react'
 import { UserProfile } from './user-profile'
 
 const navigation = [
   {
     active: false,
-    href: '#',
-    icon: House,
-    name: 'Home',
+    href: '/app/overview',
+    icon: LayoutDashboard,
+    name: 'Overview',
     notifications: false,
   },
   {
     active: false,
-    href: '#',
-    icon: PackageSearch,
-    name: 'Inbox',
-    notifications: 2,
+    href: '/app/home',
+    icon: House,
+    name: 'Home',
+    notifications: false,
   },
 ] as const
 
@@ -42,53 +48,54 @@ const navigation2 = [
   {
     children: [
       {
-        active: true,
-        href: '/app/hypotheses/overview',
-        name: 'Hypotheses',
+        active: false,
+        href: '/app/hypotheses',
+        name: 'My Hypotheses',
       },
       {
         active: false,
-        href: '#',
-        name: 'Orders',
-      },
-      {
-        active: false,
-        href: '#',
-        name: 'Insights & Reports',
+        href: '/app/hypotheses/assets',
+        name: 'Assets',
       },
     ],
     href: '#',
-    icon: BookText,
-    name: 'Sales',
+    icon: Lightbulb,
+    name: 'Hypotheses',
   },
   {
     children: [
       {
         active: false,
-        href: '#',
-        name: 'Items',
+        href: '/app/analytics',
+        name: 'Overview',
       },
       {
         active: false,
-        href: '#',
-        name: 'Variants',
-      },
-      {
-        active: false,
-        href: '#',
-        name: 'Suppliers',
+        href: '/app/analytics/signups',
+        name: 'All Signups',
       },
     ],
     href: '#',
-    icon: PackageSearch,
-    name: 'Products',
+    icon: ChartBar,
+    name: 'Analytics',
+  },
+  {
+    children: [
+      {
+        active: false,
+        href: '/app/settings',
+        name: 'General',
+      },
+    ],
+    href: '#',
+    icon: Settings,
+    name: 'Settings',
   },
 ] as const
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [openMenus, setOpenMenus] = React.useState<string[]>([
     navigation2[0].name,
-    navigation2[1].name,
   ])
   const toggleMenu = (name: string) => {
     setOpenMenus((prev: string[]) =>
