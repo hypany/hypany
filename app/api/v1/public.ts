@@ -5,6 +5,10 @@
  * - No authentication required
  */
 
+import crypto from 'node:crypto'
+import { render } from '@react-email/render'
+import { and, eq, gt } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { VerificationEmail } from '@/emails/verification-email'
 import { computeWaitlistPositionByCreatedAt } from '@/lib/api-utils'
@@ -22,10 +26,6 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
-import { render } from '@react-email/render'
-import { and, eq, gt } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import crypto from 'node:crypto'
 import 'server-only'
 import { ulid } from 'ulid'
 

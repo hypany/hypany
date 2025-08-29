@@ -1,6 +1,9 @@
 'use client'
 
 import { ArrowUpRight, Monitor, Moon, Sun } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
+import { useTransition } from 'react'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -31,6 +34,11 @@ export function DropdownUserProfile({
 }: DropdownUserProfileProps) {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+  const router = useRouter()
+  const locale = useLocale()
+  const t = useTranslations('nav')
+  const [isPending, startTransition] = useTransition()
+  const { data } = client.useSession()
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -38,10 +46,19 @@ export function DropdownUserProfile({
   const handleSignOut = useCallback(async () => {
     await client.signOut()
     toast.success('Signed out successfully')
-  }, [])
+    router.replace('/sign-in')
+    router.refresh()
+  }, [router])
 
   if (!mounted) {
     return null
+  }
+
+  function setLocaleCookie(nextLocale: string) {
+    document.cookie = `locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`
+    startTransition(() => {
+      router.refresh()
+    })
   }
 
   return (
@@ -51,7 +68,7 @@ export function DropdownUserProfile({
         align={align}
         className='sm:min-w-[calc(var(--radix-dropdown-menu-trigger-width))]!'
       >
-        <DropdownMenuLabel>emma.stone@acme.com</DropdownMenuLabel>
+        <DropdownMenuLabel>{data?.user?.email ?? ''}</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuSubMenu>
             <DropdownMenuSubMenuTrigger>Theme</DropdownMenuSubMenuTrigger>
@@ -82,6 +99,25 @@ export function DropdownUserProfile({
                 >
                   <Monitor className='size-4 shrink-0' aria-hidden='true' />
                   System
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubMenuContent>
+          </DropdownMenuSubMenu>
+          <DropdownMenuSubMenu>
+            <DropdownMenuSubMenuTrigger>
+              {t('language')}
+            </DropdownMenuSubMenuTrigger>
+            <DropdownMenuSubMenuContent>
+              <DropdownMenuRadioGroup
+                value={locale}
+                onValueChange={(value) => setLocaleCookie(value)}
+                disabled={isPending}
+              >
+                <DropdownMenuRadioItem aria-label={t('lang-en')} value='en'>
+                  {t('lang-en')}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem aria-label={t('lang-ko')} value='ko'>
+                  {t('lang-ko')}
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuSubMenuContent>

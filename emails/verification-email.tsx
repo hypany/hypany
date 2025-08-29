@@ -7,6 +7,16 @@ import {
   Preview,
   Text,
 } from '@react-email/components'
+import {
+  buttonPrimary,
+  container as containerStyle,
+  footer,
+  main,
+  mono,
+  separator,
+  smallText,
+  text,
+} from './styles'
 
 interface VerificationEmailProps {
   verificationUrl: string
@@ -21,7 +31,7 @@ export const VerificationEmail = ({
       <Head />
       <Preview>Verify your email address for Hypany</Preview>
       <Body style={main}>
-        <Container style={container}>
+        <Container style={containerStyle}>
           <Text style={text}>Hi there,</Text>
 
           <Text style={text}>
@@ -29,7 +39,7 @@ export const VerificationEmail = ({
             link below:
           </Text>
 
-          <Link href={verificationUrl} style={link}>
+          <Link href={verificationUrl} style={buttonPrimary}>
             Verify email address →
           </Link>
 
@@ -54,59 +64,3 @@ export const VerificationEmail = ({
 }
 
 export default VerificationEmail
-
-const main = {
-  backgroundColor: '#ffffff',
-  fontFamily:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-}
-
-const container = {
-  margin: '0 auto',
-  maxWidth: '560px',
-  padding: '40px 20px',
-}
-
-const text = {
-  color: '#1a1a1a',
-  fontSize: '15px',
-  lineHeight: '24px',
-  margin: '0 0 16px',
-}
-
-const smallText = {
-  color: '#666666',
-  fontSize: '13px',
-  lineHeight: '20px',
-  margin: '24px 0 16px',
-}
-
-const link = {
-  color: '#0969da',
-  display: 'inline-block',
-  fontSize: '15px',
-  lineHeight: '24px',
-  margin: '16px 0',
-  textDecoration: 'none',
-}
-
-const mono = {
-  color: '#666666',
-  fontFamily: 'monospace',
-  fontSize: '12px',
-  wordBreak: 'break-all' as const,
-}
-
-const separator = {
-  color: '#e1e4e8',
-  fontSize: '15px',
-  lineHeight: '24px',
-  margin: '24px 0 16px',
-}
-
-const footer = {
-  color: '#666666',
-  fontSize: '13px',
-  lineHeight: '20px',
-  margin: '0',
-}

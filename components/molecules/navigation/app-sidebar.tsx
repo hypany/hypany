@@ -1,4 +1,13 @@
 'use client'
+import { RiArrowDownSFill } from '@remixicon/react'
+import {
+  ChartBar,
+  House,
+  LayoutDashboard,
+  Lightbulb,
+  Settings,
+} from 'lucide-react'
+import * as React from 'react'
 import { Divider } from '@/components/atoms/divider'
 import { Input } from '@/components/atoms/input'
 import {
@@ -16,15 +25,6 @@ import {
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
-import { RiArrowDownSFill } from '@remixicon/react'
-import { 
-  House, 
-  LayoutDashboard, 
-  Lightbulb, 
-  ChartBar, 
-  Settings 
-} from 'lucide-react'
-import * as React from 'react'
 import { UserProfile } from './user-profile'
 
 const navigation = [
@@ -35,13 +35,6 @@ const navigation = [
     name: 'Overview',
     notifications: false,
   },
-  {
-    active: false,
-    href: '/app/home',
-    icon: House,
-    name: 'Home',
-    notifications: false,
-  },
 ] as const
 
 const navigation2 = [
@@ -50,11 +43,11 @@ const navigation2 = [
       {
         active: false,
         href: '/app/hypotheses',
-        name: 'My Hypotheses',
+        name: 'Overview',
       },
       {
         active: false,
-        href: '/app/hypotheses/assets',
+        href: '/app/assets',
         name: 'Assets',
       },
     ],
@@ -71,8 +64,8 @@ const navigation2 = [
       },
       {
         active: false,
-        href: '/app/analytics/signups',
-        name: 'All Signups',
+        href: '/app/waitlists',
+        name: 'All Waitlists',
       },
     ],
     href: '#',
@@ -85,6 +78,11 @@ const navigation2 = [
         active: false,
         href: '/app/settings',
         name: 'General',
+      },
+      {
+        active: false,
+        href: '/app/organizations',
+        name: 'Organizations',
       },
     ],
     href: '#',
@@ -114,9 +112,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div>
             <span className='block text-sm font-semibold text-gray-900 dark:text-gray-50'>
               Innovex Systems
-            </span>
-            <span className='block text-xs text-gray-900 dark:text-gray-50'>
-              Premium Starter Plan
             </span>
           </div>
         </div>

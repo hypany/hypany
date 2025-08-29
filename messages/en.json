@@ -4,18 +4,42 @@
       "back": "← Back"
     },
     "forgot-password": {
+      "aside": {
+        "desc": "We’ll email you a link to create a new password.",
+        "title": "Reset your access securely"
+      },
+      "footer-link": "Back to sign in",
+      "footer-text": "Remembered your password?",
       "subtitle": "Enter your email and we'll send a reset link",
       "title": "Forgot password"
     },
     "reset-password": {
+      "aside": {
+        "desc": "Choose a strong passphrase to keep your account secure.",
+        "title": "Finish resetting your password"
+      },
+      "footer-link": "Back to sign in",
+      "footer-text": "Ready to go back?",
       "subtitle": "Create a strong password to secure your account",
       "title": "Set a new password"
     },
     "sign-in": {
+      "aside": {
+        "desc": "Ship landing pages fast, measure interest, and iterate with data.",
+        "title": "Validate startup ideas before you build"
+      },
+      "footer-link": "Sign up",
+      "footer-text": "Don't have an account?",
       "subtitle": "Enter your credentials to access your account",
       "title": "Welcome back"
     },
     "sign-up": {
+      "aside": {
+        "desc": "Build, measure, and learn with real demand signals.",
+        "title": "Join founders validating ideas faster"
+      },
+      "footer-link": "Sign in",
+      "footer-text": "Already have an account?",
       "subtitle": "Enter your information to get started",
       "title": "Create an account"
     }
@@ -25,6 +49,54 @@
     "footer-pattern-alt": "Hypany Logo Pattern"
   },
   "landing": {
+    "footer": {
+      "logo-alt": "Hypany Logo",
+      "sections": {
+        "company": {
+          "items": {
+            "about-us": "About us",
+            "blog": "Blog",
+            "careers": "Careers",
+            "success-stories": "Success Stories",
+            "sustainability": "Sustainability"
+          },
+          "title": "Company"
+        },
+        "partners": {
+          "items": {
+            "dealer-network": "Dealer Network",
+            "integration-guide": "Integration Guide",
+            "research-partners": "Research Partners",
+            "system-status": "System Status"
+          },
+          "title": "Partners"
+        },
+        "resources": {
+          "items": {
+            "community": "Community",
+            "contact": "Contact",
+            "farmer-network": "Farmer Network",
+            "privacy-policy": "Privacy Policy",
+            "report-issue": "Report an Issue",
+            "support": "Support",
+            "terms-of-service": "Terms of Service"
+          },
+          "title": "Resources"
+        },
+        "solutions": {
+          "items": {
+            "crop-monitoring": "Crop Monitoring",
+            "documentation": "Documentation",
+            "equipment": "Equipment",
+            "irrigation-control": "Irrigation Control",
+            "smart-farming-guide": "Smart Farming Guide",
+            "soil-analytics": "Soil Analytics",
+            "weather-integration": "Weather Integration"
+          },
+          "title": "Solutions"
+        }
+      }
+    },
     "banner": {
       "aria": "View latest update the changelog page",
       "new": "New",
@@ -52,6 +124,11 @@
         "h1": "Test 100 ideas in the time it takes to build one",
         "p": "Create beautiful landing pages with WYSIWYG editor, deploy to custom domains, and start collecting sign-ups from potential customers within minutes.",
         "title": "Rapid Idea Validation"
+      },
+      "waitlist-to-customers": {
+        "h1": "Convert interest into paying customers from day one",
+        "p": "Manage waitlists, send targeted emails, and nurture leads automatically. When you're ready to launch, you'll have customers ready to pay instead of starting from zero.",
+        "title": "Waitlist to Customers"
       }
     },
     "hero": {
@@ -83,10 +160,27 @@
       }
     }
   },
+  "common": {
+    "aria": {
+      "product-showcase": "Product showcase"
+    },
+    "theme": {
+      "aria": {
+        "dark": "Dark Theme",
+        "light": "Light Theme",
+        "system": "System Theme"
+      },
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System",
+      "toggle-aria": "Toggle theme"
+    }
+  },
   "nav": {
     "close-menu-aria": "Close Navigation Menu",
     "go-to-app": "Go to App",
     "home-aria": "Home",
+    "language": "Language",
     "lang-en": "English",
     "lang-ko": "한국어",
     "language-aria": "Change language",

@@ -1,6 +1,6 @@
-import { Button } from '@/components/atoms/button'
-import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Button } from '@/components/atoms/button'
 
 export async function CallToAction() {
   const t = await getTranslations('landing.cta-section')

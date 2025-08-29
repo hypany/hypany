@@ -426,16 +426,14 @@ export default async function Features() {
         </div>
         <div className='col-span-2 my-auto px-2'>
           <h2 className='relative text-lg font-semibold tracking-tight text-emerald-500'>
-            Waitlist to Customers
+            {t('waitlist-to-customers.title')}
             <div className='absolute top-1 -left-[7px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
           <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
-            Convert interest into paying customers from day one
+            {t('waitlist-to-customers.h1')}
           </p>
           <p className='mt-4 text-balance text-gray-700'>
-            Manage waitlists, send targeted emails, and nurture leads
-            automatically. When you're ready to launch, you'll have customers
-            ready to pay instead of starting from zero.
+            {t('waitlist-to-customers.p')}
           </p>
         </div>
         <div className='relative col-span-2 flex items-center justify-center overflow-hidden'>

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 
 export default async function SignUpPage() {
   const t = await getTranslations('auth.sign-up')
+  const tCommon = await getTranslations('common')
   return (
     <>
       <main className='flex-1'>
@@ -32,12 +33,12 @@ export default async function SignUpPage() {
             <Divider />
 
             <p className='mt-2 text-sm text-gray-700 dark:text-gray-400'>
-              <span>Already have an account? </span>
+              <span>{t('footer-text')} </span>
               <Link
                 href='/sign-in'
                 className='font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 hover:dark:text-emerald-600'
               >
-                Sign in
+                {t('footer-link')}
               </Link>
             </p>
           </div>
@@ -45,15 +46,15 @@ export default async function SignUpPage() {
       </main>
       <aside
         className='hidden flex-1 overflow-hidden p-6 lg:flex'
-        aria-label='Product showcase'
+        aria-label={tCommon('aria.product-showcase')}
       >
         <div className='flex h-full w-full items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-16 dark:from-emerald-600 dark:to-emerald-500'>
           <div>
             <h2 className='max-w-lg text-2xl font-semibold leading-9 text-white'>
-              Join founders validating ideas faster
+              {t('aside.title')}
             </h2>
             <p className='mt-4 text-white/90'>
-              Build, measure, and learn with real demand signals.
+              {t('aside.desc')}
             </p>
             <div className='mt-10 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20'>
               <div className='h-48 w-[28rem] rounded-md bg-white/5 shadow-2xl shadow-black/40 ring-1 ring-black/10' />

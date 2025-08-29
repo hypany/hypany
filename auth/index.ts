@@ -2,8 +2,9 @@ import { render } from '@react-email/render'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
-import { admin, openAPI } from 'better-auth/plugins'
+import { admin, openAPI, organization } from 'better-auth/plugins'
 import { db } from '@/drizzle'
+import OrganizationInvitationEmail from '@/emails/organization-invitation-email'
 import ResetPasswordEmail from '@/emails/reset-password-email'
 import VerificationEmail from '@/emails/verification-email'
 import { sendEmail } from '@/lib/email'
@@ -77,6 +78,31 @@ export const auth = betterAuth({
   plugins: [
     admin({
       impersonationSessionDuration: 60 * 60 * 24, // 1 day
+    }),
+    organization({
+      allowUserToCreateOrganization: true,
+      requireEmailVerificationOnInvitation: false,
+      sendInvitationEmail: async ({
+        email,
+        invitationLink,
+        organizationName,
+        inviter,
+      }) => {
+        const emailHtml = await render(
+          OrganizationInvitationEmail({
+            invitationLink,
+            inviterName: inviter?.name,
+            organizationName,
+            recipientEmail: email,
+          }),
+        )
+
+        await sendEmail({
+          body: emailHtml,
+          subject: `Invitation to join ${organizationName}`,
+          to: email,
+        })
+      },
     }),
     openAPI(),
     nextCookies(),

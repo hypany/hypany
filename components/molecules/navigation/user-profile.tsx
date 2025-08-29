@@ -1,12 +1,24 @@
 'use client'
 
+import type { User } from 'better-auth'
 import { ChevronsUpDown } from 'lucide-react'
+import * as React from 'react'
+import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { cx, focusRing } from '@/lib/utils'
-
 import { DropdownUserProfile } from './dropdown-user-profile'
 
 export function UserProfile() {
+  const { data } = client.useSession()
+  const user = (data?.user as User | null) || null
+  const initials = React.useMemo(() => {
+    const src = (user?.name ?? undefined) || user?.email || ''
+    const parts = src.replace(/@.*/, '').split(/\s|\./).filter(Boolean)
+    const a = parts[0]?.[0] ?? ''
+    const b = parts[1]?.[0] ?? ''
+    return (a + b).toUpperCase() || (src[0]?.toUpperCase() ?? 'U')
+  }, [user])
+
   return (
     <DropdownUserProfile>
       <Button
@@ -22,9 +34,9 @@ export function UserProfile() {
             className='flex size-8 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-white text-xs text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300'
             aria-hidden='true'
           >
-            ES
+            {initials}
           </span>
-          <span>Emma Stone</span>
+          <span>{user?.name || user?.email || 'User'}</span>
         </span>
         <ChevronsUpDown
           className='size-4 shrink-0 text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-400'

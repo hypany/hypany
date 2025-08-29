@@ -4,36 +4,37 @@ import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
 import '../globals.css'
-import { siteConfig } from '../site-config'
 
 export const metadata: Metadata = {
   authors: [
     {
-      name: 'yourname',
-      url: '',
+      name: 'Sunghyun Cho',
+      url: 'https://cho.sh',
     },
   ],
-  creator: 'yourname',
-  description: siteConfig.description,
+  creator: 'Sunghyun Cho',
+  description: 'Nobody wants your startup. But they might like your 97th idea.',
   icons: {
     icon: '/favicon.ico',
   },
-  keywords: ['Dashboard', 'Data Visualization', 'Software'],
-  metadataBase: new URL('https://yoururl.com'),
+  keywords: ['Marketing', 'Database', 'Software'],
+  metadataBase: new URL('https://www.hypany.com'),
   openGraph: {
-    description: siteConfig.description,
+    description:
+      'Nobody wants your startup. But they might like your 97th idea.',
     locale: 'en_US',
-    siteName: siteConfig.name,
-    title: siteConfig.name,
+    siteName: 'Hypany',
+    title: 'Hypany',
     type: 'website',
-    url: siteConfig.url,
+    url: 'https://www.hypany.com',
   },
-  title: siteConfig.name,
+  title: 'Hypany',
   twitter: {
     card: 'summary_large_image',
-    creator: '@yourname',
-    description: siteConfig.description,
-    title: siteConfig.name,
+    creator: '@anaclumos',
+    description:
+      'Nobody wants your startup. But they might like your 97th idea.',
+    title: 'Hypany',
   },
 }
 

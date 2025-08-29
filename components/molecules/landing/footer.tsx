@@ -8,58 +8,60 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
 import { LocaleSwitcher } from '../locale-switcher'
+import { ThemeToggle } from './theme-toggle'
 
 const CURRENT_YEAR = new Date().getFullYear()
 
 export const Footer = () => {
   const t = useTranslations('landing.footer')
+  const tFooter = useTranslations('footer')
   const sections = {
     company: {
       items: [
-        { href: '#', label: 'About us' },
-        { href: '#', label: 'Blog' },
-        { href: '#', label: 'Careers' },
-        { href: '#', label: 'Success Stories' },
-        { href: '#', label: 'Sustainability' },
+        { href: '#', label: t('sections.company.items.about-us') },
+        { href: '#', label: t('sections.company.items.blog') },
+        { href: '#', label: t('sections.company.items.careers') },
+        { href: '#', label: t('sections.company.items.success-stories') },
+        { href: '#', label: t('sections.company.items.sustainability') },
       ],
-      title: 'Company',
+      title: t('sections.company.title'),
     },
     partners: {
       items: [
-        { external: true, href: '#', label: 'Dealer Network' },
-        { external: true, href: '#', label: 'System Status' },
-        { external: true, href: '#', label: 'Research Partners' },
-        { href: '#', label: 'Integration Guide' },
+        { external: true, href: '#', label: t('sections.partners.items.dealer-network') },
+        { external: true, href: '#', label: t('sections.partners.items.system-status') },
+        { external: true, href: '#', label: t('sections.partners.items.research-partners') },
+        { href: '#', label: t('sections.partners.items.integration-guide') },
       ],
-      title: 'Partners',
+      title: t('sections.partners.title'),
     },
     resources: {
       items: [
-        { href: '#', label: 'Farmer Network' },
+        { href: '#', label: t('sections.resources.items.farmer-network') },
         {
           external: true,
           href: '#',
-          label: 'Community',
+          label: t('sections.resources.items.community'),
         },
-        { href: '#', label: 'Contact' },
-        { href: '#', label: 'Support' },
-        { href: '#', label: 'Privacy Policy' },
-        { href: '#', label: 'Terms of Service' },
-        { href: '#', label: 'Report an Issue' },
+        { href: '#', label: t('sections.resources.items.contact') },
+        { href: '#', label: t('sections.resources.items.support') },
+        { href: '#', label: t('sections.resources.items.privacy-policy') },
+        { href: '#', label: t('sections.resources.items.terms-of-service') },
+        { href: '#', label: t('sections.resources.items.report-issue') },
       ],
-      title: 'Resources',
+      title: t('sections.resources.title'),
     },
     solutions: {
       items: [
-        { href: '#', label: 'Crop Monitoring' },
-        { href: '#', label: 'Irrigation Control' },
-        { href: '#', label: 'Soil Analytics' },
-        { href: '#', label: 'Weather Integration' },
-        { href: '#', label: 'Documentation' },
-        { href: '#', label: 'Smart Farming Guide' },
-        { href: '#', label: 'Equipment' },
+        { href: '#', label: t('sections.solutions.items.crop-monitoring') },
+        { href: '#', label: t('sections.solutions.items.irrigation-control') },
+        { href: '#', label: t('sections.solutions.items.soil-analytics') },
+        { href: '#', label: t('sections.solutions.items.weather-integration') },
+        { href: '#', label: t('sections.solutions.items.documentation') },
+        { href: '#', label: t('sections.solutions.items.smart-farming-guide') },
+        { href: '#', label: t('sections.solutions.items.equipment') },
       ],
-      title: 'Solutions',
+      title: t('sections.solutions.title'),
     },
   }
 
@@ -75,7 +77,7 @@ export const Footer = () => {
             }}
           >
             <svg className='h-full w-full' preserveAspectRatio='none'>
-              <title>Footer Pattern Alt</title>
+              <title>{tFooter('footer-pattern-alt')}</title>
               <line
                 x1='0'
                 y1='0'
@@ -96,7 +98,7 @@ export const Footer = () => {
             }}
           >
             <svg className='h-full w-full' preserveAspectRatio='none'>
-              <title>Footer Pattern</title>
+              <title>{tFooter('footer-pattern-alt')}</title>
               <line
                 x1='0'
                 y1='0'
@@ -110,7 +112,7 @@ export const Footer = () => {
           </div>
         </div>
         <svg className='mb-10 h-20 w-full border-y border-dashed border-gray-300 stroke-gray-300'>
-          <title>Footer Pattern Alt</title>
+          <title>{tFooter('footer-pattern-alt')}</title>
           <defs>
             <pattern patternUnits='userSpaceOnUse' width='64' height='64'>
               {Array.from({ length: 17 }, (_, i) => {
@@ -142,9 +144,6 @@ export const Footer = () => {
 
             <span className='sr-only'>{t('logo-alt')}</span>
           </Link>
-
-          <LocaleSwitcher />
-
           <div>
             <div className='mt-4 flex items-center'>
               {/* Social Icons */}
@@ -181,9 +180,6 @@ export const Footer = () => {
                 <RiSlackFill className='size-5' />
               </Link>
             </div>
-            <div className='ml-2 hidden text-sm text-gray-700 lg:inline'>
-              &copy; {CURRENT_YEAR} Sunghyun Cho
-            </div>
           </div>
         </div>
 
@@ -207,6 +203,18 @@ export const Footer = () => {
             </ul>
           </div>
         ))}
+        {/* Bottom Bar */}
+        <div className='mt-10 w-full border-t border-gray-200 py-3 dark:border-gray-800'>
+          <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
+            <div className='text-sm text-gray-700 dark:text-gray-400'>
+              &copy; {CURRENT_YEAR} {tFooter('creator-name')}
+            </div>
+            <div className='flex items-center gap-2'>
+              <LocaleSwitcher />
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   )
