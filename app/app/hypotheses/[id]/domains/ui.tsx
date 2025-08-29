@@ -27,16 +27,14 @@ export default function DomainForm({
   async function checkSlug() {
     setChecking(true)
     try {
-      const res = await api.v1.landing_pages['check-slug'].post({
-        body: { slug, excludeId: undefined },
-      })
+      const res = await api.v1['landing-pages']['check-slug'].post({ slug, excludeId: undefined })
       const d = res.data
       if (!d) return
       setAvailability({ ok: d.available, normalized: d.normalizedSlug, error: d.error })
       if (d.available) {
-        toast({ description: 'Subdomain is available', variant: 'default' })
+        toast.success('Subdomain is available')
       } else {
-        toast({ description: d.error || 'Subdomain unavailable', variant: 'destructive' })
+        toast.error(d.error || 'Subdomain unavailable')
       }
     } finally {
       setChecking(false)
@@ -49,16 +47,16 @@ export default function DomainForm({
       const body: Record<string, string | null> = {}
       if (slug) body.slug = slug
       body.customDomain = customDomain ? customDomain : ''
-      const r = await api.v1.landing_pages
+      const r = await api.v1['landing-pages']
         .hypothesis({ hypothesisId })
-        .patch({ body: body as any })
+        .patch(body)
       if (r.data?.success) {
-        toast({ description: 'Domain settings saved', variant: 'default' })
+        toast.success('Domain settings saved')
       } else {
-        toast({ description: 'Failed to save domain settings', variant: 'destructive' })
+        toast.error('Failed to save domain settings')
       }
     } catch {
-      toast({ description: 'Failed to save domain settings', variant: 'destructive' })
+      toast.error('Failed to save domain settings')
     } finally {
       setSaving(false)
     }

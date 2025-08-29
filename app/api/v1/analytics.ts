@@ -51,6 +51,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
     async ({ user, session, query, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       const { from, to } = resolveRange(query)
       const limit = Math.min(Math.max(Number(query.limit ?? 50), 1), 100)
@@ -63,7 +66,7 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       const userHypotheses = await db
         .select()
         .from(hypotheses)
-        .where(eq(hypotheses.organizationId, session.activeOrganizationId))
+        .where(eq(hypotheses.organizationId, orgId))
 
       const hypothesisIds = userHypotheses.map((h) => h.id)
 
@@ -287,6 +290,9 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
     async ({ user, session, query, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       const { from, to } = resolveRange(query)
       const hypothesisId = query.hypothesisId
@@ -297,7 +303,7 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
       const userHypotheses = await db
         .select()
         .from(hypotheses)
-        .where(eq(hypotheses.organizationId, session.activeOrganizationId))
+        .where(eq(hypotheses.organizationId, orgId))
 
       const hypothesisIds = userHypotheses.map((h) => h.id)
       const targetHypothesisIds = hypothesisId
@@ -416,17 +422,20 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
     async ({ user, session, query, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       const { from, to } = resolveRange(query)
       const hypothesisId = query.hypothesisId
         ? String(query.hypothesisId)
         : null
 
-      // Get user's hypotheses
+      // Get organization's hypotheses
       const userHypotheses = await db
         .select()
         .from(hypotheses)
-        .where(eq(hypotheses.userId, user.id))
+        .where(eq(hypotheses.organizationId, orgId))
 
       const hypothesisIds = userHypotheses.map((h) => h.id)
       const targetHypothesisIds = hypothesisId

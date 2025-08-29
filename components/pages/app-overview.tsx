@@ -1,13 +1,11 @@
 "use client"
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { Download } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
-import { toast } from 'sonner'
 import { Input } from '@/components/atoms/input'
 import {
   Select,
@@ -93,8 +91,7 @@ export default function AppOverview() {
   const t = useTranslations('app.hypotheses.overview')
   const [groups, setGroups] = useState<Region[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [newName, setNewName] = useState<string>('')
-  const router = useRouter()
+  
 
   useEffect(() => {
     let ignore = false
@@ -202,41 +199,11 @@ export default function AppOverview() {
             />
             {t('export')}
           </Button>
+          <Button asChild className='w-full py-1.5 sm:w-fit'>
+            <Link href='/app/hypotheses/create'>Create</Link>
+          </Button>
         </div>
       </div>
-      <div className='flex flex-col gap-2 px-4 sm:flex-row sm:items-end sm:px-6'>
-        <div className='sm:w-80'>
-          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>New hypothesis</label>
-          <Input
-            placeholder='My New Idea'
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className='py-1.5'
-          />
-        </div>
-        <Button
-          onClick={async () => {
-            const name = newName.trim()
-            if (!name) {
-              toast('Please enter a name')
-              return
-            }
-            try {
-              const res = await api.v1.hypotheses.post({ body: { name } })
-              const id = res.data?.hypothesis?.id
-              if (id) {
-                toast('Hypothesis created')
-                router.push(`/app/hypotheses/${id}/editor`)
-              }
-            } catch {
-              toast('Failed to create hypothesis')
-            }
-          }}
-          className='sm:mb-0 sm:ml-2'
-        >
-          Create & Open Editor
-        </Button>
-        </div>
       <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
         <Table>
           <TableHead>

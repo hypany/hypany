@@ -11,7 +11,7 @@ import { jsonError, jsonOk } from '@/lib/http'
 import { userSettings } from '@/schema'
 import 'server-only'
 import { ulid } from 'ulid'
-import { ErrorResponse, SuccessResponse } from '../docs'
+import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
 const SettingsSchema = {
@@ -133,4 +133,3 @@ export const settingsApi = new Elysia({ prefix: '/v1/settings' })
   )
 
 export type SettingsApi = typeof settingsApi
-

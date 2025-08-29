@@ -25,11 +25,13 @@ import {
 export type DropdownUserProfileProps = {
   children: React.ReactNode
   align?: 'center' | 'start' | 'end'
+  email?: string | null
 }
 
 export function DropdownUserProfile({
   children,
   align = 'start',
+  email,
 }: DropdownUserProfileProps) {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
@@ -38,7 +40,6 @@ export function DropdownUserProfile({
   const t = useTranslations('nav')
   const tApp = useTranslations('app.userMenu')
   const [isPending, startTransition] = useTransition()
-  const { data } = client.useSession()
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -68,7 +69,7 @@ export function DropdownUserProfile({
         align={align}
         className='sm:min-w-[calc(var(--radix-dropdown-menu-trigger-width))]!'
       >
-        <DropdownMenuLabel>{data?.user?.email ?? ''}</DropdownMenuLabel>
+        <DropdownMenuLabel>{email ?? ''}</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuSubMenu>
             <DropdownMenuSubMenuTrigger>

@@ -61,7 +61,7 @@ export const uploadsApi = new Elysia({ prefix: '/v1/uploads' })
           .where(
             and(
               eq(hypotheses.id, hypothesisId),
-              eq(hypotheses.organizationId, session.activeOrganizationId),
+              eq(hypotheses.organizationId, session.activeOrganizationId as string),
               isNull(hypotheses.deletedAt),
             ),
           )

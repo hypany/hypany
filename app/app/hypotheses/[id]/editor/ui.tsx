@@ -8,19 +8,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, Tab
 import { Textarea } from '@/components/atoms/textarea'
 import { toast } from 'sonner'
 
-type Block = { id: string; type: string; order: string; content: string }
+type BlockType = 'hero' | 'features' | 'cta' | 'faq' | 'pricing' | 'footer'
+type Block = { id: string; type: BlockType; order: string; content: string }
 
 export default function BlocksEditor({
   hypothesisId,
-  landingPageId,
   initialBlocks,
 }: {
   hypothesisId: string
-  landingPageId: string
   initialBlocks: Block[]
 }) {
   const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
-  const [type, setType] = useState<string>('hero')
+  const [type, setType] = useState<BlockType>('hero')
   const [order, setOrder] = useState<string>('1000')
   const [content, setContent] = useState<string>(
     '{\n  "headline": "Welcome",\n  "subhead": "Get started today"\n}',
@@ -30,56 +29,56 @@ export default function BlocksEditor({
     try {
       // basic JSON check
       JSON.parse(content)
-      const r = await api.v1.landing_pages
+      const r = await api.v1['landing-pages']
         .hypothesis({ hypothesisId })
-        .blocks.post({ body: { content, order, type } })
-      const id = r.data?.id
+        .blocks.post({ content, order, type })
+      const id = r.data && typeof r.data === 'object' && 'id' in r.data ? (r.data as { id: string }).id : undefined
       if (id) setBlocks((b) => [...b, { id, content, order, type }])
-      toast({ description: 'Block added', variant: 'default' })
+      toast.success('Block added')
     } catch (e) {
-      toast({ description: 'Invalid content or failed to add', variant: 'destructive' })
+      toast.error('Invalid content or failed to add')
     }
   }
 
   async function removeBlock(id: string) {
     try {
-      await api.v1.landing_pages
+      await api.v1['landing-pages']
         .hypothesis({ hypothesisId })
         .blocks({ blockId: id })
         .delete()
       setBlocks((b) => b.filter((x) => x.id !== id))
-      toast({ description: 'Block removed', variant: 'default' })
+      toast.success('Block removed')
     } catch {
-      toast({ description: 'Failed to remove block', variant: 'destructive' })
+      toast.error('Failed to remove block')
     }
   }
 
   async function updateBlock(id: string, next: Partial<Pick<Block, 'order' | 'content'>>) {
     try {
       if (next.content) JSON.parse(next.content)
-      await api.v1.landing_pages
+      await api.v1['landing-pages']
         .hypothesis({ hypothesisId })
         .blocks({ blockId: id })
-        .patch({ body: { ...next } })
+        .patch({ ...next })
       setBlocks((b) =>
         b.map((x) => (x.id === id ? { ...x, ...next } : x)),
       )
-      toast({ description: 'Block updated', variant: 'default' })
+      toast.success('Block updated')
     } catch {
-      toast({ description: 'Failed to update block', variant: 'destructive' })
+      toast.error('Failed to update block')
     }
   }
 
   async function reorder(next: Block[]) {
     try {
-      await api.v1.landing_pages
+      await api.v1['landing-pages']
         .hypothesis({ hypothesisId })
         ['blocks']['reorder'].post({
-          body: { blocks: next.map((b) => ({ id: b.id, order: b.order })) },
+          blocks: next.map((b) => ({ id: b.id, order: b.order })),
         })
-      toast({ description: 'Order updated', duration: 1500 })
+      toast.success('Order updated')
     } catch {
-      toast({ description: 'Failed to update order', variant: 'destructive' })
+      toast.error('Failed to update order')
     }
   }
 
@@ -107,7 +106,7 @@ export default function BlocksEditor({
       <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
         <div>
           <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Type</label>
-          <Select value={type} onValueChange={setType}>
+          <Select value={type} onValueChange={(v) => setType(v as BlockType)}>
             <SelectTrigger className='py-1.5'>
               <SelectValue placeholder='Select type' />
             </SelectTrigger>

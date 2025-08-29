@@ -8,7 +8,7 @@ export default async function EditorPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const res = await api.v1.landing_pages.hypothesis({ hypothesisId: id }).get()
+  const res = await api.v1['landing-pages'].hypothesis({ hypothesisId: id }).get()
   const data = res.data
   if (!data || !data.landingPage) notFound()
 
@@ -24,10 +24,13 @@ export default async function EditorPage({
       </div>
       <BlocksEditor
         hypothesisId={id}
-        landingPageId={data.landingPage.id}
-        initialBlocks={data.blocks}
+        initialBlocks={data.blocks.map((b) => ({
+          id: b.id,
+          content: b.content,
+          order: b.order,
+          type: b.type as 'hero' | 'features' | 'cta' | 'faq' | 'pricing' | 'footer',
+        }))}
       />
     </section>
   )
 }
-

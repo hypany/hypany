@@ -11,16 +11,26 @@ export async function updateOrganizationAction(input: {
   const hdrs = await headers()
 
   try {
-    const bodyBase = {
-      data: {
-        ...(input.name ? { name: input.name } : {}),
-        ...(input.slug ? { slug: input.slug } : {}),
-      },
+    // Always include organizationId
+    let orgId = input.organizationId
+    if (!orgId) {
+      const active = await auth.api.getFullOrganization({ headers: hdrs })
+      if (active && typeof active === 'object' && 'id' in active) {
+        orgId = (active as { id: string }).id
+      }
     }
+    if (!orgId) {
+      return { ok: false, error: 'No active organization' }
+    }
+
     const res = await auth.api.updateOrganization({
-      body: (input.organizationId
-        ? { ...bodyBase, organizationId: input.organizationId }
-        : (bodyBase as any)) as any,
+      body: {
+        data: {
+          ...(input.name ? { name: input.name } : {}),
+          ...(input.slug ? { slug: input.slug } : {}),
+        },
+        organizationId: orgId,
+      },
       headers: hdrs,
     })
 

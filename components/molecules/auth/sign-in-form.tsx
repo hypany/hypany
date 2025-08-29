@@ -1,19 +1,19 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import type * as React from 'react'
-import { useId } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import * as z from 'zod'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { cx } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import type * as React from 'react'
+import { useId } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import * as z from 'zod'
 
 const signInSchema = z.object({
   email: z.email('Invalid email address'),
@@ -158,7 +158,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           )}
         </div>
         <Button disabled={isSubmitting} className='w-full'>
-          {isSubmitting ? 'Signing in...' : t('actions.continue')}
+          {isSubmitting ? t('actions.signing-in') : t('actions.continue')}
         </Button>
       </form>
     </div>

@@ -358,6 +358,9 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
     async ({ user, session, params, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       // Resolve landing page and custom domain
       const [lp] = await db
@@ -370,7 +373,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         .where(
           and(
             eq(hypotheses.id, params.hypothesisId),
-            eq(hypotheses.organizationId, session.activeOrganizationId),
+            eq(hypotheses.organizationId, orgId),
             isNull(landingPages.deletedAt),
           ),
         )
@@ -437,7 +440,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
 
-      const lp = await getLandingPageIdForUser(user.id, params.hypothesisId)
+      const orgId = session.activeOrganizationId
+      if (!orgId) {
+        set.status = HTTP_STATUS.BAD_REQUEST
+        return { error: 'No active organization' }
+      }
+      const lp = await getLandingPageIdForOrg(orgId, params.hypothesisId)
       if (!lp)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
 

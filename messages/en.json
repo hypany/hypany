@@ -185,7 +185,8 @@
     },
     "form": {
       "actions": {
-        "continue": "Continue"
+        "continue": "Continue",
+        "signing-in": "Signing in..."
       },
       "email": {
         "label": "Email",
