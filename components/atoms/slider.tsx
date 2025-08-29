@@ -41,7 +41,7 @@ const Slider = React.forwardRef<
         <SliderPrimitive.Range
           className={cx(
             // base
-            'absolute rounded-full bg-orange-500 dark:bg-orange-500',
+            'absolute rounded-full bg-emerald-500 dark:bg-emerald-500',
             // orientation
             "data-[orientation='horizontal']:h-full",
             "data-[orientation='vertical']:w-full",

@@ -32,19 +32,19 @@ const ChipViz = () => {
           variants={createVariants({ delay: 0, scale: 1.1 })}
           initial='initial'
           animate='animate'
-          className='absolute -inset-px z-0 rounded-full bg-linear-to-r from-yellow-500 via-amber-500 to-orange-500 opacity-30 blur-xl'
+          className='absolute -inset-px z-0 rounded-full bg-linear-to-r from-emerald-400 via-emerald-500 to-emerald-600 opacity-30 blur-xl'
         />
         <motion.div
           variants={createVariants({ delay: 0.1, scale: 1.08 })}
           initial='initial'
           animate='animate'
-          className='relative z-0 min-h-[80px] min-w-[80px] rounded-full border bg-linear-to-b from-white to-orange-50 shadow-xl shadow-orange-500/20'
+          className='relative z-0 min-h-[80px] min-w-[80px] rounded-full border bg-linear-to-b from-white to-emerald-50 shadow-xl shadow-emerald-500/20'
         >
           <motion.div
             variants={createVariants({ delay: 0.2, scale: 1.06 })}
             initial='initial'
             animate='animate'
-            className='absolute inset-1 rounded-full bg-linear-to-t from-yellow-500 via-amber-500 to-orange-500 p-0.5 shadow-xl'
+            className='absolute inset-1 rounded-full bg-linear-to-t from-emerald-400 via-emerald-500 to-emerald-600 p-0.5 shadow-xl'
           >
             <div className='relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-black/40 shadow-2xs shadow-white/40 will-change-transform'>
               <div className='size-full bg-black/30' />
@@ -52,7 +52,7 @@ const ChipViz = () => {
                 variants={createVariants({ delay: 0.3, scale: 1.04 })}
                 initial='initial'
                 animate='animate'
-                className='absolute inset-0 rounded-full bg-linear-to-t from-yellow-500 via-amber-500 to-orange-500 opacity-50 shadow-[inset_0_0_16px_4px_rgba(0,0,0,1)]'
+                className='absolute inset-0 rounded-full bg-linear-to-t from-emerald-400 via-emerald-500 to-emerald-600 opacity-50 shadow-[inset_0_0_16px_4px_rgba(0,0,0,1)]'
               />
               <motion.div
                 variants={createVariants({ delay: 0.4, scale: 1.02 })}

@@ -12,9 +12,9 @@ const calloutVariants = tv({
     variant: {
       default: [
         // text color
-        'text-orange-900 dark:text-orange-400',
+        'text-emerald-900 dark:text-emerald-400',
         // background color
-        'bg-orange-50 dark:bg-orange-950/70',
+        'bg-emerald-50 dark:bg-emerald-950/70',
       ],
       error: [
         // text color

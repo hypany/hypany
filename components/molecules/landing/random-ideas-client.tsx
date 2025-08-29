@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { Tooltip } from '@/components/atoms/tooltip'
+import {useTranslations} from 'next-intl'
 
 export type IdeaItem = {
   user: string
@@ -20,14 +21,15 @@ export type IdeaItem = {
 }
 
 export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
+  const t = useTranslations('landing.random-ideas')
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableHeaderCell>Product</TableHeaderCell>
-          <TableHeaderCell>Engineering</TableHeaderCell>
-          <TableHeaderCell>Legal</TableHeaderCell>
-          <TableHeaderCell className='text-right'>Vibe Check</TableHeaderCell>
+          <TableHeaderCell>{t('table.header.product')}</TableHeaderCell>
+          <TableHeaderCell>{t('table.header.engineering')}</TableHeaderCell>
+          <TableHeaderCell>{t('table.header.legal')}</TableHeaderCell>
+          <TableHeaderCell className='text-right'>{t('table.header.vibe-check')}</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -57,7 +59,7 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
               </TableCell>
               <TableCell className='text-right'>
                 <div className='flex justify-end'>
-                  <Tooltip content='Waitlist/Visitor ratio' side='top'>
+                  <Tooltip content={t('tooltip.vibe-ratio')} side='top'>
                     <div className='flex items-center'>
                       <ProgressCircle
                         value={idx * 10}

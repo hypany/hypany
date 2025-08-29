@@ -132,8 +132,8 @@ const Calendar = ({
         day_range_start: 'rounded-r-none rounded-l!',
         day_selected: cx(
           'rounded-sm',
-          'aria-selected:bg-orange-500 aria-selected:text-white',
-          'dark:aria-selected:bg-orange-500 dark:aria-selected:text-white',
+          'aria-selected:bg-emerald-500 aria-selected:text-white',
+          'dark:aria-selected:bg-emerald-500 dark:aria-selected:text-white',
         ),
         day_today: 'font-semibold',
         head_cell:
@@ -296,7 +296,7 @@ const Calendar = ({
                         disabled,
                       'bg-gray-400! dark:bg-gray-600!':
                         selected && range_middle,
-                      'bg-orange-500 dark:bg-orange-500': !selected,
+                      'bg-emerald-500 dark:bg-emerald-500': !selected,
                       'bg-white! dark:bg-gray-950!': selected,
                     },
                   )}

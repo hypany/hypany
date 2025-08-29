@@ -54,7 +54,7 @@ export const auth = betterAuth({
 
       // Construct the proper verification URL with /dashboard as the callback
       const baseUrl = serviceUrl
-      const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${tokenParam || token}&callbackURL=/dashboard`
+      const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${tokenParam || token}&callbackURL=/app`
 
       const emailHtml = await render(
         VerificationEmail({

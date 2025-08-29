@@ -31,8 +31,8 @@ const RadioCardItem = React.forwardRef<
         'bg-white dark:bg-gray-950',
         // border color
         'border-gray-300 dark:border-gray-800',
-        'data-[state=checked]:border-orange-500',
-        'dark:data-[state=checked]:border-orange-500',
+        'data-[state=checked]:border-emerald-500',
+        'dark:data-[state=checked]:border-emerald-500',
         // disabled
         'data-disabled:border-gray-100 dark:data-disabled:border-gray-800',
         'data-disabled:bg-gray-50 data-disabled:shadow-none dark:data-disabled:bg-gray-900',
@@ -62,7 +62,7 @@ const RadioCardIndicator = React.forwardRef<
         // background color
         'bg-white dark:bg-gray-950',
         // checked
-        'group-data-[state=checked]:border-0 group-data-[state=checked]:border-transparent group-data-[state=checked]:bg-orange-500',
+        'group-data-[state=checked]:border-0 group-data-[state=checked]:border-transparent group-data-[state=checked]:bg-emerald-500',
         // disabled
         'group-data-disabled:border-gray-300 group-data-disabled:bg-gray-100 group-data-disabled:text-gray-400',
         'dark:group-data-disabled:border-gray-700 dark:group-data-disabled:bg-gray-800',

@@ -1,10 +1,10 @@
 export const siteConfig = {
   baseLinks: {
     home: '/',
-    quotes: {
-      audits: '/quotes/audits',
-      monitoring: '/quotes/monitoring',
-      overview: '/quotes/overview',
+    hypotheses: {
+      audits: '/app/hypotheses/audits',
+      monitoring: '/app/hypotheses/monitoring',
+      overview: '/app/hypotheses/overview',
     },
   },
   description: 'Nobody wants your startup. But they might like your 97th idea.',

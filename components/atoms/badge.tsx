@@ -13,8 +13,8 @@ const badgeVariants = tv({
   variants: {
     variant: {
       default: [
-        'bg-orange-50 text-orange-900 ring-orange-500/30',
-        'dark:bg-orange-400/10 dark:text-orange-400 dark:ring-orange-400/30',
+        'bg-emerald-50 text-emerald-900 ring-emerald-500/30',
+        'dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-emerald-400/30',
       ],
       error: [
         'bg-red-50 text-red-900 ring-red-600/20',

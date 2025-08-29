@@ -1,6 +1,8 @@
 'use client'
+import { useEffect, useMemo, useState } from 'react'
 import { Download } from 'lucide-react'
 import { Fragment } from 'react'
+import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -21,10 +23,9 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { cx } from '@/lib/utils'
-import { quotes } from './data/data'
 
 const colorClasses = [
-  'bg-orange-500 dark:bg-orange-500',
+  'bg-emerald-500 dark:bg-emerald-500',
   'bg-purple-500 dark:bg-purple-500',
   'bg-emerald-500 dark:bg-emerald-500',
   'bg-cyan-500 dark:bg-cyan-500',
@@ -38,13 +39,139 @@ const getRandomColor = (initials: string) => {
     .reduce((acc, char) => acc + char.charCodeAt(0), 0)
   return colorClasses[seed % colorClasses.length]
 }
+type HypothesisItem = {
+  id: string
+  name: string
+  status: 'draft' | 'published' | 'archived' | (string & {})
+  signupCount: number
+  landingPage: { id: string; slug: string | null } | null
+}
+
+type HypothesisMetrics = {
+  pageViews30d: number
+  conversionRate30d: number
+}
+
+type AssignedPerson = { name: string; initials: string }
+
+type Project = {
+  company: string
+  size: string
+  probability: string
+  duration: string
+  status: 'Drafted' | 'Sent' | 'Closed'
+  assigned: AssignedPerson[]
+}
+
+type Region = {
+  region: string
+  project: Project[]
+}
+
+const statusToRegion: Record<string, string> = {
+  draft: 'Draft',
+  published: 'Published',
+  archived: 'Archived',
+}
+
+const statusToBadge: Record<string, Project['status']> = {
+  draft: 'Drafted',
+  published: 'Sent',
+  archived: 'Closed',
+}
+
+function slugToInitials(slug?: string | null) {
+  if (!slug) return 'HP'
+  const parts = slug.split('-').filter(Boolean)
+  const init = parts.slice(0, 2).map((p) => p[0]?.toUpperCase() || '').join('')
+  return init || 'HP'
+}
+
 export default function Overview() {
+  const [groups, setGroups] = useState<Region[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+
+  useEffect(() => {
+    let ignore = false
+    async function load() {
+      setLoading(true)
+      try {
+        const res = await api.v1.hypotheses['/'].$get({
+          // keep defaults (pagination); UI shows first page
+        })
+        const data = res.data
+        if (!data || !data.hypotheses) return
+
+        // Fetch per-hypothesis metrics in parallel to enrich rows
+        const metricsEntries: Array<Promise<[string, HypothesisMetrics]>> = data.hypotheses.map(
+          async (h: HypothesisItem) => {
+            try {
+              const det = await api.v1.hypotheses({ id: h.id }).$get()
+              const md = det.data?.metrics
+              return [
+                h.id,
+                {
+                  conversionRate30d: Number(md?.conversionRate30d ?? 0),
+                  pageViews30d: Number(md?.pageViews30d ?? 0),
+                },
+              ]
+            } catch {
+              return [h.id, { conversionRate30d: 0, pageViews30d: 0 }]
+            }
+          },
+        )
+        const resolved = await Promise.all(metricsEntries)
+        const metricsById = new Map<string, HypothesisMetrics>(resolved)
+
+        // Group by status and map to table-friendly structure
+        const grouped = new Map<string, Project[]>()
+        for (const h of data.hypotheses as HypothesisItem[]) {
+          const metrics = metricsById.get(h.id) ?? {
+            conversionRate30d: 0,
+            pageViews30d: 0,
+          }
+          const p: Project = {
+            assigned: [
+              {
+                initials: slugToInitials(h.landingPage?.slug ?? h.name),
+                name: h.landingPage?.slug ?? 'no-slug',
+              },
+            ],
+            company: h.name,
+            duration: `${metrics.pageViews30d} page views (30d)`,
+            probability: `${metrics.conversionRate30d.toFixed(1)}% conv (30d)`,
+            size: `${h.signupCount} signups`,
+            status: statusToBadge[h.status] ?? 'Drafted',
+          }
+          const key = h.status in statusToRegion ? h.status : 'draft'
+          const arr = grouped.get(key) ?? []
+          arr.push(p)
+          grouped.set(key, arr)
+        }
+
+        const regions: Region[] = Array.from(grouped.entries())
+          .map(([key, project]) => ({ region: statusToRegion[key] ?? key, project }))
+          .sort((a, b) => a.region.localeCompare(b.region))
+
+        if (!ignore) setGroups(regions)
+      } finally {
+        if (!ignore) setLoading(false)
+      }
+    }
+    load()
+    return () => {
+      ignore = true
+    }
+  }, [])
+
+  const dataToRender = useMemo<Region[]>(() => groups, [groups])
+
   return (
     <section aria-label='Overview Table'>
       <div className='flex flex-col justify-between gap-2 px-4 py-6 sm:flex-row sm:items-center sm:p-6'>
         <Input
           type='search'
-          placeholder='Search quotes...'
+          placeholder='Search hypotheses...'
           className='sm:w-64 [&>input]:py-1.5'
         />
         <div className='flex flex-col items-center gap-2 sm:flex-row'>
@@ -74,16 +201,16 @@ export default function Overview() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>Company</TableHeaderCell>
-              <TableHeaderCell>Deal Size</TableHeaderCell>
-              <TableHeaderCell>Win Probability</TableHeaderCell>
-              <TableHeaderCell>Project Duration</TableHeaderCell>
-              <TableHeaderCell>Assigned</TableHeaderCell>
+              <TableHeaderCell>Hypothesis</TableHeaderCell>
+              <TableHeaderCell>Signups</TableHeaderCell>
+              <TableHeaderCell>Conv. (30d)</TableHeaderCell>
+              <TableHeaderCell>Page Views (30d)</TableHeaderCell>
+              <TableHeaderCell>Landing</TableHeaderCell>
               <TableHeaderCell>Status</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {quotes.map((quote) => (
+            {(loading ? [] : dataToRender).map((quote) => (
               <Fragment key={quote.region}>
                 <TableRow>
                   <TableHeaderCell
@@ -144,7 +271,7 @@ export default function Overview() {
                                 item.status === 'Drafted',
                             },
                             {
-                              'bg-orange-500 dark:bg-orange-500':
+                              'bg-emerald-500 dark:bg-emerald-500':
                                 item.status === 'Sent',
                             },
                           )}

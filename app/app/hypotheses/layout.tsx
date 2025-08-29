@@ -7,12 +7,12 @@ import {
   TabNavigationLink,
 } from '@/components/atoms/tab-navigation'
 import { MetricsCards } from '@/components/molecules/homepage/metrics-cards'
-import { siteConfig } from '../siteConfig'
+import { siteConfig } from '../../site-config'
 
 const navigation = [
-  { href: siteConfig.baseLinks.quotes.overview, name: 'Overview' },
-  { href: siteConfig.baseLinks.quotes.monitoring, name: 'Monitoring' },
-  { href: siteConfig.baseLinks.quotes.audits, name: 'Audits' },
+  { href: siteConfig.baseLinks.hypotheses.overview, name: 'Overview' },
+  { href: siteConfig.baseLinks.hypotheses.monitoring, name: 'Monitoring' },
+  { href: siteConfig.baseLinks.hypotheses.audits, name: 'Audits' },
 ]
 export default function Layout({
   children,

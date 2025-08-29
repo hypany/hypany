@@ -4,11 +4,10 @@ import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
-import { getLocale } from 'next-intl/server'
 import { ThemeProvider } from 'next-themes'
 import { cookies } from 'next/headers'
 import '../globals.css'
-import { siteConfig } from './site-config'
+import { siteConfig } from '../site-config'
 
 export const metadata: Metadata = {
   authors: [
@@ -48,10 +47,9 @@ export default async function RootLayout({
 }) {
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true'
-  const locale = await getLocale()
 
   return (
-    <html lang={locale} className='h-full' suppressHydrationWarning>
+    <html lang='en' className='h-full' suppressHydrationWarning>
       <body>
         <ThemeProvider
           defaultTheme='system'

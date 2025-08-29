@@ -1,5 +1,7 @@
 'use client'
+import { useEffect, useMemo, useState } from 'react'
 import { SlidersHorizontal } from 'lucide-react'
+import { api } from '@/app/api'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { Button } from '@/components/atoms/button'
 import { ComboChart } from '@/components/atoms/combo-chart'
@@ -18,18 +20,65 @@ import {
   SelectValue,
 } from '@/components/atoms/select'
 import { formatters } from '@/lib/utils'
-import {
-  dataChart,
-  dataChart2,
-  dataChart3,
-  dataChart4,
-} from '../overview/data/data'
 
 export default function Monitoring() {
+  const [range, setRange] = useState<'30d' | '90d' | '180d' | '365d'>('365d')
+  const [daily, setDaily] = useState<Array<{ date: string; visitors: number; signups: number }>>([])
+
+  useEffect(() => {
+    let ignore = false
+    async function load() {
+      const r = range === '30d' ? '30d' : range === '90d' ? '90d' : '30d'
+      try {
+        const res = await api.v1.analytics.metrics.$get({ query: { range: r as '7d' | '30d' | '90d' } })
+        const d = res.data
+        if (!d || !d.daily) return
+        if (!ignore) setDaily(d.daily.map((x) => ({ date: x.date, signups: x.signups, visitors: x.visitors })))
+      } catch {
+        if (!ignore) setDaily([])
+      }
+    }
+    load()
+    return () => {
+      ignore = true
+    }
+  }, [range])
+
+  const dataChart = useMemo(() => {
+    return daily.map((d) => ({
+      date: d.date,
+      'Current year': d.visitors,
+      'Same period last year': d.signups,
+    }))
+  }, [daily])
+
+  const dataChart2 = useMemo(() => {
+    return daily.map((d) => ({
+      date: d.date,
+      Signups: d.signups,
+      Visitors: d.visitors,
+    }))
+  }, [daily])
+
+  const dataChart3 = useMemo(() => {
+    return daily.map((d) => {
+      const addressed = Math.min(d.signups, d.visitors)
+      const unrealized = Math.max(d.visitors - d.signups, 0)
+      return { date: d.date, Addressed: addressed, Unrealized: unrealized }
+    })
+  }, [daily])
+
+  const dataChart4 = useMemo(() => {
+    return daily.map((d) => ({
+      date: d.date,
+      Density: d.visitors > 0 ? d.signups / d.visitors : 0,
+    }))
+  }, [daily])
+
   return (
     <section aria-label='App Monitoring'>
       <div className='flex flex-col items-center justify-between gap-2 p-6 sm:flex-row'>
-        <Select defaultValue='365-days'>
+        <Select defaultValue='365-days' onValueChange={(v) => setRange(v === '30-days' ? '30d' : v === '90-days' ? '90d' : v === '180-days' ? '180d' : '365d')}>
           <SelectTrigger className='py-1.5 sm:w-44'>
             <SelectValue placeholder='Assigned to...' />
           </SelectTrigger>
@@ -87,10 +136,10 @@ export default function Monitoring() {
         <div className='flex flex-col justify-between'>
           <div>
             <dt className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-              Quote-to-Deal ratio
+              Signups vs Visitors
             </dt>
             <dd className='mt-0.5 text-sm/6 text-gray-500 dark:text-gray-500'>
-              Number of quotes compared to total deal size for given month
+              Daily signups compared to unique visitors in selected range
             </dd>
           </div>
           <ComboChart
@@ -98,13 +147,12 @@ export default function Monitoring() {
             index='date'
             enableBiaxial={true}
             barSeries={{
-              categories: ['Quotes'],
-              valueFormatter: (value) =>
-                formatters.currency({ maxFractionDigits: 0, number: value }),
-              yAxisLabel: 'Number of quotes / Deal size ($)',
+              categories: ['Signups'],
+              valueFormatter: (value) => formatters.unit(value),
+              yAxisLabel: 'Signups / Visitors',
             }}
             lineSeries={{
-              categories: ['Total deal size'],
+              categories: ['Visitors'],
               colors: ['lightGray'],
               showYAxis: false,
             }}
@@ -116,11 +164,11 @@ export default function Monitoring() {
             index='date'
             enableBiaxial={true}
             barSeries={{
-              categories: ['Quotes'],
+              categories: ['Signups'],
               showYAxis: false,
             }}
             lineSeries={{
-              categories: ['Total deal size'],
+              categories: ['Visitors'],
               colors: ['lightGray'],
               showYAxis: false,
             }}

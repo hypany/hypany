@@ -73,9 +73,9 @@ export const CustomTooltip2 = ({
   if (!active || !payload || payload.length === 0) return null
 
   const data = payload[0].payload
-  const ratio = (data.Quotes / data.Total_deal_size) * 100
+  const ratio = (data.Signups / data.Visitors) * 100
 
-  const categoriesToShow = ['Quotes', 'Total deal size']
+  const categoriesToShow = ['Signups', 'Visitors']
 
   return (
     <div className='w-56 rounded-md border border-gray-200 bg-white text-sm shadow-md dark:border-gray-800 dark:bg-gray-950'>
@@ -84,8 +84,8 @@ export const CustomTooltip2 = ({
           <li key={category} className='flex space-x-2.5'>
             <span
               className={cx(
-                category === 'Quotes'
-                  ? 'bg-orange-500 dark:bg-orange-500'
+                category === 'Signups'
+                  ? 'bg-emerald-500 dark:bg-emerald-500'
                   : 'bg-gray-300 dark:bg-gray-700',
                 'w-1 rounded-sm',
               )}
@@ -96,12 +96,7 @@ export const CustomTooltip2 = ({
                 {category}
               </p>
               <p className='font-medium text-gray-900 dark:text-gray-50'>
-                {category === 'Quotes'
-                  ? formatters.unit(data[category])
-                  : formatters.currency({
-                      maxFractionDigits: 0,
-                      number: data[category],
-                    })}
+                {formatters.unit(data[category])}
               </p>
             </div>
           </li>

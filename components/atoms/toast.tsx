@@ -98,7 +98,7 @@ const Toast = React.forwardRef<
       default:
         Icon = (
           <RiInformationFill
-            className='size-5 shrink-0 text-orange-500 dark:text-orange-500'
+            className='size-5 shrink-0 text-emerald-500 dark:text-emerald-500'
             aria-hidden='true'
           />
         )

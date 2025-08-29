@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "home-aria": "Home",
+    "logo-sr": "Hypany Logo",
+    "go-to-app": "Go to App",
+    "sign-in": "Sign in",
+    "sign-up": "Sign up",
+    "open-menu-aria": "Open Navigation Menu",
+    "close-menu-aria": "Close Navigation Menu",
+    "language-aria": "Change language",
+    "lang-en": "English",
+    "lang-ko": "한국어"
+  },
+  "auth": {
+    "common": {
+      "back": "← Back"
+    },
+    "sign-in": {
+      "title": "Welcome back",
+      "subtitle": "Enter your credentials to access your account"
+    },
+    "sign-up": {
+      "title": "Create an account",
+      "subtitle": "Enter your information to get started"
+    }
+  },
+  "landing": {
+    "banner": {
+      "new": "New",
+      "text": "100+ Ideas Validated This Month",
+      "aria": "View latest update the changelog page"
+    },
+    "hero": {
+      "title": {
+        "part-1": "Nobody",
+        "part-2": "wants",
+        "part-3": "your",
+        "part-4": "startup"
+      },
+      "sub": {
+        "line-1": "But they might want your 97th idea.",
+        "line-2": "Hypany helps you fail fast."
+      },
+      "cta": "Start Testing Ideas"
+    },
+    "cta-section": {
+      "title": "Want to collect ready-to-pay users?",
+      "desc": "Join thousands of entrepreneurs who've validated their ideas before spending months building.",
+      "primary-cta": "Start Testing Ideas",
+      "secondary-cta": "View Success Stories"
+    },
+    "random-ideas": {
+      "heading": "Hypany AI",
+      "subheading": "Hypany augments your idea to actionable startup plans",
+      "table": {
+        "header": {
+          "product": "Product",
+          "engineering": "Engineering",
+          "legal": "Legal",
+          "vibe-check": "Vibe Check"
+        }
+      },
+      "tooltip": {
+        "vibe-ratio": "Waitlist/Visitor ratio"
+      }
+    },
+    "features": {
+      "rapid-idea-validation": {
+        "title": "Rapid Idea Validation",
+        "h1": "Test 100 ideas in the time it takes to build one",
+        "p": "Create beautiful landing pages with WYSIWYG editor, deploy to custom domains, and start collecting sign-ups from potential customers within minutes.",
+        "chips": {
+          "invalidated": "Invalidated",
+          "testing": "Testing",
+          "segmenting": "Segmenting"
+        }
+      },
+      "data-driven-decisions": {
+        "title": "Data-Driven Decisions",
+        "h1": "Turn visitor behavior into validated insights",
+        "p": "Track engagement metrics, run A/B tests, and analyze conversion rates in real-time. Know exactly which ideas resonate with your target market before investing time and money into development."
+      },
+      "aria-label": "Hypany Features for Founders"
+    }
+  }
+}

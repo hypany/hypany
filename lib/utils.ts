@@ -9,16 +9,16 @@ export const focusInput = [
   // base
   'focus:ring-2',
   // ring color
-  'focus:ring-orange-200 dark:focus:ring-orange-700/30',
+  'focus:ring-emerald-200 dark:focus:ring-emerald-700/30',
   // border color
-  'focus:border-orange-500 dark:focus:border-orange-700',
+  'focus:border-emerald-500 dark:focus:border-emerald-700',
 ]
 
 export const focusRing = [
   // base
   'outline-solid outline-offset-2 outline-0 focus-visible:outline-2',
   // outline color
-  'outline-orange-500 dark:outline-orange-500',
+  'outline-emerald-500 dark:outline-emerald-500',
 ]
 
 export const hasErrorInput = [

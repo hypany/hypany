@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import '../globals.css'
 
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import Footer from '@/components/molecules/landing/footer'
 import { NavBar } from '@/components/molecules/landing/navbar'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { getLocale } from 'next-intl/server'
 import { Providers } from '../providers'
 import { siteConfig } from '../site-config'
 
@@ -39,22 +40,24 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getLocale()
+
   return (
-    <Providers>
-      <html lang='en'>
-        <body className='min-h-screen overflow-x-hidden scroll-auto bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600'>
+    <html lang={locale} suppressHydrationWarning>
+      <body className='min-h-screen overflow-x-hidden scroll-auto bg-gray-50 antialiased selection:bg-emerald-100 selection:text-emerald-600'>
+        <Providers>
           <NavBar />
           {children}
           <Footer />
-          <Analytics />
-          <SpeedInsights />
-        </body>
-      </html>
-    </Providers>
+        </Providers>
+        <Analytics />
+        <SpeedInsights />
+      </body>
+    </html>
   )
 }

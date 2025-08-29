@@ -15,11 +15,13 @@ import {
 import { Orbit } from '@/components/atoms/orbit'
 import { HypanyMark } from '@/public/brand/hypany-logo'
 import ChipViz from './chip-viz'
+import { getTranslations } from 'next-intl/server'
 
-export default function Features() {
+export default async function Features() {
+  const t = await getTranslations('landing.features')
   return (
     <section
-      aria-label='Hypany Features for Founders'
+      aria-label={t('aria-label')}
       id='solutions'
       className='relative mx-auto max-w-6xl scroll-my-24'
     >
@@ -130,17 +132,15 @@ export default function Features() {
       <div className='grid grid-cols-1 gap-12 md:grid-cols-4 md:gap-0'>
         {/* Content */}
         <div className='col-span-2 my-auto px-2'>
-          <h2 className='relative text-lg font-semibold tracking-tight text-orange-500'>
-            Rapid Idea Validation
-            <div className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-orange-500' />
+          <h2 className='relative text-lg font-semibold tracking-tight text-emerald-500'>
+            {t('rapid-idea-validation.title')}
+            <div className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
           <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
-            Test 100 ideas in the time it takes to build one
+            {t('rapid-idea-validation.h1')}
           </p>
           <p className='mt-4 text-balance text-gray-700'>
-            Create beautiful landing pages with WYSIWYG editor, deploy to custom
-            domains, and start collecting sign-ups from potential customers
-            within minutes.
+            {t('rapid-idea-validation.p')}
           </p>
         </div>
         <div className='relative col-span-2 flex items-center justify-center overflow-hidden'>
@@ -196,7 +196,7 @@ export default function Features() {
                           <RiCircleLine className='size-3 shrink-0 text-white' />
                         </div>
                         <div className='rounded-r-full bg-white/50 py-0.5 pr-1.5 pl-1 text-xs whitespace-nowrap ring-1 ring-gray-200'>
-                          Invalidated
+                          {t('rapid-idea-validation.chips.invalidated')}
                         </div>
                       </div>
                     </div>
@@ -204,7 +204,7 @@ export default function Features() {
                       style={{
                         animationDelay: '1s',
                       }}
-                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
                     ></div>
                   </div>,
 
@@ -220,7 +220,7 @@ export default function Features() {
                           <RiLoaderFill className='size-3 shrink-0 animate-spin text-white' />
                         </div>
                         <div className='rounded-r-full bg-white/50 py-0.5 pr-1.5 pl-1 text-xs ring-1 ring-gray-200'>
-                          Testing
+                          {t('rapid-idea-validation.chips.testing')}
                         </div>
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export default function Features() {
                       style={{
                         animationDelay: '4s',
                       }}
-                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
                     ></div>
                   </div>,
 
@@ -242,7 +242,7 @@ export default function Features() {
                       style={{
                         animationDelay: '2s',
                       }}
-                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
                     ></div>
                   </div>,
                   <div
@@ -257,7 +257,7 @@ export default function Features() {
                           <RiCheckLine className='size-3 shrink-0 text-white' />
                         </div>
                         <div className='rounded-r-full bg-white/50 py-0.5 pr-1.5 pl-1 text-xs ring-1 ring-gray-200'>
-                          Segmenting
+                          {t('rapid-idea-validation.chips.segmenting')}
                         </div>
                       </div>
                     </div>
@@ -266,7 +266,7 @@ export default function Features() {
                       style={{
                         animationDelay: '6s',
                       }}
-                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
                     ></div>
                   </div>,
                   <div
@@ -279,7 +279,7 @@ export default function Features() {
                       style={{
                         animationDelay: '3s',
                       }}
-                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+                      className='absolute size-10 animate-[ping_7s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
                     ></div>
                   </div>,
                 ]}
@@ -289,7 +289,7 @@ export default function Features() {
                     <div className='relative z-10 flex size-20 items-center justify-center rounded-full bg-white ring-1 shadow-[inset_0px_-15px_20px_rgba(0,0,0,0.1),0_7px_10px_0_rgba(0,0,0,0.15)] ring-black/20'>
                       <HypanyMark className='size-10' />
                     </div>
-                    <div className='absolute inset-12 animate-[spin_8s_linear_infinite] rounded-full bg-linear-to-t from-transparent via-orange-400 to-transparent blur-lg' />
+                    <div className='absolute inset-12 animate-[spin_8s_linear_infinite] rounded-full bg-linear-to-t from-transparent via-emerald-400 to-transparent blur-lg' />
                   </div>
                 </div>
               </Orbit>
@@ -298,17 +298,15 @@ export default function Features() {
         </div>
 
         <div className='col-span-2 my-auto px-2'>
-          <h2 className='relative text-lg font-semibold tracking-tight text-orange-500'>
-            Data-Driven Decisions
-            <div className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-orange-500' />
+          <h2 className='relative text-lg font-semibold tracking-tight text-emerald-500'>
+            {t('data-driven-decisions.title')}
+            <div className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
           <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
-            Turn visitor behavior into validated insights
+            {t('data-driven-decisions.h1')}
           </p>
           <p className='mt-4 text-balance text-gray-700'>
-            Track engagement metrics, run A/B tests, and analyze conversion
-            rates in real-time. Know exactly which ideas resonate with your
-            target market before investing time and money into development.
+            {t('data-driven-decisions.p')}
           </p>
         </div>
         <div className='relative col-span-2 flex items-center justify-center overflow-hidden'>
@@ -360,7 +358,7 @@ export default function Features() {
               </div>
               <div className='absolute top-[144px] left-[48px]'>
                 <div className='relative'>
-                  <div className='absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]'></div>
+                  <div className='absolute inset-0 size-12 animate-pulse bg-emerald-200 blur-[3px]'></div>
                   <div className='relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15'>
                     <span className='text-sm font-medium text-gray-500'>
                       1.4%
@@ -371,7 +369,7 @@ export default function Features() {
 
               <div className='absolute top-[48px] left-[144px]'>
                 <div className='relative'>
-                  <div className='absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]'></div>
+                  <div className='absolute inset-0 size-12 animate-pulse bg-emerald-200 blur-[3px]'></div>
                   <div className='relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15'>
                     <span className='text-sm font-medium text-gray-500'>
                       1.8%
@@ -382,7 +380,7 @@ export default function Features() {
 
               <div className='absolute top-[96px] left-[240px]'>
                 <div className='relative'>
-                  <div className='absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]'></div>
+                  <div className='absolute inset-0 size-12 animate-pulse bg-emerald-200 blur-[3px]'></div>
                   <div className='relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15'>
                     <span className='text-sm font-medium text-gray-500'>
                       1.7%
@@ -393,7 +391,7 @@ export default function Features() {
 
               <div className='absolute top-[240px] left-[385px]'>
                 <div className='relative'>
-                  <div className='absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]'></div>
+                  <div className='absolute inset-0 size-12 animate-pulse bg-emerald-200 blur-[3px]'></div>
                   <div className='relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15'>
                     <span className='text-sm font-medium text-gray-500'>
                       1.4%
@@ -404,7 +402,7 @@ export default function Features() {
 
               <div className='absolute top-[337px] left-[336px]'>
                 <div className='relative'>
-                  <div className='absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]'></div>
+                  <div className='absolute inset-0 size-12 animate-pulse bg-emerald-200 blur-[3px]'></div>
                   <div className='relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15'>
                     <span className='text-sm font-medium text-gray-500'>
                       1.2%
@@ -415,7 +413,7 @@ export default function Features() {
 
               <div className='absolute top-[288px] left-[144px]'>
                 <div className='relative'>
-                  <div className='absolute inset-0 size-12 animate-pulse bg-orange-200 blur-[3px]'></div>
+                  <div className='absolute inset-0 size-12 animate-pulse bg-emerald-200 blur-[3px]'></div>
                   <div className='relative flex h-12 w-12 items-center justify-center bg-white ring-1 shadow-xs ring-black/15'>
                     <span className='text-sm font-medium text-gray-500'>
                       1.7%
@@ -427,9 +425,9 @@ export default function Features() {
           </div>
         </div>
         <div className='col-span-2 my-auto px-2'>
-          <h2 className='relative text-lg font-semibold tracking-tight text-orange-500'>
+          <h2 className='relative text-lg font-semibold tracking-tight text-emerald-500'>
             Waitlist to Customers
-            <div className='absolute top-1 -left-[7px] h-5 w-[3px] rounded-r-sm bg-orange-500' />
+            <div className='absolute top-1 -left-[7px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
           <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
             Convert interest into paying customers from day one
@@ -521,7 +519,7 @@ export default function Features() {
                   <div className='relative'>
                     <div className='h-0.5 w-60 bg-linear-to-r from-gray-300 to-transparent' />
                     <div
-                      className='absolute top-0 left-0 h-0.5 w-28 bg-linear-to-r from-transparent via-orange-300 to-transparent'
+                      className='absolute top-0 left-0 h-0.5 w-28 bg-linear-to-r from-transparent via-emerald-300 to-transparent'
                       style={{
                         animation: `gridMovingLine 5s linear infinite ${index * 1.2}s`,
                         animationFillMode: 'backwards',

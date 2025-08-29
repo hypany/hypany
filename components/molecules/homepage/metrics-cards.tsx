@@ -22,7 +22,7 @@ const categoryConfig = {
     bars: 0,
   },
   orange: {
-    activeClass: 'bg-orange-500 dark:bg-orange-500',
+    activeClass: 'bg-emerald-500 dark:bg-emerald-500',
     bars: 2,
   },
   red: {
@@ -53,7 +53,7 @@ function Indicator({ number }: { number: number }) {
 const metrics: Metric[] = [
   {
     fraction: '450/752',
-    label: 'Lead-to-Quote Ratio',
+    label: 'Visitor-to-Signup Conversion',
     percentage: '59.8%',
     value: 0.61,
   },

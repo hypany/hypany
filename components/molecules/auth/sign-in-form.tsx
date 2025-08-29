@@ -40,7 +40,7 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
     const email = getValues('email')
     const resendPromise = (async () => {
       const { error } = await client.sendVerificationEmail({
-        callbackURL: '/dashboard',
+        callbackURL: '/app',
         email,
       })
 
@@ -96,7 +96,7 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
         }
       } else if (signInData) {
         toast.success('Signed in successfully!')
-        router.push('/dashboard')
+        router.push('/app')
       }
     } catch (error) {
       // Handle network or unexpected errors

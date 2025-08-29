@@ -1,4 +1,5 @@
 import { unstable_noStore as noStore } from 'next/cache'
+import { getTranslations } from 'next-intl/server'
 import RandomIdeasClient, {
   type IdeaItem,
 } from '@/components/molecules/landing/random-ideas-client'
@@ -39,6 +40,7 @@ function sampleN<T>(arr: T[], count: number): T[] {
 
 export default async function RandomIdeasSection() {
   noStore() // make this server-rendered per request
+  const t = await getTranslations('landing.random-ideas')
   const normalized = (allIdeas as RawIdea[])
     .map(normalizeIdea)
     .filter((x): x is IdeaItem => !!x)
@@ -49,12 +51,12 @@ export default async function RandomIdeasSection() {
       aria-labelledby='ideas-table'
       className='relative mx-auto w-full max-w-6xl'
     >
-      <h2 className='relative text-lg font-semibold tracking-tight text-orange-500'>
-        Hypany AI
-        <span className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-orange-500' />
+      <h2 className='relative text-lg font-semibold tracking-tight text-emerald-500'>
+        {t('heading')}
+        <span className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
       </h2>
       <p className='mt-2 max-w-3xl text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
-        Hypany augments your idea to actionable startup plans
+        {t('subheading')}
       </p>
 
       <RandomIdeasClient items={selected} />

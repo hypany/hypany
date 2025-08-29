@@ -85,7 +85,7 @@ export const Map = () => {
         </svg>
       </div>
 
-      <div className='pt-12 text-base font-semibold tracking-tight text-orange-400 sm:pt-20 sm:text-lg'>
+      <div className='pt-12 text-base font-semibold tracking-tight text-emerald-400 sm:pt-20 sm:text-lg'>
         Farm Management
       </div>
       <h2
@@ -113,7 +113,7 @@ export const Map = () => {
               style={{
                 animationDelay: '3.5s',
               }}
-              className='absolute size-10 animate-[ping_5s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+              className='absolute size-10 animate-[ping_5s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
             ></div>
           </div>
         </div>
@@ -128,7 +128,7 @@ export const Map = () => {
               style={{
                 animationDelay: '3.5s',
               }}
-              className='absolute size-10 animate-[ping_5s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+              className='absolute size-10 animate-[ping_5s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
             ></div>
           </div>
         </div>
@@ -143,7 +143,7 @@ export const Map = () => {
               style={{
                 animationDelay: '3.5s',
               }}
-              className='absolute size-10 animate-[ping_5s_ease_infinite] rounded-full ring-1 ring-orange-500/50'
+              className='absolute size-10 animate-[ping_5s_ease_infinite] rounded-full ring-1 ring-emerald-500/50'
             ></div>
           </div>
         </div>

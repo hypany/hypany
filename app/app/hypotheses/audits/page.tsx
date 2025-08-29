@@ -1,7 +1,9 @@
 'use client'
 
+import { useEffect, useMemo, useState } from 'react'
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react'
 import { Link, SlidersHorizontal } from 'lucide-react'
+import { api } from '@/app/api'
 import {
   Accordion,
   AccordionContent,
@@ -10,7 +12,6 @@ import {
 } from '@/components/atoms/accordion'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
-import { sections } from '../overview/data/data'
 
 const getStatusIcon = (status: string) => {
   if (status === 'complete') {
@@ -23,7 +24,57 @@ const getStatusIcon = (status: string) => {
   )
 }
 
+type Section = {
+  id: string
+  title: string
+  certified: string
+  progress: { current: number; total: number }
+  status: 'complete' | 'warning'
+  auditDates: Array<{ auditor: string; date: string }>
+  documents: Array<{ name: string; status: 'OK' | 'Needs update' | 'In audit' }>
+}
+
 export default function Audits() {
+  const [sections, setSections] = useState<Section[]>([])
+
+  useEffect(() => {
+    let ignore = false
+    async function load() {
+      try {
+        const res = await api.v1.hypotheses['/'].$get()
+        const d = res.data
+        if (!d || !d.hypotheses) return
+        const total = Math.max(d.hypotheses.length, 1)
+        const mapped: Section[] = d.hypotheses.map((h, idx) => ({
+          auditDates: [
+            {
+              auditor: 'System',
+              date: new Date().toLocaleDateString(),
+            },
+          ],
+          certified: h.status,
+          documents: [
+            {
+              name: h.landingPage?.slug ?? 'no-slug',
+              status: h.landingPage?.slug ? 'OK' : 'Needs update',
+            },
+          ],
+          id: h.id,
+          progress: { current: idx + 1, total },
+          status: h.status === 'published' ? 'complete' : 'warning',
+          title: h.name,
+        }))
+        if (!ignore) setSections(mapped)
+      } catch {
+        if (!ignore) setSections([])
+      }
+    }
+    load()
+    return () => {
+      ignore = true
+    }
+  }, [])
+
   return (
     <section aria-label='Audits overview'>
       <div className='flex flex-col items-center justify-between gap-2 p-6 sm:flex-row'>
@@ -93,7 +144,7 @@ export default function Audits() {
                         >
                           <a
                             href='#'
-                            className='flex items-center gap-2 text-orange-500 hover:underline hover:underline-offset-4 dark:text-orange-500'
+                            className='flex items-center gap-2 text-emerald-500 hover:underline hover:underline-offset-4 dark:text-emerald-500'
                           >
                             <Link
                               className='size-4 shrink-0'

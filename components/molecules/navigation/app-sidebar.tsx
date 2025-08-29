@@ -43,8 +43,8 @@ const navigation2 = [
     children: [
       {
         active: true,
-        href: '#',
-        name: 'Quotes',
+        href: '/app/hypotheses/overview',
+        name: 'Hypotheses',
       },
       {
         active: false,
@@ -102,7 +102,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className='px-3 py-4'>
         <div className='flex items-center gap-3'>
           <span className='flex size-9 items-center justify-center rounded-md bg-white p-1.5 shadow-xs ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-800'>
-            <SolarLogo className='size-6 text-orange-500 dark:text-orange-500' />
+            <SolarLogo className='size-6 text-emerald-500 dark:text-emerald-500' />
           </span>
           <div>
             <span className='block text-sm font-semibold text-gray-900 dark:text-gray-50'>
