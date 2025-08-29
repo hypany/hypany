@@ -68,7 +68,12 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
   // List all hypotheses for the user
   .get(
     '/',
-    async ({ user, query }) => {
+    async ({ user, session, query, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
       // Verify user is authenticated
       const userHypotheses = await db
         .select({
@@ -79,9 +84,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         .from(hypotheses)
         .leftJoin(landingPages, eq(hypotheses.id, landingPages.hypothesisId))
         .leftJoin(waitlists, eq(hypotheses.id, waitlists.hypothesisId))
-        .where(
-          and(eq(hypotheses.userId, user.id), isNull(hypotheses.deletedAt)),
-        )
+        .where(and(eq(hypotheses.organizationId, orgId), isNull(hypotheses.deletedAt)))
         .orderBy(desc(hypotheses.createdAt))
         .limit(query.limit ?? 20)
         .offset(query.offset ?? 0)
@@ -220,7 +223,12 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
   // Get single hypothesis
   .get(
     '/:id',
-    async ({ user, params, set }) => {
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
       // First check if hypothesis exists at all
       const [hypothesisExists] = await db
         .select()
@@ -248,7 +256,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       }
 
       // Check ownership
-      if (hypothesisExists.userId !== user.id) {
+      if (hypothesisExists.organizationId !== orgId) {
         return jsonError(
           set,
           HTTP_STATUS.FORBIDDEN,
@@ -270,7 +278,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         .where(
           and(
             eq(hypotheses.id, params.id),
-            eq(hypotheses.userId, user.id),
+            eq(hypotheses.organizationId, orgId),
             isNull(hypotheses.deletedAt),
           ),
         )
@@ -402,8 +410,12 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
   // Create new hypothesis
   .post(
     '/',
-    async ({ user, body, set }) => {
-      // Verify user is authenticated
+    async ({ user, session, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       const hypothesisId = ulid()
       const landingPageId = ulid()
@@ -417,6 +429,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             description: body.description || null,
             id: hypothesisId,
             name: body.name,
+            organizationId: orgId,
             status: 'draft',
             updatedAt: new Date(),
             userId: user.id,
@@ -486,7 +499,12 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
   // Update hypothesis
   .patch(
     '/:id',
-    async ({ user, params, body, set }) => {
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
       // Check ownership
       const [existing] = await db
         .select()
@@ -494,7 +512,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         .where(
           and(
             eq(hypotheses.id, params.id),
-            eq(hypotheses.userId, user.id),
+            eq(hypotheses.organizationId, orgId),
             isNull(hypotheses.deletedAt),
           ),
         )

@@ -1,38 +1,111 @@
+"use client"
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
+import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { Fragment } from 'react'
 
-export async function Breadcrumbs() {
-  const t = await getTranslations('app.breadcrumbs')
+type Crumb = { href: string; label: string }
+
+export function Breadcrumbs() {
+  const pathname = usePathname()
+  const tCrumbs = useTranslations('app.breadcrumbs')
+  const tPages = useTranslations('app.pages')
+  const tHypTabs = useTranslations('app.hypotheses.tabs')
+
+  const base = '/app'
+  const segmentsAll = pathname.split('/').filter(Boolean)
+  const appIndex = segmentsAll.indexOf('app')
+  const segments = appIndex === -1 ? [] : segmentsAll.slice(appIndex + 1)
+
+  function humanize(seg: string): string {
+    const clean = decodeURIComponent(seg)
+    return clean
+      .split(/[\-_]/)
+      .filter(Boolean)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')
+  }
+
+  function labelFor(seg: string): string {
+    if (isIdLike(seg)) return tCrumbs('details')
+    switch (seg) {
+      case 'hypotheses':
+        return tCrumbs('hypotheses')
+      case 'assets':
+        return tPages('assets.title')
+      case 'analytics':
+        return tPages('analytics.title')
+      case 'waitlists':
+        return tPages('waitlists.title')
+      case 'settings':
+        return tPages('settings.title')
+      case 'organizations':
+        return tPages('organizations.title')
+      case 'monitoring':
+        return tHypTabs('monitoring')
+      case 'audits':
+        return tHypTabs('audits')
+      default:
+        return humanize(seg)
+    }
+  }
+
+  function isIdLike(seg: string): boolean {
+    // UUID v4 or similar
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    // Mongo-like 24 hex id
+    const hex24Re = /^[0-9a-f]{24}$/i
+    // ULID (26 Crockford base32 letters and digits)
+    const ulidRe = /^[0-9A-HJKMNP-TV-Z]{26}$/
+    // Pure numeric ids
+    const numericRe = /^\d{6,}$/
+    return (
+      uuidRe.test(seg) ||
+      hex24Re.test(seg) ||
+      ulidRe.test(seg) ||
+      numericRe.test(seg)
+    )
+  }
+
+  const crumbs: Crumb[] = [{ href: base, label: tCrumbs('home') }]
+  let acc = base
+  for (const seg of segments) {
+    const nextAcc = `${acc}/${seg}`
+    crumbs.push({ href: nextAcc, label: labelFor(seg) })
+    acc = nextAcc
+  }
+
   return (
-    <>
-      <nav aria-label='Breadcrumb' className='ml-2'>
-        <ol className='flex items-center space-x-3 text-sm'>
-          <li className='flex'>
-            <Link
-              href='#'
-              className='text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-            >
-              {t('home')}
-            </Link>
-          </li>
-          <ChevronRight
-            className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
-            aria-hidden='true'
-          />
-          <li className='flex'>
-            <div className='flex items-center'>
-              <Link
-                href='#'
-                // aria-current={page.current ? 'page' : undefined}
-                className='text-gray-900 dark:text-gray-50'
-              >
-                {t('hypotheses')}
-              </Link>
-            </div>
-          </li>
-        </ol>
-      </nav>
-    </>
+    <nav aria-label='Breadcrumb' className='ml-2'>
+      <ol className='flex items-center space-x-3 text-sm'>
+        {crumbs.map((crumb, idx) => {
+          const isLast = idx === crumbs.length - 1
+          return (
+            <Fragment key={`${idx}-${crumb.href}`}>
+              <li className='flex'>
+                <Link
+                  href={crumb.href}
+                  aria-current={isLast ? 'page' : undefined}
+                  className={
+                    isLast
+                      ? 'text-gray-900 dark:text-gray-50'
+                      : 'text-gray-500 transition hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  }
+                >
+                  {crumb.label}
+                </Link>
+              </li>
+              {!isLast ? (
+                <ChevronRight
+                  className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+                  aria-hidden='true'
+                />
+              ) : null}
+            </Fragment>
+          )
+        })}
+      </ol>
+    </nav>
   )
 }

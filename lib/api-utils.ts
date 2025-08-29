@@ -2,8 +2,8 @@ import { and, eq, isNull, lte } from 'drizzle-orm'
 import { db } from '@/drizzle'
 import { hypotheses, landingPages, waitlistEntries, waitlists } from '@/schema'
 
-export async function getLandingPageIdForUser(
-  userId: string,
+export async function getLandingPageIdForOrg(
+  organizationId: string,
   hypothesisId: string,
 ) {
   const [lp] = await db
@@ -13,7 +13,7 @@ export async function getLandingPageIdForUser(
     .where(
       and(
         eq(hypotheses.id, hypothesisId),
-        eq(hypotheses.userId, userId),
+        eq(hypotheses.organizationId, organizationId),
         isNull(landingPages.deletedAt),
       ),
     )
@@ -21,15 +21,20 @@ export async function getLandingPageIdForUser(
   return lp || null
 }
 
-export async function getWaitlistIdForUser(
-  userId: string,
+export async function getWaitlistIdForOrg(
+  organizationId: string,
   hypothesisId: string,
 ) {
   const [wl] = await db
     .select({ id: waitlists.id })
     .from(waitlists)
     .innerJoin(hypotheses, eq(waitlists.hypothesisId, hypotheses.id))
-    .where(and(eq(hypotheses.id, hypothesisId), eq(hypotheses.userId, userId)))
+    .where(
+      and(
+        eq(hypotheses.id, hypothesisId),
+        eq(hypotheses.organizationId, organizationId),
+      ),
+    )
     .limit(1)
   return wl || null
 }

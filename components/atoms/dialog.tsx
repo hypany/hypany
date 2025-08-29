@@ -1,25 +1,26 @@
-import * as DialogPrimitives from '@radix-ui/react-dialog'
-import React from 'react'
-import { cx, focusRing } from '@/lib/utils'
+import * as DialogPrimitives from "@radix-ui/react-dialog"
+import React from "react"
+
+import { cx, focusRing } from "@/lib/utils"
 
 const Dialog = (
   props: React.ComponentPropsWithoutRef<typeof DialogPrimitives.Root>,
 ) => {
   return <DialogPrimitives.Root {...props} />
 }
-Dialog.displayName = 'Dialog'
+Dialog.displayName = "Dialog"
 
 const DialogTrigger = DialogPrimitives.Trigger
 
-DialogTrigger.displayName = 'DialogTrigger'
+DialogTrigger.displayName = "DialogTrigger"
 
 const DialogClose = DialogPrimitives.Close
 
-DialogClose.displayName = 'DialogClose'
+DialogClose.displayName = "DialogClose"
 
 const DialogPortal = DialogPrimitives.Portal
 
-DialogPortal.displayName = 'DialogPortal'
+DialogPortal.displayName = "DialogPortal"
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitives.Overlay>,
@@ -30,11 +31,11 @@ const DialogOverlay = React.forwardRef<
       ref={forwardedRef}
       className={cx(
         // base
-        'fixed inset-0 z-50 overflow-y-auto',
+        "fixed inset-0 z-50 overflow-y-auto",
         // background color
-        'bg-black/70',
+        "bg-black/70",
         // transition
-        'data-[state=open]:animate-dialog-overlay-show',
+        "data-[state=open]:animate-dialog-overlay-show",
         className,
       )}
       {...props}
@@ -42,7 +43,7 @@ const DialogOverlay = React.forwardRef<
   )
 })
 
-DialogOverlay.displayName = 'DialogOverlay'
+DialogOverlay.displayName = "DialogOverlay"
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitives.Content>,
@@ -55,16 +56,17 @@ const DialogContent = React.forwardRef<
           ref={forwardedRef}
           className={cx(
             // base
-            'fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-md border p-6 shadow-lg',
+            "fixed left-1/2 top-1/2 z-50 w-[95vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-md border p-6 shadow-lg",
             // border color
-            'border-gray-200 dark:border-gray-900',
+            "border-gray-200 dark:border-gray-900",
             // background color
-            'bg-white dark:bg-[#090E1A]',
+            "bg-white dark:bg-[#090E1A]",
             // transition
-            'data-[state=open]:animate-dialog-content-show',
+            "data-[state=open]:animate-dialog-content-show",
             focusRing,
             className,
           )}
+          tremor-id="tremor-raw"
           {...props}
         />
       </DialogOverlay>
@@ -72,16 +74,16 @@ const DialogContent = React.forwardRef<
   )
 })
 
-DialogContent.displayName = 'DialogContent'
+DialogContent.displayName = "DialogContent"
 
 const DialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
-  return <div className={cx('flex flex-col gap-y-1', className)} {...props} />
+  return <div className={cx("flex flex-col gap-y-1", className)} {...props} />
 }
 
-DialogHeader.displayName = 'DialogHeader'
+DialogHeader.displayName = "DialogHeader"
 
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitives.Title>,
@@ -91,16 +93,16 @@ const DialogTitle = React.forwardRef<
     ref={forwardedRef}
     className={cx(
       // base
-      'text-lg font-semibold',
+      "text-lg font-semibold",
       // text color
-      'text-gray-900 dark:text-gray-50',
+      "text-gray-900 dark:text-gray-50",
       className,
     )}
     {...props}
   />
 ))
 
-DialogTitle.displayName = 'DialogTitle'
+DialogTitle.displayName = "DialogTitle"
 
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitives.Description>,
@@ -109,13 +111,13 @@ const DialogDescription = React.forwardRef<
   return (
     <DialogPrimitives.Description
       ref={forwardedRef}
-      className={cx('text-gray-500 dark:text-gray-500', className)}
+      className={cx("text-gray-500 dark:text-gray-500", className)}
       {...props}
     />
   )
 })
 
-DialogDescription.displayName = 'DialogDescription'
+DialogDescription.displayName = "DialogDescription"
 
 const DialogFooter = ({
   className,
@@ -124,7 +126,7 @@ const DialogFooter = ({
   return (
     <div
       className={cx(
-        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
         className,
       )}
       {...props}
@@ -132,7 +134,7 @@ const DialogFooter = ({
   )
 }
 
-DialogFooter.displayName = 'DialogFooter'
+DialogFooter.displayName = "DialogFooter"
 
 export {
   Dialog,
@@ -142,5 +144,5 @@ export {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 }

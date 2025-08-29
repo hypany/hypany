@@ -1,6 +1,6 @@
 {
   "app": {
-    "breadcrumbs": { "home": "Home", "hypotheses": "Hypotheses" },
+    "breadcrumbs": { "home": "Home", "hypotheses": "Hypotheses", "details": "Details" },
     "hypotheses": {
       "audits": {
         "aria": "Audits overview",

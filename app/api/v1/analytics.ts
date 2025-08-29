@@ -59,11 +59,11 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         ? String(query.hypothesisId)
         : null
 
-      // Get all user's hypotheses
+      // Get all organization's hypotheses
       const userHypotheses = await db
         .select()
         .from(hypotheses)
-        .where(eq(hypotheses.userId, user.id))
+        .where(eq(hypotheses.organizationId, session.activeOrganizationId))
 
       const hypothesisIds = userHypotheses.map((h) => h.id)
 
@@ -293,11 +293,11 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         ? String(query.hypothesisId)
         : null
 
-      // Get user's hypotheses
+      // Get organization's hypotheses
       const userHypotheses = await db
         .select()
         .from(hypotheses)
-        .where(eq(hypotheses.userId, user.id))
+        .where(eq(hypotheses.organizationId, session.activeOrganizationId))
 
       const hypothesisIds = userHypotheses.map((h) => h.id)
       const targetHypothesisIds = hypothesisId

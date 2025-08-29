@@ -1,5 +1,8 @@
+"use client"
+
 import * as PopoverPrimitives from '@radix-ui/react-popover'
 import React from 'react'
+import { motion } from 'framer-motion'
 
 import { cx } from '@/lib/utils'
 
@@ -60,45 +63,46 @@ const PopoverContent = React.forwardRef<
   ) => {
     return (
       <PopoverPrimitives.Portal>
-        <PopoverPrimitives.Content
-          ref={forwardedRef}
+        <PopoverPrimitives.Content asChild forceMount
           sideOffset={sideOffset}
           side={side}
           align={align}
           collisionPadding={collisionPadding}
           avoidCollisions={avoidCollisions}
-          className={cx(
-            // base
-            'max-h-[var(--radix-popper-available-height)] min-w-60 overflow-hidden rounded-md border p-2.5 text-sm shadow-md',
-            // border color
-            'border-gray-200 dark:border-gray-800',
-            // text color
-            'text-gray-900 dark:text-gray-50',
-            // background color
-            'bg-white dark:bg-gray-950',
-            // transition
-            'will-change-[transform,opacity]',
-            'data-[state=closed]:animate-hide',
-            'data-[state=open]:data-[side=bottom]:animate-slide-down-and-fade data-[state=open]:data-[side=left]:animate-slide-left-and-fade data-[state=open]:data-[side=right]:animate-slide-right-and-fade data-[state=open]:data-[side=top]:animate-slide-up-and-fade',
-
-            className,
-          )}
-          // https://github.com/radix-ui/primitives/issues/1159
-          onWheel={(event) => {
-            event.stopPropagation()
-            const isScrollingDown = event.deltaY > 0
-            if (isScrollingDown) {
-              event.currentTarget.dispatchEvent(
-                new KeyboardEvent('keydown', { key: 'ArrowDown' }),
-              )
-            } else {
-              event.currentTarget.dispatchEvent(
-                new KeyboardEvent('keydown', { key: 'ArrowUp' }),
-              )
-            }
-          }}
           {...props}
-        />
+        >
+          {React.createElement(motion.div as React.ElementType, {
+            ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+            className: cx(
+              'max-h-[var(--radix-popper-available-height)] min-w-60 overflow-hidden rounded-md border p-2.5 text-sm shadow-md',
+              'border-gray-200 dark:border-gray-800',
+              'text-gray-900 dark:text-gray-50',
+              'bg-white dark:bg-gray-950',
+              'data-[state=closed]:pointer-events-none will-change-[transform,opacity]',
+              className,
+            ),
+            initial: { opacity: 0, y: 4, scale: 0.98 },
+            animate:
+              (props as unknown as { 'data-state'?: 'open' | 'closed' })['data-state'] === 'closed'
+                ? { opacity: 0, y: 4, scale: 0.98 }
+                : { opacity: 1, y: 0, scale: 1 },
+            transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
+            onWheel: (event: React.WheelEvent<HTMLDivElement>) => {
+              event.stopPropagation()
+              const isScrollingDown = event.deltaY > 0
+              if (isScrollingDown) {
+                event.currentTarget.dispatchEvent(
+                  new KeyboardEvent('keydown', { key: 'ArrowDown' }),
+                )
+              } else {
+                event.currentTarget.dispatchEvent(
+                  new KeyboardEvent('keydown', { key: 'ArrowUp' }),
+                )
+              }
+            },
+            children: props.children,
+          })}
+        </PopoverPrimitives.Content>
       </PopoverPrimitives.Portal>
     )
   },

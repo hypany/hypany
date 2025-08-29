@@ -130,11 +130,15 @@ export const hypotheses = pgTable(
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),
+    organizationId: text('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
     userId: text('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
   },
   (table) => ({
+    orgIdIdx: index('hypotheses_org_id_idx').on(table.organizationId),
     userIdIdx: index('hypotheses_user_id_idx').on(table.userId),
   }),
 )

@@ -1,6 +1,9 @@
+"use client"
+
 import * as DrawerPrimitives from '@radix-ui/react-dialog'
 import { RiCloseLine } from '@remixicon/react'
 import * as React from 'react'
+import { motion } from 'framer-motion'
 import { cx, focusRing } from '@/lib/utils'
 import { Button } from './button'
 
@@ -35,28 +38,34 @@ const DrawerPortal = DrawerPrimitives.Portal
 
 DrawerPortal.displayName = 'DrawerPortal'
 
+type DataStateProps = { 'data-state'?: 'open' | 'closed' }
+type HtmlDivAttributes = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onDrag' | 'onDragStart' | 'onDragEnd' | 'onDragEnter' | 'onDragLeave' | 'onDragOver' | 'onAnimationStart'
+>
+
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitives.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitives.Overlay>
 >(({ className, ...props }, forwardedRef) => {
   return (
-    <DrawerPrimitives.Overlay
-      ref={forwardedRef}
-      className={cx(
-        // base
-        'fixed inset-0 z-50 overflow-y-auto',
-        // background color
-        'bg-black/30',
-        // transition
-        'data-[state=closed]:animate-hide data-[state=open]:animate-dialog-overlay-show',
-        className,
-      )}
-      {...props}
-      style={{
-        animationDuration: '400ms',
-        animationFillMode: 'backwards',
-      }}
-    />
+    <DrawerPrimitives.Overlay asChild forceMount {...props}>
+      {React.createElement(motion.div as React.ElementType, {
+        ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+        className: cx(
+          'fixed inset-0 z-50 overflow-y-auto',
+          'bg-black/30',
+          'data-[state=closed]:pointer-events-none',
+          className,
+        ),
+        initial: { opacity: 0 },
+        animate:
+          (props as unknown as DataStateProps)['data-state'] === 'closed'
+            ? { opacity: 0 }
+            : { opacity: 1 },
+        transition: { duration: 0.15, ease: 'easeOut' },
+      })}
+    </DrawerPrimitives.Overlay>
   )
 })
 
@@ -65,27 +74,30 @@ DrawerOverlay.displayName = 'DrawerOverlay'
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitives.Content>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitives.Content>
->(({ className, ...props }, forwardedRef) => {
+>(({ className, children, ...props }, forwardedRef) => {
   return (
     <DrawerPortal>
-      <DrawerOverlay>
-        <DrawerPrimitives.Content
-          ref={forwardedRef}
-          className={cx(
-            // base
+      <DrawerOverlay />
+      <DrawerPrimitives.Content asChild forceMount {...props}>
+        {React.createElement(motion.div as React.ElementType, {
+          ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+          className: cx(
             'fixed inset-y-2 z-50 mx-auto flex w-[95vw] flex-1 flex-col overflow-y-auto rounded-md border p-4 shadow-lg focus:outline-hidden max-sm:inset-x-2 sm:inset-y-2 sm:right-2 sm:max-w-lg sm:p-6',
-            // border color
             'border-gray-200 dark:border-gray-900',
-            // background color
             'bg-white dark:bg-[#090E1A]',
-            // transition
-            'data-[state=closed]:animate-drawer-slide-right-and-fade data-[state=open]:animate-drawer-slide-left-and-fade',
+            'data-[state=closed]:pointer-events-none',
             focusRing,
             className,
-          )}
-          {...props}
-        />
-      </DrawerOverlay>
+          ),
+          initial: { opacity: 0, x: 12 },
+          animate:
+            (props as unknown as DataStateProps)['data-state'] === 'closed'
+              ? { opacity: 0, x: 12 }
+              : { opacity: 1, x: 0 },
+          transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] },
+          children,
+        })}
+      </DrawerPrimitives.Content>
     </DrawerPortal>
   )
 })

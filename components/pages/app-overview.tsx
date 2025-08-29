@@ -1,10 +1,13 @@
-'use client'
+"use client"
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Download } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
+import { toast } from 'sonner'
 import { Input } from '@/components/atoms/input'
 import {
   Select,
@@ -55,12 +58,14 @@ type HypothesisMetrics = {
 type AssignedPerson = { name: string; initials: string }
 
 type Project = {
+  id: string
   company: string
   size: string
   probability: string
   duration: string
   status: 'drafted' | 'sent' | 'closed'
   assigned: AssignedPerson[]
+  slug: string | null
 }
 
 type Region = {
@@ -88,6 +93,8 @@ export default function AppOverview() {
   const t = useTranslations('app.hypotheses.overview')
   const [groups, setGroups] = useState<Region[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [newName, setNewName] = useState<string>('')
+  const router = useRouter()
 
   useEffect(() => {
     let ignore = false
@@ -127,6 +134,7 @@ export default function AppOverview() {
             pageViews30d: 0,
           }
           const p: Project = {
+            id: h.id,
             assigned: [
               {
                 initials: slugToInitials(h.landingPage?.slug ?? h.name),
@@ -140,6 +148,7 @@ export default function AppOverview() {
             }),
             size: t('row.signupCount', { count: h.signupCount }),
             status: statusToBadge[h.status] ?? 'Drafted',
+            slug: h.landingPage?.slug ?? null,
           }
           const key = h.status in statusToBadge ? h.status : 'draft'
           const arr = grouped.get(key) ?? []
@@ -166,7 +175,7 @@ export default function AppOverview() {
 
   return (
     <section aria-label={t('aria')}>
-      <div className='flex flex-col justify-between gap-2 px-4 py-6 sm:flex-row sm:items-center sm:p-6'>
+      <div className='flex flex-col justify-between gap-4 px-4 py-6 sm:flex-row sm:items-center sm:p-6'>
         <Input
           type='search'
           placeholder={t('searchPlaceholder')}
@@ -195,6 +204,39 @@ export default function AppOverview() {
           </Button>
         </div>
       </div>
+      <div className='flex flex-col gap-2 px-4 sm:flex-row sm:items-end sm:px-6'>
+        <div className='sm:w-80'>
+          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>New hypothesis</label>
+          <Input
+            placeholder='My New Idea'
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            className='py-1.5'
+          />
+        </div>
+        <Button
+          onClick={async () => {
+            const name = newName.trim()
+            if (!name) {
+              toast('Please enter a name')
+              return
+            }
+            try {
+              const res = await api.v1.hypotheses.post({ body: { name } })
+              const id = res.data?.hypothesis?.id
+              if (id) {
+                toast('Hypothesis created')
+                router.push(`/app/hypotheses/${id}/editor`)
+              }
+            } catch {
+              toast('Failed to create hypothesis')
+            }
+          }}
+          className='sm:mb-0 sm:ml-2'
+        >
+          Create & Open Editor
+        </Button>
+        </div>
       <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
         <Table>
           <TableHead>
@@ -207,6 +249,7 @@ export default function AppOverview() {
               </TableHeaderCell>
               <TableHeaderCell>{t('table.columns.landing')}</TableHeaderCell>
               <TableHeaderCell>{t('table.columns.status')}</TableHeaderCell>
+              <TableHeaderCell className='text-right'>Actions</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -280,6 +323,29 @@ export default function AppOverview() {
                         {t(`statusLabel.${item.status}` as any)}
                       </Badge>
                     </TableCell>
+                    <TableCell className='text-right'>
+                      <div className='flex items-center justify-end gap-2'>
+                        <Button asChild variant='secondary' className='py-1.5'>
+                          <Link href={`/app/hypotheses/${item.id}/editor`}>Editor</Link>
+                        </Button>
+                        <Button asChild variant='secondary' className='py-1.5'>
+                          <Link href={`/app/hypotheses/${item.id}/domains`}>Domains</Link>
+                        </Button>
+                        <Button asChild variant='secondary' className='py-1.5'>
+                          <Link href={`/app/hypotheses/${item.id}/waitlist`}>Waitlist</Link>
+                        </Button>
+                        <Button asChild variant='secondary' className='py-1.5'>
+                          <Link href={`/app/hypotheses/${item.id}/analytics`}>Analytics</Link>
+                        </Button>
+                        {item.slug && (
+                          <Button asChild variant='secondary' className='py-1.5'>
+                            <Link href={`/${item.slug}`} target='_blank' rel='noopener noreferrer'>
+                              Public
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </Fragment>
@@ -290,4 +356,3 @@ export default function AppOverview() {
     </section>
   )
 }
-

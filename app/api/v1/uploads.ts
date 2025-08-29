@@ -52,7 +52,7 @@ export const uploadsApi = new Elysia({ prefix: '/v1/uploads' })
           'We limit images to 2MB because bigger files slow down load times and cause users to leave the site.',
         )
 
-      // Optional association to a hypothesis (must belong to user)
+      // Optional association to a hypothesis (must belong to active organization)
       const hypothesisId = (body as any).hypothesisId as string | undefined
       if (hypothesisId) {
         const [row] = await db
@@ -61,7 +61,7 @@ export const uploadsApi = new Elysia({ prefix: '/v1/uploads' })
           .where(
             and(
               eq(hypotheses.id, hypothesisId),
-              eq(hypotheses.userId, user.id),
+              eq(hypotheses.organizationId, session.activeOrganizationId),
               isNull(hypotheses.deletedAt),
             ),
           )

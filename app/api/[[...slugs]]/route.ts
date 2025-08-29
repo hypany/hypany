@@ -18,6 +18,7 @@ import { publicApi } from '../v1/public'
 import { sessionsApi } from '../v1/sessions'
 import { uploadsApi } from '../v1/uploads'
 import { waitlistsApi } from '../v1/waitlists'
+import { settingsApi } from '../v1/settings'
 
 const app = new Elysia({ prefix: '/api' })
   .use(
@@ -43,6 +44,7 @@ const app = new Elysia({ prefix: '/api' })
   .use(assetsApi)
   .use(uploadsApi)
   .use(analyticsApi)
+  .use(settingsApi)
   // Mount Better Auth handler last to avoid interfering with other routes
   .mount(auth.handler)
 

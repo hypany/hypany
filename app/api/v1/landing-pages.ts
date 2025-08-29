@@ -8,7 +8,7 @@
 import { and, eq, isNull, ne } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
-import { getLandingPageIdForUser } from '@/lib/api-utils'
+import { getLandingPageIdForOrg } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
 import { normalizeHostname } from '@/lib/domains'
 import { jsonError, jsonOk } from '@/lib/http'
@@ -69,9 +69,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
     async ({ user, session, params, body, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
-      // Resolve landing page via hypothesis ownership
-      const lp = await getLandingPageIdForUser(user.id, params.hypothesisId)
+      // Resolve landing page via org ownership
+      const lp = await getLandingPageIdForOrg(orgId, params.hypothesisId)
 
       if (!lp)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
@@ -265,6 +268,9 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
     async ({ user, session, params, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       // Verify hypothesis ownership
       const [hypothesis] = await db
@@ -273,7 +279,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         .where(
           and(
             eq(hypotheses.id, params.hypothesisId),
-            eq(hypotheses.userId, user.id),
+            eq(hypotheses.organizationId, orgId),
             isNull(hypotheses.deletedAt),
           ),
         )
@@ -364,7 +370,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         .where(
           and(
             eq(hypotheses.id, params.hypothesisId),
-            eq(hypotheses.userId, user.id),
+            eq(hypotheses.organizationId, session.activeOrganizationId),
             isNull(landingPages.deletedAt),
           ),
         )
@@ -581,8 +587,13 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         set.status = 401
         return { error: 'Unauthorized' }
       }
+      const orgId = session.activeOrganizationId
+      if (!orgId) {
+        set.status = HTTP_STATUS.BAD_REQUEST
+        return { error: 'No active organization' }
+      }
 
-      const lp = await getLandingPageIdForUser(user.id, params.hypothesisId)
+      const lp = await getLandingPageIdForOrg(orgId, params.hypothesisId)
       if (!lp) {
         set.status = HTTP_STATUS.NOT_FOUND
         return { error: 'Landing page not found' }

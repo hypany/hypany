@@ -95,7 +95,10 @@ export const gdprApi = new Elysia({ prefix: '/v1/gdpr' })
         })
         .from(hypotheses)
         .where(
-          and(eq(hypotheses.userId, user.id), isNull(hypotheses.deletedAt)),
+          and(
+            eq(hypotheses.organizationId, session.activeOrganizationId),
+            isNull(hypotheses.deletedAt),
+          ),
         )
 
       const hypothesisIds = userHypotheses.map((h) => h.id)

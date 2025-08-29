@@ -7,7 +7,7 @@
 import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
-import { getWaitlistIdForUser } from '@/lib/api-utils'
+import { getWaitlistIdForOrg } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
 import { toCsv } from '@/lib/csv'
 import { jsonError, jsonOk } from '@/lib/http'
@@ -33,6 +33,9 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
     async ({ user, session, params, set }) => {
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
 
       // Verify hypothesis ownership
       const [hypothesis] = await db
@@ -41,7 +44,7 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         .where(
           and(
             eq(hypotheses.id, params.hypothesisId),
-            eq(hypotheses.userId, user.id),
+            eq(hypotheses.organizationId, orgId),
           ),
         )
         .limit(1)
@@ -113,8 +116,12 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
 
-      // Find waitlist via hypothesis ownership
-      const wl = await getWaitlistIdForUser(user.id, params.hypothesisId)
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Find waitlist via hypothesis ownership in org
+      const wl = await getWaitlistIdForOrg(orgId, params.hypothesisId)
 
       if (!wl)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Waitlist not found')
@@ -153,8 +160,12 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
       if (!user || !session)
         return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
 
-      // Resolve waitlist via hypothesis ownership
-      const wl = await getWaitlistIdForUser(user.id, params.hypothesisId)
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Resolve waitlist via hypothesis ownership in org
+      const wl = await getWaitlistIdForOrg(orgId, params.hypothesisId)
 
       if (!wl)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Waitlist not found')
@@ -227,7 +238,7 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         .where(
           and(
             eq(hypotheses.id, params.hypothesisId),
-            eq(hypotheses.userId, user.id),
+            eq(hypotheses.organizationId, session.activeOrganizationId),
           ),
         )
         .limit(1)

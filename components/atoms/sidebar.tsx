@@ -5,6 +5,7 @@ import { RiCloseLine } from '@remixicon/react'
 import { PanelLeft } from 'lucide-react'
 import * as React from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   Drawer,
   DrawerClose,
@@ -287,11 +288,23 @@ type SidebarLinkProps = React.ComponentProps<typeof Link> & {
 const SidebarLink = React.forwardRef<HTMLAnchorElement, SidebarLinkProps>(
   ({ children, isActive, icon, notifications, className, ...props }, ref) => {
     const Icon = icon
+    const pathname = usePathname()
+
+    // Auto-detect active for top-level links: exact match only
+    let active = isActive
+    if (active === undefined) {
+      const href = (props.href as unknown) as string | { pathname?: string }
+      const hrefPath =
+        typeof href === 'string' ? href : href?.pathname ? href.pathname : ''
+      if (hrefPath) {
+        active = pathname === hrefPath
+      }
+    }
     return (
       <Link
-        ref={ref as any}
-        aria-current={isActive ? 'page' : undefined}
-        data-active={isActive}
+        ref={ref}
+        aria-current={active ? 'page' : undefined}
+        data-active={active}
         className={cx(
           'flex items-center justify-between rounded-md p-2 text-base transition hover:bg-gray-200/50 sm:text-sm dark:hover:bg-gray-900',
           'text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
@@ -370,11 +383,24 @@ type SidebarSubLinkProps = React.ComponentProps<typeof Link> & {
 
 const SidebarSubLink = React.forwardRef<HTMLAnchorElement, SidebarSubLinkProps>(
   ({ isActive, children, className, ...props }, ref) => {
+    const pathname = usePathname()
+    // Auto-detect active for sub-links: exact or descendant paths
+    let active = isActive
+    if (active === undefined) {
+      const href = (props.href as unknown) as string | { pathname?: string }
+      const hrefPath =
+        typeof href === 'string' ? href : href?.pathname ? href.pathname : ''
+      if (hrefPath) {
+        const base = hrefPath.endsWith('/') ? hrefPath.slice(0, -1) : hrefPath
+        const withSlash = base + '/'
+        active = pathname === base || pathname.startsWith(withSlash)
+      }
+    }
     return (
       <Link
-        ref={ref as any}
-        aria-current={isActive ? 'page' : undefined}
-        data-active={isActive}
+        ref={ref}
+        aria-current={active ? 'page' : undefined}
+        data-active={active}
         className={cx(
           'relative flex gap-2 rounded-md py-1.5 pl-9 pr-3 text-base transition sm:text-sm',
           'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50',
@@ -384,7 +410,7 @@ const SidebarSubLink = React.forwardRef<HTMLAnchorElement, SidebarSubLinkProps>(
         )}
         {...props}
       >
-        {isActive && (
+        {active && (
           <div
             className='absolute left-4 top-1/2 h-5 w-px -translate-y-1/2 bg-emerald-500 dark:bg-emerald-500'
             aria-hidden='true'

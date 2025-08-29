@@ -18,6 +18,7 @@ import { cx, focusRing } from '@/lib/utils'
 import { RiArrowDownSFill } from '@remixicon/react'
 import { ChartBar, LayoutDashboard, Lightbulb, Settings } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { usePathname } from 'next/navigation'
 import * as React from 'react'
 import OrgSwitcher from './org-switcher'
 import { UserProfile } from './user-profile'
@@ -28,7 +29,6 @@ type IconComponent = React.ComponentType<{
 }>
 
 type NavItem = {
-  active: boolean
   href: string
   icon: IconComponent
   name: string
@@ -36,8 +36,7 @@ type NavItem = {
 }
 const navigation: ReadonlyArray<NavItem> = [
   {
-    active: false,
-    href: '/app/overview',
+    href: '/app',
     icon: LayoutDashboard,
     name: 'app.sidebar.overview',
     notifications: false,
@@ -47,7 +46,6 @@ const navigation: ReadonlyArray<NavItem> = [
 type GroupItem = {
   href: string
   name: string
-  active: boolean
 }
 type NavGroup = {
   icon: IconComponent
@@ -59,12 +57,10 @@ const navigation2: ReadonlyArray<NavGroup> = [
   {
     children: [
       {
-        active: false,
         href: '/app/hypotheses',
         name: 'app.sidebar.hypotheses.overview',
       },
       {
-        active: false,
         href: '/app/assets',
         name: 'app.sidebar.hypotheses.assets',
       },
@@ -76,12 +72,10 @@ const navigation2: ReadonlyArray<NavGroup> = [
   {
     children: [
       {
-        active: false,
         href: '/app/analytics',
         name: 'app.sidebar.analytics.overview',
       },
       {
-        active: false,
         href: '/app/waitlists',
         name: 'app.sidebar.analytics.waitlists',
       },
@@ -93,12 +87,10 @@ const navigation2: ReadonlyArray<NavGroup> = [
   {
     children: [
       {
-        active: false,
         href: '/app/settings',
         name: 'app.sidebar.settings.general',
       },
       {
-        active: false,
         href: '/app/organizations',
         name: 'app.sidebar.settings.organizations',
       },
@@ -111,9 +103,25 @@ const navigation2: ReadonlyArray<NavGroup> = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations()
-  const [openMenus, setOpenMenus] = React.useState<string[]>([
-    navigation2[0].name,
-  ])
+  const pathname = usePathname()
+  const [openMenus, setOpenMenus] = React.useState<string[]>([])
+
+  // Auto-open groups that contain an active child route
+  React.useEffect(() => {
+    const activeGroups = navigation2
+      .filter((group) =>
+        group.children.some((child) => {
+          const base = child.href.endsWith('/')
+            ? child.href.slice(0, -1)
+            : child.href
+          const withSlash = base + '/'
+          return pathname === base || pathname.startsWith(withSlash)
+        }),
+      )
+      .map((g) => g.name)
+
+    setOpenMenus((prev) => Array.from(new Set([...prev, ...activeGroups])))
+  }, [pathname])
   const toggleMenu = (name: string) => {
     setOpenMenus((prev: string[]) =>
       prev.includes(name)
@@ -143,7 +151,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenuItem key={item.name}>
                   <SidebarLink
                     href={item.href}
-                    isActive={item.active}
                     icon={item.icon}
                     notifications={item.notifications}
                   >
@@ -192,10 +199,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <div className='absolute inset-y-0 left-4 w-px bg-gray-300 dark:bg-gray-800' />
                       {item.children.map((child) => (
                         <SidebarMenuItem key={child.name}>
-                          <SidebarSubLink
-                            href={child.href}
-                            isActive={child.active}
-                          >
+                          <SidebarSubLink href={child.href}>
                             {t(child.name)}
                           </SidebarSubLink>
                         </SidebarMenuItem>

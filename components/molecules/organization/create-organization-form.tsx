@@ -34,27 +34,22 @@ export function CreateOrganizationForm() {
     }
     setSubmitting(true)
     try {
-      const res = await client.organization.create({
+      const { data: org, error } = await client.organization.create({
         name: name.trim(),
         slug: derivedSlug,
       })
-      const data: any = (res as any)?.data ?? res
-      if (!data || (res as any)?.error) {
-        const err = (res as any)?.error
-        toast.error(err?.message || 'Failed to create organization')
-        setSubmitting(false)
+      if (error || !org) {
+        toast.error(error?.message || 'Failed to create organization')
         return
       }
-      const orgId = data.id
-      if (orgId) {
-        await client.organization.setActive({ organizationId: orgId })
-      }
+      await client.organization.setActive({ organizationId: org.id })
       toast.success('Organization created')
       router.push('/app')
       router.refresh()
     } catch (error) {
       console.error(error)
       toast.error('Failed to create organization')
+    } finally {
       setSubmitting(false)
     }
   }
