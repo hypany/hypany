@@ -75,7 +75,7 @@ export const Footer = () => {
             }}
           >
             <svg className='h-full w-full' preserveAspectRatio='none'>
-              <title>{t('footer-pattern-alt')}</title>
+              <title>Footer Pattern Alt</title>
               <line
                 x1='0'
                 y1='0'
@@ -96,7 +96,7 @@ export const Footer = () => {
             }}
           >
             <svg className='h-full w-full' preserveAspectRatio='none'>
-              <title>{t('footer-pattern-alt')}</title>
+              <title>Footer Pattern</title>
               <line
                 x1='0'
                 y1='0'
@@ -110,7 +110,7 @@ export const Footer = () => {
           </div>
         </div>
         <svg className='mb-10 h-20 w-full border-y border-dashed border-gray-300 stroke-gray-300'>
-          <title>{t('footer-pattern-alt')}</title>
+          <title>Footer Pattern Alt</title>
           <defs>
             <pattern patternUnits='userSpaceOnUse' width='64' height='64'>
               {Array.from({ length: 17 }, (_, i) => {
@@ -182,7 +182,7 @@ export const Footer = () => {
               </Link>
             </div>
             <div className='ml-2 hidden text-sm text-gray-700 lg:inline'>
-              &copy; {CURRENT_YEAR} {t('creator-name')}
+              &copy; {CURRENT_YEAR} Sunghyun Cho
             </div>
           </div>
         </div>
