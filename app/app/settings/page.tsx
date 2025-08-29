@@ -1,12 +1,15 @@
-export default function SettingsPage() {
+import { getTranslations } from 'next-intl/server'
+
+export default async function SettingsPage() {
+  const t = await getTranslations('app.pages.settings')
   return (
-    <section aria-label='Settings'>
+    <section aria-label={t('aria')}>
       <div className='px-6 py-6'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-          Settings
+          {t('title')}
         </h1>
         <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-          Configure your workspace, preferences, and account.
+          {t('subtitle')}
         </p>
       </div>
     </section>

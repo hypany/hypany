@@ -1,12 +1,15 @@
-export default function AnalyticsPage() {
+import { getTranslations } from 'next-intl/server'
+
+export default async function AnalyticsPage() {
+  const t = await getTranslations('app.pages.analytics')
   return (
-    <section aria-label='Analytics'>
+    <section aria-label={t('aria')}>
       <div className='px-6 py-6'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-          Analytics
+          {t('title')}
         </h1>
         <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-          Track performance, conversion, and user engagement.
+          {t('subtitle')}
         </p>
       </div>
     </section>

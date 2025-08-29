@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import * as z from 'zod'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { cx } from '@/lib/utils'
@@ -27,6 +28,7 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
   const emailId = useId()
   const passwordId = useId()
   const router = useRouter()
+  const t = useTranslations('auth.form')
   const {
     register,
     handleSubmit,
@@ -111,10 +113,10 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
     <div className={cx('w-full', className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
         <div className='space-y-2'>
-          <Label htmlFor={emailId}>Email</Label>
+          <Label htmlFor={emailId}>{t('email.label')}</Label>
           <Input
             id={emailId}
-            placeholder='name@example.com'
+            placeholder={t('email.placeholder')}
             type='email'
             autoCapitalize='none'
             autoComplete='email'
@@ -130,17 +132,17 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
         </div>
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
-            <Label htmlFor={passwordId}>Password</Label>
+            <Label htmlFor={passwordId}>{t('password.label')}</Label>
             <Link
               href='/forgot-password'
               className='text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 hover:dark:text-emerald-600'
             >
-              Forgot password?
+              {t('forgot-password')}
             </Link>
           </div>
           <Input
             id={passwordId}
-            placeholder='Enter your password'
+            placeholder={t('password.placeholder')}
             type='password'
             autoCapitalize='none'
             autoComplete='current-password'
@@ -154,7 +156,7 @@ export function SignInForm({ className, ...props }: SignInFormProps) {
           )}
         </div>
         <Button disabled={isSubmitting} className='w-full'>
-          {isSubmitting ? 'Signing in...' : 'Continue'}
+          {isSubmitting ? 'Signing in...' : t('actions.continue')}
         </Button>
       </form>
     </div>

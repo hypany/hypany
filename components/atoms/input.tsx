@@ -1,5 +1,7 @@
+"use client"
 import { RiEyeFill, RiEyeOffFill, RiSearchLine } from '@remixicon/react'
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cx, focusInput, focusRing, hasErrorInput } from '@/lib/utils'
 
@@ -62,6 +64,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     }: InputProps,
     forwardedRef,
   ) => {
+    const t = useTranslations('common')
     const [typeState, setTypeState] = React.useState(type)
 
     const isPassword = type === 'password'
@@ -104,7 +107,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             )}
           >
             <button
-              aria-label='Change password visibility'
+              aria-label={t('input.password.toggle-aria')}
               className={cx(
                 // base
                 'h-fit w-fit rounded-xs outline-hidden transition-all',
@@ -120,7 +123,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               }}
             >
               <span className='sr-only'>
-                {typeState === 'password' ? 'Show password' : 'Hide password'}
+                {typeState === 'password'
+                  ? t('input.password.show')
+                  : t('input.password.hide')}
               </span>
               {typeState === 'password' ? (
                 <RiEyeFill aria-hidden='true' className='size-5 shrink-0' />

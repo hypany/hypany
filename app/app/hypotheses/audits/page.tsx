@@ -12,6 +12,7 @@ import {
 } from '@/components/atoms/accordion'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
+import { useTranslations } from 'next-intl'
 
 const getStatusIcon = (status: string) => {
   if (status === 'complete') {
@@ -35,6 +36,7 @@ type Section = {
 }
 
 export default function Audits() {
+  const t = useTranslations('app.hypotheses.audits')
   const [sections, setSections] = useState<Section[]>([])
 
   useEffect(() => {
@@ -52,15 +54,15 @@ export default function Audits() {
         const mapped: Section[] = d.hypotheses.map((h, idx) => ({
           auditDates: [
             {
-              auditor: 'System',
+              auditor: t('system'),
               date: new Date().toLocaleDateString(),
             },
           ],
           certified: h.status,
           documents: [
             {
-              name: h.landingPage?.slug ?? 'no-slug',
-              status: h.landingPage?.slug ? 'OK' : 'Needs update',
+              name: h.landingPage?.slug ?? t('noSlug'),
+              status: h.landingPage?.slug ? t('docStatus.ok') : t('docStatus.needsUpdate'),
             },
           ],
           id: h.id,
@@ -80,11 +82,11 @@ export default function Audits() {
   }, [])
 
   return (
-    <section aria-label='Audits overview'>
+    <section aria-label={t('aria')}>
       <div className='flex flex-col items-center justify-between gap-2 p-6 sm:flex-row'>
         <Input
           type='search'
-          placeholder='Search audits...'
+          placeholder={t('searchPlaceholder')}
           className='sm:w-64 [&>input]:py-1.5'
         />
         <Button
@@ -95,7 +97,7 @@ export default function Audits() {
             className='-ml-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-600'
             aria-hidden='true'
           />
-          Filters
+          {t('filters')}
         </Button>
       </div>
       <div className='border-t border-gray-200 px-6 pb-6 dark:border-gray-800'>
@@ -120,8 +122,8 @@ export default function Audits() {
                 <div className='mt-2 grid grid-cols-1 gap-8 md:grid-cols-2'>
                   <div>
                     <p className='flex items-center justify-between text-sm font-medium text-gray-900 dark:text-gray-50'>
-                      <span>Audit round</span>
-                      <span>Auditor</span>
+                      <span>{t('auditRound')}</span>
+                      <span>{t('auditor')}</span>
                     </p>
                     <ul className='mt-1 divide-y divide-gray-200 text-sm text-gray-600 dark:divide-gray-800 dark:text-gray-400'>
                       {section.auditDates.map((audit, index) => (
@@ -137,8 +139,8 @@ export default function Audits() {
                   </div>
                   <div>
                     <p className='flex items-center justify-between text-sm font-medium text-gray-900 dark:text-gray-50'>
-                      <span>Related documents</span>
-                      <span>Status</span>
+                      <span>{t('relatedDocs')}</span>
+                      <span>{t('status')}</span>
                     </p>
                     <ul className='mt-1 divide-y divide-gray-200 text-gray-600 dark:divide-gray-800 dark:text-gray-400'>
                       {section.documents.map((doc, index) => (
@@ -161,7 +163,7 @@ export default function Audits() {
                               type='button'
                               className='hover:text-gray-900 hover:underline hover:underline-offset-4 dark:hover:text-gray-50'
                             >
-                              Edit
+                              {t('edit')}
                             </button>
                             <span
                               className='h-4 w-px bg-gray-300 dark:bg-gray-700'
@@ -171,7 +173,7 @@ export default function Audits() {
                               type='button'
                               className='hover:text-gray-900 hover:underline hover:underline-offset-4 dark:hover:text-gray-50'
                             >
-                              Re-Upload
+                              {t('reupload')}
                             </button>
                           </div>
                         </li>

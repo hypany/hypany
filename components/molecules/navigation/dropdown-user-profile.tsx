@@ -37,6 +37,7 @@ export function DropdownUserProfile({
   const router = useRouter()
   const locale = useLocale()
   const t = useTranslations('nav')
+  const tApp = useTranslations('app.userMenu')
   const [isPending, startTransition] = useTransition()
   const { data } = client.useSession()
   useEffect(() => {
@@ -71,7 +72,7 @@ export function DropdownUserProfile({
         <DropdownMenuLabel>{data?.user?.email ?? ''}</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuSubMenu>
-            <DropdownMenuSubMenuTrigger>Theme</DropdownMenuSubMenuTrigger>
+            <DropdownMenuSubMenuTrigger>{tApp('theme')}</DropdownMenuSubMenuTrigger>
             <DropdownMenuSubMenuContent>
               <DropdownMenuRadioGroup
                 value={theme}
@@ -126,21 +127,21 @@ export function DropdownUserProfile({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Changelog
+            {tApp('changelog')}
             <ArrowUpRight
               className='mb-1 ml-1 size-3 shrink-0 text-gray-500 dark:text-gray-500'
               aria-hidden='true'
             />
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Documentation
+            {tApp('documentation')}
             <ArrowUpRight
               className='mb-1 ml-1 size-3 shrink-0 text-gray-500'
               aria-hidden='true'
             />
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Join Slack community
+            {tApp('joinSlack')}
             <ArrowUpRight
               className='mb-1 ml-1 size-3 shrink-0 text-gray-500'
               aria-hidden='true'
@@ -149,7 +150,7 @@ export function DropdownUserProfile({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleSignOut}>{tApp('signOut')}</DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

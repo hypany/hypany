@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type React from 'react'
+import { useTranslations } from 'next-intl'
 import {
   TabNavigation,
   TabNavigationLink,
@@ -9,9 +10,9 @@ import {
 import { MetricsCards } from '@/components/molecules/homepage/metrics-cards'
 
 const navigation = [
-  { href: '/app/hypotheses', name: 'Overview' },
-  { href: '/app/hypotheses/monitoring', name: 'Monitoring' },
-  { href: '/app/hypotheses/audits', name: 'Audits' },
+  { href: '/app/hypotheses', name: 'overview' },
+  { href: '/app/hypotheses/monitoring', name: 'monitoring' },
+  { href: '/app/hypotheses/audits', name: 'audits' },
 ]
 
 export default function Layout({
@@ -20,6 +21,7 @@ export default function Layout({
   children: React.ReactNode
 }>) {
   const pathname = usePathname()
+  const t = useTranslations('app.hypotheses.tabs')
   return (
     <>
       <div className='bg-white dark:bg-gray-925'>
@@ -33,7 +35,7 @@ export default function Layout({
               asChild
               active={pathname === item.href}
             >
-              <Link href={item.href}>{item.name}</Link>
+              <Link href={item.href}>{t(item.name as any)}</Link>
             </TabNavigationLink>
           ))}
         </TabNavigation>

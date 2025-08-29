@@ -1,6 +1,7 @@
 'use client'
 import { Download } from 'lucide-react'
 import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
@@ -58,25 +59,19 @@ type Project = {
   size: string
   probability: string
   duration: string
-  status: 'Drafted' | 'Sent' | 'Closed'
+  status: 'drafted' | 'sent' | 'closed'
   assigned: AssignedPerson[]
 }
 
 type Region = {
-  region: string
+  region: 'archived' | 'draft' | 'published' | (string & {})
   project: Project[]
 }
 
-const statusToRegion: Record<string, string> = {
-  archived: 'Archived',
-  draft: 'Draft',
-  published: 'Published',
-}
-
 const statusToBadge: Record<string, Project['status']> = {
-  archived: 'Closed',
-  draft: 'Drafted',
-  published: 'Sent',
+  archived: 'closed',
+  draft: 'drafted',
+  published: 'sent',
 }
 
 function slugToInitials(slug?: string | null) {
@@ -90,6 +85,7 @@ function slugToInitials(slug?: string | null) {
 }
 
 export default function Overview() {
+  const t = useTranslations('app.hypotheses.overview')
   const [groups, setGroups] = useState<Region[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -139,27 +135,26 @@ export default function Overview() {
             assigned: [
               {
                 initials: slugToInitials(h.landingPage?.slug ?? h.name),
-                name: h.landingPage?.slug ?? 'no-slug',
+                name: h.landingPage?.slug ?? t('noSlug'),
               },
             ],
             company: h.name,
-            duration: `${metrics.pageViews30d} page views (30d)`,
-            probability: `${metrics.conversionRate30d.toFixed(1)}% conv (30d)`,
-            size: `${h.signupCount} signups`,
+            duration: t('row.pageViews30d', { count: metrics.pageViews30d }),
+            probability: t('row.conversionRate30d', {
+              value: metrics.conversionRate30d.toFixed(1),
+            }),
+            size: t('row.signupCount', { count: h.signupCount }),
             status: statusToBadge[h.status] ?? 'Drafted',
           }
-          const key = h.status in statusToRegion ? h.status : 'draft'
+          const key = h.status in statusToBadge ? h.status : 'draft'
           const arr = grouped.get(key) ?? []
           arr.push(p)
           grouped.set(key, arr)
         }
 
         const regions: Region[] = Array.from(grouped.entries())
-          .map(([key, project]) => ({
-            project,
-            region: statusToRegion[key] ?? key,
-          }))
-          .sort((a, b) => a.region.localeCompare(b.region))
+          .map(([key, project]) => ({ project, region: key }))
+          .sort((a, b) => String(a.region).localeCompare(String(b.region)))
 
         if (!ignore) setGroups(regions)
       } finally {
@@ -175,17 +170,17 @@ export default function Overview() {
   const dataToRender = useMemo<Region[]>(() => groups, [groups])
 
   return (
-    <section aria-label='Overview Table'>
+    <section aria-label={t('aria')}>
       <div className='flex flex-col justify-between gap-2 px-4 py-6 sm:flex-row sm:items-center sm:p-6'>
         <Input
           type='search'
-          placeholder='Search hypotheses...'
+          placeholder={t('searchPlaceholder')}
           className='sm:w-64 [&>input]:py-1.5'
         />
         <div className='flex flex-col items-center gap-2 sm:flex-row'>
           <Select>
             <SelectTrigger className='w-full py-1.5 sm:w-44'>
-              <SelectValue placeholder='Assigned to...' />
+              <SelectValue placeholder={t('assignedPlaceholder')} />
             </SelectTrigger>
             <SelectContent align='end'>
               <SelectItem value='1'>Harry Granger</SelectItem>
@@ -201,7 +196,7 @@ export default function Overview() {
               className='-ml-0.5 size-4 shrink-0 text-gray-400 dark:text-gray-600'
               aria-hidden='true'
             />
-            Export
+            {t('export')}
           </Button>
         </div>
       </div>
@@ -209,12 +204,12 @@ export default function Overview() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>Hypothesis</TableHeaderCell>
-              <TableHeaderCell>Signups</TableHeaderCell>
-              <TableHeaderCell>Conv. (30d)</TableHeaderCell>
-              <TableHeaderCell>Page Views (30d)</TableHeaderCell>
-              <TableHeaderCell>Landing</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell>{t('table.columns.hypothesis')}</TableHeaderCell>
+              <TableHeaderCell>{t('table.columns.signups')}</TableHeaderCell>
+              <TableHeaderCell>{t('table.columns.conv30d')}</TableHeaderCell>
+              <TableHeaderCell>{t('table.columns.pageViews30d')}</TableHeaderCell>
+              <TableHeaderCell>{t('table.columns.landing')}</TableHeaderCell>
+              <TableHeaderCell>{t('table.columns.status')}</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -226,7 +221,7 @@ export default function Overview() {
                     colSpan={6}
                     className='bg-gray-50 py-3 pl-4 sm:pl-6 dark:bg-gray-900'
                   >
-                    {quote.region}
+                    {t(`regions.${quote.region}` as any)}
                     <span className='ml-2 font-medium text-gray-600 dark:text-gray-400'>
                       {quote.project.length}
                     </span>
@@ -256,11 +251,11 @@ export default function Overview() {
                     <TableCell>
                       <Badge
                         variant={
-                          item.status === 'Closed'
+                          item.status === 'closed'
                             ? 'success'
-                            : item.status === 'Drafted'
+                            : item.status === 'drafted'
                               ? 'neutral'
-                              : item.status === 'Sent'
+                              : item.status === 'sent'
                                 ? 'default'
                                 : 'default'
                         }
@@ -272,20 +267,20 @@ export default function Overview() {
                             'bg-gray-500 dark:bg-gray-500',
                             {
                               'bg-emerald-600 dark:bg-emerald-400':
-                                item.status === 'Closed',
+                                item.status === 'closed',
                             },
                             {
                               'bg-gray-500 dark:bg-gray-500':
-                                item.status === 'Drafted',
+                                item.status === 'drafted',
                             },
                             {
                               'bg-emerald-500 dark:bg-emerald-500':
-                                item.status === 'Sent',
+                                item.status === 'sent',
                             },
                           )}
                           aria-hidden='true'
                         />
-                        {item.status}
+                        {t(`statusLabel.${item.status}` as any)}
                       </Badge>
                     </TableCell>
                   </TableRow>

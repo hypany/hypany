@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { RiArrowDownSFill } from '@remixicon/react'
 import {
   ChartBar,
@@ -27,71 +28,90 @@ import { cx, focusRing } from '@/lib/utils'
 import { HypanyLogo } from '@/public/brand/hypany-logo'
 import { UserProfile } from './user-profile'
 
-const navigation = [
+type NavItem = {
+  active: boolean
+  href: string
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: string | boolean }>
+  name: string
+  notifications: boolean
+}
+const navigation: ReadonlyArray<NavItem> = [
   {
     active: false,
     href: '/app/overview',
     icon: LayoutDashboard,
-    name: 'Overview',
+    name: 'app.sidebar.overview',
     notifications: false,
   },
 ] as const
 
-const navigation2 = [
+type GroupItem = {
+  href: string
+  name: string
+  active: boolean
+}
+type NavGroup = {
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: string | boolean }>
+  name: string
+  href: string
+  children: ReadonlyArray<GroupItem>
+}
+const navigation2: ReadonlyArray<NavGroup> = [
   {
     children: [
       {
         active: false,
         href: '/app/hypotheses',
-        name: 'Overview',
+        name: 'app.sidebar.hypotheses.overview',
       },
       {
         active: false,
         href: '/app/assets',
-        name: 'Assets',
+        name: 'app.sidebar.hypotheses.assets',
       },
     ],
     href: '#',
     icon: Lightbulb,
-    name: 'Hypotheses',
+    name: 'app.sidebar.hypotheses._',
   },
   {
     children: [
       {
         active: false,
         href: '/app/analytics',
-        name: 'Overview',
+        name: 'app.sidebar.analytics.overview',
       },
       {
         active: false,
         href: '/app/waitlists',
-        name: 'All Waitlists',
+        name: 'app.sidebar.analytics.waitlists',
       },
     ],
     href: '#',
     icon: ChartBar,
-    name: 'Analytics',
+    name: 'app.sidebar.analytics._',
   },
   {
     children: [
       {
         active: false,
         href: '/app/settings',
-        name: 'General',
+        name: 'app.sidebar.settings.general',
       },
       {
         active: false,
         href: '/app/organizations',
-        name: 'Organizations',
+        name: 'app.sidebar.settings.organizations',
       },
     ],
     href: '#',
     icon: Settings,
-    name: 'Settings',
+    name: 'app.sidebar.settings._',
   },
 ] as const
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const t = useTranslations()
   const [openMenus, setOpenMenus] = React.useState<string[]>([
     navigation2[0].name,
   ])
@@ -121,7 +141,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <Input
               type='search'
-              placeholder='Search items...'
+              placeholder={t('app.sidebar.search')}
               className='sm:[&>input]:py-1.5'
             />
           </SidebarGroupContent>
@@ -137,7 +157,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     icon={item.icon}
                     notifications={item.notifications}
                   >
-                    {item.name}
+                    {t(item.name)}
                   </SidebarLink>
                 </SidebarMenuItem>
               ))}
@@ -165,7 +185,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         className='size-[18px] shrink-0'
                         aria-hidden='true'
                       />
-                      {item.name}
+                      {t(item.name)}
                     </div>
                     <RiArrowDownSFill
                       className={cx(
@@ -186,7 +206,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             href={child.href}
                             isActive={child.active}
                           >
-                            {child.name}
+                            {t(child.name)}
                           </SidebarSubLink>
                         </SidebarMenuItem>
                       ))}

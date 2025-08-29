@@ -1,12 +1,15 @@
-export default function OrganizationsPage() {
+import { getTranslations } from 'next-intl/server'
+
+export default async function OrganizationsPage() {
+  const t = await getTranslations('app.pages.organizations')
   return (
-    <section aria-label='Organizations'>
+    <section aria-label={t('aria')}>
       <div className='px-6 py-6'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-          Organizations
+          {t('title')}
         </h1>
         <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-          Manage organizations, members, and permissions.
+          {t('subtitle')}
         </p>
       </div>
     </section>

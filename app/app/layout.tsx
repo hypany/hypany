@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { getSession } from '@/auth/server'
 import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
@@ -43,6 +45,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const session = await getSession()
+  if (!session) {
+    redirect('/sign-in')
+  }
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get('sidebar:state')?.value !== 'false'
 
