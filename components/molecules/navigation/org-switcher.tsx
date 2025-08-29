@@ -24,8 +24,8 @@ export function OrgSwitcher() {
   }, [activeOrg, organizations])
 
   async function setActive(organizationId: string) {
-    const res = await client.organization.setActive({ body: { organizationId } })
-    if ('error' in (res as any) && (res as any).error) {
+    const res = await client.organization.setActive({ organizationId })
+    if ((res as any)?.error) {
       toast.error('Failed to switch organization')
     } else {
       toast.success('Organization switched')
@@ -66,4 +66,3 @@ export function OrgSwitcher() {
 }
 
 export default OrgSwitcher
-
