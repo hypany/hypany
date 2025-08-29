@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import { Button } from '@/components/atoms/button'
-import { SolarLogo } from '@/public/solar-logo'
+import { HypanyLogo } from '@/public/brand/hypany-logo'
 import { siteConfig } from '../site-config'
 
 export default function NotFound() {
   return (
     <div className='flex h-screen flex-col items-center justify-center'>
       <Link href={siteConfig.baseLinks.home}>
-        <SolarLogo className='mt-6 h-10' />
+        <HypanyLogo className='mt-6 h-10' />
       </Link>
       <p className='mt-6 text-4xl font-semibold text-amber-600 sm:text-5xl'>
         Error 404
