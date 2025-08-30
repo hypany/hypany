@@ -1,5 +1,5 @@
 'use client'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'

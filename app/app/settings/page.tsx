@@ -1,4 +1,4 @@
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import SettingsForm from './ui'
 
 export default async function SettingsPage() {

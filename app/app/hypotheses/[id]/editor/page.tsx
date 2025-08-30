@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 
 export default async function EditorPage({
   params,

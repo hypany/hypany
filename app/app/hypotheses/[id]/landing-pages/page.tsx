@@ -1,9 +1,6 @@
 import { Button } from '@/components/atoms/button'
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
-import { treaty } from '@elysiajs/eden'
-import { serviceUrl } from '@/lib/url'
-import type { App } from '@/app/api/[[...slugs]]/route'
-import { headers } from 'next/headers'
+import { getServerApi } from '@/app/api/server'
 import Link from 'next/link'
 import { CreateLandingPageButton, DuplicateLandingPageButton, RenameLandingPageInline } from './ui'
 import { notFound } from 'next/navigation'
@@ -15,11 +12,7 @@ export default async function LandingPagesGallery({
 }) {
   const { id } = await params
 
-  const hdrs = await headers()
-  const cookie = hdrs.get('cookie') ?? ''
-  const { api } = treaty<App>(serviceUrl, {
-    fetcher: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
-  })
+  const api = await getServerApi()
 
   const hypRes = await api.v1.hypotheses({ id }).get()
   const hypData = hypRes.data

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import { Template1 } from '@/templates/template-1'
 import type { LandingConfig } from '@/templates/types'
 

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import BlocksEditor from './ui'
 
 export default async function EditorByLandingPage({

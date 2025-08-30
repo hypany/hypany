@@ -2,7 +2,7 @@
 import { SlidersHorizontal } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { Button } from '@/components/atoms/button'
 import { ComboChart } from '@/components/atoms/combo-chart'

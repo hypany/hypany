@@ -170,6 +170,46 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
           prev > 0 ? ((curr - prev) / prev) * 100 : curr > 0 ? 100 : 0
       }
 
+      // Visitors and signups last 30d (org-wide aggregates)
+      let uniqueVisitors30d = 0
+      let signups30d = 0
+      const hypothesisIds = userHypotheses.map((r) => r.hypothesis.id)
+      if (hypothesisIds.length > 0) {
+        const now = new Date()
+        const todayUtcMidnight = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        )
+        const thirtyDaysAgo = new Date(
+          todayUtcMidnight.getTime() - 30 * 24 * 60 * 60 * 1000,
+        )
+
+        const [{ count: uv } = { count: 0 }] = await db
+          .select({ count: countDistinct(pageVisits.visitorId) })
+          .from(pageVisits)
+          .where(
+            and(
+              inArray(pageVisits.hypothesisId, hypothesisIds),
+              gt(pageVisits.createdAt, thirtyDaysAgo),
+              lte(pageVisits.createdAt, todayUtcMidnight),
+            ),
+          )
+        uniqueVisitors30d = Number(uv || 0)
+
+        if (waitlistIds.length > 0) {
+          const [{ count: su } = { count: 0 }] = await db
+            .select({ count: count() })
+            .from(waitlistEntries)
+            .where(
+              and(
+                inArray(waitlistEntries.waitlistId, waitlistIds),
+                gt(waitlistEntries.createdAt, thirtyDaysAgo),
+                lte(waitlistEntries.createdAt, todayUtcMidnight),
+              ),
+            )
+          signups30d = Number(su || 0)
+        }
+      }
+
       return {
         hypotheses: userHypotheses.map((row) => ({
           ...row.hypothesis,
@@ -183,7 +223,9 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
           prev7Signups,
           growthRate7d,
           readyToLaunch,
+          signups30d,
           totalSignups,
+          uniqueVisitors30d,
         },
       }
     },
@@ -224,7 +266,9 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             prev7Signups: t.Number(),
             growthRate7d: t.Number(),
             readyToLaunch: t.Number(),
+            signups30d: t.Number(),
             totalSignups: t.Number(),
+            uniqueVisitors30d: t.Number(),
           }),
         }),
         401: ErrorResponse,

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
 

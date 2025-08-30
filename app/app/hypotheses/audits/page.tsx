@@ -4,7 +4,7 @@ import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react'
 import { Link, SlidersHorizontal } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
-import { api } from '@/app/api'
+import { api } from '@/app/api/client'
 import {
   Accordion,
   AccordionContent,

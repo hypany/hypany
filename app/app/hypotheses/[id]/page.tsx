@@ -1,6 +1,4 @@
-import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import { treaty } from '@elysiajs/eden'
 import {
   Table,
   TableBody,
@@ -10,8 +8,7 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import { serviceUrl } from '@/lib/url'
-import type { App } from '@/app/api/[[...slugs]]/route'
+import { getServerApi } from '@/app/api/server'
 
 export default async function HypothesisOverview({
   params,
@@ -19,11 +16,7 @@ export default async function HypothesisOverview({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const hdrs = await headers()
-  const cookie = hdrs.get('cookie') ?? ''
-  const { api } = treaty<App>(serviceUrl, {
-    fetcher: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
-  })
+  const api = await getServerApi()
   const res = await api.v1.hypotheses({ id }).get()
   const data = res.data
   if (!data || !data.hypothesis) notFound()

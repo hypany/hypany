@@ -1,7 +1,5 @@
 import { Pencil } from 'lucide-react'
-import { headers } from 'next/headers'
 import Link from 'next/link'
-import { treaty } from '@elysiajs/eden'
 import {
   Table,
   TableBody,
@@ -12,8 +10,7 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
-import { serviceUrl } from '@/lib/url'
-import type { App } from '@/app/api/[[...slugs]]/route'
+import { getServerApi } from '@/app/api/server'
 
 type Row = {
   id: string
@@ -25,11 +22,7 @@ type Row = {
 }
 
 export default async function HypothesesPage() {
-  const hdrs = await headers()
-  const cookie = hdrs.get('cookie') ?? ''
-  const { api } = treaty<App>(serviceUrl, {
-    fetcher: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
-  })
+  const api = await getServerApi()
 
   const res = await api.v1.hypotheses.get({ query: {} })
   const d = res.data
@@ -51,15 +44,24 @@ export default async function HypothesesPage() {
 
   // Compute metrics from API-provided summary
   const growthRate7d = Number(d.metrics?.growthRate7d ?? 0)
+  const uniqueVisitors30d = Number(d.metrics?.uniqueVisitors30d ?? 0)
+  const signups30d = Number(d.metrics?.signups30d ?? 0)
 
   // We skip sparkline details here; link to analytics page for details
 
   // Use API-provided ready-to-launch count
   const readyToLaunch = Number(d.metrics?.readyToLaunch ?? 0)
 
+  const conversion = uniqueVisitors30d > 0 ? signups30d / uniqueVisitors30d : 0
   const denom = 3
   const readyCount = readyToLaunch
   const metrics: Metric[] = [
+    {
+      fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
+      label: 'Visitor Conversion Rate',
+      percentage: `${(conversion * 100).toFixed(1)}%`,
+      value: conversion,
+    },
     {
       fraction: `${Number(d.metrics?.last7Signups ?? 0)}/${Number(d.metrics?.prev7Signups ?? 0)}`,
       label: 'Signup Growth (WoW)',
