@@ -1,9 +1,12 @@
+import { getSession } from '@/auth/server'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 import { Divider } from '@/components/atoms/divider'
 import { ForgotPasswordForm } from '@/components/molecules/auth/forgot-password-form'
+import { SaaSPreview } from '@/components/molecules/landing/saas-preview'
 
 export const metadata: Metadata = {
   description: 'Reset your Hypany password',
@@ -11,6 +14,10 @@ export const metadata: Metadata = {
 }
 
 export default async function ForgotPasswordPage() {
+  const session = await getSession()
+  if (session) {
+    redirect('/app')
+  }
   const t = await getTranslations('auth.forgot-password')
   const tCommon = await getTranslations('common')
 
@@ -50,14 +57,14 @@ export default async function ForgotPasswordPage() {
         className='hidden flex-1 overflow-hidden p-6 lg:flex'
         aria-label={tCommon('aria.product-showcase')}
       >
-        <div className='flex h-full w-full items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-16 dark:from-emerald-600 dark:to-emerald-500'>
-          <div>
-            <h2 className='max-w-lg text-2xl font-semibold leading-9 text-white'>
+        <div className='flex h-full w-full items-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-32 dark:from-emerald-600 dark:to-emerald-500'>
+          <div className='w-full'>
+            <h2 className='text-2xl font-semibold leading-9 text-white'>
               {t('aside.title')}
             </h2>
-            <p className='mt-4 text-white/90'>{t('aside.desc')}</p>
+            <p className='mt-4 text-white/90 break-words'>{t('aside.desc')}</p>
             <div className='mt-10 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20'>
-              <div className='h-48 w-[28rem] rounded-md bg-white/5 shadow-2xl shadow-black/40 ring-1 ring-black/10' />
+              <SaaSPreview />
             </div>
           </div>
         </div>

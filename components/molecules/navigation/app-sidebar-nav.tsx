@@ -1,9 +1,4 @@
 'use client'
-import { RiArrowDownSFill } from '@remixicon/react'
-import { ChartBar, LayoutDashboard, Lightbulb, Settings } from 'lucide-react'
-import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import * as React from 'react'
 import { Input } from '@/components/atoms/input'
 import {
   SidebarGroup,
@@ -15,6 +10,11 @@ import {
   SidebarSubLink,
 } from '@/components/atoms/sidebar'
 import { cx, focusRing } from '@/lib/utils'
+import { RiArrowDownSFill } from '@remixicon/react'
+import { ChartBar, LayoutDashboard, Lightbulb, Settings } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { usePathname } from 'next/navigation'
+import * as React from 'react'
 
 type IconComponent = React.ComponentType<{
   className?: string
@@ -88,10 +88,6 @@ const navigation2: ReadonlyArray<NavGroup> = [
       {
         href: '/app/organizations',
         name: 'app.sidebar.settings.organizations',
-      },
-      {
-        href: '/app/wysiwyg',
-        name: 'WYSIWYG Editor',
       },
     ],
     href: '#',

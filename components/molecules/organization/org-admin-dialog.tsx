@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import {
@@ -31,7 +32,6 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { toast } from '@/lib/use-toast'
-import { useEffect, useState } from 'react'
 
 type Member = {
   id: string
