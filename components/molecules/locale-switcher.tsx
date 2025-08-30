@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
+import { localeCookieName } from '@/i18n/config'
 import { useTransition } from 'react'
 import {
   Select,
@@ -19,7 +20,7 @@ export function LocaleSwitcher() {
 
   function setLocaleCookie(nextLocale: string) {
     // Persist for 1 year, path-wide
-    document.cookie = `locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`
+    document.cookie = `${localeCookieName}=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`
     startTransition(() => {
       router.refresh()
     })

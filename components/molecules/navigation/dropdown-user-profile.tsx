@@ -7,6 +7,7 @@ import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useState, useTransition } from 'react'
 import { toast } from '@/lib/use-toast'
 import { client } from '@/auth/client'
+import { localeCookieName } from '@/i18n/config'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,7 +57,7 @@ export function DropdownUserProfile({
   }
 
   function setLocaleCookie(nextLocale: string) {
-    document.cookie = `locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`
+    document.cookie = `${localeCookieName}=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`
     startTransition(() => {
       router.refresh()
     })

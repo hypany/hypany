@@ -1,6 +1,5 @@
 import { createNavigation } from 'next-intl/navigation'
-
-export const locales = ['en', 'ko'] as const
+import { locales } from './config'
 export type Locale = (typeof locales)[number]
 
 // No URL prefix for locales

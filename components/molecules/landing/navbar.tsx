@@ -37,7 +37,8 @@ export function NavBar() {
               </span>
             </span>
           </Link>
-          <div className='flex items-center gap-2'>
+          {/* Hide auth buttons on mobile; keep only mobile menu button */}
+          <div className='hidden items-center gap-2 sm:flex'>
             {isAuthenticated ? (
               <Link href='/app'>
                 <Button variant='primary' className='mr-0'>
