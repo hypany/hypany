@@ -23,7 +23,12 @@ export default async function LandingPagesGallery({
 
   // Ensure hypothesis belongs to org
   const [hyp] = await db
-    .select({ id: hypotheses.id, name: hypotheses.name, slug: hypotheses.slug })
+    .select({
+      id: hypotheses.id,
+      name: hypotheses.name,
+      slug: hypotheses.slug,
+      customDomain: hypotheses.customDomain,
+    })
     .from(hypotheses)
     .where(
       and(
@@ -37,7 +42,6 @@ export default async function LandingPagesGallery({
 
   const pages = await db
     .select({
-      customDomain: landingPages.customDomain,
       id: landingPages.id,
       name: landingPages.name,
       publishedAt: landingPages.publishedAt,
@@ -77,9 +81,9 @@ export default async function LandingPagesGallery({
                       <div className='mt-1 text-xs text-gray-500'>
                         ID: {p.id}
                       </div>
-                      {(p.customDomain || hyp.slug) && (
+                      {(hyp.customDomain || hyp.slug) && (
                         <div className='text-xs text-gray-500'>
-                          {p.customDomain || (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
+                          {hyp.customDomain || (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
                         </div>
                       )}
                     </div>

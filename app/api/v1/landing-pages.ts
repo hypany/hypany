@@ -195,16 +195,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
             )
           }
 
-          // Ensure no other landing page is using this custom domain
+          // Ensure no other hypothesis is using this custom domain
           const existing = await db
-            .select({ id: landingPages.id })
-            .from(landingPages)
-            .where(
-              and(
-                eq(landingPages.customDomain, normalized),
-                isNull(landingPages.deletedAt),
-              ),
-            )
+            .select({ id: hypotheses.id })
+            .from(hypotheses)
+            .where(and(eq(hypotheses.customDomain, normalized), isNull(hypotheses.deletedAt)))
             .limit(1)
 
           if (existing.length > 0) {
@@ -249,10 +244,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         nextSlug = normalizedSlug
       }
 
-      const {
-        slug: _slug,
-        ...lpUpdates
-      } = body as Record<string, string | null | undefined>
+      const { slug: _slug, customDomain: _cd, ...lpUpdates } =
+        body as Record<string, string | null | undefined>
       await db
         .update(landingPages)
         .set({ ...(lpUpdates as object), updatedAt: new Date() })
@@ -265,17 +258,29 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           .where(eq(hypotheses.id, params.hypothesisId))
       }
 
-      // Best-effort: sync domain(s) with Vercel project (add or remove)
+      // Best-effort: update hypothesis customDomain and sync domains
       try {
         if (typeof body.customDomain !== 'undefined') {
           const normalized =
             (body.customDomain as unknown as string | null) || null
+          // get previous
+          const [prev] = await db
+            .select({ customDomain: hypotheses.customDomain })
+            .from(hypotheses)
+            .where(eq(hypotheses.id, params.hypothesisId))
+            .limit(1)
+
+          await db
+            .update(hypotheses)
+            .set({ customDomain: normalized, updatedAt: new Date() })
+            .where(eq(hypotheses.id, params.hypothesisId))
+
           if (normalized) {
             await ensureVercelProjectDomains(normalized)
           } else {
             // Remove prior domain(s) from project if any
-            if (lp.customDomain) {
-              await removeVercelProjectDomains(lp.customDomain)
+            if (prev?.customDomain) {
+              await removeVercelProjectDomains(prev.customDomain)
             }
           }
         }
@@ -413,16 +418,20 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         )
         .orderBy(landingPageBlocks.order)
 
-      // Attach hypothesis slug for compatibility where UI expects .slug on landingPage
+      // Attach hypothesis fields for compatibility where UI expects them on landingPage
       const [hyp] = await db
-        .select({ slug: hypotheses.slug })
+        .select({ slug: hypotheses.slug, customDomain: hypotheses.customDomain })
         .from(hypotheses)
         .where(eq(hypotheses.id, params.hypothesisId))
         .limit(1)
 
       return jsonOk(set, HTTP_STATUS.OK, {
         blocks,
-        landingPage: { ...landingPage, slug: hyp?.slug ?? null },
+        landingPage: {
+          ...landingPage,
+          slug: hyp?.slug ?? null,
+          customDomain: hyp?.customDomain ?? null,
+        },
       })
     },
     {
@@ -469,10 +478,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
 
       // Resolve landing page and custom domain
       const [lp] = await db
-        .select({
-          customDomain: landingPages.customDomain,
-          id: landingPages.id,
-        })
+        .select({ customDomain: hypotheses.customDomain, id: landingPages.id })
         .from(landingPages)
         .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
         .where(
@@ -554,7 +560,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           id: landingPages.id,
           slug: hypotheses.slug,
           template: landingPages.template,
-          customDomain: landingPages.customDomain,
+          customDomain: hypotheses.customDomain,
         })
         .from(landingPages)
         .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))

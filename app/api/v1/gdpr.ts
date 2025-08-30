@@ -110,7 +110,7 @@ export const gdprApi = new Elysia({ prefix: '/v1/gdpr' })
             .select({
               createdAt: landingPages.createdAt,
               customCss: landingPages.customCss,
-              customDomain: landingPages.customDomain,
+              customDomain: hypotheses.customDomain,
               favicon: landingPages.favicon,
               hypothesisId: landingPages.hypothesisId,
               id: landingPages.id,
