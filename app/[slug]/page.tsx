@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { api } from '@/app/api/client'
+import { getServerApi } from '@/app/api/server'
 import { Template1 } from '@/templates/template-1'
 import type { LandingConfig } from '@/templates/types'
 
@@ -10,6 +10,7 @@ export default async function PublicBySlug({
 }) {
   const { slug } = await params
 
+  const api = await getServerApi()
   const res = await api.v1.public['by-slug']({ slug }).get()
   const data = res.data
   if (!data || !('hypothesis' in data)) notFound()
