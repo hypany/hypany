@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/atoms/badge'
 import { ProgressCircle } from '@/components/atoms/progress-circle'
 import {
@@ -13,6 +12,7 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { Tooltip } from '@/components/atoms/tooltip'
+import { useTranslations } from 'next-intl'
 
 export type IdeaItem = {
   user: string
@@ -41,7 +41,9 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
             return (
               <TableRow key={row.product}>
                 <TableCell>
-                  <span className='text-gray-800'>{row.product}</span>
+                  <span className='text-gray-800 max-w-xs break-words whitespace-pre-line block'>
+                    {row.product}
+                  </span>
                 </TableCell>
                 <TableCell>
                   <div className='flex flex-wrap gap-1.5'>
