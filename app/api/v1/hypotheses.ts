@@ -127,6 +127,8 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
 
       // Growth rate: last 7d vs previous 7d
       let growthRate7d = 0
+      let last7Signups = 0
+      let prev7Signups = 0
       if (waitlistIds.length > 0) {
         const now = new Date()
         const todayUtcMidnight = new Date(
@@ -160,8 +162,10 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             ),
           )
 
-        const prev = Number(prev7 || 0)
-        const curr = Number(last7 || 0)
+        last7Signups = Number(last7 || 0)
+        prev7Signups = Number(prev7 || 0)
+        const prev = prev7Signups
+        const curr = last7Signups
         growthRate7d =
           prev > 0 ? ((curr - prev) / prev) * 100 : curr > 0 ? 100 : 0
       }
@@ -175,6 +179,8 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             : 0,
         })),
         metrics: {
+          last7Signups,
+          prev7Signups,
           growthRate7d,
           readyToLaunch,
           totalSignups,
@@ -214,6 +220,8 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             }),
           ),
           metrics: t.Object({
+            last7Signups: t.Number(),
+            prev7Signups: t.Number(),
             growthRate7d: t.Number(),
             readyToLaunch: t.Number(),
             totalSignups: t.Number(),

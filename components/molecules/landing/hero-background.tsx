@@ -1,10 +1,13 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import { useTheme } from 'next-themes'
 
 type Grid = { alive: boolean; opacity: number }[][]
 
 const GameOfLife = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -42,6 +45,7 @@ const GameOfLife = () => {
       return sum
     }
 
+    const isDark = resolvedTheme === 'dark'
     const draw = () => {
       // Transparent background; clear previous frame
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -72,7 +76,9 @@ const GameOfLife = () => {
 
             const alpha = Math.max(0, Math.min(1, cell.opacity * spotlight))
             if (alpha <= 0) continue
-            ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`
+            ctx.fillStyle = isDark
+              ? `rgba(255, 255, 255, ${alpha})`
+              : `rgba(0, 0, 0, ${alpha})`
             ctx.beginPath()
             ctx.arc(px, py, 1, 0, Math.PI * 2)
             ctx.fill()
@@ -104,7 +110,7 @@ const GameOfLife = () => {
     return () => {
       cancelAnimationFrame(animationFrameId)
     }
-  }, [])
+  }, [resolvedTheme])
 
   return (
     <div className='mask pointer-events-none overflow-hidden select-none'>

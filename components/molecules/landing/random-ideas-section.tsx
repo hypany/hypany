@@ -55,7 +55,7 @@ export default async function RandomIdeasSection() {
         {t('heading')}
         <span className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
       </h2>
-      <p className='mt-2 max-w-3xl text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
+      <p className='mt-2 max-w-3xl text-3xl font-semibold tracking-tighter text-balance text-gray-900 dark:text-gray-50 md:text-4xl'>
         {t('subheading')}
       </p>
 

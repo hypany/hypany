@@ -46,7 +46,7 @@ export default async function Features() {
               y1='0'
               x2='0'
               y2='100%'
-              className='stroke-gray-300'
+              className='stroke-gray-300 dark:stroke-gray-800'
               strokeWidth='2'
               strokeDasharray='3 3'
             />
@@ -68,7 +68,7 @@ export default async function Features() {
               y1='0'
               x2='0'
               y2='100%'
-              className='stroke-gray-300'
+              className='stroke-gray-300 dark:stroke-gray-800'
               strokeWidth='2'
               strokeDasharray='3 3'
             />
@@ -89,7 +89,7 @@ export default async function Features() {
               y1='0'
               x2='0'
               y2='100%'
-              className='stroke-gray-300'
+              className='stroke-gray-300 dark:stroke-gray-800'
               strokeWidth='2'
               strokeDasharray='3 3'
             />
@@ -110,7 +110,7 @@ export default async function Features() {
               y1='0'
               x2='0'
               y2='100%'
-              className='stroke-gray-300'
+              className='stroke-gray-300 dark:stroke-gray-800'
               strokeWidth='2'
               strokeDasharray='3 3'
             />
@@ -131,7 +131,7 @@ export default async function Features() {
               y1='0'
               x2='0'
               y2='100%'
-              className='stroke-gray-300'
+              className='stroke-gray-300 dark:stroke-gray-800'
               strokeWidth='2'
               strokeDasharray='3 3'
             />
@@ -145,10 +145,10 @@ export default async function Features() {
             {t('rapid-idea-validation.title')}
             <div className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
-          <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
+          <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 dark:text-gray-50 md:text-4xl'>
             {t('rapid-idea-validation.h1')}
           </p>
-          <p className='mt-4 text-balance text-gray-700'>
+          <p className='mt-4 text-balance text-gray-700 dark:text-gray-300'>
             {t('rapid-idea-validation.p')}
           </p>
         </div>
@@ -174,7 +174,7 @@ export default async function Features() {
                     <path
                       key={`line-${-106 + offset}-${22 + offset}`}
                       d={`M${-106 + offset} 110L${22 + offset} -18`}
-                      className='stroke-gray-200/70'
+                      className='stroke-gray-200/70 dark:stroke-gray-800/70'
                       strokeWidth='1'
                     />
                   )
@@ -194,7 +194,7 @@ export default async function Features() {
                     key='obj1'
                     className='relative flex items-center justify-center'
                   >
-                    <RiCloseCircleLine className='z-10 size-5 text-gray-900' />
+                    <RiCloseCircleLine className='z-10 size-5 text-gray-900 dark:text-gray-50' />
                     <div className='absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5'></div>
                     <div className='absolute -top-5 left-4'>
                       <div className='flex gap-1'>
@@ -218,7 +218,7 @@ export default async function Features() {
                     key='obj2'
                     className='relative flex items-center justify-center'
                   >
-                    <RiFlaskLine className='z-10 size-5 text-gray-900' />
+                    <RiFlaskLine className='z-10 size-5 text-gray-900 dark:text-gray-50' />
                     <div className='absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5'></div>
                     <div className='absolute -top-5 left-4'>
                       <div className='flex gap-1'>
@@ -242,7 +242,7 @@ export default async function Features() {
                     key='obj3'
                     className='relative flex items-center justify-center'
                   >
-                    <RiLineChartLine className='z-10 size-5 text-gray-900' />
+                    <RiLineChartLine className='z-10 size-5 text-gray-900 dark:text-gray-50' />
                     <div className='absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5'></div>
                     <div
                       style={{
@@ -255,7 +255,7 @@ export default async function Features() {
                     key='obj4'
                     className='relative flex items-center justify-center'
                   >
-                    <RiAB className='z-10 size-5 text-gray-900' />
+                    <RiAB className='z-10 size-5 text-gray-900 dark:text-gray-50' />
                     <div className='absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5'></div>
                     <div className='absolute -top-5 left-4'>
                       <div className='flex gap-1'>
@@ -279,7 +279,7 @@ export default async function Features() {
                     key='obj5'
                     className='relative flex items-center justify-center'
                   >
-                    <RiBarChart2Line className='z-10 size-5 text-gray-900' />
+                    <RiBarChart2Line className='z-10 size-5 text-gray-900 dark:text-gray-50' />
                     <div className='absolute size-10 rounded-full bg-white/50 ring-1 shadow-lg ring-black/5'></div>
                     <div
                       style={{
@@ -308,10 +308,10 @@ export default async function Features() {
             {t('data-driven-decisions.title')}
             <div className='absolute top-1 -left-[8px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
-          <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
+          <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 dark:text-gray-50 md:text-4xl'>
             {t('data-driven-decisions.h1')}
           </p>
-          <p className='mt-4 text-balance text-gray-700'>
+          <p className='mt-4 text-balance text-gray-700 dark:text-gray-300'>
             {t('data-driven-decisions.p')}
           </p>
         </div>
@@ -331,7 +331,7 @@ export default async function Features() {
                     <path
                       key={`line-${-106 + offset}-${22 + offset}`}
                       d={`M${-106 + offset} 110L${22 + offset} -18`}
-                      className='stroke-gray-200/70'
+                      className='stroke-gray-200/70 dark:stroke-gray-800/70'
                       strokeWidth='1'
                     />
                   )
@@ -349,7 +349,7 @@ export default async function Features() {
             >
               <title>Feature grid</title>
               <path
-                className='stroke-gray-300'
+                className='stroke-gray-300 dark:stroke-gray-800'
                 d='M48 0v432M96 0v432M144 0v432M192 0v432M240 0v432M288 0v432M336 0v432M384 0v432M0 48h432M0 96h432M0 144h432M0 192h432M0 240h432M0 288h432M0 336h432M0 384h432'
               />
             </svg>
@@ -433,10 +433,10 @@ export default async function Features() {
             {t('waitlist-to-customers.title')}
             <div className='absolute top-1 -left-[7px] h-5 w-[3px] rounded-r-sm bg-emerald-500' />
           </h2>
-          <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 md:text-4xl'>
+          <p className='mt-2 text-3xl font-semibold tracking-tighter text-balance text-gray-900 dark:text-gray-50 md:text-4xl'>
             {t('waitlist-to-customers.h1')}
           </p>
-          <p className='mt-4 text-balance text-gray-700'>
+          <p className='mt-4 text-balance text-gray-700 dark:text-gray-300'>
             {t('waitlist-to-customers.p')}
           </p>
         </div>
@@ -456,7 +456,7 @@ export default async function Features() {
                     <path
                       key={`line-${-106 + offset}-${22 + offset}`}
                       d={`M${-106 + offset} 110L${22 + offset} -18`}
-                      className='stroke-gray-200/70'
+                      className='stroke-gray-200/70 dark:stroke-gray-800/70'
                       strokeWidth='1'
                     />
                   )

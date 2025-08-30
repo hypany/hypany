@@ -22,6 +22,7 @@ import {
   hypotheses,
   landingPageBlocks,
   landingPages,
+  pageVisits,
   verifications,
   waitlistEntries,
   waitlists,
@@ -45,6 +46,96 @@ function parseCookie(cookieHeader?: string | null): Record<string, string> {
 }
 
 export const publicApi = new Elysia({ prefix: '/v1/public' })
+  // Get public landing page data by hypothesis slug
+  .get(
+    '/by-slug/:slug',
+    async ({ params, set, request }) => {
+      // Resolve hypothesis by slug and published status
+      const [hypothesis] = await db
+        .select({
+          description: hypotheses.description,
+          id: hypotheses.id,
+          name: hypotheses.name,
+          status: hypotheses.status,
+          customDomain: hypotheses.customDomain,
+        })
+        .from(hypotheses)
+        .where(eq(hypotheses.slug, params.slug))
+        .limit(1)
+
+      if (!hypothesis || hypothesis.status !== 'published') {
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Page not found')
+      }
+
+      // Pick one landing page for this hypothesis
+      const [landingPage] = await db
+        .select()
+        .from(landingPages)
+        .where(eq(landingPages.hypothesisId, hypothesis.id))
+        .limit(1)
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Page not found')
+
+      // Get blocks
+      const blocks = await db
+        .select({
+          content: landingPageBlocks.content,
+          id: landingPageBlocks.id,
+          order: landingPageBlocks.order,
+          type: landingPageBlocks.type,
+        })
+        .from(landingPageBlocks)
+        .where(eq(landingPageBlocks.landingPageId, landingPage.id))
+        .orderBy(landingPageBlocks.order)
+
+      // Attempt to log page visit (ignore errors)
+      try {
+        const cookieHeader = request.headers.get('cookie')
+        const cookies = parseCookie(cookieHeader || undefined)
+        const visitorId = cookies.hp_vid || null
+        const referrerRaw = request.headers.get('referer') || null
+        const userAgent = request.headers.get('user-agent') || null
+        const referrer = normalizeReferrerHost(referrerRaw)
+
+        await db.insert(pageVisits).values({
+          createdAt: new Date(),
+          hypothesisId: hypothesis.id,
+          landingPageId: landingPage.id,
+          path: `/${params.slug}`,
+          referrer,
+          userAgent,
+          visitorId,
+        })
+      } catch (e) {
+        logger.error('Failed to log public page visit', { error: String(e) })
+      }
+
+      return jsonOk(set, HTTP_STATUS.OK, {
+        blocks,
+        hypothesis: {
+          description: hypothesis.description,
+          name: hypothesis.name,
+          id: hypothesis.id,
+        },
+        landingPage: {
+          customCss: landingPage.customCss,
+          favicon: landingPage.favicon,
+          metaDescription: landingPage.metaDescription,
+          metaTitle: landingPage.metaTitle,
+          ogImage: landingPage.ogImage,
+          template: landingPage.template,
+        },
+      })
+    },
+    {
+      detail: {
+        description: 'Get public landing page data by slug (no auth required)',
+        summary: 'Get public landing by slug',
+        tags: ['Public'],
+      },
+      params: t.Object({ slug: t.String() }),
+    },
+  )
   // Get public landing page data by ID
   .get(
     '/:id',

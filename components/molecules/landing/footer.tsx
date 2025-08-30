@@ -69,7 +69,7 @@ export const Footer = () => {
                 y1='0'
                 x2='0'
                 y2='100%'
-                className='stroke-gray-300'
+                className='stroke-gray-300 dark:stroke-gray-800'
                 strokeWidth='2'
                 strokeDasharray='3 3'
               />
@@ -90,14 +90,14 @@ export const Footer = () => {
                 y1='0'
                 x2='0'
                 y2='100%'
-                className='stroke-gray-300'
+                className='stroke-gray-300 dark:stroke-gray-800'
                 strokeWidth='2'
                 strokeDasharray='3 3'
               />
             </svg>
           </div>
         </div>
-        <svg className='mb-10 h-20 w-full border-y border-dashed border-gray-300 stroke-gray-300'>
+        <svg className='mb-10 h-20 w-full border-y border-dashed border-gray-300 stroke-gray-300 dark:border-gray-800 dark:stroke-gray-800'>
           <title>{tFooter('footer-pattern-alt')}</title>
           <defs>
             <pattern patternUnits='userSpaceOnUse' width='64' height='64'>
@@ -124,7 +124,7 @@ export const Footer = () => {
         <div className='mr-auto flex w-full justify-between lg:w-fit lg:flex-col'>
           <Link
             href='/'
-            className='flex items-center font-medium text-gray-700 select-none sm:text-sm'
+            className='flex items-center font-medium text-gray-700 dark:text-gray-300 select-none sm:text-sm'
           >
             <HypanyLogo className='ml-2 w-10 h-10' />
 
@@ -137,7 +137,7 @@ export const Footer = () => {
                 href='#'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900'
+                className='rounded-xs p-2 text-gray-700 dark:text-gray-300 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50'
               >
                 <RiTwitterXFill className='size-5' />
               </Link>
@@ -145,7 +145,7 @@ export const Footer = () => {
                 href='#'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900'
+                className='rounded-xs p-2 text-gray-700 dark:text-gray-300 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50'
               >
                 <RiYoutubeFill className='size-5' />
               </Link>
@@ -153,7 +153,7 @@ export const Footer = () => {
                 href='#'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900'
+                className='rounded-xs p-2 text-gray-700 dark:text-gray-300 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50'
               >
                 <RiGithubFill className='size-5' />
               </Link>
@@ -161,7 +161,7 @@ export const Footer = () => {
                 href='#'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='rounded-xs p-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900'
+                className='rounded-xs p-2 text-gray-700 dark:text-gray-300 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50'
               >
                 <RiSlackFill className='size-5' />
               </Link>
@@ -172,7 +172,7 @@ export const Footer = () => {
         {/* Footer Sections */}
         {Object.entries(sections).map(([key, section]) => (
           <div key={key} className='mt-10 min-w-44 pl-2 lg:mt-0 lg:pl-0'>
-            <h3 className='mb-4 font-medium text-gray-900 sm:text-sm'>
+            <h3 className='mb-4 font-medium text-gray-900 dark:text-gray-50 sm:text-sm'>
               {section.title}
             </h3>
             <ul className='space-y-4'>
@@ -180,7 +180,7 @@ export const Footer = () => {
                 <li key={item.label} className='text-sm'>
                   <Link
                     href={item.href}
-                    className='text-gray-600 transition-colors duration-200 hover:text-gray-900'
+                    className='text-gray-600 dark:text-gray-400 transition-colors duration-200 hover:text-gray-900 dark:hover:text-gray-50'
                   >
                     {item.label}
                   </Link>

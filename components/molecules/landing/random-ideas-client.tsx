@@ -41,7 +41,7 @@ export default function RandomIdeasClient({ items }: { items: IdeaItem[] }) {
             return (
               <TableRow key={row.product}>
                 <TableCell>
-                  <span className='text-gray-800 max-w-xs break-words whitespace-pre-line block'>
+                  <span className='max-w-xs break-words whitespace-pre-line block text-gray-800 dark:text-gray-200'>
                     {row.product}
                   </span>
                 </TableCell>

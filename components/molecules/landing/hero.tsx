@@ -29,14 +29,14 @@ export async function Hero() {
             </div>
           </a>
         </FadeDiv>
-        <h1 className='mt-8 text-center text-5xl font-semibold tracking-tighter text-gray-900 sm:text-7xl sm:leading-22'>
+        <h1 className='mt-8 text-center text-5xl font-semibold tracking-tighter text-gray-900 dark:text-gray-50 sm:text-7xl sm:leading-22'>
           <FadeSpan>{t('title.part-1')}</FadeSpan>{' '}
           <FadeSpan>{t('title.part-2')}</FadeSpan>
           <br />
           <FadeSpan>{t('title.part-3')}</FadeSpan>{' '}
           <FadeSpan>{t('title.part-4')}</FadeSpan>
         </h1>
-        <p className='mt-5 max-w-xl text-center text-base text-balance text-gray-700 sm:mt-8 sm:text-xl'>
+        <p className='mt-5 max-w-xl text-center text-base text-balance text-gray-700 dark:text-gray-300 sm:mt-8 sm:text-xl'>
           <FadeSpan>{t('sub.line-1')}</FadeSpan>
           <br />
           <FadeSpan>{t('sub.line-2')}</FadeSpan>

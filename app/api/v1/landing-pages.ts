@@ -67,6 +67,54 @@ const LandingPageSchema = {
 
 export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
   .use(authPlugin)
+  // List landing pages for a hypothesis
+  .get(
+    '/hypothesis/:hypothesisId/list',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Verify hypothesis ownership
+      const [hyp] = await db
+        .select({ id: hypotheses.id })
+        .from(hypotheses)
+        .where(
+          and(
+            eq(hypotheses.id, params.hypothesisId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(hypotheses.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!hyp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Hypothesis not found')
+
+      const pages = await db
+        .select({
+          id: landingPages.id,
+          name: landingPages.name,
+          template: landingPages.template,
+          publishedAt: landingPages.publishedAt,
+          updatedAt: landingPages.updatedAt,
+        })
+        .from(landingPages)
+        .where(and(eq(landingPages.hypothesisId, params.hypothesisId), isNull(landingPages.deletedAt)))
+
+      return jsonOk(set, HTTP_STATUS.OK, { pages })
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'List all landing pages for a hypothesis',
+        summary: 'List landing pages',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: { 200: t.Object({ pages: t.Array(t.Object({ id: t.String(), name: t.Nullable(t.String()), template: t.String(), publishedAt: t.Nullable(t.Date()), updatedAt: t.Date() })) }), 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
   // Create a new landing page for a hypothesis
   .post(
     '/hypothesis/:hypothesisId/create',

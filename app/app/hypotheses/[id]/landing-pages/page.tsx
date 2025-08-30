@@ -1,9 +1,8 @@
-import { auth } from '@/auth'
 import { Button } from '@/components/atoms/button'
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
-import { db } from '@/drizzle'
-import { hypotheses, landingPages } from '@/schema'
-import { and, eq, isNull } from 'drizzle-orm'
+import { treaty } from '@elysiajs/eden'
+import { serviceUrl } from '@/lib/url'
+import type { App } from '@/app/api/[[...slugs]]/route'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 import { CreateLandingPageButton, DuplicateLandingPageButton, RenameLandingPageInline } from './ui'
@@ -17,39 +16,23 @@ export default async function LandingPagesGallery({
   const { id } = await params
 
   const hdrs = await headers()
-  const session = await auth.api.getSession({ headers: hdrs })
-  const orgId = session?.session?.activeOrganizationId
-  if (!orgId) notFound()
+  const cookie = hdrs.get('cookie') ?? ''
+  const { api } = treaty<App>(serviceUrl, {
+    fetcher: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
+  })
 
-  // Ensure hypothesis belongs to org
-  const [hyp] = await db
-    .select({
-      id: hypotheses.id,
-      name: hypotheses.name,
-      slug: hypotheses.slug,
-      customDomain: hypotheses.customDomain,
-    })
-    .from(hypotheses)
-    .where(
-      and(
-        eq(hypotheses.id, id),
-        eq(hypotheses.organizationId, orgId),
-        isNull(hypotheses.deletedAt),
-      ),
-    )
-    .limit(1)
-  if (!hyp) notFound()
+  const hypRes = await api.v1.hypotheses({ id }).get()
+  const hypData = hypRes.data
+  if (!hypData || !hypData.hypothesis) notFound()
 
-  const pages = await db
-    .select({
-      id: landingPages.id,
-      name: landingPages.name,
-      publishedAt: landingPages.publishedAt,
-      template: landingPages.template,
-      updatedAt: landingPages.updatedAt,
-    })
-    .from(landingPages)
-    .where(and(eq(landingPages.hypothesisId, id), isNull(landingPages.deletedAt)))
+  const pagesRes = await api.v1['landing-pages'].hypothesis({ hypothesisId: id })['list'].get()
+  const pages = pagesRes.data?.pages ?? []
+  const hyp = {
+    customDomain: null as string | null,
+    id: hypData.hypothesis.id,
+    name: hypData.hypothesis.name,
+    slug: (hypData.hypothesis as { slug?: string | null }).slug ?? null,
+  }
 
   return (
     <section>

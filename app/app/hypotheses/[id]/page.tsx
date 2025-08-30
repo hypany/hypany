@@ -1,7 +1,6 @@
-import { and, count, eq, isNull } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import { auth } from '@/auth'
+import { treaty } from '@elysiajs/eden'
 import {
   Table,
   TableBody,
@@ -11,8 +10,8 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import { db } from '@/drizzle'
-import { hypotheses, landingPages, waitlistEntries, waitlists } from '@/schema'
+import { serviceUrl } from '@/lib/url'
+import type { App } from '@/app/api/[[...slugs]]/route'
 
 export default async function HypothesisOverview({
   params,
@@ -21,41 +20,13 @@ export default async function HypothesisOverview({
 }) {
   const { id } = await params
   const hdrs = await headers()
-  const session = await auth.api.getSession({ headers: hdrs })
-  const orgId = session?.session?.activeOrganizationId
-  if (!orgId) notFound()
-
-  const result = await db
-    .select({
-      hypothesis: hypotheses,
-      landingPage: landingPages,
-      waitlist: waitlists,
-    })
-    .from(hypotheses)
-    .leftJoin(landingPages, eq(landingPages.hypothesisId, hypotheses.id))
-    .leftJoin(waitlists, eq(waitlists.hypothesisId, hypotheses.id))
-    .where(
-      and(
-        eq(hypotheses.id, id),
-        eq(hypotheses.organizationId, orgId),
-        isNull(hypotheses.deletedAt),
-      ),
-    )
-    .limit(1)
-
-  if (!result.length) notFound()
-
-  const row = result[0]
-
-  // Signup count (all-time)
-  let signupCount = 0
-  if (row.waitlist?.id) {
-    const [c] = await db
-      .select({ count: count() })
-      .from(waitlistEntries)
-      .where(eq(waitlistEntries.waitlistId, row.waitlist.id))
-    signupCount = Number(c?.count || 0)
-  }
+  const cookie = hdrs.get('cookie') ?? ''
+  const { api } = treaty<App>(serviceUrl, {
+    fetcher: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
+  })
+  const res = await api.v1.hypotheses({ id }).get()
+  const data = res.data
+  if (!data || !data.hypothesis) notFound()
 
   return (
     <section>
@@ -70,17 +41,17 @@ export default async function HypothesisOverview({
           <TableBody>
             <TableRow>
               <TableCell className='font-medium'>Status</TableCell>
-              <TableCell className='capitalize'>
-                {row.hypothesis.status}
-              </TableCell>
+              <TableCell className='capitalize'>{data.hypothesis.status}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className='font-medium'>Signups</TableCell>
-              <TableCell>{signupCount ?? '-'}</TableCell>
+              <TableCell>{data.signupCount ?? '-'}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className='font-medium'>Subdomain</TableCell>
-              <TableCell>{(row.hypothesis as { slug?: string | null }).slug ?? '-'}</TableCell>
+              <TableCell>
+                {(data.hypothesis as { slug?: string | null }).slug ?? '-'}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

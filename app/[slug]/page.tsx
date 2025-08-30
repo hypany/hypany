@@ -1,11 +1,5 @@
-import { and, desc, eq, isNull } from 'drizzle-orm'
-import { cookies, headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import { db } from '@/drizzle'
-import { BOT_UA_REGEX } from '@/lib/constants'
-import { logger } from '@/lib/logger'
-import { normalizeReferrerHost } from '@/lib/referrer'
-import { hypotheses, landingPageBlocks, landingPages, pageVisits } from '@/schema'
+import { api } from '@/app/api'
 import { Template1 } from '@/templates/template-1'
 import type { LandingConfig } from '@/templates/types'
 
@@ -16,90 +10,47 @@ export default async function PublicBySlug({
 }) {
   const { slug } = await params
 
-  // Resolve hypothesis by slug
-  const [hypothesis] = await db
-    .select()
-    .from(hypotheses)
-    .where(and(eq(hypotheses.slug, slug), isNull(hypotheses.deletedAt)))
-    .limit(1)
-
-  if (!hypothesis || hypothesis.status !== 'published') {
-    notFound()
+  const res = await api.v1.public['by-slug']({ slug }).get()
+  const data = res.data
+  if (!data || !('hypothesis' in data)) notFound()
+  const ok = data as {
+    blocks: Array<{ id: string; type: string; order: string; content: string }>
+    hypothesis: { id: string; name: string; description: string | null }
+    landingPage: {
+      customCss: string | null
+      favicon: string | null
+      metaDescription: string | null
+      metaTitle: string | null
+      ogImage: string | null
+      template: string
+    }
   }
-
-  // Pick one landing page for this hypothesis
-  const [lp] = await db
-    .select()
-    .from(landingPages)
-    .where(and(eq(landingPages.hypothesisId, hypothesis.id), isNull(landingPages.deletedAt)))
-    .orderBy(desc(landingPages.publishedAt), desc(landingPages.updatedAt))
-    .limit(1)
-  if (!lp) notFound()
-
-  // Get landing page blocks
-  const blocks = await db
-    .select()
-    .from(landingPageBlocks)
-    .where(
-      and(
-        eq(landingPageBlocks.landingPageId, lp.id),
-        isNull(landingPageBlocks.deletedAt),
-      ),
-    )
-    .orderBy(landingPageBlocks.order)
 
   // Convert blocks to config
-  const config = blocksToConfig(blocks)
+  const config = blocksToConfig(
+    ok.blocks.map((b) => ({
+      content: b.content,
+      id: b.id,
+      order: b.order,
+      type: b.type,
+    })),
+  )
 
   // Add metadata from landing page
-  if (lp.metaTitle || lp.metaDescription) {
+  if (ok.landingPage.metaTitle || ok.landingPage.metaDescription) {
     config.meta = {
       ...config.meta,
-      description: lp.metaDescription || config.meta.description,
-      ogImage: lp.ogImage || config.meta.ogImage,
-      title: lp.metaTitle || config.meta.title,
+      description: ok.landingPage.metaDescription || config.meta.description,
+      ogImage: ok.landingPage.ogImage || config.meta.ogImage,
+      title: ok.landingPage.metaTitle || config.meta.title,
     }
-  }
-
-  // Track page view (simple server-side logging)
-  try {
-    const h = await headers()
-    const referrerRaw = h.get('referer') || null
-    const userAgent = h.get('user-agent') || null
-
-    // Skip bot traffic
-    if (userAgent && BOT_UA_REGEX.test(userAgent)) {
-      // Do not log bot page views
-      return (
-        <Template1
-          config={config}
-          hypothesisId={hypothesis.id}
-          customCss={lp.customCss}
-        />
-      )
-    }
-
-    const referrer = normalizeReferrerHost(referrerRaw)
-    const visitorId = (await cookies()).get('hp_vid')?.value || null
-
-    await db.insert(pageVisits).values({
-      createdAt: new Date(),
-      hypothesisId: hypothesis.id,
-      landingPageId: lp.id,
-      path: `/p/${slug}`,
-      referrer,
-      userAgent,
-      visitorId,
-    })
-  } catch (err) {
-    logger.error('Failed to log page visit', { error: String(err) })
   }
 
   return (
     <Template1
       config={config}
-      hypothesisId={hypothesis.id}
-      customCss={lp.customCss}
+      hypothesisId={ok.hypothesis.id}
+      customCss={ok.landingPage.customCss}
     />
   )
 }
