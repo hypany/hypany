@@ -2,7 +2,7 @@
 import { SlidersHorizontal } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { Button } from '@/components/atoms/button'
 import { ComboChart } from '@/components/atoms/combo-chart'
@@ -23,6 +23,7 @@ import {
 import { formatters } from '@/lib/utils'
 
 export default function Monitoring() {
+  const api = getClientApi()
   const t = useTranslations('app.hypotheses.monitoring')
   const [range, setRange] = useState<'30d' | '90d' | '180d' | '365d'>('365d')
   const [daily, setDaily] = useState<

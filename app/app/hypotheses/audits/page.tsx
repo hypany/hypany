@@ -4,7 +4,7 @@ import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react'
 import { Link, SlidersHorizontal } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import {
   Accordion,
   AccordionContent,
@@ -36,6 +36,7 @@ type Section = {
 }
 
 export default function Audits() {
+  const api = getClientApi()
   const t = useTranslations('app.hypotheses.audits')
   const [sections, setSections] = useState<Section[]>([])
 
