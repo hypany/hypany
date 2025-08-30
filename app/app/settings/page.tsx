@@ -1,7 +1,8 @@
-import { api } from '@/app/api/client'
+import { getServerApi } from '@/app/api/server'
 import SettingsForm from './ui'
 
 export default async function SettingsPage() {
+  const api = await getServerApi()
   const res = await api.v1.settings.me.get()
   const settings = res.data?.settings
   return (

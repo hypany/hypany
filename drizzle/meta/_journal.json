@@ -23,25 +23,25 @@
       "when": 1756496049069
     },
     {
+      "breakpoints": true,
       "idx": 3,
-      "version": "7",
-      "when": 1756559437463,
       "tag": "0003_big_doctor_doom",
-      "breakpoints": true
+      "version": "7",
+      "when": 1756559437463
     },
     {
+      "breakpoints": true,
       "idx": 4,
-      "version": "7",
-      "when": 1756560020595,
       "tag": "0004_eminent_wendell_vaughn",
-      "breakpoints": true
+      "version": "7",
+      "when": 1756560020595
     },
     {
+      "breakpoints": true,
       "idx": 5,
-      "version": "7",
-      "when": 1756560767273,
       "tag": "0005_rich_tattoo",
-      "breakpoints": true
+      "version": "7",
+      "when": 1756560767273
     }
   ],
   "version": "7"

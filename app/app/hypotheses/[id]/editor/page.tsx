@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 
 export default async function EditorPage({
   params,
@@ -7,6 +7,7 @@ export default async function EditorPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
+  const api = getClientApi()
   const res = await api.v1['landing-pages']
     .hypothesis({ hypothesisId: id })
     .get()

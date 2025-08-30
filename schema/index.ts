@@ -120,17 +120,17 @@ export const hypotheses = pgTable(
     createdAt: timestamp('created_at')
       .$defaultFn(() => new Date())
       .notNull(),
+    customDomain: text('custom_domain'),
     deletedAt: timestamp('deleted_at'), // Soft delete field
     description: text('description'),
     id: text('id')
       .primaryKey()
       .$defaultFn(() => ulid()),
     name: text('name').notNull(),
-    slug: text('slug').unique(),
-    customDomain: text('custom_domain'),
     organizationId: text('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
+    slug: text('slug').unique(),
     status: text('status').notNull().default('draft'), // draft, published, archived
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
@@ -155,7 +155,6 @@ export const landingPages = pgTable(
     customCss: text('custom_css'),
     deletedAt: timestamp('deleted_at'), // Soft delete field
     favicon: text('favicon'),
-    name: text('name'),
     hypothesisId: text('hypothesis_id')
       .notNull()
       .references(() => hypotheses.id, { onDelete: 'cascade' }),
@@ -164,6 +163,7 @@ export const landingPages = pgTable(
       .$defaultFn(() => ulid()),
     metaDescription: text('meta_description'),
     metaTitle: text('meta_title'),
+    name: text('name'),
     ogImage: text('og_image'),
     publishedAt: timestamp('published_at'),
     template: text('template').notNull().default('default'),

@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
+import { useEffect, useRef } from 'react'
 
 type Grid = { alive: boolean; opacity: number }[][]
 

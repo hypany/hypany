@@ -1,20 +1,29 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { toast } from '@/lib/use-toast'
 
-export function CreateLandingPageButton({ hypothesisId }: { hypothesisId: string }) {
+export function CreateLandingPageButton({
+  hypothesisId,
+}: {
+  hypothesisId: string
+}) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const api = getClientApi()
   async function create() {
     setLoading(true)
     try {
-      const res = await api.v1['landing-pages'].hypothesis({ hypothesisId }).create.post()
-      const id = res.data && typeof res.data === 'object' && 'id' in res.data ? (res.data as { id: string }).id : null
+      const res = await api.v1['landing-pages']
+        .hypothesis({ hypothesisId })
+        .create.post()
+      const id =
+        res.data && typeof res.data === 'object' && 'id' in res.data
+          ? (res.data as { id: string }).id
+          : null
       if (id) {
         toast({ title: 'Landing page created', variant: 'success' })
         router.push(`/app/editor/${hypothesisId}/${id}`)
@@ -47,8 +56,13 @@ export function DuplicateLandingPageButton({
   async function duplicate() {
     setLoading(true)
     try {
-      const res = await api.v1['landing-pages']['by-id']({ landingPageId }).duplicate.post()
-      const id = res.data && typeof res.data === 'object' && 'id' in res.data ? (res.data as { id: string }).id : null
+      const res = await api.v1['landing-pages']
+        ['by-id']({ landingPageId })
+        .duplicate.post()
+      const id =
+        res.data && typeof res.data === 'object' && 'id' in res.data
+          ? (res.data as { id: string }).id
+          : null
       if (id) {
         toast({ title: 'Duplicated landing page', variant: 'success' })
         router.push(`/app/editor/${hypothesisId}/${id}`)
@@ -82,7 +96,9 @@ export function RenameLandingPageInline({
     if (!value || saving) return
     setSaving(true)
     try {
-      await api.v1['landing-pages']['by-id']({ landingPageId }).patch({ name: value })
+      await api.v1['landing-pages']
+        ['by-id']({ landingPageId })
+        .patch({ name: value })
       toast({ title: 'Name saved', variant: 'success' })
     } catch {
       toast({ title: 'Failed to save name', variant: 'error' })

@@ -1,4 +1,4 @@
-import { api } from '@/app/api/client'
+import { getServerApi } from '@/app/api/server'
 import {
   Table,
   TableBody,
@@ -23,6 +23,7 @@ export default async function WaitlistPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
+  const api = await getServerApi()
   const [{ data: wl }, { data: ent }] = await Promise.all([
     api.v1.waitlists.hypothesis({ hypothesisId: id }).get(),
     api.v1.waitlists.hypothesis({ hypothesisId: id }).entries.get({

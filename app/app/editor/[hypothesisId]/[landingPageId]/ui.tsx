@@ -2,6 +2,12 @@
 
 import { useId, useMemo, useRef, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/atoms/accordion'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import {
@@ -12,19 +18,18 @@ import {
   SelectValue,
 } from '@/components/atoms/select'
 import { Textarea } from '@/components/atoms/textarea'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/atoms/accordion'
 import { toast } from '@/lib/use-toast'
 import type {
   Benefits,
+  CallToAction,
+  Features,
   FinalCallToAction,
+  Footer,
   FrequentlyAskedQuestions,
   Hero,
   Meta,
   Partners,
   Theme,
-  Features,
-  Footer,
-  CallToAction,
 } from '@/templates/types'
 
 type BlockType =
@@ -70,16 +75,33 @@ function pad(n: number, width = 4) {
 function defaultContentFor(type: BlockType): BlockContent['value'] {
   switch (type) {
     case 'meta':
-      return { title: 'Landing Page', description: 'Welcome to our landing page' }
+      return {
+        description: 'Welcome to our landing page',
+        title: 'Landing Page',
+      }
     case 'theme':
       return {
-        mode: 'light',
-        colors: { brand: '#3b82f6', bg: '#ffffff', fg: '#000000', muted: '#6b7280', accent: '#111827' },
-        typography: { body: 'Inter, system-ui, sans-serif', heading: 'Inter, system-ui, sans-serif' },
+        colors: {
+          accent: '#111827',
+          bg: '#ffffff',
+          brand: '#3b82f6',
+          fg: '#000000',
+          muted: '#6b7280',
+        },
         containerMax: '1280px',
+        mode: 'light',
+        typography: {
+          body: 'Inter, system-ui, sans-serif',
+          heading: 'Inter, system-ui, sans-serif',
+        },
       }
     case 'hero':
-      return { headline: 'Welcome', subhead: 'Get started today', alignment: 'left', ctas: [] }
+      return {
+        alignment: 'left',
+        ctas: [],
+        headline: 'Welcome',
+        subhead: 'Get started today',
+      }
     case 'partners':
       return { logos: [] }
     case 'features':
@@ -93,9 +115,9 @@ function defaultContentFor(type: BlockType): BlockContent['value'] {
     case 'faq':
       return { heading: 'Frequently Asked Questions', items: [] }
     case 'finalCta':
-      return { heading: 'Ready to start?', ctas: [] }
+      return { ctas: [], heading: 'Ready to start?' }
     case 'footer':
-      return { legal: { copyright: '© Your Company' }, columns: [] }
+      return { columns: [], legal: { copyright: '© Your Company' } }
   }
 }
 
@@ -103,7 +125,10 @@ function parseContent(block: Block): BlockContent {
   const base = defaultContentFor(block.type) as unknown
   try {
     const parsed = JSON.parse(block.content)
-    return { type: block.type, value: { ...(base as object), ...(parsed as object) } } as BlockContent
+    return {
+      type: block.type,
+      value: { ...(base as object), ...(parsed as object) },
+    } as BlockContent
   } catch {
     return { type: block.type, value: base as never } as BlockContent
   }
@@ -121,7 +146,9 @@ export default function BlocksEditor({
   initialBlocks: Block[]
 }) {
   const api = getClientApi()
-  const [blocks, setBlocks] = useState<Block[]>([...initialBlocks].sort((a, b) => a.order.localeCompare(b.order)))
+  const [blocks, setBlocks] = useState<Block[]>(
+    [...initialBlocks].sort((a, b) => a.order.localeCompare(b.order)),
+  )
   const [newType, setNewType] = useState<BlockType>('hero')
   const draggingId = useRef<string | null>(null)
 
@@ -129,49 +156,90 @@ export default function BlocksEditor({
     try {
       const order = pad(blocks.length + 1)
       const content = JSON.stringify(defaultContentFor(newType))
-      const r = await api.v1['landing-pages']['by-id']({ landingPageId }).blocks.post({ content, order, type: newType })
-      const id = r.data && typeof r.data === 'object' && 'id' in r.data ? (r.data as { id: string }).id : undefined
+      const r = await api.v1['landing-pages']
+        ['by-id']({ landingPageId })
+        .blocks.post({ content, order, type: newType })
+      const id =
+        r.data && typeof r.data === 'object' && 'id' in r.data
+          ? (r.data as { id: string }).id
+          : undefined
       if (id) {
-        const next = [...blocks, { id, type: newType, order, content }]
+        const next = [...blocks, { content, id, order, type: newType }]
         setBlocks(next)
       }
-      toast({ title: 'Block added', description: `Added ${newType}.`, variant: 'success' })
+      toast({
+        description: `Added ${newType}.`,
+        title: 'Block added',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to add block', description: 'Please try again.', variant: 'error' })
+      toast({
+        description: 'Please try again.',
+        title: 'Failed to add block',
+        variant: 'error',
+      })
     }
   }
 
   async function removeBlock(id: string) {
     try {
-      await api.v1['landing-pages']['by-id']({ landingPageId }).blocks({ blockId: id }).delete()
+      await api.v1['landing-pages']
+        ['by-id']({ landingPageId })
+        .blocks({ blockId: id })
+        .delete()
       const next = blocks.filter((x) => x.id !== id)
       const normalized = next.map((b, i) => ({ ...b, order: pad(i + 1) }))
       setBlocks(normalized)
       await persistOrder(normalized)
-      toast({ title: 'Block removed', description: 'The block was removed.', variant: 'success' })
+      toast({
+        description: 'The block was removed.',
+        title: 'Block removed',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to remove block', description: 'Please try again.', variant: 'error' })
+      toast({
+        description: 'Please try again.',
+        title: 'Failed to remove block',
+        variant: 'error',
+      })
     }
   }
 
   async function updateBlockContent(id: string, content: string) {
     try {
       JSON.parse(content)
-      await api.v1['landing-pages']['by-id']({ landingPageId }).blocks({ blockId: id }).patch({ content })
+      await api.v1['landing-pages']
+        ['by-id']({ landingPageId })
+        .blocks({ blockId: id })
+        .patch({ content })
       setBlocks((b) => b.map((x) => (x.id === id ? { ...x, content } : x)))
-      toast({ title: 'Block updated', description: 'Changes saved.', variant: 'success' })
+      toast({
+        description: 'Changes saved.',
+        title: 'Block updated',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to update block', description: 'Check field values.', variant: 'error' })
+      toast({
+        description: 'Check field values.',
+        title: 'Failed to update block',
+        variant: 'error',
+      })
     }
   }
 
   async function persistOrder(next: Block[]) {
     try {
-      await api.v1['landing-pages']['by-id']({ landingPageId }).blocks.reorder.post({
-        blocks: next.map((b) => ({ id: b.id, order: b.order })),
-      })
+      await api.v1['landing-pages']
+        ['by-id']({ landingPageId })
+        .blocks.reorder.post({
+          blocks: next.map((b) => ({ id: b.id, order: b.order })),
+        })
     } catch {
-      toast({ title: 'Failed to save order', description: 'Please retry.', variant: 'error' })
+      toast({
+        description: 'Please retry.',
+        title: 'Failed to save order',
+        variant: 'error',
+      })
     }
   }
 
@@ -200,15 +268,24 @@ export default function BlocksEditor({
     const normalized = current.map((b, i) => ({ ...b, order: pad(i + 1) }))
     setBlocks(normalized)
     await persistOrder(normalized)
-    toast({ title: 'Order updated', description: 'Block order saved.', variant: 'success' })
+    toast({
+      description: 'Block order saved.',
+      title: 'Order updated',
+      variant: 'success',
+    })
   }
 
   return (
     <div className='space-y-6'>
       <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
         <div>
-          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Type</label>
-          <Select value={newType} onValueChange={(v) => setNewType(v as BlockType)}>
+          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+            Type
+          </label>
+          <Select
+            value={newType}
+            onValueChange={(v) => setNewType(v as BlockType)}
+          >
             <SelectTrigger className='py-1.5'>
               <SelectValue placeholder='Select type' />
             </SelectTrigger>
@@ -301,7 +378,9 @@ function BlockCard({
             <AccordionContent>
               <BlockForm content={content} onChange={setContent} />
               <div className='mt-3 flex justify-end'>
-                <Button onClick={() => onSave(stringifyContent(content))}>Save</Button>
+                <Button onClick={() => onSave(stringifyContent(content))}>
+                  Save
+                </Button>
               </div>
               {showJson && (
                 <div className='mt-4'>
@@ -318,7 +397,10 @@ function BlockCard({
                     onBlur={(e) => {
                       try {
                         const val = JSON.parse(e.target.value)
-                        setContent({ type: content.type, value: val } as BlockContent)
+                        setContent({
+                          type: content.type,
+                          value: val,
+                        } as BlockContent)
                       } catch {
                         // noop; leave invalid json in textarea, user can fix
                       }
@@ -334,7 +416,13 @@ function BlockCard({
   )
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
   return (
     <label className='grid gap-1 text-sm'>
       <span className='text-gray-700 dark:text-gray-300'>{label}</span>
@@ -343,7 +431,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-function CTAListEditor({ value, onChange }: { value: CallToAction[] | undefined; onChange: (v: CallToAction[]) => void }) {
+function CTAListEditor({
+  value,
+  onChange,
+}: {
+  value: CallToAction[] | undefined
+  onChange: (v: CallToAction[]) => void
+}) {
   const list = value ?? []
   return (
     <div className='space-y-2'>
@@ -379,7 +473,13 @@ function CTAListEditor({ value, onChange }: { value: CallToAction[] | undefined;
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {['primary', 'secondary', 'link', 'store-apple', 'store-google'].map((s) => (
+              {[
+                'primary',
+                'secondary',
+                'link',
+                'store-apple',
+                'store-google',
+              ].map((s) => (
                 <SelectItem key={s} value={s}>
                   {s}
                 </SelectItem>
@@ -390,7 +490,12 @@ function CTAListEditor({ value, onChange }: { value: CallToAction[] | undefined;
       ))}
       <Button
         variant='secondary'
-        onClick={() => onChange([...list, { label: 'Get started', href: '#', style: 'primary' }])}
+        onClick={() =>
+          onChange([
+            ...list,
+            { href: '#', label: 'Get started', style: 'primary' },
+          ])
+        }
       >
         Add CTA
       </Button>
@@ -398,7 +503,13 @@ function CTAListEditor({ value, onChange }: { value: CallToAction[] | undefined;
   )
 }
 
-function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c: BlockContent) => void }) {
+function BlockForm({
+  content,
+  onChange,
+}: {
+  content: BlockContent
+  onChange: (c: BlockContent) => void
+}) {
   const id1 = useId()
   const id2 = useId()
   switch (content.type) {
@@ -410,7 +521,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             <Input
               id={id1}
               defaultValue={v.title}
-              onChange={(e) => onChange({ type: 'meta', value: { ...v, title: e.target.value } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'meta',
+                  value: { ...v, title: e.target.value },
+                })
+              }
             />
           </Field>
           <Field label='Description'>
@@ -418,7 +534,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
               id={id2}
               rows={3}
               defaultValue={v.description || ''}
-              onChange={(e) => onChange({ type: 'meta', value: { ...v, description: e.target.value } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'meta',
+                  value: { ...v, description: e.target.value },
+                })
+              }
             />
           </Field>
         </div>
@@ -431,7 +552,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           <Field label='Mode'>
             <Select
               defaultValue={v.mode || 'light'}
-              onValueChange={(m) => onChange({ type: 'theme', value: { ...v, mode: m as Theme['mode'] } })}
+              onValueChange={(m) =>
+                onChange({
+                  type: 'theme',
+                  value: { ...v, mode: m as Theme['mode'] },
+                })
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -448,13 +574,26 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           <Field label='Brand Color'>
             <Input
               defaultValue={v.colors?.brand || ''}
-              onChange={(e) => onChange({ type: 'theme', value: { ...v, colors: { ...v.colors, brand: e.target.value } } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'theme',
+                  value: {
+                    ...v,
+                    colors: { ...v.colors, brand: e.target.value },
+                  },
+                })
+              }
             />
           </Field>
           <Field label='Container Max'>
             <Input
               defaultValue={v.containerMax || ''}
-              onChange={(e) => onChange({ type: 'theme', value: { ...v, containerMax: e.target.value } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'theme',
+                  value: { ...v, containerMax: e.target.value },
+                })
+              }
             />
           </Field>
         </div>
@@ -468,13 +607,23 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             <Field label='Headline'>
               <Input
                 defaultValue={v.headline}
-                onChange={(e) => onChange({ type: 'hero', value: { ...v, headline: e.target.value } })}
+                onChange={(e) =>
+                  onChange({
+                    type: 'hero',
+                    value: { ...v, headline: e.target.value },
+                  })
+                }
               />
             </Field>
             <Field label='Subhead'>
               <Input
                 defaultValue={v.subhead || ''}
-                onChange={(e) => onChange({ type: 'hero', value: { ...v, subhead: e.target.value } })}
+                onChange={(e) =>
+                  onChange({
+                    type: 'hero',
+                    value: { ...v, subhead: e.target.value },
+                  })
+                }
               />
             </Field>
           </div>
@@ -482,7 +631,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             <Field label='Alignment'>
               <Select
                 defaultValue={v.alignment || 'left'}
-                onValueChange={(al) => onChange({ type: 'hero', value: { ...v, alignment: al as Hero['alignment'] } })}
+                onValueChange={(al) =>
+                  onChange({
+                    type: 'hero',
+                    value: { ...v, alignment: al as Hero['alignment'] },
+                  })
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -501,7 +655,9 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             <div className='mb-1 text-sm font-medium'>CTAs</div>
             <CTAListEditor
               value={v.ctas}
-              onChange={(ctas) => onChange({ type: 'hero', value: { ...v, ctas } })}
+              onChange={(ctas) =>
+                onChange({ type: 'hero', value: { ...v, ctas } })
+              }
             />
           </div>
         </div>
@@ -545,7 +701,15 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           ))}
           <Button
             variant='secondary'
-            onClick={() => onChange({ type: 'partners', value: { ...v, logos: [...logos, { name: 'Logo', logoSrc: '/logo.svg' }] } })}
+            onClick={() =>
+              onChange({
+                type: 'partners',
+                value: {
+                  ...v,
+                  logos: [...logos, { logoSrc: '/logo.svg', name: 'Logo' }],
+                },
+              })
+            }
           >
             Add Logo
           </Button>
@@ -560,20 +724,41 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           <Field label='Heading'>
             <Input
               defaultValue={v.heading || ''}
-              onChange={(e) => onChange({ type: 'features', value: { ...v, heading: e.target.value } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'features',
+                  value: { ...v, heading: e.target.value },
+                })
+              }
             />
           </Field>
           <div className='grid gap-2 sm:grid-cols-2'>
             <Field label='Primary title'>
               <Input
                 defaultValue={v.primary.title}
-                onChange={(e) => onChange({ type: 'features', value: { ...v, primary: { ...v.primary, title: e.target.value } } })}
+                onChange={(e) =>
+                  onChange({
+                    type: 'features',
+                    value: {
+                      ...v,
+                      primary: { ...v.primary, title: e.target.value },
+                    },
+                  })
+                }
               />
             </Field>
             <Field label='Primary summary'>
               <Input
                 defaultValue={v.primary.summary || ''}
-                onChange={(e) => onChange({ type: 'features', value: { ...v, primary: { ...v.primary, summary: e.target.value } } })}
+                onChange={(e) =>
+                  onChange({
+                    type: 'features',
+                    value: {
+                      ...v,
+                      primary: { ...v.primary, summary: e.target.value },
+                    },
+                  })
+                }
               />
             </Field>
           </div>
@@ -587,7 +772,10 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
                   onChange={(e) => {
                     const next = [...secondary]
                     next[idx] = { ...f, title: e.target.value }
-                    onChange({ type: 'features', value: { ...v, secondary: next } })
+                    onChange({
+                      type: 'features',
+                      value: { ...v, secondary: next },
+                    })
                   }}
                 />
                 <Input
@@ -596,14 +784,25 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
                   onChange={(e) => {
                     const next = [...secondary]
                     next[idx] = { ...f, summary: e.target.value }
-                    onChange({ type: 'features', value: { ...v, secondary: next } })
+                    onChange({
+                      type: 'features',
+                      value: { ...v, secondary: next },
+                    })
                   }}
                 />
               </div>
             ))}
             <Button
               variant='secondary'
-              onClick={() => onChange({ type: 'features', value: { ...v, secondary: [...secondary, { title: 'Feature' }] } })}
+              onClick={() =>
+                onChange({
+                  type: 'features',
+                  value: {
+                    ...v,
+                    secondary: [...secondary, { title: 'Feature' }],
+                  },
+                })
+              }
             >
               Add secondary
             </Button>
@@ -619,7 +818,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           <Field label='Heading'>
             <Input
               defaultValue={v.heading || ''}
-              onChange={(e) => onChange({ type: 'benefits', value: { ...v, heading: e.target.value } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'benefits',
+                  value: { ...v, heading: e.target.value },
+                })
+              }
             />
           </Field>
           <div className='mt-2 space-y-2'>
@@ -647,7 +851,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             ))}
             <Button
               variant='secondary'
-              onClick={() => onChange({ type: 'benefits', value: { ...v, items: [...items, { title: 'Benefit' }] } })}
+              onClick={() =>
+                onChange({
+                  type: 'benefits',
+                  value: { ...v, items: [...items, { title: 'Benefit' }] },
+                })
+              }
             >
               Add benefit
             </Button>
@@ -663,7 +872,12 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           <Field label='Heading'>
             <Input
               defaultValue={v.heading || ''}
-              onChange={(e) => onChange({ type: 'faq', value: { ...v, heading: e.target.value } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'faq',
+                  value: { ...v, heading: e.target.value },
+                })
+              }
             />
           </Field>
           <div className='mt-2 space-y-2'>
@@ -691,7 +905,18 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             ))}
             <Button
               variant='secondary'
-              onClick={() => onChange({ type: 'faq', value: { ...v, items: [...items, { question: 'Question?', answer: 'Answer.' }] } })}
+              onClick={() =>
+                onChange({
+                  type: 'faq',
+                  value: {
+                    ...v,
+                    items: [
+                      ...items,
+                      { answer: 'Answer.', question: 'Question?' },
+                    ],
+                  },
+                })
+              }
             >
               Add question
             </Button>
@@ -707,13 +932,23 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             <Field label='Heading'>
               <Input
                 defaultValue={v.heading}
-                onChange={(e) => onChange({ type: 'finalCta', value: { ...v, heading: e.target.value } })}
+                onChange={(e) =>
+                  onChange({
+                    type: 'finalCta',
+                    value: { ...v, heading: e.target.value },
+                  })
+                }
               />
             </Field>
             <Field label='Subhead'>
               <Input
                 defaultValue={v.subhead || ''}
-                onChange={(e) => onChange({ type: 'finalCta', value: { ...v, subhead: e.target.value } })}
+                onChange={(e) =>
+                  onChange({
+                    type: 'finalCta',
+                    value: { ...v, subhead: e.target.value },
+                  })
+                }
               />
             </Field>
           </div>
@@ -721,7 +956,9 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             <div className='mb-1 text-sm font-medium'>CTAs</div>
             <CTAListEditor
               value={v.ctas}
-              onChange={(ctas) => onChange({ type: 'finalCta', value: { ...v, ctas } })}
+              onChange={(ctas) =>
+                onChange({ type: 'finalCta', value: { ...v, ctas } })
+              }
             />
           </div>
         </div>
@@ -735,20 +972,34 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
           <Field label='Copyright'>
             <Input
               defaultValue={v.legal?.copyright || ''}
-              onChange={(e) => onChange({ type: 'footer', value: { ...v, legal: { ...v.legal, copyright: e.target.value } } })}
+              onChange={(e) =>
+                onChange({
+                  type: 'footer',
+                  value: {
+                    ...v,
+                    legal: { ...v.legal, copyright: e.target.value },
+                  },
+                })
+              }
             />
           </Field>
           <div>
             <div className='mb-1 text-sm font-medium'>Columns</div>
             {columns.map((col, idx) => (
-              <div key={idx} className='rounded border p-2 dark:border-gray-800'>
+              <div
+                key={idx}
+                className='rounded border p-2 dark:border-gray-800'
+              >
                 <Field label='Heading'>
                   <Input
                     defaultValue={col.heading || ''}
                     onChange={(e) => {
                       const next = [...columns]
                       next[idx] = { ...col, heading: e.target.value }
-                      onChange({ type: 'footer', value: { ...v, columns: next } })
+                      onChange({
+                        type: 'footer',
+                        value: { ...v, columns: next },
+                      })
                     }}
                   />
                 </Field>
@@ -763,7 +1014,10 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
                           const nextLinks = [...(col.links || [])]
                           nextLinks[j] = { ...link, label: e.target.value }
                           nextCols[idx] = { ...col, links: nextLinks }
-                          onChange({ type: 'footer', value: { ...v, columns: nextCols } })
+                          onChange({
+                            type: 'footer',
+                            value: { ...v, columns: nextCols },
+                          })
                         }}
                       />
                       <Input
@@ -774,7 +1028,10 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
                           const nextLinks = [...(col.links || [])]
                           nextLinks[j] = { ...link, href: e.target.value }
                           nextCols[idx] = { ...col, links: nextLinks }
-                          onChange({ type: 'footer', value: { ...v, columns: nextCols } })
+                          onChange({
+                            type: 'footer',
+                            value: { ...v, columns: nextCols },
+                          })
                         }}
                       />
                     </div>
@@ -783,9 +1040,15 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
                     variant='secondary'
                     onClick={() => {
                       const nextCols = [...columns]
-                      const nextLinks = [...(col.links || []), { label: 'Link', href: '#' }]
+                      const nextLinks = [
+                        ...(col.links || []),
+                        { href: '#', label: 'Link' },
+                      ]
                       nextCols[idx] = { ...col, links: nextLinks }
-                      onChange({ type: 'footer', value: { ...v, columns: nextCols } })
+                      onChange({
+                        type: 'footer',
+                        value: { ...v, columns: nextCols },
+                      })
                     }}
                   >
                     Add link
@@ -795,7 +1058,15 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
             ))}
             <Button
               variant='secondary'
-              onClick={() => onChange({ type: 'footer', value: { ...v, columns: [...columns, { heading: 'Resources', links: [] }] } })}
+              onClick={() =>
+                onChange({
+                  type: 'footer',
+                  value: {
+                    ...v,
+                    columns: [...columns, { heading: 'Resources', links: [] }],
+                  },
+                })
+              }
             >
               Add column
             </Button>

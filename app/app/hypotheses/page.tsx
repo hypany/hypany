@@ -1,5 +1,6 @@
 import { Pencil } from 'lucide-react'
 import Link from 'next/link'
+import { getServerApi } from '@/app/api/server'
 import {
   Table,
   TableBody,
@@ -9,8 +10,10 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
-import { getServerApi } from '@/app/api/server'
+import {
+  type Metric,
+  MetricsCards,
+} from '@/components/molecules/homepage/metrics-cards'
 
 type Row = {
   id: string

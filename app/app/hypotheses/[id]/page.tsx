@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { getServerApi } from '@/app/api/server'
 import {
   Table,
   TableBody,
@@ -8,7 +9,6 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import { getServerApi } from '@/app/api/server'
 
 export default async function HypothesisOverview({
   params,
@@ -34,7 +34,9 @@ export default async function HypothesisOverview({
           <TableBody>
             <TableRow>
               <TableCell className='font-medium'>Status</TableCell>
-              <TableCell className='capitalize'>{data.hypothesis.status}</TableCell>
+              <TableCell className='capitalize'>
+                {data.hypothesis.status}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell className='font-medium'>Signups</TableCell>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 import { Divider } from '@/components/atoms/divider'
 import { ResetPasswordForm } from '@/components/molecules/auth/reset-password-form'

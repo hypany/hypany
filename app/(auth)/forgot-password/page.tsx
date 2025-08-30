@@ -1,8 +1,8 @@
-import { getSession } from '@/auth/server'
 import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { getSession } from '@/auth/server'
 
 import { Divider } from '@/components/atoms/divider'
 import { ForgotPasswordForm } from '@/components/molecules/auth/forgot-password-form'

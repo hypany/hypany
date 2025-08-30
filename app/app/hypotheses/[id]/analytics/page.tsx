@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
 
@@ -15,6 +15,8 @@ export default async function AnalyticsPage({
   const { id } = await params
   const sp = (await searchParams) ?? {}
   const range = (sp.range as Range) || '30d'
+
+  const api = getClientApi()
 
   const { data } = await api.v1.analytics.metrics.get({
     query: { hypothesisId: id, range },

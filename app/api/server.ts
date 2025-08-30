@@ -8,8 +8,8 @@ export async function getServerApi() {
   const hdrs = await headers()
   const cookie = hdrs.get('cookie') ?? ''
   const { api } = treaty<App>(serviceUrl, {
-    fetcher: (url, init) => fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
+    fetcher: (url, init) =>
+      fetch(url, { ...init, headers: { ...init?.headers, cookie } }),
   })
   return api
 }
-

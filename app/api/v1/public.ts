@@ -53,11 +53,11 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
       // Resolve hypothesis by slug and published status
       const [hypothesis] = await db
         .select({
+          customDomain: hypotheses.customDomain,
           description: hypotheses.description,
           id: hypotheses.id,
           name: hypotheses.name,
           status: hypotheses.status,
-          customDomain: hypotheses.customDomain,
         })
         .from(hypotheses)
         .where(eq(hypotheses.slug, params.slug))
@@ -114,8 +114,8 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         blocks,
         hypothesis: {
           description: hypothesis.description,
-          name: hypothesis.name,
           id: hypothesis.id,
+          name: hypothesis.name,
         },
         landingPage: {
           customCss: landingPage.customCss,

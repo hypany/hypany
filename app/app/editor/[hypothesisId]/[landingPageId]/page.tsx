@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import BlocksEditor from './ui'
 
 export default async function EditorByLandingPage({
@@ -10,6 +10,7 @@ export default async function EditorByLandingPage({
   const { landingPageId } = await params
 
   // Get landing page and blocks by landing page ID
+  const api = getClientApi()
   const res = await api.v1['landing-pages']['by-id']({ landingPageId }).get()
   const data = res.data
   if (!data || !data.landingPage) notFound()

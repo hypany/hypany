@@ -1,19 +1,19 @@
 import {
-    Body,
-    Container,
-    Head,
-    Html,
-    Link,
-    Preview,
-    Text,
+  Body,
+  Container,
+  Head,
+  Html,
+  Link,
+  Preview,
+  Text,
 } from '@react-email/components'
 import {
-    colors,
-    container as containerStyle,
-    footer,
-    main,
-    separator,
-    text,
+  colors,
+  container as containerStyle,
+  footer,
+  main,
+  separator,
+  text,
 } from './styles'
 
 interface WelcomeEmailProps {

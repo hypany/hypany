@@ -1,11 +1,11 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { getSession } from '@/auth/server'
 import { Divider } from '@/components/atoms/divider'
 import { SignUpForm } from '@/components/molecules/auth/sign-up-form'
 import { SaaSPreview } from '@/components/molecules/landing/saas-preview'
-import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   description: 'Create a new Hypany account',

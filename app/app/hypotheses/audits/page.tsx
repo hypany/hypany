@@ -77,7 +77,9 @@ export default function Audits() {
             {
               name: (h as { slug?: string | null }).slug ?? t('noSlug'),
               // Use literal union values to satisfy Section type
-              status: (h as { slug?: string | null }).slug ? 'OK' : 'Needs update',
+              status: (h as { slug?: string | null }).slug
+                ? 'OK'
+                : 'Needs update',
             },
           ],
           id: h.id,

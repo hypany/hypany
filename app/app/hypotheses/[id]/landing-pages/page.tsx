@@ -1,9 +1,21 @@
-import { Button } from '@/components/atoms/button'
-import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
-import { getServerApi } from '@/app/api/server'
 import Link from 'next/link'
-import { CreateLandingPageButton, DuplicateLandingPageButton, RenameLandingPageInline } from './ui'
 import { notFound } from 'next/navigation'
+import { getServerApi } from '@/app/api/server'
+import { Button } from '@/components/atoms/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from '@/components/atoms/table'
+import {
+  CreateLandingPageButton,
+  DuplicateLandingPageButton,
+  RenameLandingPageInline,
+} from './ui'
 
 export default async function LandingPagesGallery({
   params,
@@ -18,7 +30,9 @@ export default async function LandingPagesGallery({
   const hypData = hypRes.data
   if (!hypData || !hypData.hypothesis) notFound()
 
-  const pagesRes = await api.v1['landing-pages'].hypothesis({ hypothesisId: id })['list'].get()
+  const pagesRes = await api.v1['landing-pages']
+    .hypothesis({ hypothesisId: id })
+    ['list'].get()
   const pages = pagesRes.data?.pages ?? []
   const hyp = {
     customDomain: null as string | null,
@@ -35,7 +49,8 @@ export default async function LandingPagesGallery({
 
       {pages.length === 0 ? (
         <div className='rounded-md border border-dashed p-6 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-400'>
-          No landing pages yet. Use the Domains tab to configure your first page.
+          No landing pages yet. Use the Domains tab to configure your first
+          page.
         </div>
       ) : (
         <TableRoot>
@@ -45,7 +60,9 @@ export default async function LandingPagesGallery({
                 <TableHeaderCell>Name</TableHeaderCell>
                 <TableHeaderCell>Template</TableHeaderCell>
                 <TableHeaderCell>Published</TableHeaderCell>
-                <TableHeaderCell className='text-right'>Actions</TableHeaderCell>
+                <TableHeaderCell className='text-right'>
+                  Actions
+                </TableHeaderCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -53,13 +70,17 @@ export default async function LandingPagesGallery({
                 <TableRow key={p.id}>
                   <TableCell className='font-medium'>
                     <div className='max-w-xs'>
-                      <RenameLandingPageInline landingPageId={p.id} initialName={p.name || null} />
+                      <RenameLandingPageInline
+                        landingPageId={p.id}
+                        initialName={p.name || null}
+                      />
                       <div className='mt-1 text-xs text-gray-500'>
                         ID: {p.id}
                       </div>
                       {(hyp.customDomain || hyp.slug) && (
                         <div className='text-xs text-gray-500'>
-                          {hyp.customDomain || (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
+                          {hyp.customDomain ||
+                            (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
                         </div>
                       )}
                     </div>
@@ -69,12 +90,23 @@ export default async function LandingPagesGallery({
                   <TableCell className='text-right'>
                     <div className='flex justify-end gap-2'>
                       <Button asChild variant='secondary' className='py-1.5'>
-                        <Link href={`/app/editor/${id}/${p.id}`}>Open Editor</Link>
+                        <Link href={`/app/editor/${id}/${p.id}`}>
+                          Open Editor
+                        </Link>
                       </Button>
-                      <DuplicateLandingPageButton hypothesisId={id} landingPageId={p.id} />
+                      <DuplicateLandingPageButton
+                        hypothesisId={id}
+                        landingPageId={p.id}
+                      />
                       {hyp.slug && (
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/${hyp.slug}`} target='_blank' rel='noopener noreferrer'>View</Link>
+                          <Link
+                            href={`/${hyp.slug}`}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                          >
+                            View
+                          </Link>
                         </Button>
                       )}
                     </div>

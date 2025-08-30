@@ -5,6 +5,9 @@
  * - Resolve and verify domain connectivity
  */
 
+import { and, eq, isNull, ne } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import humanId from 'human-id'
 import { db } from '@/drizzle'
 import { getLandingPageIdForOrg } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
@@ -17,9 +20,6 @@ import {
   removeVercelProjectDomains,
 } from '@/lib/vercel'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
-import { and, eq, isNull, ne } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import humanId from 'human-id'
 import 'server-only'
 import { ulid } from 'ulid'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
@@ -89,18 +89,24 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           ),
         )
         .limit(1)
-      if (!hyp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Hypothesis not found')
+      if (!hyp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Hypothesis not found')
 
       const pages = await db
         .select({
           id: landingPages.id,
           name: landingPages.name,
-          template: landingPages.template,
           publishedAt: landingPages.publishedAt,
+          template: landingPages.template,
           updatedAt: landingPages.updatedAt,
         })
         .from(landingPages)
-        .where(and(eq(landingPages.hypothesisId, params.hypothesisId), isNull(landingPages.deletedAt)))
+        .where(
+          and(
+            eq(landingPages.hypothesisId, params.hypothesisId),
+            isNull(landingPages.deletedAt),
+          ),
+        )
 
       return jsonOk(set, HTTP_STATUS.OK, { pages })
     },
@@ -112,7 +118,21 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Pages'],
       },
       params: t.Object({ hypothesisId: UlidParam }),
-      response: { 200: t.Object({ pages: t.Array(t.Object({ id: t.String(), name: t.Nullable(t.String()), template: t.String(), publishedAt: t.Nullable(t.Date()), updatedAt: t.Date() })) }), 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        200: t.Object({
+          pages: t.Array(
+            t.Object({
+              id: t.String(),
+              name: t.Nullable(t.String()),
+              publishedAt: t.Nullable(t.Date()),
+              template: t.String(),
+              updatedAt: t.Date(),
+            }),
+          ),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
   // Create a new landing page for a hypothesis
@@ -142,11 +162,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
 
       const id = ulid()
       await db.insert(landingPages).values({
+        createdAt: new Date(),
+        hypothesisId: params.hypothesisId,
         id,
         name: humanId(),
-        hypothesisId: params.hypothesisId,
         template: 'default',
-        createdAt: new Date(),
         updatedAt: new Date(),
       })
       return jsonOk(set, HTTP_STATUS.CREATED, { id })
@@ -159,7 +179,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Pages'],
       },
       params: t.Object({ hypothesisId: UlidParam }),
-      response: { 201: t.Object({ id: t.String() }), 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        201: t.Object({ id: t.String() }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -186,7 +210,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           ),
         )
         .limit(1)
-      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      if (!lp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
 
       const changes: Record<string, unknown> = {}
       if (typeof body.name !== 'undefined') changes.name = body.name
@@ -207,7 +232,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Pages'],
       },
       params: t.Object({ landingPageId: UlidParam }),
-      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
   // Update landing page by hypothesis ID
@@ -247,7 +276,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           const existing = await db
             .select({ id: hypotheses.id })
             .from(hypotheses)
-            .where(and(eq(hypotheses.customDomain, normalized), isNull(hypotheses.deletedAt)))
+            .where(
+              and(
+                eq(hypotheses.customDomain, normalized),
+                isNull(hypotheses.deletedAt),
+              ),
+            )
             .limit(1)
 
           if (existing.length > 0) {
@@ -280,7 +314,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         const existing = await db
           .select({ id: hypotheses.id })
           .from(hypotheses)
-          .where(and(eq(hypotheses.slug, normalizedSlug), ne(hypotheses.id, params.hypothesisId)))
+          .where(
+            and(
+              eq(hypotheses.slug, normalizedSlug),
+              ne(hypotheses.id, params.hypothesisId),
+            ),
+          )
           .limit(1)
         if (existing.length > 0) {
           return jsonError(
@@ -292,8 +331,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         nextSlug = normalizedSlug
       }
 
-      const { slug: _slug, customDomain: _cd, ...lpUpdates } =
-        body as Record<string, string | null | undefined>
+      const {
+        slug: _slug,
+        customDomain: _cd,
+        ...lpUpdates
+      } = body as Record<string, string | null | undefined>
       await db
         .update(landingPages)
         .set({ ...(lpUpdates as object), updatedAt: new Date() })
@@ -380,7 +422,10 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         .from(hypotheses)
         .where(
           body.excludeId
-            ? and(eq(hypotheses.slug, normalizedSlug), ne(hypotheses.id, body.excludeId))
+            ? and(
+                eq(hypotheses.slug, normalizedSlug),
+                ne(hypotheses.id, body.excludeId),
+              )
             : eq(hypotheses.slug, normalizedSlug),
         )
         .limit(1)
@@ -468,7 +513,10 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
 
       // Attach hypothesis fields for compatibility where UI expects them on landingPage
       const [hyp] = await db
-        .select({ slug: hypotheses.slug, customDomain: hypotheses.customDomain })
+        .select({
+          customDomain: hypotheses.customDomain,
+          slug: hypotheses.slug,
+        })
         .from(hypotheses)
         .where(eq(hypotheses.id, params.hypothesisId))
         .limit(1)
@@ -477,8 +525,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         blocks,
         landingPage: {
           ...landingPage,
-          slug: hyp?.slug ?? null,
           customDomain: hyp?.customDomain ?? null,
+          slug: hyp?.slug ?? null,
         },
       })
     },
@@ -605,10 +653,10 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       // Resolve landing page and ensure it belongs to the active org via hypothesis
       const [lp] = await db
         .select({
+          customDomain: hypotheses.customDomain,
           id: landingPages.id,
           slug: hypotheses.slug,
           template: landingPages.template,
-          customDomain: hypotheses.customDomain,
         })
         .from(landingPages)
         .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
@@ -621,7 +669,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         )
         .limit(1)
 
-      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      if (!lp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
 
       const blocks = await db
         .select()
@@ -634,7 +683,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         )
         .orderBy(landingPageBlocks.order)
 
-      return jsonOk(set, HTTP_STATUS.OK, { landingPage: lp, blocks })
+      return jsonOk(set, HTTP_STATUS.OK, { blocks, landingPage: lp })
     },
     {
       auth: true,
@@ -646,20 +695,20 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       params: t.Object({ landingPageId: UlidParam }),
       response: {
         200: t.Object({
+          blocks: t.Array(
+            t.Object({
+              content: t.String(),
+              id: t.String(),
+              order: t.String(),
+              type: t.String(),
+            }),
+          ),
           landingPage: t.Object({
+            customDomain: t.Nullable(t.String()),
             id: t.String(),
             slug: t.Nullable(t.String()),
             template: t.String(),
-            customDomain: t.Nullable(t.String()),
           }),
-          blocks: t.Array(
-            t.Object({
-              id: t.String(),
-              type: t.String(),
-              order: t.String(),
-              content: t.String(),
-            }),
-          ),
         }),
         401: ErrorResponse,
         404: ErrorResponse,
@@ -740,7 +789,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           ),
         )
         .limit(1)
-      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      if (!lp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
 
       const blockId = ulid()
       await db.insert(landingPageBlocks).values({
@@ -786,8 +836,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       // Load the source landing page and ensure ownership
       const [src] = await db
         .select({
-          id: landingPages.id,
           hypothesisId: landingPages.hypothesisId,
+          id: landingPages.id,
           template: landingPages.template,
         })
         .from(landingPages)
@@ -806,17 +856,21 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       const newId = ulid()
       const now = new Date()
       await db.insert(landingPages).values({
+        createdAt: now,
+        hypothesisId: src.hypothesisId,
         id: newId,
         name: humanId(),
-        hypothesisId: src.hypothesisId,
         template: src.template,
-        createdAt: now,
         updatedAt: now,
       })
 
       // Copy blocks
       const blocks = await db
-        .select({ content: landingPageBlocks.content, order: landingPageBlocks.order, type: landingPageBlocks.type })
+        .select({
+          content: landingPageBlocks.content,
+          order: landingPageBlocks.order,
+          type: landingPageBlocks.type,
+        })
         .from(landingPageBlocks)
         .where(
           and(
@@ -827,12 +881,12 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       if (blocks.length > 0) {
         await db.insert(landingPageBlocks).values(
           blocks.map((b) => ({
+            content: b.content,
+            createdAt: now,
             id: ulid(),
             landingPageId: newId,
-            content: b.content,
             order: b.order,
             type: b.type,
-            createdAt: now,
             updatedAt: now,
           })),
         )
@@ -848,7 +902,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Pages'],
       },
       params: t.Object({ landingPageId: UlidParam }),
-      response: { 201: t.Object({ id: t.String() }), 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        201: t.Object({ id: t.String() }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -948,7 +1006,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Page Blocks'],
       },
       params: t.Object({ blockId: t.String(), landingPageId: UlidParam }),
-      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -1046,7 +1108,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Page Blocks'],
       },
       params: t.Object({ blockId: t.String(), landingPageId: UlidParam }),
-      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -1183,7 +1249,11 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         tags: ['Landing Page Blocks'],
       },
       params: t.Object({ landingPageId: UlidParam }),
-      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 
@@ -1208,7 +1278,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           ),
         )
         .limit(1)
-      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      if (!lp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
 
       const updates = body.blocks.map((block) =>
         db
@@ -1221,14 +1292,20 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
     },
     {
       auth: true,
-      body: t.Object({ blocks: t.Array(t.Object({ id: t.String(), order: t.String() })) }),
+      body: t.Object({
+        blocks: t.Array(t.Object({ id: t.String(), order: t.String() })),
+      }),
       detail: {
         description: 'Reorder blocks by landing page ID',
         summary: 'Reorder blocks (by landing page)',
         tags: ['Landing Page Blocks'],
       },
       params: t.Object({ landingPageId: UlidParam }),
-      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+      response: {
+        200: SuccessResponse,
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
     },
   )
 

@@ -62,7 +62,10 @@ export default async function HypothesisLayout({
         <TabNavigation className='gap-x-4'>
           {[
             { href: `/app/hypotheses/${id}`, name: 'Overview' },
-            { href: `/app/hypotheses/${id}/landing-pages`, name: 'Landing Pages' },
+            {
+              href: `/app/hypotheses/${id}/landing-pages`,
+              name: 'Landing Pages',
+            },
             { href: `/app/hypotheses/${id}/domains`, name: 'Domains' },
             { href: `/app/hypotheses/${id}/waitlist`, name: 'Waitlist' },
             { href: `/app/hypotheses/${id}/analytics`, name: 'Analytics' },

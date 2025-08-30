@@ -1,18 +1,18 @@
+import { headers } from 'next/headers'
+import { getTranslations } from 'next-intl/server'
 import { auth } from '@/auth'
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeaderCell,
-    TableRoot,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
 } from '@/components/atoms/table'
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
-import { getTranslations } from 'next-intl/server'
-import { headers } from 'next/headers'
 
 export default async function OrganizationsPage() {
   const t = await getTranslations('app.pages.organizations')
