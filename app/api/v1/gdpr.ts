@@ -118,11 +118,12 @@ export const gdprApi = new Elysia({ prefix: '/v1/gdpr' })
               metaTitle: landingPages.metaTitle,
               ogImage: landingPages.ogImage,
               publishedAt: landingPages.publishedAt,
-              slug: landingPages.slug,
+              slug: hypotheses.slug,
               template: landingPages.template,
               updatedAt: landingPages.updatedAt,
             })
             .from(landingPages)
+            .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
             .where(
               and(
                 inArray(landingPages.hypothesisId, hypothesisIds),

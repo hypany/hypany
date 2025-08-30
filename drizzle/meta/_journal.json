@@ -21,6 +21,20 @@
       "tag": "0002_wooden_firestar",
       "version": "7",
       "when": 1756496049069
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756559437463,
+      "tag": "0003_big_doctor_doom",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1756560020595,
+      "tag": "0004_eminent_wendell_vaughn",
+      "breakpoints": true
     }
   ],
   "version": "7"

@@ -1,21 +1,21 @@
 import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Link,
-  Preview,
-  Text,
+    Body,
+    Container,
+    Head,
+    Html,
+    Link,
+    Preview,
+    Text,
 } from '@react-email/components'
 import {
-  buttonPrimary,
-  container as containerStyle,
-  footer,
-  main,
-  mono,
-  separator,
-  smallText,
-  text,
+    buttonPrimary,
+    container as containerStyle,
+    footer,
+    main,
+    mono,
+    separator,
+    smallText,
+    text,
 } from './styles'
 
 interface VerificationEmailProps {
@@ -51,7 +51,7 @@ export const VerificationEmail = ({
 
           <Text style={text}>This link will expire in 1 hour.</Text>
 
-          <Text style={separator}>—</Text>
+          <Text style={separator}>-</Text>
 
           <Text style={footer}>
             If you didn't create an account with Hypany, you can safely ignore

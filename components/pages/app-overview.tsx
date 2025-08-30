@@ -1,8 +1,4 @@
 'use client'
-import { Download } from 'lucide-react'
-import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
@@ -24,6 +20,10 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { cx } from '@/lib/utils'
+import { Download } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 const colorClasses = [
   'bg-emerald-500 dark:bg-emerald-500',
@@ -45,7 +45,7 @@ type HypothesisItem = {
   name: string
   status: 'draft' | 'published' | 'archived' | (string & {})
   signupCount: number
-  landingPage: { id: string; slug: string | null } | null
+  landingPage: { id: string } | null
 }
 
 type HypothesisMetrics = {
@@ -132,8 +132,8 @@ export default function AppOverview() {
           const p: Project = {
             assigned: [
               {
-                initials: slugToInitials(h.landingPage?.slug ?? h.name),
-                name: h.landingPage?.slug ?? t('noSlug'),
+                initials: slugToInitials((h as any).slug ?? h.name),
+                name: (h as any).slug ?? t('noSlug'),
               },
             ],
             company: h.name,
@@ -143,7 +143,7 @@ export default function AppOverview() {
               value: metrics.conversionRate30d.toFixed(1),
             }),
             size: t('row.signupCount', { count: h.signupCount }),
-            slug: h.landingPage?.slug ?? null,
+            slug: (h as any).slug ?? null,
             status: statusToBadge[h.status] ?? 'Drafted',
           }
           const key = h.status in statusToBadge ? h.status : 'draft'
@@ -292,8 +292,8 @@ export default function AppOverview() {
                     <TableCell className='text-right'>
                       <div className='flex items-center justify-end gap-2'>
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/app/hypotheses/${item.id}/editor`}>
-                            Editor
+                          <Link href={`/app/hypotheses/${item.id}/landing-pages`}>
+                            Landing Pages
                           </Link>
                         </Button>
                         <Button asChild variant='secondary' className='py-1.5'>

@@ -5,7 +5,7 @@ import { t } from 'elysia'
 // Top-level info rendered in Swagger UI
 export const swaggerInfo = {
   description:
-    'HTTP API for Hypany — create, publish, and analyze hypotheses, landing pages, and waitlists.',
+    'HTTP API for Hypany - create, publish, and analyze hypotheses, landing pages, and waitlists.',
   title: 'Hypany API',
   version: '1.0.0',
 }

@@ -1,21 +1,21 @@
 import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Link,
-  Preview,
-  Text,
+    Body,
+    Container,
+    Head,
+    Html,
+    Link,
+    Preview,
+    Text,
 } from '@react-email/components'
 import {
-  buttonPrimary,
-  container as containerStyle,
-  footer,
-  main,
-  mono,
-  separator,
-  smallText,
-  text,
+    buttonPrimary,
+    container as containerStyle,
+    footer,
+    main,
+    mono,
+    separator,
+    smallText,
+    text,
 } from './styles'
 
 interface ResetPasswordEmailProps {
@@ -54,7 +54,7 @@ export const ResetPasswordEmail = ({
 
           <Text style={text}>This link will expire in 1 hour.</Text>
 
-          <Text style={separator}>—</Text>
+          <Text style={separator}>-</Text>
 
           <Text style={footer}>
             If you didn't request a password reset, you can safely ignore this

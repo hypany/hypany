@@ -1,21 +1,21 @@
 import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Link,
-  Preview,
-  Text,
+    Body,
+    Container,
+    Head,
+    Html,
+    Link,
+    Preview,
+    Text,
 } from '@react-email/components'
 import {
-  buttonPrimary,
-  container as containerStyle,
-  footer,
-  main,
-  mono,
-  separator,
-  smallText,
-  text,
+    buttonPrimary,
+    container as containerStyle,
+    footer,
+    main,
+    mono,
+    separator,
+    smallText,
+    text,
 } from './styles'
 
 interface OrganizationInvitationEmailProps {
@@ -63,7 +63,7 @@ export const OrganizationInvitationEmail = ({
 
           <Text style={text}>This invitation will expire in 7 days.</Text>
 
-          <Text style={separator}>—</Text>
+          <Text style={separator}>-</Text>
 
           <Text style={footer}>
             If you don't want to join this organization or didn't expect this

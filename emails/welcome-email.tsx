@@ -1,19 +1,19 @@
 import {
-  Body,
-  Container,
-  Head,
-  Html,
-  Link,
-  Preview,
-  Text,
+    Body,
+    Container,
+    Head,
+    Html,
+    Link,
+    Preview,
+    Text,
 } from '@react-email/components'
 import {
-  colors,
-  container as containerStyle,
-  footer,
-  main,
-  separator,
-  text,
+    colors,
+    container as containerStyle,
+    footer,
+    main,
+    separator,
+    text,
 } from './styles'
 
 interface WelcomeEmailProps {
@@ -43,7 +43,7 @@ export const WelcomeEmail = ({ userEmail }: WelcomeEmailProps) => {
               </Link>
             </li>
           </ul>
-          <Text style={separator}>—</Text>
+          <Text style={separator}>-</Text>
           <Text style={footer}>Glad to have you onboard 🚀</Text>
         </Container>
       </Body>

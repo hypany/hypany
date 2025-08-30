@@ -5,8 +5,6 @@
  * - Resolve and verify domain connectivity
  */
 
-import { and, eq, isNull, ne } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { getLandingPageIdForOrg } from '@/lib/api-utils'
 import { HTTP_STATUS } from '@/lib/constants'
@@ -19,18 +17,24 @@ import {
   removeVercelProjectDomains,
 } from '@/lib/vercel'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
+import { and, eq, isNull, ne } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import humanId from 'human-id'
 import 'server-only'
 import { ulid } from 'ulid'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
 import { authPlugin } from './auth-plugin'
 
-// Block types for landing pages
+// Block types for landing pages (aligned with templates/types.ts)
 const BlockTypes = t.Union([
+  t.Literal('meta'),
+  t.Literal('theme'),
   t.Literal('hero'),
+  t.Literal('partners'),
   t.Literal('features'),
-  t.Literal('cta'),
+  t.Literal('benefits'),
   t.Literal('faq'),
-  t.Literal('pricing'),
+  t.Literal('finalCta'),
   t.Literal('footer'),
 ])
 
@@ -63,6 +67,102 @@ const LandingPageSchema = {
 
 export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
   .use(authPlugin)
+  // Create a new landing page for a hypothesis
+  .post(
+    '/hypothesis/:hypothesisId/create',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Verify hypothesis ownership
+      const [hypothesis] = await db
+        .select({ id: hypotheses.id })
+        .from(hypotheses)
+        .where(
+          and(
+            eq(hypotheses.id, params.hypothesisId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(hypotheses.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!hypothesis)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Hypothesis not found')
+
+      const id = ulid()
+      await db.insert(landingPages).values({
+        id,
+        name: humanId(),
+        hypothesisId: params.hypothesisId,
+        template: 'default',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      return jsonOk(set, HTTP_STATUS.CREATED, { id })
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'Create a landing page under the given hypothesis',
+        summary: 'Create landing page',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: { 201: t.Object({ id: t.String() }), 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
+
+  // Update landing page by ID (currently supports name only)
+  .patch(
+    '/by-id/:landingPageId',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Ensure landing page belongs to org via hypothesis
+      const [lp] = await db
+        .select({ id: landingPages.id })
+        .from(landingPages)
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      const changes: Record<string, unknown> = {}
+      if (typeof body.name !== 'undefined') changes.name = body.name
+      if (Object.keys(changes).length === 0)
+        return jsonOk(set, HTTP_STATUS.OK, { ok: true })
+
+      await db
+        .update(landingPages)
+        .set({ ...changes, updatedAt: new Date() })
+        .where(eq(landingPages.id, params.landingPageId))
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      body: t.Object({ name: t.Optional(t.String({ maxLength: 80 })) }),
+      detail: {
+        description: 'Update landing page (by ID) - name only',
+        summary: 'Update landing page (by ID)',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
   // Update landing page by hypothesis ID
   .patch(
     '/hypothesis/:hypothesisId',
@@ -123,7 +223,8 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         }
       }
 
-      // Validate slug if present
+      // Validate slug if present (slug now lives on hypotheses)
+      let nextSlug: string | undefined
       if (body.slug) {
         const normalizedSlug = normalizeSlug(body.slug)
         const validation = validateSlug(normalizedSlug)
@@ -135,15 +236,9 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
           )
         }
         const existing = await db
-          .select({ id: landingPages.id })
-          .from(landingPages)
-          .where(
-            and(
-              eq(landingPages.slug, normalizedSlug),
-              ne(landingPages.id, lp.id),
-              isNull(landingPages.deletedAt),
-            ),
-          )
+          .select({ id: hypotheses.id })
+          .from(hypotheses)
+          .where(and(eq(hypotheses.slug, normalizedSlug), ne(hypotheses.id, params.hypothesisId)))
           .limit(1)
         if (existing.length > 0) {
           return jsonError(
@@ -152,13 +247,24 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
             'This subdomain is already taken',
           )
         }
-        body.slug = normalizedSlug
+        nextSlug = normalizedSlug
       }
 
+      const {
+        slug: _slug,
+        ...lpUpdates
+      } = body as Record<string, string | null | undefined>
       await db
         .update(landingPages)
-        .set({ ...body, updatedAt: new Date() })
+        .set({ ...(lpUpdates as object), updatedAt: new Date() })
         .where(eq(landingPages.id, lp.id))
+
+      if (typeof nextSlug !== 'undefined') {
+        await db
+          .update(hypotheses)
+          .set({ slug: nextSlug, updatedAt: new Date() })
+          .where(eq(hypotheses.id, params.hypothesisId))
+      }
 
       // Best-effort: sync domain(s) with Vercel project (add or remove)
       try {
@@ -216,21 +322,14 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         }
       }
 
-      // Check if slug is already taken by another landing page
+      // Check if slug is already taken by another hypothesis
       const existing = await db
-        .select({ id: landingPages.id })
-        .from(landingPages)
+        .select({ id: hypotheses.id })
+        .from(hypotheses)
         .where(
           body.excludeId
-            ? and(
-                eq(landingPages.slug, normalizedSlug),
-                ne(landingPages.id, body.excludeId),
-                isNull(landingPages.deletedAt),
-              )
-            : and(
-                eq(landingPages.slug, normalizedSlug),
-                isNull(landingPages.deletedAt),
-              ),
+            ? and(eq(hypotheses.slug, normalizedSlug), ne(hypotheses.id, body.excludeId))
+            : eq(hypotheses.slug, normalizedSlug),
         )
         .limit(1)
 
@@ -288,7 +387,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       if (!hypothesis)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Hypothesis not found')
 
-      // Get landing page
+      // Get landing page (first available)
       const [landingPage] = await db
         .select()
         .from(landingPages)
@@ -315,9 +414,16 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         )
         .orderBy(landingPageBlocks.order)
 
+      // Attach hypothesis slug for compatibility where UI expects .slug on landingPage
+      const [hyp] = await db
+        .select({ slug: hypotheses.slug })
+        .from(hypotheses)
+        .where(eq(hypotheses.id, params.hypothesisId))
+        .limit(1)
+
       return jsonOk(set, HTTP_STATUS.OK, {
         blocks,
-        landingPage,
+        landingPage: { ...landingPage, slug: hyp?.slug ?? null },
       })
     },
     {
@@ -433,6 +539,81 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
     },
   )
 
+  // Get landing page by ID (supports multiple landing pages per hypothesis)
+  .get(
+    '/by-id/:landingPageId',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Resolve landing page and ensure it belongs to the active org via hypothesis
+      const [lp] = await db
+        .select({
+          id: landingPages.id,
+          slug: hypotheses.slug,
+          template: landingPages.template,
+          customDomain: landingPages.customDomain,
+        })
+        .from(landingPages)
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+
+      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      const blocks = await db
+        .select()
+        .from(landingPageBlocks)
+        .where(
+          and(
+            eq(landingPageBlocks.landingPageId, params.landingPageId),
+            isNull(landingPageBlocks.deletedAt),
+          ),
+        )
+        .orderBy(landingPageBlocks.order)
+
+      return jsonOk(set, HTTP_STATUS.OK, { landingPage: lp, blocks })
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'Get landing page (and blocks) by landing page ID',
+        summary: 'Get landing page by ID',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: {
+        200: t.Object({
+          landingPage: t.Object({
+            id: t.String(),
+            slug: t.Nullable(t.String()),
+            template: t.String(),
+            customDomain: t.Nullable(t.String()),
+          }),
+          blocks: t.Array(
+            t.Object({
+              id: t.String(),
+              type: t.String(),
+              order: t.String(),
+              content: t.String(),
+            }),
+          ),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
+    },
+  )
+
   // Add block by hypothesis ID
   .post(
     '/hypothesis/:hypothesisId/blocks',
@@ -480,6 +661,141 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         401: ErrorResponse,
         404: ErrorResponse,
       },
+    },
+  )
+
+  // Add block by landing page ID
+  .post(
+    '/by-id/:landingPageId/blocks',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Ensure landing page belongs to active org
+      const [lp] = await db
+        .select({ id: landingPages.id })
+        .from(landingPages)
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      const blockId = ulid()
+      await db.insert(landingPageBlocks).values({
+        content: body.content,
+        createdAt: new Date(),
+        id: blockId,
+        landingPageId: params.landingPageId,
+        order: body.order,
+        type: body.type,
+        updatedAt: new Date(),
+      })
+
+      return jsonOk(set, HTTP_STATUS.CREATED, {
+        id: blockId,
+        order: body.order,
+        type: body.type,
+      })
+    },
+    {
+      auth: true,
+      body: LandingPageSchema.block,
+      detail: {
+        description: 'Create a block by landing page ID',
+        summary: 'Add block (by landing page)',
+        tags: ['Landing Page Blocks'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: {
+        201: t.Object({ id: t.String(), order: t.String(), type: t.String() }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
+    },
+  )
+
+  // Duplicate a landing page (and its blocks)
+  .post(
+    '/by-id/:landingPageId/duplicate',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+
+      // Load the source landing page and ensure ownership
+      const [src] = await db
+        .select({
+          id: landingPages.id,
+          hypothesisId: landingPages.hypothesisId,
+          template: landingPages.template,
+        })
+        .from(landingPages)
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(hypotheses.userId, user.id),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!src)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      const newId = ulid()
+      const now = new Date()
+      await db.insert(landingPages).values({
+        id: newId,
+        name: humanId(),
+        hypothesisId: src.hypothesisId,
+        template: src.template,
+        createdAt: now,
+        updatedAt: now,
+      })
+
+      // Copy blocks
+      const blocks = await db
+        .select({ content: landingPageBlocks.content, order: landingPageBlocks.order, type: landingPageBlocks.type })
+        .from(landingPageBlocks)
+        .where(
+          and(
+            eq(landingPageBlocks.landingPageId, params.landingPageId),
+            isNull(landingPageBlocks.deletedAt),
+          ),
+        )
+      if (blocks.length > 0) {
+        await db.insert(landingPageBlocks).values(
+          blocks.map((b) => ({
+            id: ulid(),
+            landingPageId: newId,
+            content: b.content,
+            order: b.order,
+            type: b.type,
+            createdAt: now,
+            updatedAt: now,
+          })),
+        )
+      }
+
+      return jsonOk(set, HTTP_STATUS.CREATED, { id: newId })
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'Duplicate a landing page with its blocks',
+        summary: 'Duplicate landing page',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 201: t.Object({ id: t.String() }), 401: ErrorResponse, 404: ErrorResponse },
     },
   )
 
@@ -535,6 +851,54 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
     },
   )
 
+  // Update block by landing page ID
+  .patch(
+    '/by-id/:landingPageId/blocks/:blockId',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+
+      // Verify block belongs to this landing page and org
+      const [block] = await db
+        .select({ id: landingPageBlocks.id })
+        .from(landingPageBlocks)
+        .innerJoin(
+          landingPages,
+          eq(landingPageBlocks.landingPageId, landingPages.id),
+        )
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(landingPageBlocks.id, params.blockId),
+            eq(hypotheses.userId, user.id),
+            isNull(landingPageBlocks.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!block)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Block not found')
+
+      await db
+        .update(landingPageBlocks)
+        .set({ ...body, updatedAt: new Date() })
+        .where(eq(landingPageBlocks.id, params.blockId))
+
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      body: LandingPageSchema.blockUpdate,
+      detail: {
+        description: 'Update a block by landing page ID',
+        summary: 'Update block (by landing page)',
+        tags: ['Landing Page Blocks'],
+      },
+      params: t.Object({ blockId: t.String(), landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
+
   // Delete block by hypothesis ID
   .delete(
     '/hypothesis/:hypothesisId/blocks/:blockId',
@@ -584,6 +948,52 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         401: ErrorResponse,
         404: ErrorResponse,
       },
+    },
+  )
+
+  // Delete block by landing page ID
+  .delete(
+    '/by-id/:landingPageId/blocks/:blockId',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+
+      const [block] = await db
+        .select({ id: landingPageBlocks.id })
+        .from(landingPageBlocks)
+        .innerJoin(
+          landingPages,
+          eq(landingPageBlocks.landingPageId, landingPages.id),
+        )
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(landingPageBlocks.id, params.blockId),
+            eq(hypotheses.userId, user.id),
+            isNull(landingPageBlocks.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!block)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Block not found')
+
+      await db
+        .update(landingPageBlocks)
+        .set({ deletedAt: new Date(), updatedAt: new Date() })
+        .where(eq(landingPageBlocks.id, params.blockId))
+
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'Delete a block by landing page ID',
+        summary: 'Delete block (by landing page)',
+        tags: ['Landing Page Blocks'],
+      },
+      params: t.Object({ blockId: t.String(), landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
     },
   )
 
@@ -650,6 +1060,122 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         401: ErrorResponse,
         404: ErrorResponse,
       },
+    },
+  )
+
+  // Replace all blocks by landing page ID
+  .put(
+    '/by-id/:landingPageId/blocks',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session) {
+        set.status = 401
+        return { error: 'Unauthorized' }
+      }
+      const orgId = session.activeOrganizationId
+      if (!orgId) {
+        set.status = HTTP_STATUS.BAD_REQUEST
+        return { error: 'No active organization' }
+      }
+
+      const [lp] = await db
+        .select({ id: landingPages.id })
+        .from(landingPages)
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!lp) {
+        set.status = HTTP_STATUS.NOT_FOUND
+        return { error: 'Landing page not found' }
+      }
+
+      await db
+        .update(landingPageBlocks)
+        .set({ deletedAt: new Date() })
+        .where(eq(landingPageBlocks.landingPageId, params.landingPageId))
+
+      const now = new Date()
+      const inserts = body.blocks.map((block) => ({
+        content: block.content,
+        createdAt: now,
+        id: block.id || ulid(),
+        landingPageId: params.landingPageId,
+        order: block.order,
+        type: block.type,
+        updatedAt: now,
+      }))
+      if (inserts.length > 0) await db.insert(landingPageBlocks).values(inserts)
+      return { success: true }
+    },
+    {
+      auth: true,
+      body: t.Object({
+        blocks: t.Array(
+          t.Object({
+            content: t.String(),
+            id: t.Optional(t.String()),
+            order: t.String(),
+            type: t.String(),
+          }),
+        ),
+      }),
+      detail: {
+        description: 'Replace blocks by landing page ID',
+        summary: 'Replace blocks (by landing page)',
+        tags: ['Landing Page Blocks'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
+
+  // Reorder blocks by landing page ID
+  .post(
+    '/by-id/:landingPageId/blocks/reorder',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session) {
+        set.status = 401
+        return { error: 'Unauthorized' }
+      }
+
+      const [lp] = await db
+        .select({ id: landingPages.id })
+        .from(landingPages)
+        .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
+        .where(
+          and(
+            eq(landingPages.id, params.landingPageId),
+            eq(hypotheses.userId, user.id),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!lp) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      const updates = body.blocks.map((block) =>
+        db
+          .update(landingPageBlocks)
+          .set({ order: block.order, updatedAt: new Date() })
+          .where(eq(landingPageBlocks.id, block.id)),
+      )
+      await Promise.all(updates)
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      body: t.Object({ blocks: t.Array(t.Object({ id: t.String(), order: t.String() })) }),
+      detail: {
+        description: 'Reorder blocks by landing page ID',
+        summary: 'Reorder blocks (by landing page)',
+        tags: ['Landing Page Blocks'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
     },
   )
 

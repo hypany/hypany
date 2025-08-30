@@ -126,6 +126,7 @@ export const hypotheses = pgTable(
       .primaryKey()
       .$defaultFn(() => ulid()),
     name: text('name').notNull(),
+    slug: text('slug').unique(),
     organizationId: text('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
@@ -154,10 +155,10 @@ export const landingPages = pgTable(
     customDomain: text('custom_domain'),
     deletedAt: timestamp('deleted_at'), // Soft delete field
     favicon: text('favicon'),
+    name: text('name'),
     hypothesisId: text('hypothesis_id')
       .notNull()
-      .references(() => hypotheses.id, { onDelete: 'cascade' })
-      .unique(),
+      .references(() => hypotheses.id, { onDelete: 'cascade' }),
     id: text('id')
       .primaryKey()
       .$defaultFn(() => ulid()),
@@ -165,7 +166,6 @@ export const landingPages = pgTable(
     metaTitle: text('meta_title'),
     ogImage: text('og_image'),
     publishedAt: timestamp('published_at'),
-    slug: text('slug').unique(), // Subdomain slug for hypany.app
     template: text('template').notNull().default('default'),
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())

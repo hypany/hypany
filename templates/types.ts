@@ -76,8 +76,6 @@ export type Meta = {
   locale?: string
 }
 
-// export type NavBar = { ... } removed
-
 export type Hero = {
   enabled?: boolean
   id?: string

@@ -1,16 +1,11 @@
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 import { cookies, headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { db } from '@/drizzle'
 import { BOT_UA_REGEX } from '@/lib/constants'
 import { logger } from '@/lib/logger'
 import { normalizeReferrerHost } from '@/lib/referrer'
-import {
-  hypotheses,
-  landingPageBlocks,
-  landingPages,
-  pageVisits,
-} from '@/schema'
+import { hypotheses, landingPageBlocks, landingPages, pageVisits } from '@/schema'
 import { Template1 } from '@/templates/template-1'
 import type { LandingConfig } from '@/templates/types'
 
@@ -21,29 +16,25 @@ export default async function PublicBySlug({
 }) {
   const { slug } = await params
 
-  // Find landing page by slug
-  const [lp] = await db
-    .select()
-    .from(landingPages)
-    .where(and(eq(landingPages.slug, slug), isNull(landingPages.deletedAt)))
-    .limit(1)
-
-  if (!lp) {
-    notFound()
-  }
-
-  // Find hypothesis
+  // Resolve hypothesis by slug
   const [hypothesis] = await db
     .select()
     .from(hypotheses)
-    .where(
-      and(eq(hypotheses.id, lp.hypothesisId), isNull(hypotheses.deletedAt)),
-    )
+    .where(and(eq(hypotheses.slug, slug), isNull(hypotheses.deletedAt)))
     .limit(1)
 
   if (!hypothesis || hypothesis.status !== 'published') {
     notFound()
   }
+
+  // Pick one landing page for this hypothesis
+  const [lp] = await db
+    .select()
+    .from(landingPages)
+    .where(and(eq(landingPages.hypothesisId, hypothesis.id), isNull(landingPages.deletedAt)))
+    .orderBy(desc(landingPages.publishedAt), desc(landingPages.updatedAt))
+    .limit(1)
+  if (!lp) notFound()
 
   // Get landing page blocks
   const blocks = await db
@@ -136,6 +127,9 @@ function blocksToConfig(
         case 'hero':
           config.hero = content
           break
+        case 'finalCta':
+          config.finalCta = content
+          break
         case 'partners':
           config.partners = content
           break
@@ -148,9 +142,6 @@ function blocksToConfig(
 
         case 'faq':
           config.faq = content
-          break
-        case 'finalCta':
-          config.finalCta = content
           break
         case 'footer':
           config.footer = content

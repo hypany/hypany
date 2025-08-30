@@ -44,6 +44,7 @@ type Row = {
   status: string
   signupCount: number
   slug: string | null
+  landingPageId: string | null
 }
 
 export default async function HypothesesPage() {
@@ -101,7 +102,8 @@ export default async function HypothesesPage() {
     id: r.hypothesis.id,
     name: r.hypothesis.name,
     signupCount: r.waitlist?.id ? countsByWaitlist.get(r.waitlist.id) || 0 : 0,
-    slug: r.landingPage?.slug ?? null,
+    slug: (r.hypothesis as any).slug ?? null,
+    landingPageId: r.landingPage?.id ?? null,
     status: r.hypothesis.status,
   }))
 
@@ -377,7 +379,7 @@ export default async function HypothesesPage() {
                 </TableCell>
                 <TableCell className='capitalize'>
                   <Link
-                    href={`/app/hypotheses/${item.id}/editor`}
+                    href={`/app/hypotheses/${item.id}/landing-pages`}
                     className='group inline-flex items-center gap-1 hover:underline'
                   >
                     {item.status}
