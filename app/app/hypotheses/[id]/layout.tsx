@@ -44,7 +44,6 @@ export default async function HypothesisLayout({
 
   const row = result[0]
   if (!row?.hypothesis) notFound()
-  const lpId = row.landingPage?.id ?? null
 
   return (
     <div>

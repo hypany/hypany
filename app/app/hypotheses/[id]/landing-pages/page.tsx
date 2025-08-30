@@ -6,7 +6,7 @@ import { hypotheses, landingPages } from '@/schema'
 import { and, eq, isNull } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import Link from 'next/link'
-import { CreateLandingPageButton, DuplicateLandingPageButton } from './ui'
+import { CreateLandingPageButton, DuplicateLandingPageButton, RenameLandingPageInline } from './ui'
 import { notFound } from 'next/navigation'
 
 export default async function LandingPagesGallery({
@@ -77,9 +77,9 @@ export default async function LandingPagesGallery({
                       <div className='mt-1 text-xs text-gray-500'>
                         ID: {p.id}
                       </div>
-                      {(p.customDomain || p.slug) && (
+                      {(p.customDomain || hyp.slug) && (
                         <div className='text-xs text-gray-500'>
-                          {p.customDomain || (p.slug ? `${p.slug}.hypany.app` : '')}
+                          {p.customDomain || (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
                         </div>
                       )}
                     </div>
@@ -92,9 +92,9 @@ export default async function LandingPagesGallery({
                         <Link href={`/app/editor/${id}/${p.id}`}>Open Editor</Link>
                       </Button>
                       <DuplicateLandingPageButton hypothesisId={id} landingPageId={p.id} />
-                      {p.slug && (
+                      {hyp.slug && (
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/${p.slug}`} target='_blank' rel='noopener noreferrer'>View</Link>
+                          <Link href={`/${hyp.slug}`} target='_blank' rel='noopener noreferrer'>View</Link>
                         </Button>
                       )}
                     </div>

@@ -7,7 +7,7 @@ export async function getLandingPageIdForOrg(
   hypothesisId: string,
 ) {
   const [lp] = await db
-    .select({ customDomain: landingPages.customDomain, id: landingPages.id })
+    .select({ customDomain: hypotheses.customDomain, id: landingPages.id })
     .from(landingPages)
     .innerJoin(hypotheses, eq(landingPages.hypothesisId, hypotheses.id))
     .where(

@@ -169,7 +169,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       return {
         hypotheses: userHypotheses.map((row) => ({
           ...row.hypothesis,
-          landingPage: row.landingPage,
+          landingPage: row.landingPage && { id: row.landingPage.id },
           signupCount: row.waitlist?.id
             ? countsByWaitlist.get(row.waitlist.id) || 0
             : 0,
@@ -206,11 +206,10 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             t.Object({
               description: t.Nullable(t.String()),
               id: t.String(),
-              landingPage: t.Nullable(
-                t.Object({ id: t.String(), slug: t.Nullable(t.String()) }),
-              ),
+              landingPage: t.Nullable(t.Object({ id: t.String() })),
               name: t.String(),
               signupCount: t.Number(),
+              slug: t.Nullable(t.String()),
               status: t.String(),
             }),
           ),
@@ -365,7 +364,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
 
       return jsonOk(set, HTTP_STATUS.OK, {
         hypothesis: row.hypothesis,
-        landingPage: row.landingPage,
+        landingPage: row.landingPage ? { id: row.landingPage.id } : null,
         metrics: {
           conversionRate30d,
           pageViews30d,
@@ -393,9 +392,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             name: t.String(),
             status: t.String(),
           }),
-          landingPage: t.Nullable(
-            t.Object({ id: t.String(), slug: t.Nullable(t.String()) }),
-          ),
+          landingPage: t.Nullable(t.Object({ id: t.String() })),
           metrics: t.Object({
             conversionRate30d: t.Number(),
             pageViews30d: t.Number(),
@@ -434,6 +431,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             description: body.description || null,
             id: hypothesisId,
             name: body.name,
+            slug: body.slug || null,
             organizationId: orgId,
             status: 'draft',
             updatedAt: new Date(),
@@ -443,7 +441,7 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
             createdAt: new Date(),
             hypothesisId,
             id: landingPageId,
-            slug: body.slug || hypothesisId,
+            name: body.name || null,
             template: 'default',
             updatedAt: new Date(),
           }),

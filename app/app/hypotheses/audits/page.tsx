@@ -74,9 +74,9 @@ export default function Audits() {
           certified: h.status,
           documents: [
             {
-              name: h.landingPage?.slug ?? t('noSlug'),
+              name: (h as { slug?: string | null }).slug ?? t('noSlug'),
               // Use literal union values to satisfy Section type
-              status: h.landingPage?.slug ? 'OK' : 'Needs update',
+              status: (h as { slug?: string | null }).slug ? 'OK' : 'Needs update',
             },
           ],
           id: h.id,

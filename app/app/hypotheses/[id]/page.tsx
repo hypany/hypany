@@ -79,8 +79,8 @@ export default async function HypothesisOverview({
               <TableCell>{signupCount ?? '-'}</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell className='font-medium'>Landing</TableCell>
-              <TableCell>{row.landingPage?.slug ?? '-'}</TableCell>
+              <TableCell className='font-medium'>Subdomain</TableCell>
+              <TableCell>{(row.hypothesis as { slug?: string | null }).slug ?? '-'}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

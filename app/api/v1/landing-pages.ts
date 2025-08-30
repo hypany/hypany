@@ -142,8 +142,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
 
       const changes: Record<string, unknown> = {}
       if (typeof body.name !== 'undefined') changes.name = body.name
-      if (Object.keys(changes).length === 0)
-        return jsonOk(set, HTTP_STATUS.OK, { ok: true })
+      if (Object.keys(changes).length === 0) return jsonOk(set)
 
       await db
         .update(landingPages)

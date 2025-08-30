@@ -127,6 +127,7 @@ export const hypotheses = pgTable(
       .$defaultFn(() => ulid()),
     name: text('name').notNull(),
     slug: text('slug').unique(),
+    customDomain: text('custom_domain'),
     organizationId: text('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
@@ -152,7 +153,6 @@ export const landingPages = pgTable(
       .$defaultFn(() => new Date())
       .notNull(),
     customCss: text('custom_css'),
-    customDomain: text('custom_domain'),
     deletedAt: timestamp('deleted_at'), // Soft delete field
     favicon: text('favicon'),
     name: text('name'),
@@ -172,9 +172,6 @@ export const landingPages = pgTable(
       .notNull(),
   },
   (table) => ({
-    customDomainIdx: index('landing_pages_custom_domain_idx').on(
-      table.customDomain,
-    ),
     hypothesisIdIdx: index('landing_pages_hypothesis_id_idx').on(
       table.hypothesisId,
     ),

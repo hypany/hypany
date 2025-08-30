@@ -114,11 +114,9 @@ function stringifyContent(content: BlockContent): string {
 }
 
 export default function BlocksEditor({
-  hypothesisId,
   landingPageId,
   initialBlocks,
 }: {
-  hypothesisId: string
   landingPageId: string
   initialBlocks: Block[]
 }) {
@@ -806,4 +804,3 @@ function BlockForm({ content, onChange }: { content: BlockContent; onChange: (c:
     }
   }
 }
-

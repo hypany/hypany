@@ -35,6 +35,13 @@
       "when": 1756560020595,
       "tag": "0004_eminent_wendell_vaughn",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1756560767273,
+      "tag": "0005_rich_tattoo",
+      "breakpoints": true
     }
   ],
   "version": "7"

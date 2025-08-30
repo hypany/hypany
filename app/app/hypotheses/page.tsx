@@ -102,7 +102,7 @@ export default async function HypothesesPage() {
     id: r.hypothesis.id,
     name: r.hypothesis.name,
     signupCount: r.waitlist?.id ? countsByWaitlist.get(r.waitlist.id) || 0 : 0,
-    slug: (r.hypothesis as any).slug ?? null,
+    slug: (r.hypothesis as { slug?: string | null }).slug ?? null,
     landingPageId: r.landingPage?.id ?? null,
     status: r.hypothesis.status,
   }))

@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { api } from '@/app/api'
 import BlocksEditor from './ui'
 
@@ -7,7 +7,7 @@ export default async function EditorByLandingPage({
 }: {
   params: Promise<{ hypothesisId: string; landingPageId: string }>
 }) {
-  const { hypothesisId, landingPageId } = await params
+  const { landingPageId } = await params
 
   // Get landing page and blocks by landing page ID
   const res = await api.v1['landing-pages']['by-id']({ landingPageId }).get()
@@ -29,7 +29,6 @@ export default async function EditorByLandingPage({
         </p>
       </div>
       <BlocksEditor
-        hypothesisId={hypothesisId}
         landingPageId={landingPageId}
         initialBlocks={data.blocks.map((b) => ({
           content: b.content,
@@ -50,4 +49,3 @@ export default async function EditorByLandingPage({
     </section>
   )
 }
-
