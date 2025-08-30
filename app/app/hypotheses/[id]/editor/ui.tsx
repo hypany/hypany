@@ -55,14 +55,14 @@ export default function BlocksEditor({
           : undefined
       if (id) setBlocks((b) => [...b, { content, id, order, type }])
       toast({
-        title: 'Block added',
         description: `Added a ${type} block to your page.`,
+        title: 'Block added',
         variant: 'success',
       })
     } catch (_e) {
       toast({
-        title: 'Invalid content or failed to add',
         description: 'Provide valid JSON for the selected block type.',
+        title: 'Invalid content or failed to add',
         variant: 'error',
       })
     }
@@ -76,14 +76,14 @@ export default function BlocksEditor({
         .delete()
       setBlocks((b) => b.filter((x) => x.id !== id))
       toast({
-        title: 'Block removed',
         description: 'The block was removed from your landing page.',
+        title: 'Block removed',
         variant: 'success',
       })
     } catch {
       toast({
-        title: 'Failed to remove block',
         description: 'Please try again.',
+        title: 'Failed to remove block',
         variant: 'error',
       })
     }
@@ -101,14 +101,14 @@ export default function BlocksEditor({
         .patch({ ...next })
       setBlocks((b) => b.map((x) => (x.id === id ? { ...x, ...next } : x)))
       toast({
-        title: 'Block updated',
         description: 'Changes saved.',
+        title: 'Block updated',
         variant: 'success',
       })
     } catch {
       toast({
-        title: 'Failed to update block',
         description: 'Check the content JSON and try again.',
+        title: 'Failed to update block',
         variant: 'error',
       })
     }
@@ -122,14 +122,14 @@ export default function BlocksEditor({
           blocks: next.map((b) => ({ id: b.id, order: b.order })),
         })
       toast({
-        title: 'Order updated',
         description: 'Block order saved.',
+        title: 'Order updated',
         variant: 'success',
       })
     } catch {
       toast({
-        title: 'Failed to update order',
         description: 'Please try again.',
+        title: 'Failed to update order',
         variant: 'error',
       })
     }

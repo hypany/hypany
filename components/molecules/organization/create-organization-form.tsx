@@ -6,9 +6,8 @@ import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
-import { toast } from '@/lib/use-toast'
-
 import { slugify } from '@/lib/slug'
+import { toast } from '@/lib/use-toast'
 
 export function CreateOrganizationForm() {
   const router = useRouter()
@@ -24,8 +23,8 @@ export function CreateOrganizationForm() {
     e.preventDefault()
     if (!name.trim()) {
       toast({
-        title: 'Please enter an organization name',
         description: 'Organization name is required to continue.',
+        title: 'Please enter an organization name',
         variant: 'error',
       })
       return
@@ -38,16 +37,16 @@ export function CreateOrganizationForm() {
       })
       if (error || !org) {
         toast({
-          title: error?.message || 'Failed to create organization',
           description: 'Please try again.',
+          title: error?.message || 'Failed to create organization',
           variant: 'error',
         })
         return
       }
       await client.organization.setActive({ organizationId: org.id })
       toast({
-        title: 'Organization created',
         description: 'Switching to your new organization...',
+        title: 'Organization created',
         variant: 'success',
       })
       router.push('/app')
@@ -55,8 +54,8 @@ export function CreateOrganizationForm() {
     } catch (error) {
       console.error(error)
       toast({
-        title: 'Failed to create organization',
         description: 'Please try again.',
+        title: 'Failed to create organization',
         variant: 'error',
       })
     } finally {

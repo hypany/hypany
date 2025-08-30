@@ -48,8 +48,8 @@ export function DropdownUserProfile({
   const handleSignOut = useCallback(async () => {
     await client.signOut()
     toast({
-      title: 'Signed out successfully',
       description: 'You have been signed out.',
+      title: 'Signed out successfully',
       variant: 'success',
     })
     router.replace('/')

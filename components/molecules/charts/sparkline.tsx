@@ -7,10 +7,9 @@ const ResponsiveContainer = dynamic(
   () => import('recharts').then((m) => m.ResponsiveContainer),
   { ssr: false },
 )
-const LineChart = dynamic(
-  () => import('recharts').then((m) => m.LineChart),
-  { ssr: false },
-)
+const LineChart = dynamic(() => import('recharts').then((m) => m.LineChart), {
+  ssr: false,
+})
 const Line = dynamic(() => import('recharts').then((m) => m.Line), {
   ssr: false,
 })
@@ -22,7 +21,10 @@ export function Sparkline({ data }: { data: number[] }) {
   return (
     <div className='h-8 w-24'>
       <ResponsiveContainer width='100%' height='100%'>
-        <LineChart data={series} margin={{ left: 0, right: 0, top: 4, bottom: 4 }}>
+        <LineChart
+          data={series}
+          margin={{ bottom: 4, left: 0, right: 0, top: 4 }}
+        >
           <Line
             type='monotone'
             dataKey='v'

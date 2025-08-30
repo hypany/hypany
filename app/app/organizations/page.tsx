@@ -1,7 +1,6 @@
 import { headers } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@/auth'
-import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import {
   Table,
   TableBody,
@@ -11,6 +10,7 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
+import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
 
@@ -42,7 +42,9 @@ export default async function OrganizationsPage() {
                   <TableHeaderCell>Name</TableHeaderCell>
                   <TableHeaderCell>Slug</TableHeaderCell>
                   <TableHeaderCell>Status</TableHeaderCell>
-                  <TableHeaderCell className='text-right'>Actions</TableHeaderCell>
+                  <TableHeaderCell className='text-right'>
+                    Actions
+                  </TableHeaderCell>
                 </TableRow>
               </TableHead>
               <TableBody>

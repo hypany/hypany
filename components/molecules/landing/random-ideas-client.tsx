@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/atoms/badge'
 import { ProgressCircle } from '@/components/atoms/progress-circle'
 import {
@@ -12,7 +13,6 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { Tooltip } from '@/components/atoms/tooltip'
-import { useTranslations } from 'next-intl'
 
 export type IdeaItem = {
   user: string

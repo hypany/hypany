@@ -67,14 +67,14 @@ export function OrgSwitcherClient({
     const res = await client.organization.setActive({ organizationId })
     if ((res as any)?.error) {
       toast({
-        title: 'Failed to switch organization',
         description: 'Please try again.',
+        title: 'Failed to switch organization',
         variant: 'error',
       })
     } else {
       toast({
-        title: 'Organization switched',
         description: 'Active organization updated.',
+        title: 'Organization switched',
         variant: 'success',
       })
       client.$store.notify('$sessionSignal')

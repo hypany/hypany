@@ -1,3 +1,8 @@
+import { and, eq, isNull } from 'drizzle-orm'
+import { headers } from 'next/headers'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import type { ReactNode } from 'react'
 import { auth } from '@/auth'
 import {
   TabNavigation,
@@ -5,11 +10,6 @@ import {
 } from '@/components/atoms/tab-navigation'
 import { db } from '@/drizzle'
 import { hypotheses, landingPages, waitlists } from '@/schema'
-import { and, eq, isNull } from 'drizzle-orm'
-import { headers } from 'next/headers'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import type { ReactNode } from 'react'
 
 export default async function HypothesisLayout({
   children,

@@ -48,16 +48,16 @@ export function ResetPasswordForm({
   async function onSubmit(data: ResetFormData) {
     if (!token) {
       toast({
-        title: 'Invalid or missing token.',
         description: 'Request a new reset link and try again.',
+        title: 'Invalid or missing token.',
         variant: 'error',
       })
       return
     }
 
     const t = toast({
-      title: 'Updating password...',
       description: 'Applying your new password.',
+      title: 'Updating password...',
       variant: 'loading',
     })
     try {
@@ -69,8 +69,8 @@ export function ResetPasswordForm({
         throw new Error(error.message || 'Failed to reset password')
       }
       t.update({
-        title: 'Your password has been updated.',
         description: 'You can sign in with your new password now.',
+        title: 'Your password has been updated.',
         variant: 'success',
       })
       router.push('/sign-in')
@@ -80,8 +80,8 @@ export function ResetPasswordForm({
           ? e.message
           : 'Failed to reset password. Please try again.'
       t.update({
-        title: message,
         description: 'Please try again.',
+        title: message,
         variant: 'error',
       })
     }

@@ -16,8 +16,8 @@ export function AcceptInvitationToast() {
 
     if (accepted === '1') {
       toast({
-        title: 'Invitation accepted',
         description: 'You have joined the organization.',
+        title: 'Invitation accepted',
         variant: 'success',
       })
     } else {

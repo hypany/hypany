@@ -6,7 +6,8 @@ import { TopRightActions } from '@/components/molecules/navigation/top-right-act
 
 export function AppHeader() {
   const base = 'sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 px-4'
-  const normalBg = 'border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950'
+  const normalBg =
+    'border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950'
 
   return (
     <header className={`${base} ${normalBg}`}>

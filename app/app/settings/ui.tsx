@@ -50,14 +50,14 @@ export default function SettingsForm({
         theme: safeTheme,
       })
       toast({
-        title: 'Settings saved',
         description: 'Your preferences have been updated.',
+        title: 'Settings saved',
         variant: 'success',
       })
     } catch {
       toast({
-        title: 'Failed to save settings',
         description: 'Please try again in a moment.',
+        title: 'Failed to save settings',
         variant: 'error',
       })
     } finally {

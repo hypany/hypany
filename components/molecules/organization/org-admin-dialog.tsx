@@ -1,14 +1,37 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/atoms/dialog'
 import { Input } from '@/components/atoms/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
-import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
-import { TabNavigation, TabNavigationLink } from '@/components/atoms/tab-navigation'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/atoms/select'
+import {
+  TabNavigation,
+  TabNavigationLink,
+} from '@/components/atoms/tab-navigation'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from '@/components/atoms/table'
 import { toast } from '@/lib/use-toast'
+import { useEffect, useState } from 'react'
 
 type Member = {
   id: string
@@ -25,7 +48,13 @@ type Invitation = {
   expiresAt?: string | Date | null
 }
 
-export function OrgAdminDialog({ orgId, orgName }: { orgId: string; orgName: string }) {
+export function OrgAdminDialog({
+  orgId,
+  orgName,
+}: {
+  orgId: string
+  orgName: string
+}) {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<'members' | 'invites' | 'admin'>('members')
 
@@ -76,11 +105,18 @@ function MembersSection({ orgId }: { orgId: string }) {
   async function load() {
     setLoading(true)
     try {
-      const res = await client.organization.listMembers({ query: { organizationId: orgId } })
+      const res = await client.organization.listMembers({
+        query: { organizationId: orgId },
+      })
       const data = (res?.data as any) || []
       setMembers(
         Array.isArray(data)
-          ? data.map((m: any) => ({ id: m.id, role: m.role, userId: m.userId, createdAt: m.createdAt }))
+          ? data.map((m: any) => ({
+              createdAt: m.createdAt,
+              id: m.id,
+              role: m.role,
+              userId: m.userId,
+            }))
           : [],
       )
     } catch {
@@ -89,10 +125,6 @@ function MembersSection({ orgId }: { orgId: string }) {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    load()
-  }, [])
 
   return (
     <div className='space-y-4'>
@@ -112,7 +144,12 @@ function MembersSection({ orgId }: { orgId: string }) {
                 <TableCell>{m.role}</TableCell>
                 <TableCell className='text-right'>
                   <div className='flex items-center justify-end gap-2'>
-                    <UpdateRoleButton orgId={orgId} memberId={m.id} currentRole={m.role} onUpdated={load} />
+                    <UpdateRoleButton
+                      orgId={orgId}
+                      memberId={m.id}
+                      currentRole={m.role}
+                      onUpdated={load}
+                    />
                     <Button
                       variant='secondary'
                       className='py-1.5'
@@ -123,15 +160,16 @@ function MembersSection({ orgId }: { orgId: string }) {
                             organizationId: orgId,
                           })
                           toast({
+                            description:
+                              'The member has been removed from the organization.',
                             title: 'Member removed',
-                            description: 'The member has been removed from the organization.',
                             variant: 'success',
                           })
                           load()
                         } catch (e) {
                           toast({
-                            title: 'Failed to remove member',
                             description: 'Please try again.',
+                            title: 'Failed to remove member',
                             variant: 'error',
                           })
                         }
@@ -183,7 +221,9 @@ function UpdateRoleButton({
           <DialogTitle>Update Role</DialogTitle>
         </DialogHeader>
         <div className='space-y-3'>
-          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Role</label>
+          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+            Role
+          </label>
           <Select value={role} onValueChange={(v) => setRole(v as Role)}>
             <SelectTrigger className='py-1.5'>
               <SelectValue placeholder='Select role' />
@@ -205,16 +245,16 @@ function UpdateRoleButton({
                     role,
                   })
                   toast({
-                    title: 'Role updated',
                     description: 'Member role updated successfully.',
+                    title: 'Role updated',
                     variant: 'success',
                   })
                   setOpen(false)
                   onUpdated()
                 } catch (e) {
                   toast({
-                    title: 'Failed to update role',
                     description: 'Please try again.',
+                    title: 'Failed to update role',
                     variant: 'error',
                   })
                 } finally {
@@ -232,13 +272,21 @@ function UpdateRoleButton({
   )
 }
 
-function InviteMemberForm({ orgId, onInvited }: { orgId: string; onInvited: () => void }) {
+function InviteMemberForm({
+  orgId,
+  onInvited,
+}: {
+  orgId: string
+  onInvited: () => void
+}) {
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<Role>('member')
   const [inviting, setInviting] = useState(false)
   return (
     <div className='rounded-md border border-gray-200 p-3 dark:border-gray-800'>
-      <h3 className='text-sm font-medium text-gray-900 dark:text-gray-50'>Invite member</h3>
+      <h3 className='text-sm font-medium text-gray-900 dark:text-gray-50'>
+        Invite member
+      </h3>
       <div className='mt-2 flex flex-col gap-2 sm:flex-row'>
         <Input
           placeholder='user@example.com'
@@ -262,25 +310,29 @@ function InviteMemberForm({ orgId, onInvited }: { orgId: string; onInvited: () =
             const e = email.trim()
             if (!e) {
               toast({
-                title: 'Enter an email address',
                 description: 'Email is required to send an invitation.',
+                title: 'Enter an email address',
               })
               return
             }
             setInviting(true)
             try {
-              await client.organization.inviteMember({ email: e, role, organizationId: orgId })
+              await client.organization.inviteMember({
+                email: e,
+                organizationId: orgId,
+                role,
+              })
               toast({
-                title: 'Invitation sent',
                 description: `An invitation was sent to ${e}.`,
+                title: 'Invitation sent',
                 variant: 'success',
               })
               setEmail('')
               onInvited()
             } catch (err) {
               toast({
-                title: 'Failed to send invitation',
                 description: 'Please verify the email and try again.',
+                title: 'Failed to send invitation',
                 variant: 'error',
               })
             } finally {
@@ -303,11 +355,19 @@ function InvitationsSection({ orgId }: { orgId: string }) {
   async function load() {
     setLoading(true)
     try {
-      const res = await client.organization.listInvitations({ query: { organizationId: orgId } })
+      const res = await client.organization.listInvitations({
+        query: { organizationId: orgId },
+      })
       const data = (res?.data as any) || []
       setInvitations(
         Array.isArray(data)
-          ? data.map((i: any) => ({ id: i.id, email: i.email, role: i.role, status: i.status, expiresAt: i.expiresAt }))
+          ? data.map((i: any) => ({
+              email: i.email,
+              expiresAt: i.expiresAt,
+              id: i.id,
+              role: i.role,
+              status: i.status,
+            }))
           : [],
       )
     } finally {
@@ -335,7 +395,11 @@ function InvitationsSection({ orgId }: { orgId: string }) {
             {(loading ? [] : invitations).map((inv) => (
               <TableRow key={inv.id}>
                 <TableCell className='font-medium'>{inv.email}</TableCell>
-                <TableCell>{Array.isArray(inv.role) ? inv.role.join(', ') : inv.role ?? '-'}</TableCell>
+                <TableCell>
+                  {Array.isArray(inv.role)
+                    ? inv.role.join(', ')
+                    : (inv.role ?? '-')}
+                </TableCell>
                 <TableCell>{inv.status ?? 'pending'}</TableCell>
                 <TableCell className='text-right'>
                   <div className='flex items-center justify-end gap-2'>
@@ -344,17 +408,19 @@ function InvitationsSection({ orgId }: { orgId: string }) {
                       className='py-1.5'
                       onClick={async () => {
                         try {
-                          await client.organization.cancelInvitation({ invitationId: inv.id })
+                          await client.organization.cancelInvitation({
+                            invitationId: inv.id,
+                          })
                           toast({
-                            title: 'Invitation cancelled',
                             description: 'The invitation has been cancelled.',
+                            title: 'Invitation cancelled',
                             variant: 'success',
                           })
                           load()
                         } catch (e) {
                           toast({
-                            title: 'Failed to cancel invitation',
                             description: 'Please try again.',
+                            title: 'Failed to cancel invitation',
                             variant: 'error',
                           })
                         }
@@ -390,15 +456,15 @@ function AdminSection({ orgId }: { orgId: string }) {
             try {
               await client.organization.leave({ organizationId: orgId })
               toast({
-                title: 'Left organization',
                 description: 'You have left the organization.',
+                title: 'Left organization',
                 variant: 'success',
               })
               window.location.reload()
             } catch (e) {
               toast({
-                title: 'Failed to leave organization',
                 description: 'Please try again.',
+                title: 'Failed to leave organization',
                 variant: 'error',
               })
             } finally {

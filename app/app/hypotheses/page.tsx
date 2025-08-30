@@ -1,3 +1,17 @@
+import {
+  and,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNull,
+  lte,
+  sql,
+} from 'drizzle-orm'
+import { Pencil } from 'lucide-react'
+import { headers } from 'next/headers'
+import Link from 'next/link'
 import { auth } from '@/auth'
 import {
   Table,
@@ -23,20 +37,6 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
-import {
-  and,
-  count,
-  desc,
-  eq,
-  gte,
-  inArray,
-  isNull,
-  lte,
-  sql,
-} from 'drizzle-orm'
-import { Pencil } from 'lucide-react'
-import { headers } from 'next/headers'
-import Link from 'next/link'
 
 type Row = {
   id: string
@@ -100,9 +100,9 @@ export default async function HypothesesPage() {
   const data: Row[] = rows.map((r) => ({
     id: r.hypothesis.id,
     name: r.hypothesis.name,
-    status: r.hypothesis.status,
     signupCount: r.waitlist?.id ? countsByWaitlist.get(r.waitlist.id) || 0 : 0,
     slug: r.landingPage?.slug ?? null,
+    status: r.hypothesis.status,
   }))
 
   // Compute metrics
@@ -330,21 +330,21 @@ export default async function HypothesesPage() {
   const readyCount = readyToLaunch
   const metrics: Metric[] = [
     {
+      fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
       label: 'Visitor Conversion Rate',
       percentage: `${(conversion * 100).toFixed(1)}%`,
-      fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
       value: conversion,
     },
     {
+      fraction: `${last7}/${prev7}`,
       label: 'Signup Growth (WoW)',
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
-      fraction: `${last7}/${prev7}`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
+      fraction: `${readyCount}/${denom}`,
       label: 'Ready to Launch',
       percentage: '',
-      fraction: `${readyCount}/${denom}`,
       value: Math.min(1, readyCount / denom),
     },
   ]

@@ -1,9 +1,15 @@
 'use client'
 
+import { Image as ImageIcon, Link as LinkIcon } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link as LinkIcon, Image as ImageIcon } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/atoms/select'
 
 type HeadingLevel = 'p' | 'h1' | 'h2' | 'h3'
 
@@ -17,7 +23,11 @@ function download(filename: string, content: string) {
   URL.revokeObjectURL(url)
 }
 
-export function WysiwygEditor({ storageKey = 'wysiwyg:draft' }: { storageKey?: string }) {
+export function WysiwygEditor({
+  storageKey = 'wysiwyg:draft',
+}: {
+  storageKey?: string
+}) {
   const editorRef = useRef<HTMLDivElement | null>(null)
   const [html, setHtml] = useState<string>('')
   const [heading, setHeading] = useState<HeadingLevel>('p')
@@ -71,7 +81,10 @@ export function WysiwygEditor({ storageKey = 'wysiwyg:draft' }: { storageKey?: s
   const toolbar = useMemo(
     () => (
       <div className='flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-white p-2 shadow-xs dark:border-gray-800 dark:bg-gray-950'>
-        <Select value={heading} onValueChange={(v) => onHeadingChange(v as HeadingLevel)}>
+        <Select
+          value={heading}
+          onValueChange={(v) => onHeadingChange(v as HeadingLevel)}
+        >
           <SelectTrigger className='h-8 w-32 py-0.5'>
             <SelectValue placeholder='Paragraph' />
           </SelectTrigger>
@@ -83,37 +96,71 @@ export function WysiwygEditor({ storageKey = 'wysiwyg:draft' }: { storageKey?: s
           </SelectContent>
         </Select>
         <div className='mx-1 h-5 w-px bg-gray-200 dark:bg-gray-800' />
-        <Button variant='secondary' className='h-8 px-2' onClick={() => exec('bold')}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2'
+          onClick={() => exec('bold')}
+        >
           <strong>B</strong>
         </Button>
-        <Button variant='secondary' className='h-8 px-2 italic' onClick={() => exec('italic')}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2 italic'
+          onClick={() => exec('italic')}
+        >
           I
         </Button>
-        <Button variant='secondary' className='h-8 px-2 underline' onClick={() => exec('underline')}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2 underline'
+          onClick={() => exec('underline')}
+        >
           U
         </Button>
         <div className='mx-1 h-5 w-px bg-gray-200 dark:bg-gray-800' />
-        <Button variant='secondary' className='h-8 px-2' onClick={() => exec('insertUnorderedList')}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2'
+          onClick={() => exec('insertUnorderedList')}
+        >
           • List
         </Button>
-        <Button variant='secondary' className='h-8 px-2' onClick={() => exec('insertOrderedList')}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2'
+          onClick={() => exec('insertOrderedList')}
+        >
           1. List
         </Button>
         <div className='mx-1 h-5 w-px bg-gray-200 dark:bg-gray-800' />
-        <Button variant='secondary' className='h-8 px-2 gap-1' onClick={insertLink}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2 gap-1'
+          onClick={insertLink}
+        >
           <LinkIcon className='size-3.5' aria-hidden /> Link
         </Button>
-        <Button variant='secondary' className='h-8 px-2 gap-1' onClick={insertImage}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2 gap-1'
+          onClick={insertImage}
+        >
           <ImageIcon className='size-3.5' aria-hidden /> Image
         </Button>
         <div className='mx-1 h-5 w-px bg-gray-200 dark:bg-gray-800' />
-        <Button variant='secondary' className='h-8 px-2' onClick={() => exec('removeFormat')}>
+        <Button
+          variant='secondary'
+          className='h-8 px-2'
+          onClick={() => exec('removeFormat')}
+        >
           Clear
         </Button>
         <Button
           variant='secondary'
           className='h-8 px-2'
-          onClick={() => download('document.html', editorRef.current?.innerHTML || '')}
+          onClick={() =>
+            download('document.html', editorRef.current?.innerHTML || '')
+          }
         >
           Export HTML
         </Button>

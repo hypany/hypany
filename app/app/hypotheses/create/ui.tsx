@@ -5,8 +5,8 @@ import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Textarea } from '@/components/atoms/textarea'
-import { toast } from '@/lib/use-toast'
 import { slugify } from '@/lib/slug'
+import { toast } from '@/lib/use-toast'
 
 export default function CreateHypothesisForm() {
   const router = useRouter()
@@ -30,8 +30,8 @@ export default function CreateHypothesisForm() {
     if (!s) {
       setSlugStatus(null)
       toast({
-        title: 'Enter a subdomain to check',
         description: 'Type a subdomain and press Check.',
+        title: 'Enter a subdomain to check',
       })
       return
     }
@@ -41,14 +41,14 @@ export default function CreateHypothesisForm() {
       if (res.data) setSlugStatus(res.data)
       if (res.data?.available)
         toast({
-          title: 'Subdomain is available',
           description: `Available as ${res.data.normalizedSlug}.hypany.app`,
+          title: 'Subdomain is available',
           variant: 'success',
         })
       else
         toast({
-          title: res.data?.error || 'Subdomain unavailable',
           description: 'Please choose another subdomain.',
+          title: res.data?.error || 'Subdomain unavailable',
           variant: 'error',
         })
     } finally {
@@ -64,8 +64,8 @@ export default function CreateHypothesisForm() {
     }
     if (!n) {
       toast({
-        title: 'Please enter a name',
         description: 'A name is required to create a hypothesis.',
+        title: 'Please enter a name',
         variant: 'warning',
       })
       return
@@ -90,22 +90,22 @@ export default function CreateHypothesisForm() {
           : undefined
       if (id) {
         toast({
-          title: 'Hypothesis created',
           description: 'Landing page and waitlist were created.',
+          title: 'Hypothesis created',
           variant: 'success',
         })
         router.push(`/app/hypotheses/${id}`)
       } else {
         toast({
-          title: 'Failed to create hypothesis',
           description: 'Please try again.',
+          title: 'Failed to create hypothesis',
           variant: 'error',
         })
       }
     } catch {
       toast({
-        title: 'Failed to create hypothesis',
         description: 'Please try again.',
+        title: 'Failed to create hypothesis',
         variant: 'error',
       })
     } finally {

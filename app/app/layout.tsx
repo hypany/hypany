@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { getSession } from '@/auth/server'
 import { SidebarProvider } from '@/components/atoms/sidebar'
-import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import { AppHeader } from '@/components/molecules/navigation/app-header'
+import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
 import '../globals.css'
 
 export const metadata: Metadata = {

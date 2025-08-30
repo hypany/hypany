@@ -43,8 +43,8 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
   async function resendVerificationEmail() {
     const email = getValues('email')
     const t = toast({
-      title: 'Sending verification email...',
       description: 'We are emailing a new verification link.',
+      title: 'Sending verification email...',
       variant: 'loading',
     })
     try {
@@ -56,14 +56,14 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
         throw new Error(error.message || 'Failed to send verification email')
       }
       t.update({
-        title: `Verification email sent to ${email}`,
         description: 'Check your inbox and follow the link to verify.',
+        title: `Verification email sent to ${email}`,
         variant: 'success',
       })
     } catch {
       t.update({
-        title: 'Failed to send verification email. Please try again.',
         description: 'Please try again in a moment.',
+        title: 'Failed to send verification email. Please try again.',
         variant: 'error',
       })
     }
@@ -101,8 +101,8 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           error.message?.toLowerCase().includes('incorrect')
         ) {
           toast({
-            title: 'Invalid email or password. Please try again.',
             description: 'Double-check your email and password.',
+            title: 'Invalid email or password. Please try again.',
             variant: 'error',
           })
         } else if (
@@ -110,21 +110,21 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           error.message?.toLowerCase().includes('no user')
         ) {
           toast({
-            title: 'No account found with this email. Please sign up first.',
             description: 'Create an account to continue.',
+            title: 'No account found with this email. Please sign up first.',
             variant: 'error',
           })
         } else {
           toast({
-            title: error.message || 'Failed to sign in. Please try again.',
             description: 'Please try again in a moment.',
+            title: error.message || 'Failed to sign in. Please try again.',
             variant: 'error',
           })
         }
       } else if (signInData) {
         toast({
-          title: 'Signed in successfully!',
           description: 'Redirecting to your workspace...',
+          title: 'Signed in successfully!',
           variant: 'success',
         })
         router.push(next || '/app')
@@ -133,8 +133,8 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
       // Handle network or unexpected errors
       console.error('Sign-in error:', error)
       toast({
-        title: 'Something went wrong. Please try again.',
         description: 'Please try again in a moment.',
+        title: 'Something went wrong. Please try again.',
         variant: 'error',
       })
     }

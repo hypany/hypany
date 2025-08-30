@@ -1,7 +1,7 @@
+import Link from 'next/link'
 import { api } from '@/app/api'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
-import Link from 'next/link'
 
 type Range = '7d' | '30d' | '90d'
 

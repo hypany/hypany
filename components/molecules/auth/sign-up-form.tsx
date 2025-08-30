@@ -52,28 +52,28 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           error.message?.toLowerCase().includes('already registered')
         ) {
           toast({
+            description: 'Try signing in or reset your password to continue.',
             title:
               'An account with this email already exists. Please sign in instead.',
-            description: 'Try signing in or reset your password to continue.',
             variant: 'error',
           })
         } else if (error.message?.toLowerCase().includes('password')) {
           toast({
-            title: 'Password must be at least 8 characters long.',
             description: 'Use at least 8 characters for your password.',
+            title: 'Password must be at least 8 characters long.',
             variant: 'error',
           })
         } else if (error.message?.toLowerCase().includes('email')) {
           toast({
-            title: 'Please enter a valid email address.',
             description: 'Double-check the email format and try again.',
+            title: 'Please enter a valid email address.',
             variant: 'error',
           })
         } else {
           toast({
+            description: 'Please try again in a moment.',
             title:
               error.message || 'Failed to create account. Please try again.',
-            description: 'Please try again in a moment.',
             variant: 'error',
           })
         }
@@ -95,15 +95,15 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         errorMessage.toLowerCase().includes('already registered')
       ) {
         toast({
+          description: 'Try signing in or reset your password to continue.',
           title:
             'An account with this email already exists. Please sign in instead.',
-          description: 'Try signing in or reset your password to continue.',
           variant: 'error',
         })
       } else {
         toast({
-          title: 'Something went wrong. Please try again.',
           description: 'Please try again in a moment.',
+          title: 'Something went wrong. Please try again.',
           variant: 'error',
         })
       }

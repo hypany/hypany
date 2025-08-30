@@ -6,10 +6,9 @@ const ResponsiveContainer = dynamic(
   () => import('recharts').then((m) => m.ResponsiveContainer),
   { ssr: false },
 )
-const LineChart = dynamic(
-  () => import('recharts').then((m) => m.LineChart),
-  { ssr: false },
-)
+const LineChart = dynamic(() => import('recharts').then((m) => m.LineChart), {
+  ssr: false,
+})
 const CartesianGrid = dynamic(
   () => import('recharts').then((m) => m.CartesianGrid),
   { ssr: false },
@@ -20,10 +19,9 @@ const XAxis = dynamic(() => import('recharts').then((m) => m.XAxis), {
 const YAxis = dynamic(() => import('recharts').then((m) => m.YAxis), {
   ssr: false,
 })
-const Tooltip = dynamic(
-  () => import('recharts').then((m) => m.Tooltip),
-  { ssr: false },
-)
+const Tooltip = dynamic(() => import('recharts').then((m) => m.Tooltip), {
+  ssr: false,
+})
 const Line = dynamic(() => import('recharts').then((m) => m.Line), {
   ssr: false,
 })
@@ -36,7 +34,10 @@ export function OverviewLine({
   return (
     <div className='h-56 w-full rounded-md border border-gray-200 p-2 dark:border-gray-800'>
       <ResponsiveContainer width='100%' height='100%'>
-        <LineChart data={data} margin={{ left: 8, right: 8, top: 8, bottom: 8 }}>
+        <LineChart
+          data={data}
+          margin={{ bottom: 8, left: 8, right: 8, top: 8 }}
+        >
           <CartesianGrid strokeDasharray='3 3' stroke='hsl(220 14% 90%)' />
           <XAxis dataKey='date' hide interval='preserveStartEnd' />
           <YAxis width={28} />

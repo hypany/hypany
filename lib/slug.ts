@@ -7,4 +7,3 @@ export function slugify(input: string): string {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
 }
-

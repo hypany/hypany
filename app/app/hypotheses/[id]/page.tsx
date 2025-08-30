@@ -1,3 +1,6 @@
+import { and, count, eq, isNull } from 'drizzle-orm'
+import { headers } from 'next/headers'
+import { notFound } from 'next/navigation'
 import { auth } from '@/auth'
 import {
   Table,
@@ -10,9 +13,6 @@ import {
 } from '@/components/atoms/table'
 import { db } from '@/drizzle'
 import { hypotheses, landingPages, waitlistEntries, waitlists } from '@/schema'
-import { and, count, eq, isNull } from 'drizzle-orm'
-import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
 
 export default async function HypothesisOverview({
   params,

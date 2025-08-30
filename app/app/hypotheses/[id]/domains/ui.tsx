@@ -44,14 +44,14 @@ export default function DomainForm({
       })
       if (d.available) {
         toast({
-          title: 'Subdomain is available',
           description: `Available as ${d.normalizedSlug}.hypany.app`,
+          title: 'Subdomain is available',
           variant: 'success',
         })
       } else {
         toast({
-          title: d.error || 'Subdomain unavailable',
           description: 'Please choose a different subdomain.',
+          title: d.error || 'Subdomain unavailable',
           variant: 'error',
         })
       }
@@ -71,21 +71,21 @@ export default function DomainForm({
         .patch(body)
       if (r.data?.success) {
         toast({
-          title: 'Domain settings saved',
           description: 'Your subdomain and custom domain changes are applied.',
+          title: 'Domain settings saved',
           variant: 'success',
         })
       } else {
         toast({
-          title: 'Failed to save domain settings',
           description: 'Please check your values and try again.',
+          title: 'Failed to save domain settings',
           variant: 'error',
         })
       }
     } catch {
       toast({
-        title: 'Failed to save domain settings',
         description: 'Please check your values and try again.',
+        title: 'Failed to save domain settings',
         variant: 'error',
       })
     } finally {
