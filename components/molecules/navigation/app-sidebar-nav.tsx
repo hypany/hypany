@@ -89,6 +89,10 @@ const navigation2: ReadonlyArray<NavGroup> = [
         href: '/app/organizations',
         name: 'app.sidebar.settings.organizations',
       },
+      {
+        href: '/app/wysiwyg',
+        name: 'WYSIWYG Editor',
+      },
     ],
     href: '#',
     icon: Settings,
@@ -153,6 +157,7 @@ export function AppSidebarNav() {
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
+      <div className='mx-3 border-t border-gray-200 dark:border-gray-800' />
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu className='space-y-4'>

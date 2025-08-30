@@ -15,10 +15,14 @@ export function AcceptInvitationToast() {
     if (!accepted) return
 
     if (accepted === '1') {
-      toast({ title: 'Invitation accepted', variant: 'success' })
+      toast({
+        title: 'Invitation accepted',
+        description: 'You have joined the organization.',
+        variant: 'success',
+      })
     } else {
       toast({
-        description: reason ? `Reason: ${reason}` : undefined,
+        description: reason ? `Reason: ${reason}` : 'Please try again later.',
         title: 'Failed to accept invitation',
         variant: 'error',
       })

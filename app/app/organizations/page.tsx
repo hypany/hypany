@@ -2,6 +2,16 @@ import { headers } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@/auth'
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from '@/components/atoms/table'
+import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
 
 export default async function OrganizationsPage() {
@@ -9,6 +19,10 @@ export default async function OrganizationsPage() {
   const hdrs = await headers()
   // Get active organization details
   const active = await auth.api.getFullOrganization({ headers: hdrs })
+  const session = await auth.api.getSession({ headers: hdrs })
+  const activeOrgId = session?.session?.activeOrganizationId ?? null
+  const orgs = await auth.api.listOrganizations({ headers: hdrs })
+  const organizations = Array.isArray(orgs) ? orgs : []
   return (
     <section aria-label={t('aria')}>
       {/* Show toast after redirects for invitation acceptance */}
@@ -20,6 +34,36 @@ export default async function OrganizationsPage() {
         <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
           {t('subtitle')}
         </p>
+        <div className='mt-6'>
+          <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>Name</TableHeaderCell>
+                  <TableHeaderCell>Slug</TableHeaderCell>
+                  <TableHeaderCell>Status</TableHeaderCell>
+                  <TableHeaderCell className='text-right'>Actions</TableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {organizations.map((org: any) => (
+                  <TableRow key={org.id}>
+                    <TableCell className='font-medium'>{org.name}</TableCell>
+                    <TableCell>{org.slug ?? '-'}</TableCell>
+                    <TableCell>
+                      {activeOrgId === org.id ? 'Active' : '—'}
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      <div className='flex items-center justify-end gap-2'>
+                        <OrgAdminDialog orgId={org.id} orgName={org.name} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableRoot>
+        </div>
         {active && (
           <div className='mt-6 max-w-lg rounded-lg border border-gray-200 p-4 dark:border-gray-800'>
             <h2 className='mb-2 text-sm font-medium text-gray-900 dark:text-gray-50'>

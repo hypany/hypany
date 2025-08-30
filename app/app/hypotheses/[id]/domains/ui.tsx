@@ -43,9 +43,17 @@ export default function DomainForm({
         ok: d.available,
       })
       if (d.available) {
-        toast({ title: 'Subdomain is available', variant: 'success' })
+        toast({
+          title: 'Subdomain is available',
+          description: `Available as ${d.normalizedSlug}.hypany.app`,
+          variant: 'success',
+        })
       } else {
-        toast({ title: d.error || 'Subdomain unavailable', variant: 'error' })
+        toast({
+          title: d.error || 'Subdomain unavailable',
+          description: 'Please choose a different subdomain.',
+          variant: 'error',
+        })
       }
     } finally {
       setChecking(false)
@@ -62,12 +70,24 @@ export default function DomainForm({
         .hypothesis({ hypothesisId })
         .patch(body)
       if (r.data?.success) {
-        toast({ title: 'Domain settings saved', variant: 'success' })
+        toast({
+          title: 'Domain settings saved',
+          description: 'Your subdomain and custom domain changes are applied.',
+          variant: 'success',
+        })
       } else {
-        toast({ title: 'Failed to save domain settings', variant: 'error' })
+        toast({
+          title: 'Failed to save domain settings',
+          description: 'Please check your values and try again.',
+          variant: 'error',
+        })
       }
     } catch {
-      toast({ title: 'Failed to save domain settings', variant: 'error' })
+      toast({
+        title: 'Failed to save domain settings',
+        description: 'Please check your values and try again.',
+        variant: 'error',
+      })
     } finally {
       setSaving(false)
     }

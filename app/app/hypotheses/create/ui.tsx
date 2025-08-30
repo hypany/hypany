@@ -6,12 +6,14 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Textarea } from '@/components/atoms/textarea'
 import { toast } from '@/lib/use-toast'
+import { slugify } from '@/lib/slug'
 
 export default function CreateHypothesisForm() {
   const router = useRouter()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [slug, setSlug] = useState('')
+  const [slugEdited, setSlugEdited] = useState(false)
   const [checking, setChecking] = useState(false)
   const [creating, setCreating] = useState(false)
   const [slugStatus, setSlugStatus] = useState<null | {
@@ -27,7 +29,10 @@ export default function CreateHypothesisForm() {
     const s = slug.trim()
     if (!s) {
       setSlugStatus(null)
-      toast({ title: 'Enter a subdomain to check' })
+      toast({
+        title: 'Enter a subdomain to check',
+        description: 'Type a subdomain and press Check.',
+      })
       return
     }
     setChecking(true)
@@ -35,10 +40,15 @@ export default function CreateHypothesisForm() {
       const res = await api.v1['landing-pages']['check-slug'].post({ slug: s })
       if (res.data) setSlugStatus(res.data)
       if (res.data?.available)
-        toast({ title: 'Subdomain is available', variant: 'success' })
+        toast({
+          title: 'Subdomain is available',
+          description: `Available as ${res.data.normalizedSlug}.hypany.app`,
+          variant: 'success',
+        })
       else
         toast({
           title: res.data?.error || 'Subdomain unavailable',
+          description: 'Please choose another subdomain.',
           variant: 'error',
         })
     } finally {
@@ -48,9 +58,16 @@ export default function CreateHypothesisForm() {
 
   async function submit() {
     const n = name.trim()
-    const s = slug.trim()
+    const s = (slugEdited ? slug : slugify(name)).trim()
+    if (!slugEdited) {
+      setSlug(s)
+    }
     if (!n) {
-      toast({ title: 'Please enter a name', variant: 'warning' })
+      toast({
+        title: 'Please enter a name',
+        description: 'A name is required to create a hypothesis.',
+        variant: 'warning',
+      })
       return
     }
     if (s) {
@@ -72,13 +89,25 @@ export default function CreateHypothesisForm() {
           ? (res.data as { hypothesis: { id: string } }).hypothesis.id
           : undefined
       if (id) {
-        toast({ title: 'Hypothesis created', variant: 'success' })
-        router.push(`/app/hypotheses/${id}/editor`)
+        toast({
+          title: 'Hypothesis created',
+          description: 'Landing page and waitlist were created.',
+          variant: 'success',
+        })
+        router.push(`/app/hypotheses/${id}`)
       } else {
-        toast({ title: 'Failed to create hypothesis', variant: 'error' })
+        toast({
+          title: 'Failed to create hypothesis',
+          description: 'Please try again.',
+          variant: 'error',
+        })
       }
     } catch {
-      toast({ title: 'Failed to create hypothesis', variant: 'error' })
+      toast({
+        title: 'Failed to create hypothesis',
+        description: 'Please try again.',
+        variant: 'error',
+      })
     } finally {
       setCreating(false)
     }
@@ -96,7 +125,15 @@ export default function CreateHypothesisForm() {
         <Input
           id={nameId}
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value
+            setName(v)
+            if (!slugEdited) {
+              const auto = slugify(v)
+              setSlug(auto)
+              setSlugStatus(null)
+            }
+          }}
           placeholder='Awesome Idea'
           className='py-1.5'
         />
@@ -129,6 +166,7 @@ export default function CreateHypothesisForm() {
             value={slug}
             onChange={(e) => {
               setSlug(e.target.value)
+              setSlugEdited(true)
               setSlugStatus(null)
             }}
             placeholder='idea-name'

@@ -1,9 +1,9 @@
 type Category = 'red' | 'orange' | 'emerald' | 'gray'
-type Metric = {
+export type Metric = {
   label: string
-  value: number
-  percentage: string
-  fraction: string
+  value: number // 0..1 scale for indicator
+  percentage: string // e.g. "59.8%" or "+12.4%"
+  fraction: string // e.g. "450/752" or "129/1K"
 }
 
 const getCategory = (value: number): Category => {
@@ -67,33 +67,48 @@ function MetricCard({ metric }: { metric: Metric }) {
       <dd className='mt-1.5 flex items-center gap-2'>
         <Indicator number={metric.value} />
         <p className='text-lg font-semibold text-gray-900 dark:text-gray-50'>
-          {metric.percentage}{' '}
-          <span className='font-medium text-gray-400 dark:text-gray-600'>
-            - {metric.fraction}
-          </span>
+          {metric.percentage}
+          {metric.fraction ? (
+            <span className='font-medium text-gray-400 dark:text-gray-600'>
+              {metric.percentage ? ' - ' : ''}
+              {metric.fraction}
+            </span>
+          ) : null}
         </p>
       </dd>
     </div>
   )
 }
 
-export function MetricsCards() {
+export function MetricsCards({
+  metrics,
+  title,
+  compact,
+}: {
+  metrics?: Metric[]
+  title?: string
+  compact?: boolean
+}) {
   const t = useTranslations('app.metrics')
-  const metrics: Metric[] = [
+  const fallbackMetrics: Metric[] = [
     { ...metricsBase[0], label: t('visitorToSignup') },
     { ...metricsBase[1], label: t('projectLoad') },
     { ...metricsBase[2], label: t('winProbability') },
   ]
+  const data = metrics ?? fallbackMetrics
+  const titleText = title ?? t('title')
   return (
-    <>
+    <div className='w-full py-2 px-6'>
       <h1 className='text-lg font-semibold text-gray-900 dark:text-gray-50'>
-        {t('title')}
+        {titleText}
       </h1>
-      <dl className='mt-6 flex flex-wrap items-center gap-x-12 gap-y-8'>
-        {metrics.map((metric) => (
+      <dl
+        className={`${compact ? 'mt-0' : 'mt-6'} flex flex-wrap items-center gap-x-12 gap-y-8`}
+      >
+        {data.map((metric) => (
           <MetricCard key={metric.label} metric={metric} />
         ))}
       </dl>
-    </>
+    </div>
   )
 }

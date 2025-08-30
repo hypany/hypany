@@ -54,9 +54,17 @@ export default function BlocksEditor({
           ? (r.data as { id: string }).id
           : undefined
       if (id) setBlocks((b) => [...b, { content, id, order, type }])
-      toast({ title: 'Block added', variant: 'success' })
+      toast({
+        title: 'Block added',
+        description: `Added a ${type} block to your page.`,
+        variant: 'success',
+      })
     } catch (_e) {
-      toast({ title: 'Invalid content or failed to add', variant: 'error' })
+      toast({
+        title: 'Invalid content or failed to add',
+        description: 'Provide valid JSON for the selected block type.',
+        variant: 'error',
+      })
     }
   }
 
@@ -67,9 +75,17 @@ export default function BlocksEditor({
         .blocks({ blockId: id })
         .delete()
       setBlocks((b) => b.filter((x) => x.id !== id))
-      toast({ title: 'Block removed', variant: 'success' })
+      toast({
+        title: 'Block removed',
+        description: 'The block was removed from your landing page.',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to remove block', variant: 'error' })
+      toast({
+        title: 'Failed to remove block',
+        description: 'Please try again.',
+        variant: 'error',
+      })
     }
   }
 
@@ -84,9 +100,17 @@ export default function BlocksEditor({
         .blocks({ blockId: id })
         .patch({ ...next })
       setBlocks((b) => b.map((x) => (x.id === id ? { ...x, ...next } : x)))
-      toast({ title: 'Block updated', variant: 'success' })
+      toast({
+        title: 'Block updated',
+        description: 'Changes saved.',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to update block', variant: 'error' })
+      toast({
+        title: 'Failed to update block',
+        description: 'Check the content JSON and try again.',
+        variant: 'error',
+      })
     }
   }
 
@@ -97,9 +121,17 @@ export default function BlocksEditor({
         .blocks.reorder.post({
           blocks: next.map((b) => ({ id: b.id, order: b.order })),
         })
-      toast({ title: 'Order updated', variant: 'success' })
+      toast({
+        title: 'Order updated',
+        description: 'Block order saved.',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to update order', variant: 'error' })
+      toast({
+        title: 'Failed to update order',
+        description: 'Please try again.',
+        variant: 'error',
+      })
     }
   }
 

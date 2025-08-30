@@ -38,11 +38,16 @@ export function OrgSettingsForm({
       if (!res.ok) {
         toast({
           title: res.error || 'Failed to update organization',
+          description: 'Please check your changes and try again.',
           variant: 'error',
         })
         return
       }
-      toast({ title: 'Organization updated', variant: 'success' })
+      toast({
+        title: 'Organization updated',
+        description: 'Organization details have been saved.',
+        variant: 'success',
+      })
     })
   }
 

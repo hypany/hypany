@@ -13,6 +13,7 @@ interface TooltipProps
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   side?: 'bottom' | 'left' | 'top' | 'right'
   showArrow?: boolean
+  unstyled?: boolean
 }
 
 const Tooltip = React.forwardRef<
@@ -33,6 +34,7 @@ const Tooltip = React.forwardRef<
       side,
       sideOffset = 10,
       asChild,
+      unstyled = false,
       ...props
     }: TooltipProps,
     forwardedRef,
@@ -55,13 +57,13 @@ const Tooltip = React.forwardRef<
               sideOffset={sideOffset}
               align='center'
               className={cx(
-                // base
-                'max-w-60 select-none rounded-md px-2.5 py-1.5 text-sm leading-5 shadow-md',
-                // text color
-                'text-gray-50 dark:text-gray-900',
-                // background color
-                'bg-gray-900 dark:bg-gray-50',
-                // transition
+                unstyled
+                  ? 'p-0 bg-transparent shadow-none'
+                  : [
+                      'max-w-60 select-none rounded-md px-2.5 py-1.5 text-sm leading-5 shadow-md',
+                      'text-gray-50 dark:text-gray-900',
+                      'bg-gray-900 dark:bg-gray-50',
+                    ],
                 'will-change-[transform,opacity]',
                 'data-[side=bottom]:animate-slide-down-and-fade data-[side=left]:animate-slide-left-and-fade data-[side=right]:animate-slide-right-and-fade data-[side=top]:animate-slide-up-and-fade data-[state=closed]:animate-hide',
                 className,
@@ -69,7 +71,7 @@ const Tooltip = React.forwardRef<
               {...props}
             >
               {content}
-              {showArrow ? (
+              {showArrow && !unstyled ? (
                 <TooltipPrimitives.Arrow
                   className='border-none fill-gray-900 dark:fill-gray-50'
                   width={12}

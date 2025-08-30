@@ -8,15 +8,7 @@ import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { toast } from '@/lib/use-toast'
 
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-}
+import { slugify } from '@/lib/slug'
 
 export function CreateOrganizationForm() {
   const router = useRouter()
@@ -31,7 +23,11 @@ export function CreateOrganizationForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) {
-      toast({ title: 'Please enter an organization name', variant: 'error' })
+      toast({
+        title: 'Please enter an organization name',
+        description: 'Organization name is required to continue.',
+        variant: 'error',
+      })
       return
     }
     setSubmitting(true)
@@ -43,17 +39,26 @@ export function CreateOrganizationForm() {
       if (error || !org) {
         toast({
           title: error?.message || 'Failed to create organization',
+          description: 'Please try again.',
           variant: 'error',
         })
         return
       }
       await client.organization.setActive({ organizationId: org.id })
-      toast({ title: 'Organization created', variant: 'success' })
+      toast({
+        title: 'Organization created',
+        description: 'Switching to your new organization...',
+        variant: 'success',
+      })
       router.push('/app')
       router.refresh()
     } catch (error) {
       console.error(error)
-      toast({ title: 'Failed to create organization', variant: 'error' })
+      toast({
+        title: 'Failed to create organization',
+        description: 'Please try again.',
+        variant: 'error',
+      })
     } finally {
       setSubmitting(false)
     }

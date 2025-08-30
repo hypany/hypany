@@ -54,22 +54,26 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           toast({
             title:
               'An account with this email already exists. Please sign in instead.',
+            description: 'Try signing in or reset your password to continue.',
             variant: 'error',
           })
         } else if (error.message?.toLowerCase().includes('password')) {
           toast({
             title: 'Password must be at least 8 characters long.',
+            description: 'Use at least 8 characters for your password.',
             variant: 'error',
           })
         } else if (error.message?.toLowerCase().includes('email')) {
           toast({
             title: 'Please enter a valid email address.',
+            description: 'Double-check the email format and try again.',
             variant: 'error',
           })
         } else {
           toast({
             title:
               error.message || 'Failed to create account. Please try again.',
+            description: 'Please try again in a moment.',
             variant: 'error',
           })
         }
@@ -93,11 +97,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         toast({
           title:
             'An account with this email already exists. Please sign in instead.',
+          description: 'Try signing in or reset your password to continue.',
           variant: 'error',
         })
       } else {
         toast({
           title: 'Something went wrong. Please try again.',
+          description: 'Please try again in a moment.',
           variant: 'error',
         })
       }

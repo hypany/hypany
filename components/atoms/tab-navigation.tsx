@@ -1,3 +1,4 @@
+'use client'
 import * as NavigationMenuPrimitives from '@radix-ui/react-navigation-menu'
 import React from 'react'
 import { cx, focusRing } from '@/lib/utils'

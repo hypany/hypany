@@ -3,9 +3,9 @@ import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { getSession } from '@/auth/server'
-import { SidebarProvider, SidebarTrigger } from '@/components/atoms/sidebar'
+import { SidebarProvider } from '@/components/atoms/sidebar'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
-import { Breadcrumbs } from '@/components/molecules/navigation/breadcrumbs'
+import { AppHeader } from '@/components/molecules/navigation/app-header'
 import '../globals.css'
 
 export const metadata: Metadata = {
@@ -63,11 +63,7 @@ export default async function RootLayout({
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
       <div className='w-full'>
-        <header className='sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950'>
-          <SidebarTrigger className='-ml-1' />
-          <div className='mr-2 h-4 w-px bg-gray-200 dark:bg-gray-800' />
-          <Breadcrumbs />
-        </header>
+        <AppHeader />
         <main>{children}</main>
       </div>
     </SidebarProvider>

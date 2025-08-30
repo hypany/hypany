@@ -11,7 +11,7 @@ import { UserProfile } from './user-profile'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar {...props} className='bg-gray-50 dark:bg-gray-925'>
+    <Sidebar {...props} className='bg-white dark:bg-gray-925'>
       <SidebarHeader className='px-3 py-4'>
         <OrgSwitcher />
       </SidebarHeader>

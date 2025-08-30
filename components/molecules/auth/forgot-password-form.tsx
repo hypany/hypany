@@ -36,7 +36,11 @@ export function ForgotPasswordForm({
 
   async function onSubmit(data: ForgotFormData) {
     const redirectTo = `${window.location.origin}/reset-password`
-    const t = toast({ title: 'Sending reset link...', variant: 'loading' })
+    const t = toast({
+      title: 'Sending reset link...',
+      description: 'We are emailing you a password reset link.',
+      variant: 'loading',
+    })
     try {
       const { error } = await client.forgetPassword({
         email: data.email,
@@ -47,6 +51,7 @@ export function ForgotPasswordForm({
       }
       t.update({
         title: `If an account exists, a reset link was sent to ${data.email}.`,
+        description: 'Check your inbox and follow the instructions.',
         variant: 'success',
       })
     } catch (e) {
@@ -54,7 +59,11 @@ export function ForgotPasswordForm({
         e instanceof Error
           ? e.message
           : 'Failed to send reset email. Please try again.'
-      t.update({ title: message, variant: 'error' })
+      t.update({
+        title: message,
+        description: 'Please try again.',
+        variant: 'error',
+      })
     }
   }
 

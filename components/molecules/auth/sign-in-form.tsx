@@ -44,6 +44,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
     const email = getValues('email')
     const t = toast({
       title: 'Sending verification email...',
+      description: 'We are emailing a new verification link.',
       variant: 'loading',
     })
     try {
@@ -56,11 +57,13 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
       }
       t.update({
         title: `Verification email sent to ${email}`,
+        description: 'Check your inbox and follow the link to verify.',
         variant: 'success',
       })
     } catch {
       t.update({
         title: 'Failed to send verification email. Please try again.',
+        description: 'Please try again in a moment.',
         variant: 'error',
       })
     }
@@ -99,6 +102,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
         ) {
           toast({
             title: 'Invalid email or password. Please try again.',
+            description: 'Double-check your email and password.',
             variant: 'error',
           })
         } else if (
@@ -107,16 +111,22 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
         ) {
           toast({
             title: 'No account found with this email. Please sign up first.',
+            description: 'Create an account to continue.',
             variant: 'error',
           })
         } else {
           toast({
             title: error.message || 'Failed to sign in. Please try again.',
+            description: 'Please try again in a moment.',
             variant: 'error',
           })
         }
       } else if (signInData) {
-        toast({ title: 'Signed in successfully!', variant: 'success' })
+        toast({
+          title: 'Signed in successfully!',
+          description: 'Redirecting to your workspace...',
+          variant: 'success',
+        })
         router.push(next || '/app')
       }
     } catch (error) {
@@ -124,6 +134,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
       console.error('Sign-in error:', error)
       toast({
         title: 'Something went wrong. Please try again.',
+        description: 'Please try again in a moment.',
         variant: 'error',
       })
     }

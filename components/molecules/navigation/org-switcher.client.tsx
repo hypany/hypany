@@ -66,9 +66,17 @@ export function OrgSwitcherClient({
   async function setActive(organizationId: string) {
     const res = await client.organization.setActive({ organizationId })
     if ((res as any)?.error) {
-      toast({ title: 'Failed to switch organization', variant: 'error' })
+      toast({
+        title: 'Failed to switch organization',
+        description: 'Please try again.',
+        variant: 'error',
+      })
     } else {
-      toast({ title: 'Organization switched', variant: 'success' })
+      toast({
+        title: 'Organization switched',
+        description: 'Active organization updated.',
+        variant: 'success',
+      })
       client.$store.notify('$sessionSignal')
       router.refresh()
     }

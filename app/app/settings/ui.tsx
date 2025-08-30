@@ -49,9 +49,17 @@ export default function SettingsForm({
         onboardingComplete,
         theme: safeTheme,
       })
-      toast({ title: 'Settings saved', variant: 'success' })
+      toast({
+        title: 'Settings saved',
+        description: 'Your preferences have been updated.',
+        variant: 'success',
+      })
     } catch {
-      toast({ title: 'Failed to save settings', variant: 'error' })
+      toast({
+        title: 'Failed to save settings',
+        description: 'Please try again in a moment.',
+        variant: 'error',
+      })
     } finally {
       setSaving(false)
     }
