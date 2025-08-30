@@ -1,6 +1,6 @@
 'use client'
 import { useId, useState } from 'react'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import {
   Select,
@@ -24,6 +24,7 @@ export default function SettingsForm({
 }: {
   initial?: Partial<Settings> | null
 }) {
+  const api = getClientApi()
   const [theme, setTheme] = useState<Settings['theme']>(
     (initial?.theme as any) || 'system',
   )

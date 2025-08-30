@@ -1,7 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useId, useState } from 'react'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Textarea } from '@/components/atoms/textarea'
@@ -9,6 +9,7 @@ import { slugify } from '@/lib/slug'
 import { toast } from '@/lib/use-toast'
 
 export default function CreateHypothesisForm() {
+  const api = getClientApi()
   const router = useRouter()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')

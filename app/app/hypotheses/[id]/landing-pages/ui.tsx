@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { toast } from '@/lib/use-toast'
 
 export function CreateLandingPageButton({ hypothesisId }: { hypothesisId: string }) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const api = getClientApi()
   async function create() {
     setLoading(true)
     try {
@@ -42,6 +43,7 @@ export function DuplicateLandingPageButton({
 }) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const api = getClientApi()
   async function duplicate() {
     setLoading(true)
     try {
@@ -75,6 +77,7 @@ export function RenameLandingPageInline({
 }) {
   const [value, setValue] = useState(initialName || '')
   const [saving, setSaving] = useState(false)
+  const api = getClientApi()
   async function save() {
     if (!value || saving) return
     setSaving(true)

@@ -1,6 +1,6 @@
 'use client'
 import { useId, useState } from 'react'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { toast } from '@/lib/use-toast'
@@ -14,6 +14,7 @@ export default function DomainForm({
   initialSlug: string | null
   initialCustomDomain: string | null
 }) {
+  const api = getClientApi()
   const [slug, setSlug] = useState<string>(initialSlug || '')
   const [customDomain, setCustomDomain] = useState<string>(
     initialCustomDomain || '',

@@ -1,7 +1,7 @@
 'use client'
 
 import { useId, useMemo, useRef, useState } from 'react'
-import { api } from '@/app/api/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import {
@@ -120,6 +120,7 @@ export default function BlocksEditor({
   landingPageId: string
   initialBlocks: Block[]
 }) {
+  const api = getClientApi()
   const [blocks, setBlocks] = useState<Block[]>([...initialBlocks].sort((a, b) => a.order.localeCompare(b.order)))
   const [newType, setNewType] = useState<BlockType>('hero')
   const draggingId = useRef<string | null>(null)
