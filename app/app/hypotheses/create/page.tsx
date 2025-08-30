@@ -2,7 +2,7 @@ import CreateHypothesisForm from './ui'
 
 export default async function CreateHypothesisPage() {
   return (
-    <section className='px-4 py-6 sm:px-6'>
+    <section>
       <div className='mb-4'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
           Create Hypothesis

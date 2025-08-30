@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation'
 import { api } from '@/app/api'
+import { notFound } from 'next/navigation'
 import DomainForm from './ui'
 
 export default async function DomainsPage({
@@ -15,7 +15,7 @@ export default async function DomainsPage({
   if (!data || !data.landingPage) notFound()
 
   return (
-    <section className='px-4 py-6 sm:px-6'>
+    <section>
       <div className='mb-4'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
           Subdomain & Custom Domain

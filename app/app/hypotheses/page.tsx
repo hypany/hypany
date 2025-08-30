@@ -8,6 +8,8 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
+import { Tooltip } from '@/components/atoms/tooltip'
+import { Sparkline } from '@/components/molecules/charts/sparkline'
 import {
   type Metric,
   MetricsCards,
@@ -32,11 +34,9 @@ import {
   lte,
   sql,
 } from 'drizzle-orm'
+import { Pencil } from 'lucide-react'
 import { headers } from 'next/headers'
 import Link from 'next/link'
-import { Pencil } from 'lucide-react'
-import { Sparkline } from '@/components/molecules/charts/sparkline'
-import { Tooltip } from '@/components/atoms/tooltip'
 
 type Row = {
   id: string
@@ -179,7 +179,8 @@ export default async function HypothesesPage() {
         const d = r.createdAt ? new Date(r.createdAt) : null
         if (d) {
           const dateStr = d.toISOString().slice(0, 10)
-          const m = perHypVisitors.get(r.hypothesisId) ?? new Map<string, Set<string>>()
+          const m =
+            perHypVisitors.get(r.hypothesisId) ?? new Map<string, Set<string>>()
           const set = m.get(dateStr) ?? new Set<string>()
           set.add(r.visitorId)
           m.set(dateStr, set)
@@ -252,7 +253,9 @@ export default async function HypothesesPage() {
   // we rebuild quickly using a 0 map per hyp
   for (const hid of hypothesisIds) {
     const m = new Map<string, number>()
-    days.forEach((d) => m.set(d, 0))
+    days.forEach((d) => {
+      m.set(d, 0)
+    })
     perHypVisitorsDaily.set(hid, m)
   }
   // Re-run a lightweight pageVisits query for sparkStart..today to fill perHypVisitorsDaily
@@ -300,7 +303,9 @@ export default async function HypothesesPage() {
   const perHypSignupsDaily = new Map<string, Map<string, number>>()
   for (const hid of hypothesisIds) {
     const m = new Map<string, number>()
-    days.forEach((d) => m.set(d, 0))
+    days.forEach((d) => {
+      m.set(d, 0)
+    })
     perHypSignupsDaily.set(hid, m)
   }
   for (const r of sparkSignupRows) {
@@ -346,9 +351,8 @@ export default async function HypothesesPage() {
 
   return (
     <section>
-      <div className='mb-2'>
-        <MetricsCards metrics={metrics} title='Portfolio Metrics' compact />
-      </div>
+      <MetricsCards metrics={metrics} compact />
+
       {/** Global chart removed for clarity */}
       <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
         <Table>
@@ -364,7 +368,10 @@ export default async function HypothesesPage() {
             {data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className='font-medium'>
-                  <Link href={`/app/hypotheses/${item.id}`} className='hover:underline'>
+                  <Link
+                    href={`/app/hypotheses/${item.id}`}
+                    className='hover:underline'
+                  >
                     {item.name}
                   </Link>
                 </TableCell>
@@ -378,7 +385,10 @@ export default async function HypothesesPage() {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <Link href={`/app/hypotheses/${item.id}/waitlist`} className='hover:underline'>
+                  <Link
+                    href={`/app/hypotheses/${item.id}/waitlist`}
+                    className='hover:underline'
+                  >
                     {item.signupCount}
                   </Link>
                 </TableCell>
@@ -400,12 +410,20 @@ export default async function HypothesesPage() {
                         <div className='w-56 rounded-md border border-gray-200 bg-white p-2 text-sm shadow-md dark:border-gray-800 dark:bg-gray-950'>
                           <div className='space-y-1.5'>
                             <div className='flex items-center justify-between'>
-                              <span className='text-xs text-gray-500 dark:text-gray-500'>Visitors (14d)</span>
-                              <span className='font-medium text-gray-900 dark:text-gray-50'>{vis}</span>
+                              <span className='text-xs text-gray-500 dark:text-gray-500'>
+                                Visitors (14d)
+                              </span>
+                              <span className='font-medium text-gray-900 dark:text-gray-50'>
+                                {vis}
+                              </span>
                             </div>
                             <div className='flex items-center justify-between'>
-                              <span className='text-xs text-gray-500 dark:text-gray-500'>Signups (14d)</span>
-                              <span className='font-medium text-gray-900 dark:text-gray-50'>{su}</span>
+                              <span className='text-xs text-gray-500 dark:text-gray-500'>
+                                Signups (14d)
+                              </span>
+                              <span className='font-medium text-gray-900 dark:text-gray-50'>
+                                {su}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -419,8 +437,10 @@ export default async function HypothesesPage() {
                       <span className='text-emerald-600 dark:text-emerald-500'>
                         <Sparkline
                           data={days.map((d) => {
-                            const v = perHypVisitorsDaily.get(item.id)?.get(d) ?? 0
-                            const s = perHypSignupsDaily.get(item.id)?.get(d) ?? 0
+                            const v =
+                              perHypVisitorsDaily.get(item.id)?.get(d) ?? 0
+                            const s =
+                              perHypSignupsDaily.get(item.id)?.get(d) ?? 0
                             return v > 0 ? s / v : 0
                           })}
                         />

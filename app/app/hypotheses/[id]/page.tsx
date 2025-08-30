@@ -1,9 +1,8 @@
-import Link from 'next/link'
-import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
-import { and, count, eq, isNull } from 'drizzle-orm'
 import { auth } from '@/auth'
-import { TabNavigation, TabNavigationLink } from '@/components/atoms/tab-navigation'
+import {
+  TabNavigation,
+  TabNavigationLink,
+} from '@/components/atoms/tab-navigation'
 import {
   Table,
   TableBody,
@@ -15,6 +14,10 @@ import {
 } from '@/components/atoms/table'
 import { db } from '@/drizzle'
 import { hypotheses, landingPages, waitlistEntries, waitlists } from '@/schema'
+import { and, count, eq, isNull } from 'drizzle-orm'
+import { headers } from 'next/headers'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 export default async function HypothesisOverview({
   params,
@@ -28,11 +31,21 @@ export default async function HypothesisOverview({
   if (!orgId) notFound()
 
   const result = await db
-    .select({ hypothesis: hypotheses, landingPage: landingPages, waitlist: waitlists })
+    .select({
+      hypothesis: hypotheses,
+      landingPage: landingPages,
+      waitlist: waitlists,
+    })
     .from(hypotheses)
     .leftJoin(landingPages, eq(landingPages.hypothesisId, hypotheses.id))
     .leftJoin(waitlists, eq(waitlists.hypothesisId, hypotheses.id))
-    .where(and(eq(hypotheses.id, id), eq(hypotheses.organizationId, orgId), isNull(hypotheses.deletedAt)))
+    .where(
+      and(
+        eq(hypotheses.id, id),
+        eq(hypotheses.organizationId, orgId),
+        isNull(hypotheses.deletedAt),
+      ),
+    )
     .limit(1)
 
   const row = result[0]
@@ -49,7 +62,7 @@ export default async function HypothesisOverview({
   }
 
   return (
-    <section className='px-4 py-6 sm:px-6'>
+    <section>
       <div className='mb-2'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
           {row.hypothesis.name}
@@ -92,7 +105,9 @@ export default async function HypothesisOverview({
           <TableBody>
             <TableRow>
               <TableCell className='font-medium'>Status</TableCell>
-              <TableCell className='capitalize'>{row.hypothesis.status}</TableCell>
+              <TableCell className='capitalize'>
+                {row.hypothesis.status}
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell className='font-medium'>Signups</TableCell>

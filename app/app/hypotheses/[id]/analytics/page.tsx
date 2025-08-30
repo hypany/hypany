@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import { api } from '@/app/api'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
+import Link from 'next/link'
 
 type Range = '7d' | '30d' | '90d'
 
@@ -34,7 +34,7 @@ export default async function AnalyticsPage({
   }))
 
   return (
-    <section className='px-4 py-6 sm:px-6'>
+    <section>
       <div className='mb-4 flex items-center justify-between'>
         <div>
           <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>

@@ -35,7 +35,7 @@ export default async function WaitlistPage({
   const exportCsvHref = `/api/v1/waitlists/hypothesis/${id}/export?format=csv`
 
   return (
-    <section className='px-4 py-6 sm:px-6'>
+    <section>
       <div className='mb-4 flex items-center justify-between'>
         <div>
           <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>

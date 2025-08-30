@@ -50,14 +50,6 @@ function Indicator({ number }: { number: number }) {
   )
 }
 
-import { useTranslations } from 'next-intl'
-
-const metricsBase: Array<Omit<Metric, 'label'>> = [
-  { fraction: '450/752', percentage: '59.8%', value: 0.61 },
-  { fraction: '129/1K', percentage: '12.9%', value: 0.24 },
-  { fraction: '280/329', percentage: '85.1%', value: 0.8 },
-]
-
 function MetricCard({ metric }: { metric: Metric }) {
   return (
     <div>
@@ -82,30 +74,17 @@ function MetricCard({ metric }: { metric: Metric }) {
 
 export function MetricsCards({
   metrics,
-  title,
   compact,
 }: {
-  metrics?: Metric[]
-  title?: string
+  metrics: Metric[]
   compact?: boolean
 }) {
-  const t = useTranslations('app.metrics')
-  const fallbackMetrics: Metric[] = [
-    { ...metricsBase[0], label: t('visitorToSignup') },
-    { ...metricsBase[1], label: t('projectLoad') },
-    { ...metricsBase[2], label: t('winProbability') },
-  ]
-  const data = metrics ?? fallbackMetrics
-  const titleText = title ?? t('title')
   return (
-    <div className='w-full py-2 px-6'>
-      <h1 className='text-lg font-semibold text-gray-900 dark:text-gray-50'>
-        {titleText}
-      </h1>
+    <div className='w-full p-6'>
       <dl
         className={`${compact ? 'mt-0' : 'mt-6'} flex flex-wrap items-center gap-x-12 gap-y-8`}
       >
-        {data.map((metric) => (
+        {metrics.map((metric) => (
           <MetricCard key={metric.label} metric={metric} />
         ))}
       </dl>

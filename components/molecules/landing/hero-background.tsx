@@ -43,8 +43,12 @@ const GameOfLife = () => {
     }
 
     const draw = () => {
-      ctx.fillStyle = '#F9FAFB'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // Transparent background; clear previous frame
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const cx = canvas.width / 2
+      const cy = canvas.height / 2
+      const maxR = Math.min(canvas.width, canvas.height) / 2
 
       // Update opacities
       for (let i = 0; i < rows; i++) {
@@ -57,15 +61,20 @@ const GameOfLife = () => {
           }
 
           if (cell.opacity > 0) {
-            ctx.fillStyle = `rgba(0, 0, 0, ${cell.opacity})`
+            // Spotlight: fade with radial falloff from center
+            const px = j * cellSize + cellSize / 2
+            const py = i * cellSize + cellSize / 2
+            const dx = px - cx
+            const dy = py - cy
+            const norm = Math.sqrt(dx * dx + dy * dy) / maxR // 0 at center -> 1 at rim
+            const falloff = Math.max(0, 1 - norm)
+            const spotlight = falloff * falloff // smoother center focus
+
+            const alpha = Math.max(0, Math.min(1, cell.opacity * spotlight))
+            if (alpha <= 0) continue
+            ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`
             ctx.beginPath()
-            ctx.arc(
-              j * cellSize + cellSize / 2,
-              i * cellSize + cellSize / 2,
-              1,
-              0,
-              Math.PI * 2,
-            )
+            ctx.arc(px, py, 1, 0, Math.PI * 2)
             ctx.fill()
           }
         }
