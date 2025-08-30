@@ -1,8 +1,8 @@
 import { headers } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@/auth'
-import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
+import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
 
 export default async function OrganizationsPage() {
   const t = await getTranslations('app.pages.organizations')

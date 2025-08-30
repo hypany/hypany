@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { locales, localeCookieName, defaultLocale } from './i18n/config'
+import { defaultLocale, localeCookieName, locales } from './i18n/config'
 
 const allowed = new Set(locales)
 
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const url = new URL(request.url)
   const lang = url.searchParams.get('lang')
 
-  if (!lang || !allowed.has(lang as typeof locales[number])) {
+  if (!lang || !allowed.has(lang as (typeof locales)[number])) {
     return NextResponse.next()
   }
 
@@ -22,16 +22,19 @@ export function middleware(request: NextRequest) {
   clean.searchParams.delete('lang')
 
   // If nothing else remains, strip the ? entirely
-  const redirectTo = new URL(clean.pathname + (clean.search ? `?${clean.searchParams.toString()}` : ''), clean.origin)
+  const redirectTo = new URL(
+    clean.pathname + (clean.search ? `?${clean.searchParams.toString()}` : ''),
+    clean.origin,
+  )
 
   const res = NextResponse.redirect(redirectTo)
   // Persist for 1 year, path-wide
   res.cookies.set({
-    name: localeCookieName,
-    value: (lang as typeof locales[number]) || defaultLocale,
-    path: '/',
     maxAge: 60 * 60 * 24 * 365,
+    name: localeCookieName,
+    path: '/',
     sameSite: 'lax',
+    value: (lang as (typeof locales)[number]) || defaultLocale,
   })
   return res
 }
@@ -40,4 +43,3 @@ export const config = {
   // Exclude Next internals, static files, and API from matching
   matcher: ['/((?!api|_next|.*\\..*).*)'],
 }
-

@@ -2,8 +2,8 @@
 
 import * as DrawerPrimitives from '@radix-ui/react-dialog'
 import { RiCloseLine } from '@remixicon/react'
-import * as React from 'react'
 import { motion } from 'framer-motion'
+import * as React from 'react'
 import { cx, focusRing } from '@/lib/utils'
 import { Button } from './button'
 
@@ -47,7 +47,10 @@ const DrawerOverlay = React.forwardRef<
   return (
     <DrawerPrimitives.Overlay asChild forceMount {...props}>
       {React.createElement(motion.div as React.ElementType, {
-        ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+        animate:
+          (props as unknown as DataStateProps)['data-state'] === 'closed'
+            ? { opacity: 0 }
+            : { opacity: 1 },
         className: cx(
           'fixed inset-0 z-50 overflow-y-auto',
           'bg-black/30',
@@ -55,10 +58,7 @@ const DrawerOverlay = React.forwardRef<
           className,
         ),
         initial: { opacity: 0 },
-        animate:
-          (props as unknown as DataStateProps)['data-state'] === 'closed'
-            ? { opacity: 0 }
-            : { opacity: 1 },
+        ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
         transition: { duration: 0.15, ease: 'easeOut' },
       })}
     </DrawerPrimitives.Overlay>
@@ -76,7 +76,11 @@ const DrawerContent = React.forwardRef<
       <DrawerOverlay />
       <DrawerPrimitives.Content asChild forceMount {...props}>
         {React.createElement(motion.div as React.ElementType, {
-          ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+          animate:
+            (props as unknown as DataStateProps)['data-state'] === 'closed'
+              ? { opacity: 0, x: 12 }
+              : { opacity: 1, x: 0 },
+          children,
           className: cx(
             'fixed inset-y-2 z-50 mx-auto flex w-[95vw] flex-1 flex-col overflow-y-auto rounded-md border p-4 shadow-lg focus:outline-hidden max-sm:inset-x-2 sm:inset-y-2 sm:right-2 sm:max-w-lg sm:p-6',
             'border-gray-200 dark:border-gray-900',
@@ -86,12 +90,8 @@ const DrawerContent = React.forwardRef<
             className,
           ),
           initial: { opacity: 0, x: 12 },
-          animate:
-            (props as unknown as DataStateProps)['data-state'] === 'closed'
-              ? { opacity: 0, x: 12 }
-              : { opacity: 1, x: 0 },
+          ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
           transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] },
-          children,
         })}
       </DrawerPrimitives.Content>
     </DrawerPortal>

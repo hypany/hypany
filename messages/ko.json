@@ -1,6 +1,6 @@
 {
   "app": {
-    "breadcrumbs": { "home": "홈", "hypotheses": "가설", "details": "상세" },
+    "breadcrumbs": { "details": "상세", "home": "홈", "hypotheses": "가설" },
     "hypotheses": {
       "audits": {
         "aria": "감사 현황",

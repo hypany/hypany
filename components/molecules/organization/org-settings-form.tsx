@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { toast } from '@/lib/use-toast'
+import { useId, useState, useTransition } from 'react'
+import { updateOrganizationAction } from '@/app/app/organizations/actions'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
+import { toast } from '@/lib/use-toast'
 import { cx } from '@/lib/utils'
-import { updateOrganizationAction } from '@/app/app/organizations/actions'
 
 type OrgSettingsFormProps = {
   organizationId?: string
@@ -24,6 +24,8 @@ export function OrgSettingsForm({
   const [name, setName] = useState(defaultName)
   const [slug, setSlug] = useState(defaultSlug)
   const [isPending, startTransition] = useTransition()
+  const nameId = useId()
+  const slugId = useId()
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -34,7 +36,10 @@ export function OrgSettingsForm({
         slug: slug.trim(),
       })
       if (!res.ok) {
-        toast({ title: res.error || 'Failed to update organization', variant: 'error' })
+        toast({
+          title: res.error || 'Failed to update organization',
+          variant: 'error',
+        })
         return
       }
       toast({ title: 'Organization updated', variant: 'success' })
@@ -44,18 +49,18 @@ export function OrgSettingsForm({
   return (
     <form onSubmit={onSubmit} className={cx('space-y-4', className)}>
       <div className='space-y-2'>
-        <Label htmlFor='org-name'>Name</Label>
+        <Label htmlFor={nameId}>Name</Label>
         <Input
-          id='org-name'
+          id={nameId}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={isPending}
         />
       </div>
       <div className='space-y-2'>
-        <Label htmlFor='org-slug'>Slug</Label>
+        <Label htmlFor={slugId}>Slug</Label>
         <Input
-          id='org-slug'
+          id={slugId}
           value={slug}
           onChange={(e) => setSlug(e.target.value.replace(/[^a-z0-9-]/g, ''))}
           disabled={isPending}

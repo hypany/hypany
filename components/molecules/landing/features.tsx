@@ -19,10 +19,14 @@ import ChipViz from './chip-viz'
 
 export default async function Features() {
   const t = await getTranslations('landing.features')
+  const uid = Math.random().toString(36).slice(2, 9)
+  const patternId1 = `diagonal-feature-pattern-${uid}-1`
+  const patternId2 = `diagonal-feature-pattern-${uid}-2`
+  const patternId3 = `diagonal-feature-pattern-${uid}-3`
+  const gridId = `grid-${uid}`
   return (
     <section
       aria-label={t('aria-label')}
-      id='solutions'
       className='relative mx-auto max-w-6xl scroll-my-24'
     >
       {/* Vertical Lines */}
@@ -36,6 +40,7 @@ export default async function Features() {
           }}
         >
           <svg className='h-full w-full' preserveAspectRatio='none'>
+            <title>Decorative line</title>
             <line
               x1='0'
               y1='0'
@@ -57,6 +62,7 @@ export default async function Features() {
           }}
         >
           <svg className='h-full w-full' preserveAspectRatio='none'>
+            <title>Decorative line</title>
             <line
               x1='0'
               y1='0'
@@ -77,6 +83,7 @@ export default async function Features() {
           }}
         >
           <svg className='h-full w-full' preserveAspectRatio='none'>
+            <title>Decorative line</title>
             <line
               x1='0'
               y1='0'
@@ -97,6 +104,7 @@ export default async function Features() {
           }}
         >
           <svg className='h-full w-full' preserveAspectRatio='none'>
+            <title>Decorative line</title>
             <line
               x1='0'
               y1='0'
@@ -117,6 +125,7 @@ export default async function Features() {
           }}
         >
           <svg className='h-full w-full' preserveAspectRatio='none'>
+            <title>Decorative line</title>
             <line
               x1='0'
               y1='0'
@@ -151,9 +160,10 @@ export default async function Features() {
             //     "linear-gradient(transparent, white 20rem, white calc(100% - 20rem), transparent)",
             // }}
           >
+            <title>Decorative diagonal pattern</title>
             <defs>
               <pattern
-                id='diagonal-feature-pattern'
+                id={patternId1}
                 patternUnits='userSpaceOnUse'
                 width='64'
                 height='64'
@@ -162,7 +172,7 @@ export default async function Features() {
                   const offset = i * 8
                   return (
                     <path
-                      key={i}
+                      key={`line-${-106 + offset}-${22 + offset}`}
                       d={`M${-106 + offset} 110L${22 + offset} -18`}
                       className='stroke-gray-200/70'
                       strokeWidth='1'
@@ -171,11 +181,7 @@ export default async function Features() {
                 })}
               </pattern>
             </defs>
-            <rect
-              width='100%'
-              height='100%'
-              fill='url(#diagonal-feature-pattern)'
-            />
+            <rect width='100%' height='100%' fill={`url(#${patternId1})`} />
           </svg>
           <div className='pointer-events-none h-104 p-10 select-none'>
             <div className='relative flex flex-col items-center justify-center'>
@@ -311,9 +317,10 @@ export default async function Features() {
         </div>
         <div className='relative col-span-2 flex items-center justify-center overflow-hidden'>
           <svg className='absolute size-full'>
+            <title>Decorative diagonal pattern</title>
             <defs>
               <pattern
-                id='diagonal-feature-pattern'
+                id={patternId2}
                 patternUnits='userSpaceOnUse'
                 width='64'
                 height='64'
@@ -322,7 +329,7 @@ export default async function Features() {
                   const offset = i * 8
                   return (
                     <path
-                      key={i}
+                      key={`line-${-106 + offset}-${22 + offset}`}
                       d={`M${-106 + offset} 110L${22 + offset} -18`}
                       className='stroke-gray-200/70'
                       strokeWidth='1'
@@ -331,19 +338,16 @@ export default async function Features() {
                 })}
               </pattern>
             </defs>
-            <rect
-              width='100%'
-              height='100%'
-              fill='url(#diagonal-feature-pattern)'
-            />
+            <rect width='100%' height='100%' fill={`url(#${patternId2})`} />
           </svg>
           <div className='relative h-[432px] w-[432px]'>
             <svg
-              id='grid'
+              id={gridId}
               xmlns='http://www.w3.org/2000/svg'
               fill='none'
               className='mask absolute size-[432px]'
             >
+              <title>Feature grid</title>
               <path
                 className='stroke-gray-300'
                 d='M48 0v432M96 0v432M144 0v432M192 0v432M240 0v432M288 0v432M336 0v432M384 0v432M0 48h432M0 96h432M0 144h432M0 192h432M0 240h432M0 288h432M0 336h432M0 384h432'
@@ -438,9 +442,10 @@ export default async function Features() {
         </div>
         <div className='relative col-span-2 flex items-center justify-center overflow-hidden'>
           <svg className='absolute size-full mask-[linear-gradient(white_10rem,transparent)]'>
+            <title>Decorative diagonal pattern</title>
             <defs>
               <pattern
-                id='diagonal-feature-pattern'
+                id={patternId3}
                 patternUnits='userSpaceOnUse'
                 width='64'
                 height='64'
@@ -449,7 +454,7 @@ export default async function Features() {
                   const offset = i * 8
                   return (
                     <path
-                      key={i}
+                      key={`line-${-106 + offset}-${22 + offset}`}
                       d={`M${-106 + offset} 110L${22 + offset} -18`}
                       className='stroke-gray-200/70'
                       strokeWidth='1'
@@ -458,11 +463,7 @@ export default async function Features() {
                 })}
               </pattern>
             </defs>
-            <rect
-              width='100%'
-              height='100%'
-              fill='url(#diagonal-feature-pattern)'
-            />
+            <rect width='100%' height='100%' fill={`url(#${patternId3})`} />
           </svg>
           <div className='pointer-events-none relative flex size-full h-104 items-center justify-center p-10 select-none'>
             <div className='relative'>

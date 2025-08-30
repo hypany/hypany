@@ -126,13 +126,13 @@ export const hypotheses = pgTable(
       .primaryKey()
       .$defaultFn(() => ulid()),
     name: text('name').notNull(),
+    organizationId: text('organization_id')
+      .notNull()
+      .references(() => organizations.id, { onDelete: 'cascade' }),
     status: text('status').notNull().default('draft'), // draft, published, archived
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),
-    organizationId: text('organization_id')
-      .notNull()
-      .references(() => organizations.id, { onDelete: 'cascade' }),
     userId: text('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),

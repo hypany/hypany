@@ -1,8 +1,10 @@
-import { auth } from '@/auth'
 import { headers } from 'next/headers'
+import { auth } from '@/auth'
 import { OrgSwitcherClient } from './org-switcher.client'
 
-type Organization = Awaited<ReturnType<typeof auth.api.listOrganizations>>[number]
+type Organization = Awaited<
+  ReturnType<typeof auth.api.listOrganizations>
+>[number]
 
 export default async function OrgSwitcher() {
   const hdrs = await headers()

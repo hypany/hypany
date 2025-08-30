@@ -16,9 +16,9 @@ import { hypothesesApi } from '../v1/hypotheses'
 import { landingPagesApi } from '../v1/landing-pages'
 import { publicApi } from '../v1/public'
 import { sessionsApi } from '../v1/sessions'
+import { settingsApi } from '../v1/settings'
 import { uploadsApi } from '../v1/uploads'
 import { waitlistsApi } from '../v1/waitlists'
-import { settingsApi } from '../v1/settings'
 
 const app = new Elysia({ prefix: '/api' })
   .use(

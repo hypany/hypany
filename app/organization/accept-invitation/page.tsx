@@ -31,7 +31,7 @@ export default async function AcceptInvitationPage({
       headers: hdrs,
     })
     redirect('/app/organizations?accepted=1')
-  } catch (e) {
+  } catch (_e) {
     redirect('/app/organizations?accepted=0')
   }
 }

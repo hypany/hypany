@@ -1,5 +1,9 @@
-"use client"
+'use client'
 
+import { RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 import { client } from '@/auth/client'
 import {
   Dialog,
@@ -17,10 +21,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
-import { RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
 import { toast } from '@/lib/use-toast'
 
 type Organization = { id: string; name: string; logo?: string | null }
@@ -46,7 +46,7 @@ export function OrgSwitcherClient({
       activeOrg && 'logo' in activeOrg
         ? ((activeOrg.logo as string | null) ?? undefined)
         : undefined
-    return { name, logo }
+    return { logo, name }
   }, [activeOrg, organizations])
 
   function initials(name?: string) {
@@ -118,7 +118,9 @@ export function OrgSwitcherClient({
           {organizations?.map((org) => {
             const isActive = activeOrg?.id === org.id
             const logo =
-              'logo' in org ? ((org.logo as string | null) ?? undefined) : undefined
+              'logo' in org
+                ? ((org.logo as string | null) ?? undefined)
+                : undefined
             return (
               <DropdownMenuItem
                 key={org.id}

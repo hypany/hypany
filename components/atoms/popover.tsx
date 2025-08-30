@@ -1,8 +1,8 @@
 "use client"
 
 import * as PopoverPrimitives from '@radix-ui/react-popover'
-import React from 'react'
 import { motion } from 'framer-motion'
+import React from 'react'
 
 import { cx } from '@/lib/utils'
 
@@ -72,7 +72,11 @@ const PopoverContent = React.forwardRef<
           {...props}
         >
           {React.createElement(motion.div as React.ElementType, {
-            ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+            animate:
+              (props as unknown as { 'data-state'?: 'open' | 'closed' })['data-state'] === 'closed'
+                ? { opacity: 0, scale: 0.98, y: 4 }
+                : { opacity: 1, scale: 1, y: 0 },
+            children: props.children,
             className: cx(
               'max-h-[var(--radix-popper-available-height)] min-w-60 overflow-hidden rounded-md border p-2.5 text-sm shadow-md',
               'border-gray-200 dark:border-gray-800',
@@ -81,12 +85,7 @@ const PopoverContent = React.forwardRef<
               'data-[state=closed]:pointer-events-none will-change-[transform,opacity]',
               className,
             ),
-            initial: { opacity: 0, y: 4, scale: 0.98 },
-            animate:
-              (props as unknown as { 'data-state'?: 'open' | 'closed' })['data-state'] === 'closed'
-                ? { opacity: 0, y: 4, scale: 0.98 }
-                : { opacity: 1, y: 0, scale: 1 },
-            transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
+            initial: { opacity: 0, scale: 0.98, y: 4 },
             onWheel: (event: React.WheelEvent<HTMLDivElement>) => {
               event.stopPropagation()
               const isScrollingDown = event.deltaY > 0
@@ -100,7 +99,8 @@ const PopoverContent = React.forwardRef<
                 )
               }
             },
-            children: props.children,
+            ref: forwardedRef as unknown as React.Ref<HTMLDivElement>,
+            transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
           })}
         </PopoverPrimitives.Content>
       </PopoverPrimitives.Portal>

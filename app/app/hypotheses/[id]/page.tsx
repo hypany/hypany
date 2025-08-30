@@ -8,4 +8,3 @@ export default async function HypothesisIndex({
   const { id } = await params
   redirect(`/app/hypotheses/${id}/editor`)
 }
-

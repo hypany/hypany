@@ -22,19 +22,31 @@ export default async function AnalyticsPage({
   const daily = data?.daily ?? []
   const per = data?.perHypothesis?.[0]
 
-  const barData = daily.map((d) => ({ date: d.date, Visitors: d.visitors, Signups: d.signups }))
-  const comboData = daily.map((d) => ({ date: d.date, Signups: d.signups, Visitors: d.visitors }))
+  const barData = daily.map((d) => ({
+    date: d.date,
+    Signups: d.signups,
+    Visitors: d.visitors,
+  }))
+  const comboData = daily.map((d) => ({
+    date: d.date,
+    Signups: d.signups,
+    Visitors: d.visitors,
+  }))
 
   return (
     <section className='px-4 py-6 sm:px-6'>
       <div className='mb-4 flex items-center justify-between'>
         <div>
-          <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>Analytics</h1>
+          <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
+            Analytics
+          </h1>
           <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
             {per ? (
               <span>
-                {Math.round(per.uniqueVisitors)} visitors • {Math.round(per.signups)} signups •
-                {` ${per.uniqueVisitors ? ((per.signups / per.uniqueVisitors) * 100).toFixed(1) : '0.0'}%`} conv
+                {Math.round(per.uniqueVisitors)} visitors •{' '}
+                {Math.round(per.signups)} signups •
+                {` ${per.uniqueVisitors ? ((per.signups / per.uniqueVisitors) * 100).toFixed(1) : '0.0'}%`}{' '}
+                conv
               </span>
             ) : (
               <span>Loading…</span>
@@ -61,7 +73,9 @@ export default async function AnalyticsPage({
 
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         <div>
-          <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>Visitors vs Signups</h2>
+          <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+            Visitors vs Signups
+          </h2>
           <ComboChart
             data={comboData}
             index='date'
@@ -72,7 +86,9 @@ export default async function AnalyticsPage({
           />
         </div>
         <div>
-          <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>Daily Visitors</h2>
+          <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+            Daily Visitors
+          </h2>
           <BarChart
             data={barData}
             index='date'
@@ -85,4 +101,3 @@ export default async function AnalyticsPage({
     </section>
   )
 }
-

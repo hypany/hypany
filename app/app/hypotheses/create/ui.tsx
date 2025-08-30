@@ -1,6 +1,6 @@
 'use client'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useId, useState } from 'react'
 import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -14,14 +14,14 @@ export default function CreateHypothesisForm() {
   const [slug, setSlug] = useState('')
   const [checking, setChecking] = useState(false)
   const [creating, setCreating] = useState(false)
-  const [slugStatus, setSlugStatus] = useState<
-    | null
-    | {
-        available: boolean
-        normalizedSlug: string
-        error?: string
-      }
-  >(null)
+  const [slugStatus, setSlugStatus] = useState<null | {
+    available: boolean
+    normalizedSlug: string
+    error?: string
+  }>(null)
+  const nameId = useId()
+  const descId = useId()
+  const subdomainId = useId()
 
   async function checkSlug() {
     const s = slug.trim()
@@ -63,8 +63,8 @@ export default function CreateHypothesisForm() {
     setCreating(true)
     try {
       const res = await api.v1.hypotheses.post({
-        name: n,
         description: description.trim() || undefined,
+        name: n,
         slug: s || undefined,
       })
       const id =
@@ -87,8 +87,14 @@ export default function CreateHypothesisForm() {
   return (
     <div className='grid max-w-2xl grid-cols-1 gap-4'>
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Name</label>
+        <label
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+          htmlFor={nameId}
+        >
+          Name
+        </label>
         <Input
+          id={nameId}
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder='Awesome Idea'
@@ -96,8 +102,14 @@ export default function CreateHypothesisForm() {
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Description (optional)</label>
+        <label
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+          htmlFor={descId}
+        >
+          Description (optional)
+        </label>
         <Textarea
+          id={descId}
           value={description}
           rows={4}
           onChange={(e) => setDescription(e.target.value)}
@@ -105,9 +117,15 @@ export default function CreateHypothesisForm() {
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Subdomain (optional)</label>
+        <label
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+          htmlFor={subdomainId}
+        >
+          Subdomain (optional)
+        </label>
         <div className='mt-1 flex gap-2'>
           <Input
+            id={subdomainId}
             value={slug}
             onChange={(e) => {
               setSlug(e.target.value)
@@ -123,9 +141,13 @@ export default function CreateHypothesisForm() {
         {slugStatus && (
           <p className='mt-1 text-xs'>
             {slugStatus.available ? (
-              <span className='text-emerald-600'>Available as {slugStatus.normalizedSlug}.hypany.app</span>
+              <span className='text-emerald-600'>
+                Available as {slugStatus.normalizedSlug}.hypany.app
+              </span>
             ) : (
-              <span className='text-rose-600'>{slugStatus.error || 'Not available'}</span>
+              <span className='text-rose-600'>
+                {slugStatus.error || 'Not available'}
+              </span>
             )}
           </p>
         )}

@@ -1,8 +1,14 @@
 'use client'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/atoms/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/atoms/select'
 import { Switch } from '@/components/atoms/switch'
 import { toast } from '@/lib/use-toast'
 
@@ -13,7 +19,11 @@ type Settings = {
   onboardingComplete: boolean
 }
 
-export default function SettingsForm({ initial }: { initial?: Partial<Settings> | null }) {
+export default function SettingsForm({
+  initial,
+}: {
+  initial?: Partial<Settings> | null
+}) {
   const [theme, setTheme] = useState<Settings['theme']>(
     (initial?.theme as any) || 'system',
   )
@@ -24,6 +34,7 @@ export default function SettingsForm({ initial }: { initial?: Partial<Settings> 
     Boolean(initial?.onboardingComplete ?? false),
   )
   const [saving, setSaving] = useState(false)
+  const themeId = useId()
 
   async function save() {
     setSaving(true)
@@ -34,9 +45,9 @@ export default function SettingsForm({ initial }: { initial?: Partial<Settings> 
           : 'system'
       ) as 'light' | 'dark' | 'system'
       await api.v1.settings.me.patch({
-        theme: safeTheme,
         emailNotifications,
         onboardingComplete,
+        theme: safeTheme,
       })
       toast({ title: 'Settings saved', variant: 'success' })
     } catch {
@@ -49,9 +60,17 @@ export default function SettingsForm({ initial }: { initial?: Partial<Settings> 
   return (
     <div className='grid grid-cols-1 gap-6 sm:max-w-xl'>
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Theme</label>
-        <Select value={theme} onValueChange={(v) => setTheme(v as Settings['theme'])}>
-          <SelectTrigger className='py-1.5'>
+        <label
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+          htmlFor={themeId}
+        >
+          Theme
+        </label>
+        <Select
+          value={theme}
+          onValueChange={(v) => setTheme(v as Settings['theme'])}
+        >
+          <SelectTrigger id={themeId} className='py-1.5'>
             <SelectValue placeholder='Select theme' />
           </SelectTrigger>
           <SelectContent>
@@ -63,8 +82,12 @@ export default function SettingsForm({ initial }: { initial?: Partial<Settings> 
       </div>
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-sm font-medium text-gray-900 dark:text-gray-50'>Email notifications</p>
-          <p className='text-xs text-gray-600 dark:text-gray-400'>Get updates about your hypotheses</p>
+          <p className='text-sm font-medium text-gray-900 dark:text-gray-50'>
+            Email notifications
+          </p>
+          <p className='text-xs text-gray-600 dark:text-gray-400'>
+            Get updates about your hypotheses
+          </p>
         </div>
         <Switch
           checked={emailNotifications}
@@ -73,8 +96,12 @@ export default function SettingsForm({ initial }: { initial?: Partial<Settings> 
       </div>
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-sm font-medium text-gray-900 dark:text-gray-50'>Onboarding completed</p>
-          <p className='text-xs text-gray-600 dark:text-gray-400'>Hide onboarding prompts</p>
+          <p className='text-sm font-medium text-gray-900 dark:text-gray-50'>
+            Onboarding completed
+          </p>
+          <p className='text-xs text-gray-600 dark:text-gray-400'>
+            Hide onboarding prompts
+          </p>
         </div>
         <Switch
           checked={onboardingComplete}

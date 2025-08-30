@@ -1,8 +1,13 @@
 import { Divider } from '@/components/atoms/divider'
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/atoms/sidebar'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from '@/components/atoms/sidebar'
+import { AppSidebarNav } from './app-sidebar-nav'
 import OrgSwitcher from './org-switcher'
 import { UserProfile } from './user-profile'
-import { AppSidebarNav } from './app-sidebar-nav'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (

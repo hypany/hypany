@@ -1,6 +1,6 @@
-"use client"
-import Link from 'next/link'
+'use client'
 import { Download } from 'lucide-react'
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '@/app/api'
@@ -91,7 +91,6 @@ export default function AppOverview() {
   const t = useTranslations('app.hypotheses.overview')
   const [groups, setGroups] = useState<Region[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  
 
   useEffect(() => {
     let ignore = false
@@ -131,7 +130,6 @@ export default function AppOverview() {
             pageViews30d: 0,
           }
           const p: Project = {
-            id: h.id,
             assigned: [
               {
                 initials: slugToInitials(h.landingPage?.slug ?? h.name),
@@ -140,12 +138,13 @@ export default function AppOverview() {
             ],
             company: h.name,
             duration: t('row.pageViews30d', { count: metrics.pageViews30d }),
+            id: h.id,
             probability: t('row.conversionRate30d', {
               value: metrics.conversionRate30d.toFixed(1),
             }),
             size: t('row.signupCount', { count: h.signupCount }),
-            status: statusToBadge[h.status] ?? 'Drafted',
             slug: h.landingPage?.slug ?? null,
+            status: statusToBadge[h.status] ?? 'Drafted',
           }
           const key = h.status in statusToBadge ? h.status : 'draft'
           const arr = grouped.get(key) ?? []
@@ -166,7 +165,7 @@ export default function AppOverview() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [t])
 
   const dataToRender = useMemo<Region[]>(() => groups, [groups])
 
@@ -234,17 +233,17 @@ export default function AppOverview() {
                     </span>
                   </TableHeaderCell>
                 </TableRow>
-                {quote.project.map((item, index) => (
-                  <TableRow key={index}>
+                {quote.project.map((item) => (
+                  <TableRow key={item.id}>
                     <TableCell>{item.company}</TableCell>
                     <TableCell>{item.size}</TableCell>
                     <TableCell>{item.probability}</TableCell>
                     <TableCell>{item.duration}</TableCell>
                     <TableCell>
                       <div className='flex -space-x-1 overflow-hidden'>
-                        {item.assigned.map((name, nameIndex) => (
+                        {item.assigned.map((name) => (
                           <span
-                            key={nameIndex}
+                            key={`${item.id}-${name.initials}`}
                             className={cx(
                               getRandomColor(name.initials),
                               'inline-flex size-5 items-center justify-center rounded-full text-xs font-medium text-white ring-2 ring-white dark:text-white dark:ring-[#090E1A]',
@@ -293,20 +292,36 @@ export default function AppOverview() {
                     <TableCell className='text-right'>
                       <div className='flex items-center justify-end gap-2'>
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/app/hypotheses/${item.id}/editor`}>Editor</Link>
+                          <Link href={`/app/hypotheses/${item.id}/editor`}>
+                            Editor
+                          </Link>
                         </Button>
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/app/hypotheses/${item.id}/domains`}>Domains</Link>
+                          <Link href={`/app/hypotheses/${item.id}/domains`}>
+                            Domains
+                          </Link>
                         </Button>
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/app/hypotheses/${item.id}/waitlist`}>Waitlist</Link>
+                          <Link href={`/app/hypotheses/${item.id}/waitlist`}>
+                            Waitlist
+                          </Link>
                         </Button>
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link href={`/app/hypotheses/${item.id}/analytics`}>Analytics</Link>
+                          <Link href={`/app/hypotheses/${item.id}/analytics`}>
+                            Analytics
+                          </Link>
                         </Button>
                         {item.slug && (
-                          <Button asChild variant='secondary' className='py-1.5'>
-                            <Link href={`/${item.slug}`} target='_blank' rel='noopener noreferrer'>
+                          <Button
+                            asChild
+                            variant='secondary'
+                            className='py-1.5'
+                          >
+                            <Link
+                              href={`/${item.slug}`}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
                               Public
                             </Link>
                           </Button>

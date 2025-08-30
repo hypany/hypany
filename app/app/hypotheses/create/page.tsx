@@ -8,11 +8,11 @@ export default async function CreateHypothesisPage() {
           Create Hypothesis
         </h1>
         <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-          Give it a name, optional description, and a subdomain if you want. We’ll create a landing page and waitlist automatically.
+          Give it a name, optional description, and a subdomain if you want.
+          We’ll create a landing page and waitlist automatically.
         </p>
       </div>
       <CreateHypothesisForm />
     </section>
   )
 }
-

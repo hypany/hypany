@@ -18,8 +18,8 @@ export function AcceptInvitationToast() {
       toast({ title: 'Invitation accepted', variant: 'success' })
     } else {
       toast({
-        title: 'Failed to accept invitation',
         description: reason ? `Reason: ${reason}` : undefined,
+        title: 'Failed to accept invitation',
         variant: 'error',
       })
     }

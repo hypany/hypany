@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -21,7 +21,7 @@ export function Breadcrumbs() {
   function humanize(seg: string): string {
     const clean = decodeURIComponent(seg)
     return clean
-      .split(/[\-_]/)
+      .split(/[-_]/)
       .filter(Boolean)
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ')
@@ -53,7 +53,8 @@ export function Breadcrumbs() {
 
   function isIdLike(seg: string): boolean {
     // UUID v4 or similar
-    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    const uuidRe =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
     // Mongo-like 24 hex id
     const hex24Re = /^[0-9a-f]{24}$/i
     // ULID (26 Crockford base32 letters and digits)

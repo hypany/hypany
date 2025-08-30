@@ -5,9 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useState, useTransition } from 'react'
-import { toast } from '@/lib/use-toast'
 import { client } from '@/auth/client'
-import { localeCookieName } from '@/i18n/config'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +20,8 @@ import {
   DropdownMenuSubMenuTrigger,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
+import { localeCookieName } from '@/i18n/config'
+import { toast } from '@/lib/use-toast'
 
 export type DropdownUserProfileProps = {
   children: React.ReactNode

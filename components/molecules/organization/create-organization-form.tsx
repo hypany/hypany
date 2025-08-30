@@ -1,12 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
-import { toast } from '@/lib/use-toast'
+import { useId, useMemo, useState } from 'react'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
+import { toast } from '@/lib/use-toast'
 
 function slugify(input: string): string {
   return input
@@ -23,6 +23,8 @@ export function CreateOrganizationForm() {
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const nameId = useId()
+  const slugId = useId()
 
   const derivedSlug = useMemo(() => (slug ? slug : slugify(name)), [name, slug])
 
@@ -39,7 +41,10 @@ export function CreateOrganizationForm() {
         slug: derivedSlug,
       })
       if (error || !org) {
-        toast({ title: error?.message || 'Failed to create organization', variant: 'error' })
+        toast({
+          title: error?.message || 'Failed to create organization',
+          variant: 'error',
+        })
         return
       }
       await client.organization.setActive({ organizationId: org.id })
@@ -57,9 +62,9 @@ export function CreateOrganizationForm() {
   return (
     <form onSubmit={onSubmit} className='space-y-4'>
       <div className='space-y-2'>
-        <Label htmlFor='org-name'>Organization name</Label>
+        <Label htmlFor={nameId}>Organization name</Label>
         <Input
-          id='org-name'
+          id={nameId}
           placeholder='Acme Inc.'
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -67,9 +72,9 @@ export function CreateOrganizationForm() {
         />
       </div>
       <div className='space-y-2'>
-        <Label htmlFor='org-slug'>Slug (optional)</Label>
+        <Label htmlFor={slugId}>Slug (optional)</Label>
         <Input
-          id='org-slug'
+          id={slugId}
           placeholder='acme-inc'
           value={slug}
           onChange={(e) => setSlug(slugify(e.target.value))}

@@ -16,11 +16,11 @@
       "when": 1756492458267
     },
     {
+      "breakpoints": true,
       "idx": 2,
-      "version": "7",
-      "when": 1756496049069,
       "tag": "0002_wooden_firestar",
-      "breakpoints": true
+      "version": "7",
+      "when": 1756496049069
     }
   ],
   "version": "7"

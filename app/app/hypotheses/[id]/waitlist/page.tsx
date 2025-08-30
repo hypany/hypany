@@ -1,5 +1,13 @@
 import { api } from '@/app/api'
-import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from '@/components/atoms/table'
 
 function f(date: string | Date) {
   try {
@@ -30,7 +38,9 @@ export default async function WaitlistPage({
     <section className='px-4 py-6 sm:px-6'>
       <div className='mb-4 flex items-center justify-between'>
         <div>
-          <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>Waitlist</h1>
+          <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
+            Waitlist
+          </h1>
           <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
             {stats ? (
               <span>
@@ -76,4 +86,3 @@ export default async function WaitlistPage({
     </section>
   )
 }
-

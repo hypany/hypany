@@ -238,7 +238,10 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
         .where(
           and(
             eq(hypotheses.id, params.hypothesisId),
-            eq(hypotheses.organizationId, session.activeOrganizationId as string),
+            eq(
+              hypotheses.organizationId,
+              session.activeOrganizationId as string,
+            ),
           ),
         )
         .limit(1)

@@ -403,7 +403,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
             ok: res.ok && text.trim().toLowerCase() === 'ok',
             status: res.status,
           }
-        } catch (e) {
+        } catch (_e) {
           return { ok: false, status: 0 }
         }
       }

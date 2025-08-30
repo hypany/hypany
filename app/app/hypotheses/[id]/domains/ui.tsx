@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { api } from '@/app/api'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -20,17 +20,28 @@ export default function DomainForm({
   )
   const [checking, setChecking] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [availability, setAvailability] = useState<
-    null | { ok: boolean; normalized: string; error?: string }
-  >(null)
+  const slugId = useId()
+  const customDomainId = useId()
+  const [availability, setAvailability] = useState<null | {
+    ok: boolean
+    normalized: string
+    error?: string
+  }>(null)
 
   async function checkSlug() {
     setChecking(true)
     try {
-      const res = await api.v1['landing-pages']['check-slug'].post({ slug, excludeId: undefined })
+      const res = await api.v1['landing-pages']['check-slug'].post({
+        excludeId: undefined,
+        slug,
+      })
       const d = res.data
       if (!d) return
-      setAvailability({ ok: d.available, normalized: d.normalizedSlug, error: d.error })
+      setAvailability({
+        error: d.error,
+        normalized: d.normalizedSlug,
+        ok: d.available,
+      })
       if (d.available) {
         toast({ title: 'Subdomain is available', variant: 'success' })
       } else {
@@ -65,9 +76,19 @@ export default function DomainForm({
   return (
     <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Subdomain (hypany.app)</label>
+        <label
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+          htmlFor={slugId}
+        >
+          Subdomain (hypany.app)
+        </label>
         <div className='mt-1 flex gap-2'>
-          <Input value={slug} onChange={(e) => setSlug(e.target.value)} className='py-1.5' />
+          <Input
+            id={slugId}
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            className='py-1.5'
+          />
           <Button variant='secondary' onClick={checkSlug} disabled={checking}>
             {checking ? 'Checking…' : 'Check'}
           </Button>
@@ -75,22 +96,34 @@ export default function DomainForm({
         {availability && (
           <p className='mt-1 text-xs'>
             {availability.ok ? (
-              <span className='text-emerald-600'>Available as {availability.normalized}.hypany.app</span>
+              <span className='text-emerald-600'>
+                Available as {availability.normalized}.hypany.app
+              </span>
             ) : (
-              <span className='text-rose-600'>{availability.error || 'Not available'}</span>
+              <span className='text-rose-600'>
+                {availability.error || 'Not available'}
+              </span>
             )}
           </p>
         )}
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Custom domain</label>
+        <label
+          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+          htmlFor={customDomainId}
+        >
+          Custom domain
+        </label>
         <Input
+          id={customDomainId}
           placeholder='yourdomain.com'
           value={customDomain}
           onChange={(e) => setCustomDomain(e.target.value)}
           className='py-1.5'
         />
-        <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>Leave empty to remove custom domain.</p>
+        <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
+          Leave empty to remove custom domain.
+        </p>
       </div>
       <div className='sm:col-span-2'>
         <Button onClick={save} disabled={saving}>

@@ -4,12 +4,12 @@ import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/atoms/badge'
 import { ProgressCircle } from '@/components/atoms/progress-circle'
 import {
-  TableRoot,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeaderCell,
+  TableRoot,
   TableRow,
 } from '@/components/atoms/table'
 import { Tooltip } from '@/components/atoms/tooltip'

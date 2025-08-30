@@ -84,7 +84,12 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         .from(hypotheses)
         .leftJoin(landingPages, eq(hypotheses.id, landingPages.hypothesisId))
         .leftJoin(waitlists, eq(hypotheses.id, waitlists.hypothesisId))
-        .where(and(eq(hypotheses.organizationId, orgId), isNull(hypotheses.deletedAt)))
+        .where(
+          and(
+            eq(hypotheses.organizationId, orgId),
+            isNull(hypotheses.deletedAt),
+          ),
+        )
         .orderBy(desc(hypotheses.createdAt))
         .limit(query.limit ?? 20)
         .offset(query.offset ?? 0)

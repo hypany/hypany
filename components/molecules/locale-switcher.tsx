@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { localeCookieName } from '@/i18n/config'
 import { useTransition } from 'react'
 import {
   Select,
@@ -11,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/atoms/select'
+import { localeCookieName } from '@/i18n/config'
 
 export function LocaleSwitcher() {
   const router = useRouter()

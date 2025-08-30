@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from '@/lib/use-toast'
 import * as z from 'zod'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
+import { toast } from '@/lib/use-toast'
 import { cx } from '@/lib/utils'
 
 const signUpSchema = z.object({
@@ -57,21 +57,28 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             variant: 'error',
           })
         } else if (error.message?.toLowerCase().includes('password')) {
-          toast({ title: 'Password must be at least 8 characters long.', variant: 'error' })
+          toast({
+            title: 'Password must be at least 8 characters long.',
+            variant: 'error',
+          })
         } else if (error.message?.toLowerCase().includes('email')) {
-          toast({ title: 'Please enter a valid email address.', variant: 'error' })
+          toast({
+            title: 'Please enter a valid email address.',
+            variant: 'error',
+          })
         } else {
           toast({
-            title: error.message || 'Failed to create account. Please try again.',
+            title:
+              error.message || 'Failed to create account. Please try again.',
             variant: 'error',
           })
         }
       } else if (signUpData) {
         toast({
-          title: 'Account created successfully!',
           description:
             'Please check your email to verify your account before signing in.',
           duration: 5000,
+          title: 'Account created successfully!',
           variant: 'success',
         })
         router.push('/sign-in')
@@ -89,7 +96,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           variant: 'error',
         })
       } else {
-        toast({ title: 'Something went wrong. Please try again.', variant: 'error' })
+        toast({
+          title: 'Something went wrong. Please try again.',
+          variant: 'error',
+        })
       }
     }
   }

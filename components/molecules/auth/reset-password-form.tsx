@@ -5,13 +5,12 @@ import { useRouter } from 'next/navigation'
 import type * as React from 'react'
 import { useId } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from '@/lib/use-toast'
 import * as z from 'zod'
-
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
+import { toast } from '@/lib/use-toast'
 import { cx } from '@/lib/utils'
 
 const resetSchema = z

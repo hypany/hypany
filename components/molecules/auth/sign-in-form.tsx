@@ -1,19 +1,19 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import type * as React from 'react'
+import { useId } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
-import { cx } from '@/lib/utils'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import type * as React from 'react'
-import { useId } from 'react'
-import { useForm } from 'react-hook-form'
 import { toast } from '@/lib/use-toast'
-import * as z from 'zod'
+import { cx } from '@/lib/utils'
 
 const signInSchema = z.object({
   email: z.email('Invalid email address'),
@@ -52,9 +52,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
         email,
       })
       if (error) {
-        throw new Error(
-          error.message || 'Failed to send verification email',
-        )
+        throw new Error(error.message || 'Failed to send verification email')
       }
       t.update({
         title: `Verification email sent to ${email}`,
@@ -84,15 +82,15 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           error.message?.toLowerCase().includes('verify')
         ) {
           toast({
-            title: 'Email not verified',
-            description: 'Please verify your email before signing in.',
-            duration: 10000,
-            variant: 'error',
             action: {
-              label: 'Resend verification email',
               altText: 'Resend verification email',
+              label: 'Resend verification email',
               onClick: () => resendVerificationEmail(),
             },
+            description: 'Please verify your email before signing in.',
+            duration: 10000,
+            title: 'Email not verified',
+            variant: 'error',
           })
         } else if (
           error.status === 401 ||
@@ -124,7 +122,10 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
     } catch (error) {
       // Handle network or unexpected errors
       console.error('Sign-in error:', error)
-      toast({ title: 'Something went wrong. Please try again.', variant: 'error' })
+      toast({
+        title: 'Something went wrong. Please try again.',
+        variant: 'error',
+      })
     }
   }
 

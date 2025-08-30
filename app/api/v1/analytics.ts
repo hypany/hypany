@@ -231,7 +231,7 @@ export const analyticsApi = new Elysia({ prefix: '/v1/analytics' })
         email: a.email,
         hypothesisId: a.hypothesisId,
         source: a.source || 'direct',
-        timestamp: a.timestamp!,
+        timestamp: a.timestamp as Date,
         type: a.type,
       }))
 

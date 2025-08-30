@@ -18,7 +18,9 @@ const SettingsSchema = {
   update: t.Object({
     emailNotifications: t.Optional(t.Boolean()),
     onboardingComplete: t.Optional(t.Boolean()),
-    theme: t.Optional(t.Union([t.Literal('light'), t.Literal('dark'), t.Literal('system')])),
+    theme: t.Optional(
+      t.Union([t.Literal('light'), t.Literal('dark'), t.Literal('system')]),
+    ),
   }),
 }
 
@@ -112,7 +114,12 @@ export const settingsApi = new Elysia({ prefix: '/v1/settings' })
           ...(body.theme !== undefined && { theme: body.theme }),
           updatedAt: now,
         })
-        .where(and(eq(userSettings.id, existing.id), eq(userSettings.userId, user.id)))
+        .where(
+          and(
+            eq(userSettings.id, existing.id),
+            eq(userSettings.userId, user.id),
+          ),
+        )
         .returning()
 
       return jsonOk(set, HTTP_STATUS.OK, { settings: updated })

@@ -1,4 +1,4 @@
-"use server"
+'use server'
 
 import { headers } from 'next/headers'
 import { auth } from '@/auth'
@@ -20,7 +20,7 @@ export async function updateOrganizationAction(input: {
       }
     }
     if (!orgId) {
-      return { ok: false, error: 'No active organization' }
+      return { error: 'No active organization', ok: false }
     }
 
     const res = await auth.api.updateOrganization({
@@ -37,6 +37,6 @@ export async function updateOrganizationAction(input: {
     return { ok: true, organization: res }
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
-    return { ok: false, error: message }
+    return { error: message, ok: false }
   }
 }

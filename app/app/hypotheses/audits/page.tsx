@@ -93,7 +93,7 @@ export default function Audits() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [t])
 
   return (
     <section aria-label={t('aria')}>
@@ -140,9 +140,9 @@ export default function Audits() {
                       <span>{t('auditor')}</span>
                     </p>
                     <ul className='mt-1 divide-y divide-gray-200 text-sm text-gray-600 dark:divide-gray-800 dark:text-gray-400'>
-                      {section.auditDates.map((audit, index) => (
+                      {section.auditDates.map((audit) => (
                         <li
-                          key={index}
+                          key={`${audit.auditor}-${audit.date}`}
                           className='flex items-center justify-between py-2.5'
                         >
                           <span>{audit.date}</span>
@@ -157,13 +157,13 @@ export default function Audits() {
                       <span>{t('status')}</span>
                     </p>
                     <ul className='mt-1 divide-y divide-gray-200 text-gray-600 dark:divide-gray-800 dark:text-gray-400'>
-                      {section.documents.map((doc, index) => (
+                      {section.documents.map((doc) => (
                         <li
-                          key={index}
+                          key={`${section.id}-${doc.name}`}
                           className='flex items-center justify-between py-2.5 text-sm'
                         >
-                          <a
-                            href='#'
+                          <button
+                            type='button'
                             className='flex items-center gap-2 text-emerald-500 hover:underline hover:underline-offset-4 dark:text-emerald-500'
                           >
                             <Link
@@ -171,7 +171,7 @@ export default function Audits() {
                               aria-hidden='true'
                             />
                             {doc.name}
-                          </a>
+                          </button>
                           <div className='flex items-center gap-2'>
                             <span className='text-xs text-gray-500 dark:text-gray-400'>
                               {getDocStatusLabel(doc.status)}
