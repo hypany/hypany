@@ -148,7 +148,7 @@ export default async function HypothesesPage() {
                     href={`/app/hypotheses/${item.id}/analytics`}
                     className='group inline-flex items-center gap-3 text-emerald-600 hover:underline dark:text-emerald-500'
                   >
-                    {tRoot('table.analytics-link')}
+                    {t('pages.root.table.analytics-link')}
                   </Link>
                 </TableCell>
               </TableRow>

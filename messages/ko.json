@@ -34,7 +34,7 @@
           }
         }
       },
-      "tabs": { "audits": "감사", "monitor링": "모니터링", "overview": "개요" },
+      "tabs": { "audits": "감사", "monitoring": "모니터링", "overview": "개요" },
       "create": {
         "form": {
           "actions": { "create": "가설 만들기", "creating": "만드는 중…" },

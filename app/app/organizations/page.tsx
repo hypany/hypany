@@ -1,21 +1,20 @@
-import { Pencil } from 'lucide-react'
-import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
-import {
-  getActiveOrganization,
-  listUserOrganizations,
-  countMembers,
-  countInvitations,
-} from '@/functions/organizations'
+import { Badge } from '@/components/atoms/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
-import { Card } from '@/components/atoms/card'
+import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
-import { Badge } from '@/components/atoms/badge'
 import SetActiveOrgButton from '@/components/molecules/organization/set-active-org-button'
-import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
+import {
+  countInvitations,
+  countMembers,
+  getActiveOrganization,
+  listUserOrganizations,
+} from '@/functions/organizations'
+import { Pencil } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
 export default async function OrganizationsPage() {
   const t = await getTranslations('app')
@@ -74,13 +73,12 @@ export default async function OrganizationsPage() {
   return (
     <section aria-label={t('pages.organizations.aria')}>
       <AcceptInvitationToast />
-      <div className='px-6 py-6'>
+      <div>
         <div className='mt-0'>
           <MetricsCards metrics={metrics} compact />
         </div>
         <div className='mt-0 grid grid-cols-1 gap-6'>
           <div className='col-span-1'>
-            <Card className='p-0 overflow-hidden'>
               <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
                 <Table>
                 <TableHead>
@@ -167,7 +165,6 @@ export default async function OrganizationsPage() {
                 </TableBody>
                 </Table>
               </TableRoot>
-            </Card>
           </div>
         </div>
       </div>

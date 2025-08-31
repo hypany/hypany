@@ -28,7 +28,7 @@ export default async function HypothesisOverview({
 
   const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
   if (!hypothesis) notFound()
-  const t = await getTranslations('app.pages.hypotheses.detail')
+  const t = await getTranslations('app')
 
   return (
     <section>
@@ -36,23 +36,23 @@ export default async function HypothesisOverview({
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>{t('table.columns.field')}</TableHeaderCell>
-              <TableHeaderCell>{t('table.columns.value')}</TableHeaderCell>
+              <TableHeaderCell>{t('pages.hypotheses.detail.table.columns.field')}</TableHeaderCell>
+              <TableHeaderCell>{t('pages.hypotheses.detail.table.columns.value')}</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell className='font-medium'>{t('table.columns.status')}</TableCell>
+              <TableCell className='font-medium'>{t('pages.hypotheses.detail.table.columns.status')}</TableCell>
               <TableCell className='capitalize'>
                 {hypothesis.status}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell className='font-medium'>{t('table.columns.signups')}</TableCell>
+              <TableCell className='font-medium'>{t('pages.hypotheses.detail.table.columns.signups')}</TableCell>
               <TableCell>-</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell className='font-medium'>{t('table.columns.subdomain')}</TableCell>
+              <TableCell className='font-medium'>{t('pages.hypotheses.detail.table.columns.subdomain')}</TableCell>
               <TableCell>
                 {hypothesis.slug ?? '-'}
               </TableCell>

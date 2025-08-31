@@ -30,7 +30,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
   const emailId = useId()
   const passwordId = useId()
   const router = useRouter()
-  const t = useTranslations('auth.form')
+  const t = useTranslations('auth')
   const {
     register,
     handleSubmit,
@@ -144,10 +144,10 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
     <div className={cx('w-full', className)} {...props}>
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
         <div className='space-y-2'>
-          <Label htmlFor={emailId}>{t('email.label')}</Label>
+          <Label htmlFor={emailId}>{t('form.email.label')}</Label>
           <Input
             id={emailId}
-            placeholder={t('email.placeholder')}
+            placeholder={t('form.email.placeholder')}
             type='email'
             autoCapitalize='none'
             autoComplete='email'
@@ -163,17 +163,17 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
         </div>
         <div className='space-y-2'>
           <div className='flex items-center justify-between'>
-            <Label htmlFor={passwordId}>{t('password.label')}</Label>
+            <Label htmlFor={passwordId}>{t('form.password.label')}</Label>
             <Link
               href='/forgot-password'
               className='text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-500 hover:dark:text-emerald-600'
             >
-              {t('forgot-password')}
+              {t('form.forgot-password')}
             </Link>
           </div>
           <Input
             id={passwordId}
-            placeholder={t('password.placeholder')}
+            placeholder={t('form.password.placeholder')}
             type='password'
             autoCapitalize='none'
             autoComplete='current-password'
@@ -187,7 +187,7 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           )}
         </div>
         <Button disabled={isSubmitting} className='w-full'>
-          {isSubmitting ? t('actions.signing-in') : t('actions.continue')}
+          {isSubmitting ? t('form.actions.signing-in') : t('form.actions.continue')}
         </Button>
       </form>
     </div>
