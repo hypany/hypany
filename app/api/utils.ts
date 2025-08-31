@@ -57,4 +57,3 @@ export async function computeWaitlistPositionByCreatedAt(
   const position = rows.length
   return position > 0 ? position : 1
 }
-

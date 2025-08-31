@@ -1,5 +1,9 @@
 'use client'
 
+import { RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 import { getClientApi } from '@/app/api/client'
 import {
   Dialog,
@@ -18,10 +22,6 @@ import {
 } from '@/components/atoms/dropdown-menu'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 import { toast } from '@/lib/use-toast'
-import { RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
 
 type Organization = { id: string; name: string; logo?: string | null }
 
@@ -66,7 +66,9 @@ export function OrgSwitcherClient({
   async function setActive(organizationId: string) {
     const api = getClientApi()
     try {
-      const res = await api.v1.organizations['set-active'].post({ organizationId })
+      const res = await api.v1.organizations['set-active'].post({
+        organizationId,
+      })
       if (!res.data) throw new Error('No response')
       toast({
         description: 'Active organization updated.',
@@ -89,35 +91,35 @@ export function OrgSwitcherClient({
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="flex items-center rounded-md px-2 py-1.5 text-base font-semibold hover:bg-gray-200/50 dark:hover:bg-gray-900 w-full min-w-0"
+          className='flex items-center rounded-md px-2 py-1.5 text-base font-semibold hover:bg-gray-200/50 dark:hover:bg-gray-900 w-full min-w-0'
           disabled={disabled}
         >
-          <span className="flex items-center justify-between w-full min-w-0">
-            <span className="relative inline-flex items-center justify-center overflow-hidden rounded-sm ring-1 ring-gray-200 dark:ring-gray-800 shrink-0 w-7 h-7 aspect-square">
+          <span className='flex items-center justify-between w-full min-w-0'>
+            <span className='relative inline-flex items-center justify-center overflow-hidden rounded-sm ring-1 ring-gray-200 dark:ring-gray-800 shrink-0 w-7 h-7 aspect-square'>
               {current.logo ? (
                 <Image
                   src={current.logo}
                   alt={current.name}
-                  className="object-cover w-full h-full aspect-square"
+                  className='object-cover w-full h-full aspect-square'
                   width={28}
                   height={28}
                 />
               ) : (
                 <span
-                  className="w-full h-full aspect-square text-xs text-white grid place-items-center"
+                  className='w-full h-full aspect-square text-xs text-white grid place-items-center'
                   style={{
                     backgroundColor: `hsl(${hueFromString(current.name)} 70% 45%)`,
                   }}
-                  aria-hidden="true"
+                  aria-hidden='true'
                 >
                   {initials(current.name)}
                 </span>
               )}
             </span>
-            <span className="truncate flex-1 min-w-0 px-2">{current.name}</span>
+            <span className='truncate flex-1 min-w-0 px-2'>{current.name}</span>
             <RiArrowDownSFill
-              className="size-5 shrink-0 text-gray-400 dark:text-gray-600 ml-auto"
-              aria-hidden="true"
+              className='size-5 shrink-0 text-gray-400 dark:text-gray-600 ml-auto'
+              aria-hidden='true'
             />
           </span>
         </DropdownMenuTrigger>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { getServerApi } from '@/app/api/server'
+import { Button } from '@/components/atoms/button'
 import {
   Table,
   TableBody,
@@ -10,8 +11,10 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
-import { Button } from '@/components/atoms/button'
+import {
+  type Metric,
+  MetricsCards,
+} from '@/components/molecules/homepage/metrics-cards'
 
 type HypothesisRow = {
   id: string
@@ -42,7 +45,8 @@ function isHypothesisRow(o: unknown): o is HypothesisRow {
 function isActivity(o: unknown): o is Activity {
   if (!o || typeof o !== 'object') return false
   const x = o as Record<string, unknown>
-  const typeOk = x.type === 'page_view' || x.type === 'signup' || x.type === 'verification'
+  const typeOk =
+    x.type === 'page_view' || x.type === 'signup' || x.type === 'verification'
   return (
     typeOk &&
     typeof x.hypothesisId === 'string' &&
@@ -69,11 +73,12 @@ export default async function Page() {
         .map((row: unknown) => {
           if (!row || typeof row !== 'object') return null
           const r = row as Record<string, unknown>
-          const signupCount = typeof r.signupCount === 'number' ? r.signupCount : 0
+          const signupCount =
+            typeof r.signupCount === 'number' ? r.signupCount : 0
           const id = typeof r.id === 'string' ? r.id : ''
           const name = typeof r.name === 'string' ? r.name : ''
           const status = typeof r.status === 'string' ? r.status : 'draft'
-          const next: HypothesisRow = { id, name, status, signupCount }
+          const next: HypothesisRow = { id, name, signupCount, status }
           return isHypothesisRow(next) ? next : null
         })
         .filter((v): v is HypothesisRow => Boolean(v))
@@ -96,19 +101,19 @@ export default async function Page() {
   const metrics: Metric[] = [
     {
       fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: 'Visitor Conversion Rate',
+      label: t('metrics.visitorConversion'),
       percentage: `${(conversion * 100).toFixed(1)}%`,
       value: conversion,
     },
     {
       fraction: `${last7Signups}/${prev7Signups}`,
-      label: 'Signup Growth (WoW)',
+      label: t('metrics.signupGrowthWoW'),
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
       fraction: `${readyToLaunch}/${Math.max(3, hypotheses.length)}`,
-      label: 'Ready to Launch',
+      label: t('metrics.readyToLaunch'),
       percentage: '',
       value: Math.min(1, readyToLaunch / Math.max(3, hypotheses.length || 1)),
     },
@@ -129,11 +134,11 @@ export default async function Page() {
           </div>
           <div className='flex shrink-0 items-center gap-2'>
             <Button asChild variant='secondary'>
-              <Link href='/app/assets'>{t('actions.uploadAsset')}</Link>
+              <Link href='/app/assets'>{t('actions.upload-asset')}</Link>
             </Button>
             <Button asChild>
               <Link href='/app/hypotheses/create'>
-                {t('actions.createHypothesis')}
+                {t('actions.create-hypothesis')}
               </Link>
             </Button>
           </div>
@@ -150,31 +155,41 @@ export default async function Page() {
           <div className='rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-925'>
             <div className='flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800'>
               <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                {t('topHypotheses')}
+                {t('top-hypotheses')}
               </h2>
-              <Link href='/app/hypotheses' className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'>
-                {t('viewAll')}
+              <Link
+                href='/app/hypotheses'
+                className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
+              >
+                {t('view-all')}
               </Link>
             </div>
             <TableRoot>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableHeaderCell>Hypothesis</TableHeaderCell>
-                    <TableHeaderCell>Status</TableHeaderCell>
-                    <TableHeaderCell>Signups</TableHeaderCell>
-                    <TableHeaderCell className='text-right'>Analytics</TableHeaderCell>
+                    <TableHeaderCell>
+                      {t('table.columns.hypothesis')}
+                    </TableHeaderCell>
+                    <TableHeaderCell>{t('table.columns.status')}</TableHeaderCell>
+                    <TableHeaderCell>{t('table.columns.signups')}</TableHeaderCell>
+                    <TableHeaderCell className='text-right'>
+                      {t('table.columns.analytics')}
+                    </TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {topHypotheses.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className='text-center text-sm text-gray-500 dark:text-gray-500'>
+                      <TableCell
+                        colSpan={4}
+                        className='text-center text-sm text-gray-500 dark:text-gray-500'
+                      >
                         <div className='flex flex-col items-center gap-3 py-6'>
-                          <div>{t('noHypotheses')}</div>
+                          <div>{t('no-hypotheses')}</div>
                           <Button asChild>
                             <Link href='/app/hypotheses/create'>
-                              {t('createFirst')}
+                              {t('create-first')}
                             </Link>
                           </Button>
                         </div>
@@ -184,7 +199,10 @@ export default async function Page() {
                     topHypotheses.map((h) => (
                       <TableRow key={h.id}>
                         <TableCell className='font-medium'>
-                          <Link href={`/app/hypotheses/${h.id}`} className='hover:underline'>
+                          <Link
+                            href={`/app/hypotheses/${h.id}`}
+                            className='hover:underline'
+                          >
                             {h.name}
                           </Link>
                         </TableCell>
@@ -195,7 +213,7 @@ export default async function Page() {
                             href={`/app/hypotheses/${h.id}/analytics`}
                             className='text-emerald-600 hover:underline dark:text-emerald-500'
                           >
-                            View
+                            {t('table.analyticsLink')}
                           </Link>
                         </TableCell>
                       </TableRow>
@@ -211,21 +229,28 @@ export default async function Page() {
           <div className='rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-925'>
             <div className='border-b border-gray-200 px-4 py-3 dark:border-gray-800'>
               <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                {t('recentActivity')}
+                {t('recent-activity')}
               </h2>
             </div>
             <ul className='divide-y divide-gray-200 dark:divide-gray-800'>
               {activities.length === 0 ? (
                 <li className='px-4 py-4 text-sm text-gray-500 dark:text-gray-500'>
-                  {t('noActivity')}
+                  {t('no-activity')}
                 </li>
               ) : (
                 activities.map((a, idx) => {
                   const ts = a.timestamp.toISOString()
                   let label = ''
-                  if (a.type === 'page_view') label = `Page view from ${a.source}`
-                  else if (a.type === 'signup') label = `Signup ${a.email ? `(${a.email})` : ''}`
-                  else if (a.type === 'verification') label = `Email verified ${a.email ? `(${a.email})` : ''}`
+                  if (a.type === 'page_view')
+                    label = t('activity.page-view', { source: a.source })
+                  else if (a.type === 'signup')
+                    label = t('activity.signup', {
+                      email: a.email ? ` (${a.email})` : '',
+                    })
+                  else if (a.type === 'verification')
+                    label = t('activity.verification', {
+                      email: a.email ? ` (${a.email})` : '',
+                    })
                   return (
                     <li key={idx} className='px-4 py-3'>
                       <div className='flex items-center justify-between gap-3'>
@@ -238,10 +263,12 @@ export default async function Page() {
                               href={`/app/hypotheses/${a.hypothesisId}`}
                               className='hover:underline'
                             >
-                              View hypothesis
+                              {t('activity.view-hypothesis')}
                             </Link>
                             <span className='mx-1'>•</span>
-                            <time dateTime={ts}>{new Date(ts).toLocaleString()}</time>
+                            <time dateTime={ts}>
+                              {new Date(ts).toLocaleString()}
+                            </time>
                           </p>
                         </div>
                         <span className='shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'>

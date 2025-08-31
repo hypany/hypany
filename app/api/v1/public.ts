@@ -11,7 +11,6 @@ import { and, eq, gt } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { VerificationEmail } from '@/emails/verification-email'
-import { computeWaitlistPositionByCreatedAt } from '../utils'
 import { EMAIL_VERIFICATION_TOKEN_TTL_MS, HTTP_STATUS } from '@/lib/constants'
 import { sendEmail } from '@/lib/email'
 import { jsonError, jsonOk } from '@/lib/http'
@@ -27,6 +26,7 @@ import {
   waitlistEntries,
   waitlists,
 } from '@/schema'
+import { computeWaitlistPositionByCreatedAt } from '../utils'
 import 'server-only'
 import { ulid } from 'ulid'
 

@@ -56,11 +56,12 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Active organization (full details) and activeOrganizationId
   .get(
     '/active',
-    async ({ set, headers }) => {
-      const session = await auth.api.getSession({ headers })
-      const activeOrganizationId = session?.session?.activeOrganizationId ?? null
+    async ({ set, request }) => {
+      const session = await auth.api.getSession({ headers: request.headers })
+      const activeOrganizationId =
+        session?.session?.activeOrganizationId ?? null
       const organization = activeOrganizationId
-        ? await auth.api.getFullOrganization({ headers })
+        ? await auth.api.getFullOrganization({ headers: request.headers })
         : null
       return jsonOk(set, HTTP_STATUS.OK, {
         activeOrganization: organization ?? null,
@@ -86,18 +87,18 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Create organization
   .post(
     '/create',
-    async ({ set, headers, body }) => {
-      const org = await auth.api.createOrganization({ headers, body })
+    async ({ set, request, body }) => {
+      const org = await auth.api.createOrganization({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, org)
     },
     {
       auth: true,
       body: t.Object({
-        name: t.String(),
-        slug: t.String(),
         keepCurrentActiveOrganization: t.Optional(t.Boolean()),
         logo: t.Optional(t.String()),
         metadata: t.Optional(t.Record(t.String(), t.Any())),
+        name: t.String(),
+        slug: t.String(),
       }),
       detail: {
         description: 'Create a new organization',
@@ -110,8 +111,8 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Set active organization
   .post(
     '/set-active',
-    async ({ set, headers, body }) => {
-      const res = await auth.api.setActiveOrganization({ headers, body })
+    async ({ set, request, body }) => {
+      const res = await auth.api.setActiveOrganization({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -125,14 +126,17 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
         summary: 'Set active organization',
         tags: ['Auth'],
       },
-      response: { 200: t.Nullable(t.Record(t.String(), t.Any())), 401: ErrorResponse },
+      response: {
+        200: t.Nullable(t.Record(t.String(), t.Any())),
+        401: ErrorResponse,
+      },
     },
   )
   // List organizations for current user
   .get(
     '/list',
-    async ({ set, headers }) => {
-      const organizations = await auth.api.listOrganizations({ headers })
+    async ({ set, request }) => {
+      const organizations = await auth.api.listOrganizations({ headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, organizations)
     },
     {
@@ -151,13 +155,17 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // List members
   .get(
     '/members',
-    async ({ set, headers, query, session }) => {
+    async ({ set, request, query, session }) => {
       const orgId = query.organizationId || session?.activeOrganizationId
       if (!orgId)
-        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No organization specified')
+        return jsonError(
+          set,
+          HTTP_STATUS.BAD_REQUEST,
+          'No organization specified',
+        )
 
       const res = await auth.api.listMembers({
-        headers,
+        headers: request.headers,
         query: { organizationId: orgId },
       })
 
@@ -199,15 +207,15 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Update member role
   .post(
     '/members/update-role',
-    async ({ set, headers, body }) => {
-      const res = await auth.api.updateMemberRole({ headers, body })
+    async ({ set, request, body }) => {
+      const res = await auth.api.updateMemberRole({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
       auth: true,
       body: UpdateRoleBody,
       detail: {
-        description: 'Update a member\'s role in an organization',
+        description: "Update a member's role in an organization",
         summary: 'Update role',
         tags: ['Auth'],
       },
@@ -220,8 +228,8 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Remove member
   .post(
     '/members/remove',
-    async ({ set, headers, body }) => {
-      const res = await auth.api.removeMember({ headers, body })
+    async ({ set, request, body }) => {
+      const res = await auth.api.removeMember({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -241,22 +249,29 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // List invitations
   .get(
     '/invitations',
-    async ({ set, headers, query, session }) => {
+    async ({ set, request, query, session }) => {
       const orgId = query.organizationId || session?.activeOrganizationId
       if (!orgId)
-        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No organization specified')
+        return jsonError(
+          set,
+          HTTP_STATUS.BAD_REQUEST,
+          'No organization specified',
+        )
 
-      const res = await auth.api.listInvitations({ headers, query: { organizationId: orgId } })
+      const res = await auth.api.listInvitations({
+        headers: request.headers,
+        query: { organizationId: orgId },
+      })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
       auth: true,
-      query: OrgIdQuery,
       detail: {
         description: 'List pending invitations for an organization',
         summary: 'List invitations',
         tags: ['Auth'],
       },
+      query: OrgIdQuery,
       response: {
         200: t.Array(t.Record(t.String(), t.Any())),
         400: ErrorResponse,
@@ -267,8 +282,8 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Create invitation
   .post(
     '/invitations',
-    async ({ set, headers, body }) => {
-      const res = await auth.api.createInvitation({ headers, body })
+    async ({ set, request, body }) => {
+      const res = await auth.api.createInvitation({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -288,8 +303,8 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Cancel invitation
   .post(
     '/invitations/cancel',
-    async ({ set, headers, body }) => {
-      const res = await auth.api.cancelInvitation({ headers, body })
+    async ({ set, request, body }) => {
+      const res = await auth.api.cancelInvitation({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -306,11 +321,29 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
       },
     },
   )
+  // Accept invitation
+  .post(
+    '/invitations/accept',
+    async ({ set, request, body }) => {
+      const res = await auth.api.acceptInvitation({ headers: request.headers, body })
+      return jsonOk(set, HTTP_STATUS.OK, res)
+    },
+    {
+      auth: true,
+      body: t.Object({ invitationId: t.String() }),
+      detail: {
+        description: 'Accept an invitation to join an organization',
+        summary: 'Accept invitation',
+        tags: ['Auth'],
+      },
+      response: { 200: t.Record(t.String(), t.Any()), 401: ErrorResponse },
+    },
+  )
   // Leave organization
   .post(
     '/leave',
-    async ({ set, headers, body }) => {
-      const res = await auth.api.leaveOrganization({ headers, body })
+    async ({ set, request, body }) => {
+      const res = await auth.api.leaveOrganization({ body, headers: request.headers })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {

@@ -112,7 +112,7 @@
       "visitorToSignup": "Visitor-to-Signup Conversion",
       "winProbability": "Win Probability"
     },
-  "pages": {
+    "pages": {
       "analytics": {
         "aria": "Analytics",
         "subtitle": "Track performance, conversion, and user engagement.",
@@ -135,17 +135,37 @@
         "title": "Organizations"
       },
       "root": {
-        "aria": "Dashboard",
-        "title": "Dashboard",
-        "topHypotheses": "Top Hypotheses",
-        "recentActivity": "Recent Activity",
-        "viewAll": "View all",
-        "noHypotheses": "No hypotheses yet.",
-        "createFirst": "Create your first hypothesis",
-        "noActivity": "No recent activity.",
         "actions": {
-          "createHypothesis": "Create Hypothesis",
-          "uploadAsset": "Upload Asset"
+          "create-hypothesis": "Create Hypothesis",
+          "upload-asset": "Upload Asset"
+        },
+        "aria": "Dashboard",
+        "create-first": "Create your first hypothesis",
+        "no-activity": "No recent activity.",
+        "no-hypotheses": "No hypotheses yet.",
+        "recent-activity": "Recent Activity",
+        "title": "Dashboard",
+        "top-hypotheses": "Top Hypotheses",
+        "view-all": "View all",
+        "metrics": {
+          "visitor-conversion": "Visitor Conversion Rate",
+          "signup-growth-wow": "Signup Growth (WoW)",
+          "ready-to-launch": "Ready to Launch"
+        },
+        "table": {
+          "columns": {
+            "hypothesis": "Hypothesis",
+            "status": "Status",
+            "signups": "Signups",
+            "analytics": "Analytics"
+          },
+          "analytics-link": "View"
+        },
+        "activity": {
+          "page-view": "Page view from {source}",
+          "signup": "Signup{email}",
+          "verification": "Email verified{email}",
+          "view-hypothesis": "View hypothesis"
         }
       },
       "settings": {

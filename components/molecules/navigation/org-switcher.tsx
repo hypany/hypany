@@ -1,22 +1,20 @@
-import { headers } from 'next/headers'
-import { auth } from '@/app/api/auth'
+import { getServerApi } from '@/app/api/server'
 import { OrgSwitcherClient } from './org-switcher.client'
 
-type Organization = Awaited<
-  ReturnType<typeof auth.api.listOrganizations>
->[number]
+type Organization = { id: string; name: string; logo?: string | null }
 
 export default async function OrgSwitcher() {
-  const hdrs = await headers()
-  const session = await auth.api.getSession({ headers: hdrs })
-  const orgs = await auth.api.listOrganizations({ headers: hdrs })
-  const organizations = (Array.isArray(orgs) ? orgs : []) as Organization[]
-  const activeOrganizationId = session?.session?.activeOrganizationId ?? null
+  const api = await getServerApi()
+  const [{ data: activeRes }, { data: organizations }] = await Promise.all([
+    api.v1.organizations.active.get(),
+    api.v1.organizations.list.get(),
+  ])
+  const orgs = Array.isArray(organizations)
+    ? (organizations as Organization[])
+    : ([] as Organization[])
+  const activeOrganizationId = activeRes?.activeOrganizationId ?? null
 
   return (
-    <OrgSwitcherClient
-      organizations={organizations}
-      activeOrganizationId={activeOrganizationId}
-    />
+    <OrgSwitcherClient organizations={orgs} activeOrganizationId={activeOrganizationId} />
   )
 }

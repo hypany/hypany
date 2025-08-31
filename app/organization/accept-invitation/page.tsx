@@ -1,6 +1,6 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { auth } from '@/app/api/auth'
+import { getServerApi } from '@/app/api/server'
 
 export default async function AcceptInvitationPage({
   searchParams,
@@ -17,8 +17,11 @@ export default async function AcceptInvitationPage({
   const hdrs = await headers()
 
   // Ensure user is authenticated before accepting
-  const session = await auth.api.getSession({ headers: hdrs })
-  if (!session) {
+  const api = await getServerApi()
+  try {
+    // Perform an authenticated call to check session
+    await api.v1.organizations.list.get()
+  } catch {
     const next = encodeURIComponent(
       `/organization/accept-invitation?id=${invitationId}`,
     )
@@ -26,10 +29,7 @@ export default async function AcceptInvitationPage({
   }
 
   try {
-    await auth.api.acceptInvitation({
-      body: { invitationId },
-      headers: hdrs,
-    })
+    await api.v1.organizations.invitations.accept.post({ invitationId })
     redirect('/app/organizations?accepted=1')
   } catch (_e) {
     redirect('/app/organizations?accepted=0')
