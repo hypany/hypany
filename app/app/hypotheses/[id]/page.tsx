@@ -225,7 +225,7 @@ export default async function HypothesisOverview({
                   else if (a.type === 'signup') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.signup-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.signup')
                   else if (a.type === 'verification') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.verification-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.verification')
                   return (
-                    <li key={a.hypothesisId ?? idx} className='p-4'>
+                    <li key={idx} className='p-4'>
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-50'>
