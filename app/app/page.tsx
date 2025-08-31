@@ -10,11 +10,8 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import {
-  type Metric
-} from '@/components/molecules/homepage/metrics-cards'
 import { getActivityFeed } from '@/functions/analytics'
-import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
+import { getHypothesesForOrganization } from '@/functions/hypotheses'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 
@@ -42,9 +39,8 @@ export default async function Page() {
     return <div>No active organization</div>
   }
 
-  const [hypotheses, metricsData, activity] = await Promise.all([
+  const [hypotheses, activity] = await Promise.all([
     getHypothesesForOrganization(session.session.activeOrganizationId),
-    getHypothesesMetrics(session.session.activeOrganizationId),
     getActivityFeed(session.session.activeOrganizationId, { limit: 20, range: '30d' }),
   ])
 
@@ -59,36 +55,6 @@ export default async function Page() {
     .slice()
     .sort((a, b) => b.signupCount - a.signupCount)
     .slice(0, 5)
-
-  // Metrics summary
-  const growthRate7d = metricsData.growthRate7d
-  const uniqueVisitors30d = metricsData.uniqueVisitors30d
-  const signups30d = metricsData.signups30d
-  const readyToLaunch = metricsData.readyToLaunch
-  const last7Signups = metricsData.last7Signups
-  const prev7Signups = metricsData.prev7Signups
-  const conversion = uniqueVisitors30d > 0 ? signups30d / uniqueVisitors30d : 0
-
-  const metrics: Metric[] = [
-    {
-      fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: t('pages.root.metrics.visitor-conversion'),
-      percentage: `${(conversion * 100).toFixed(1)}%`,
-      value: conversion,
-    },
-    {
-      fraction: `${last7Signups}/${prev7Signups}`,
-      label: t('pages.root.metrics.signup-growth-wow'),
-      percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
-      value: Math.max(0, Math.min(1, growthRate7d / 100)),
-    },
-    {
-      fraction: `${readyToLaunch}/${Math.max(3, hypothesesRows.length)}`,
-      label: t('pages.root.metrics.ready-to-launch'),
-      percentage: '',
-      value: Math.min(1, readyToLaunch / Math.max(3, hypothesesRows.length || 1)),
-    },
-  ]
 
   const activities: Activity[] = activity.items.map(item => ({
     type: item.type as 'page_view' | 'signup' | 'verification',

@@ -45,17 +45,12 @@ export default async function HypothesisLayout({
       <div>
         <TabNavigation className='gap-x-4'>
           {[
-            { href: `/app/hypotheses/${id}`, name: t('pages.hypotheses.overview-link') },
             { href: `/app/hypotheses/${id}/landing-pages`, name: t('pages.hypotheses.tabs.landing-pages') },
             { href: `/app/hypotheses/${id}/domains`, name: t('pages.hypotheses.tabs.domains') },
             { href: `/app/hypotheses/${id}/waitlist`, name: t('pages.hypotheses.tabs.waitlist') },
             { href: `/app/hypotheses/${id}/analytics`, name: t('pages.hypotheses.tabs.analytics') },
           ].map((item) => (
-            <TabNavigationLink
-              key={item.href}
-              asChild
-              active={item.href === `/app/hypotheses/${id}`}
-            >
+            <TabNavigationLink key={item.href} asChild>
               <Link href={item.href}>{item.name}</Link>
             </TabNavigationLink>
           ))}

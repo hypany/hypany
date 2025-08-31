@@ -1,8 +1,8 @@
 'use client'
 import { ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
 import { Fragment } from 'react'
 
 type Crumb = { href: string; label: string }
@@ -40,10 +40,6 @@ export function Breadcrumbs() {
         return tApp('pages.settings.title')
       case 'organizations':
         return tApp('pages.organizations.title')
-      case 'monitoring':
-        return tApp('hypotheses.tabs.monitoring')
-      case 'audits':
-        return tApp('hypotheses.tabs.audits')
       default:
         return humanize(seg)
     }
