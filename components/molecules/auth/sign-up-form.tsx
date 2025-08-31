@@ -21,9 +21,12 @@ const signUpSchema = z.object({
 
 type SignUpFormData = z.infer<typeof signUpSchema>
 
-interface SignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {
+  defaultEmail?: string
+  next?: string
+}
 
-export function SignUpForm({ className, ...props }: SignUpFormProps) {
+export function SignUpForm({ className, defaultEmail, next, ...props }: SignUpFormProps) {
   const nameId = useId()
   const emailId = useId()
   const passwordId = useId()
@@ -34,6 +37,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
+    defaultValues: { email: defaultEmail ?? '' },
   })
 
   async function onSubmit(data: SignUpFormData) {
@@ -85,7 +89,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           title: 'Account created successfully!',
           variant: 'success',
         })
-        router.push('/sign-in')
+        const dest = next ? `/sign-in?next=${encodeURIComponent(next)}` : '/sign-in'
+        router.push(dest)
       }
     } catch (error) {
       // Handle network or unexpected errors

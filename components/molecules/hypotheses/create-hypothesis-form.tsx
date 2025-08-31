@@ -1,6 +1,7 @@
 'use client'
 
 import { useId, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
@@ -12,6 +13,7 @@ import { validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
 
 export function CreateHypothesisForm() {
+  const t = useTranslations('app.hypotheses.create.form')
   const router = useRouter()
 
   const [name, setName] = useState('')
@@ -33,8 +35,8 @@ export function CreateHypothesisForm() {
     e.preventDefault()
     if (!name.trim()) {
       toast({
-        title: 'Name is required',
-        description: 'Please enter a hypothesis name to continue.',
+        title: t('errors.name.required.title'),
+        description: t('errors.name.required.desc'),
         variant: 'error',
       })
       return
@@ -45,8 +47,8 @@ export function CreateHypothesisForm() {
       const { valid, error } = validateSlug(finalSlug)
       if (!valid) {
         toast({
-          title: 'Invalid subdomain',
-          description: error || 'Please enter a valid subdomain.',
+          title: t('errors.slug.invalid.title'),
+          description: error || t('errors.slug.invalid.desc'),
           variant: 'error',
         })
         return
@@ -66,16 +68,12 @@ export function CreateHypothesisForm() {
         | undefined
       if (!data?.hypothesis?.id) throw new Error('Failed to create hypothesis')
 
-      toast({
-        title: 'Hypothesis created',
-        description: 'Redirecting to the overview...',
-        variant: 'success',
-      })
+      toast({ title: t('toasts.created.title'), description: t('toasts.created.desc'), variant: 'success' })
       router.push(`/app/hypotheses/${data.hypothesis.id}`)
       router.refresh()
     } catch (err) {
-      const message = (err as Error)?.message || 'Failed to create hypothesis'
-      toast({ title: 'Error', description: message, variant: 'error' })
+      const message = (err as Error)?.message || t('errors.generic.desc')
+      toast({ title: t('errors.generic.title'), description: message, variant: 'error' })
     } finally {
       setSubmitting(false)
     }
@@ -84,24 +82,22 @@ export function CreateHypothesisForm() {
   return (
     <form onSubmit={onSubmit} className='space-y-5'>
       <div className='space-y-2'>
-        <Label htmlFor={nameId}>Name</Label>
+        <Label htmlFor={nameId}>{t('name.label')}</Label>
         <Input
           id={nameId}
-          placeholder='AI Logo Generator'
+          placeholder={t('name.placeholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={submitting}
         />
-        <p className='text-xs text-gray-500 dark:text-gray-500'>
-          A concise, memorable name for your idea.
-        </p>
+        <p className='text-xs text-gray-500 dark:text-gray-500'>{t('name.help')}</p>
       </div>
 
       <div className='space-y-2'>
-        <Label htmlFor={descId}>Description (optional)</Label>
+        <Label htmlFor={descId}>{t('description.label')}</Label>
         <Textarea
           id={descId}
-          placeholder='One sentence describing the problem and your approach.'
+          placeholder={t('description.placeholder')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={submitting}
@@ -110,10 +106,10 @@ export function CreateHypothesisForm() {
       </div>
 
       <div className='space-y-2'>
-        <Label htmlFor={slugId}>Subdomain (optional)</Label>
+        <Label htmlFor={slugId}>{t('slug.label')}</Label>
         <Input
           id={slugId}
-          placeholder='ai-logo'
+          placeholder={t('slug.placeholder')}
           value={derivedSlug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           disabled={submitting}
@@ -121,10 +117,11 @@ export function CreateHypothesisForm() {
           minLength={3}
         />
         <p className='text-xs text-gray-500 dark:text-gray-500'>
-          Used for your public subdomain.
+          {t('slug.help.prefix')}
           {derivedSlug ? (
             <>
-              {' '}Will be created as <span className='font-mono'>/{derivedSlug}</span>
+              {' '}
+              {t('slug.help.present', { slug: derivedSlug })}
               {!slugValidation.valid && (
                 <span className='ml-2 text-red-600 dark:text-red-400'>
                   ({slugValidation.error})
@@ -132,14 +129,14 @@ export function CreateHypothesisForm() {
               )}
             </>
           ) : (
-            ' Leave blank to auto-generate.'
+            t('slug.help.empty')
           )}
         </p>
       </div>
 
       <div className='pt-2'>
         <Button className='w-full sm:w-auto' disabled={submitting}>
-          {submitting ? 'Creating…' : 'Create Hypothesis'}
+          {submitting ? t('actions.creating') : t('actions.create')}
         </Button>
       </div>
     </form>
@@ -147,4 +144,3 @@ export function CreateHypothesisForm() {
 }
 
 export default CreateHypothesisForm
-

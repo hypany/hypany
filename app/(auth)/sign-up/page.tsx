@@ -11,12 +11,19 @@ export const metadata: Metadata = {
   title: 'Create an account - Hypany',
 }
 
-export default async function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string; next?: string }>
+}) {
   const session = await getSession()
   if (session) {
     redirect('/app')
   }
   const t = await getTranslations('auth.sign-up')
+  const params = await searchParams
+  const defaultEmail = params?.email || ''
+  const next = params?.next || ''
 
   return (
     <>
@@ -30,7 +37,7 @@ export default async function SignUpPage() {
       </div>
 
       <div className='mt-6'>
-        <SignUpForm />
+        <SignUpForm defaultEmail={defaultEmail} next={next} />
       </div>
 
       <Divider />

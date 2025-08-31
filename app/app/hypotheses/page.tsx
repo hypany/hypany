@@ -29,13 +29,18 @@ type Row = {
 
 export default async function HypothesesPage() {
   await requireAuth()
-  const t = await getTranslations('app.pages.root')
+  const [tRoot, tHyp] = await Promise.all([
+    getTranslations('app.pages.root'),
+    getTranslations('app.pages.hypotheses'),
+  ])
   const activeOrgRes = await getActiveOrganization()
   
   if (!activeOrgRes?.activeOrganizationId) {
     return (
       <section className='px-4 py-6 sm:p-6'>
-        <p className='text-sm text-gray-500 dark:text-gray-500'>No active organization.</p>
+        <p className='text-sm text-gray-500 dark:text-gray-500'>
+          {tHyp('no-active-organization')}
+        </p>
       </section>
     )
   }
@@ -48,7 +53,9 @@ export default async function HypothesesPage() {
   if (!hypotheses || hypotheses.length === 0) {
     return (
       <section className='px-4 py-6 sm:p-6'>
-        <p className='text-sm text-gray-500 dark:text-gray-500'>No data.</p>
+        <p className='text-sm text-gray-500 dark:text-gray-500'>
+          {tHyp('no-data')}
+        </p>
       </section>
     )
   }
@@ -78,19 +85,19 @@ export default async function HypothesesPage() {
   const metrics: Metric[] = [
     {
       fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: t('metrics.visitor-conversion'),
+      label: tRoot('metrics.visitor-conversion'),
       percentage: `${(conversion * 100).toFixed(1)}%`,
       value: conversion,
     },
     {
       fraction: `${Number(metricsData?.last7Signups ?? 0)}/${Number(metricsData?.prev7Signups ?? 0)}`,
-      label: t('metrics.signup-growth-wow'),
+      label: tRoot('metrics.signup-growth-wow'),
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
       fraction: `${readyCount}/${denom}`,
-      label: t('metrics.ready-to-launch'),
+      label: tRoot('metrics.ready-to-launch'),
       percentage: '',
       value: Math.min(1, readyCount / denom),
     },
@@ -105,10 +112,10 @@ export default async function HypothesesPage() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>Hypothesis</TableHeaderCell>
-              <TableHeaderCell>Status</TableHeaderCell>
-              <TableHeaderCell>Waitlist</TableHeaderCell>
-              <TableHeaderCell>Analytics</TableHeaderCell>
+              <TableHeaderCell>{tRoot('table.columns.hypothesis')}</TableHeaderCell>
+              <TableHeaderCell>{tRoot('table.columns.status')}</TableHeaderCell>
+              <TableHeaderCell>{tRoot('table.columns.signups')}</TableHeaderCell>
+              <TableHeaderCell>{tRoot('table.columns.analytics')}</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -144,7 +151,7 @@ export default async function HypothesesPage() {
                     href={`/app/hypotheses/${item.id}/analytics`}
                     className='group inline-flex items-center gap-3 text-emerald-600 hover:underline dark:text-emerald-500'
                   >
-                    View
+                    {tRoot('table.analytics-link')}
                   </Link>
                 </TableCell>
               </TableRow>

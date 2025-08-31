@@ -21,8 +21,12 @@ export function AcceptInvitationToast() {
         variant: 'success',
       })
     } else {
+      const description =
+        reason === 'wrong_account'
+          ? "You're logged into a different account"
+          : 'Please try again later.'
       toast({
-        description: reason ? `Reason: ${reason}` : 'Please try again later.',
+        description,
         title: 'Failed to accept invitation',
         variant: 'error',
       })

@@ -83,7 +83,9 @@ export const auth = betterAuth({
       requireEmailVerificationOnInvitation: false,
       sendInvitationEmail: async ({ id, email, organization, inviter }) => {
         const organizationName = organization.name
-        const invitationLink = `${serviceUrl}/organization/accept-invitation?id=${id}`
+        const invitationLink = `${serviceUrl}/organization/accept-invitation?id=${id}&email=${encodeURIComponent(
+          email,
+        )}`
         const emailHtml = await render(
           OrganizationInvitationEmail({
             invitationLink,

@@ -3,6 +3,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/atoms/dialog'
+import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 
 export function TopRightActions() {
   const pathname = usePathname()
@@ -11,7 +19,8 @@ export function TopRightActions() {
   // Show actions per page
   const onDashboard = pathname === '/app'
   const onHypotheses = pathname === '/app/hypotheses'
-  if (!onDashboard && !onHypotheses) return null
+  const onOrganizations = pathname === '/app/organizations'
+  if (!onDashboard && !onHypotheses && !onOrganizations) return null
 
   return (
     <div className='ml-auto flex items-center gap-2'>
@@ -20,9 +29,24 @@ export function TopRightActions() {
           <Link href='/app/assets'>{t('actions.upload-asset')}</Link>
         </Button>
       ) : null}
-      <Button asChild>
-        <Link href='/app/hypotheses/create'>{t('actions.create-hypothesis')}</Link>
-      </Button>
+      {onHypotheses && (
+        <Button asChild>
+          <Link href='/app/hypotheses/create'>{t('actions.create-hypothesis')}</Link>
+        </Button>
+      )}
+      {onOrganizations && (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Create organization</Button>
+          </DialogTrigger>
+          <DialogContent className='sm:max-w-md'>
+            <DialogHeader>
+              <DialogTitle>Create organization</DialogTitle>
+            </DialogHeader>
+            <CreateOrganizationForm />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }

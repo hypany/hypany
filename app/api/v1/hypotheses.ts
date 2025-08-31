@@ -21,15 +21,8 @@ import { db } from '@/drizzle'
 import { HTTP_STATUS, ULID_PATTERN, WAITLIST_THRESHOLD } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { logger } from '@/lib/logger'
-import {
-  hypotheses,
-  landingPages,
-  pageVisits,
-  waitlistEntries,
-  waitlists,
-} from '@/schema'
+import { hypotheses, landingPages, pageVisits, waitlistEntries, waitlists } from '@/schema'
 import 'server-only'
-import { ulid } from 'ulid'
 import {
   ErrorResponse,
   PaginationQuery,
@@ -470,41 +463,18 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       const orgId = session.activeOrganizationId
       if (!orgId)
         return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
-
-      const hypothesisId = ulid()
-      const landingPageId = ulid()
-      const waitlistId = ulid()
+      
+      // Use shared data access function to ensure atomicity/consistency
+      const { createHypothesis } = await import('@/functions/hypotheses')
 
       try {
-        // Create hypothesis, landing page, and waitlist in parallel
-        await Promise.all([
-          db.insert(hypotheses).values({
-            createdAt: new Date(),
-            description: body.description || null,
-            id: hypothesisId,
-            name: body.name,
-            organizationId: orgId,
-            slug: body.slug || null,
-            status: 'draft',
-            updatedAt: new Date(),
-            userId: user.id,
-          }),
-          db.insert(landingPages).values({
-            createdAt: new Date(),
-            hypothesisId,
-            id: landingPageId,
-            name: body.name || null,
-            template: 'default',
-            updatedAt: new Date(),
-          }),
-          db.insert(waitlists).values({
-            createdAt: new Date(),
-            hypothesisId,
-            id: waitlistId,
-            name: `${body.name} Waitlist`,
-            updatedAt: new Date(),
-          }),
-        ])
+        const { id: hypothesisId, landingPageId, waitlistId } = await createHypothesis({
+          name: body.name,
+          description: body.description ?? undefined,
+          slug: body.slug ?? undefined,
+          organizationId: orgId,
+          userId: user.id,
+        })
 
         return jsonOk(set, HTTP_STATUS.CREATED, {
           hypothesis: {

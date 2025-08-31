@@ -233,9 +233,10 @@ export async function createHypothesis(
   const landingPageId = ulid()
   const waitlistId = ulid()
 
-  // Create all three records in parallel
-  await Promise.all([
-    db.insert(hypotheses).values({
+  // Ensure atomic creation and correct FK ordering
+  await db.transaction(async (tx) => {
+    // 1) Create parent hypothesis first
+    await tx.insert(hypotheses).values({
       id: hypothesisId,
       name: data.name,
       description: data.description,
@@ -243,17 +244,22 @@ export async function createHypothesis(
       status: 'draft',
       organizationId: data.organizationId,
       userId: data.userId,
-    }),
-    db.insert(landingPages).values({
-      id: landingPageId,
-      hypothesisId,
-    }),
-    db.insert(waitlists).values({
-      id: waitlistId,
-      hypothesisId,
-      name: `${data.name} Waitlist`,
-    }),
-  ])
+    })
+
+    // 2) Then create dependent records in parallel
+    await Promise.all([
+      tx.insert(landingPages).values({
+        id: landingPageId,
+        hypothesisId,
+        name: data.name,
+      }),
+      tx.insert(waitlists).values({
+        id: waitlistId,
+        hypothesisId,
+        name: `${data.name} Waitlist`,
+      }),
+    ])
+  })
 
   return {
     id: hypothesisId,

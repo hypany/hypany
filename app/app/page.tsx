@@ -1,6 +1,5 @@
 import { getSession } from '@/auth/server'
 import { Button } from '@/components/atoms/button'
-import { Card } from '@/components/atoms/card'
 import {
   Table,
   TableBody,
@@ -101,18 +100,17 @@ export default async function Page() {
 
   return (
     <section aria-label={t('aria') || 'Dashboard'}>
-      
+      <div className='px-6 py-6'>
         {metricsData ? (
           <div className='mt-0'>
             <MetricsCards metrics={metrics} compact />
           </div>
         ) : null}
-      
+      </div>
 
       <div className='grid grid-cols-1 gap-6 px-6 pb-10 lg:grid-cols-3'>
         <div className='col-span-1 lg:col-span-2'>
-          <Card className='p-0'>
-          <div className='flex items-center justify-between p-3.5'>
+          <div className='flex items-center justify-between pb-2'>
             <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
               {t('top-hypotheses')}
             </h2>
@@ -185,12 +183,10 @@ export default async function Page() {
                 </TableBody>
               </Table>
             </TableRoot>
-          </Card>
         </div>
 
         <div className='col-span-1'>
-          <Card className='p-0'>
-          <div className='p-3.5'>
+          <div className='pb-2'>
             <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
               {t('recent-activity')}
             </h2>
@@ -246,7 +242,6 @@ export default async function Page() {
                 })
               )}
             </ul>
-          </Card>
           </div>
         </div>
     </section>

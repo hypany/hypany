@@ -18,9 +18,9 @@ const OrgIdQuery = t.Object({
 })
 
 const MemberRole = t.Union([
-  t.Literal('owner'),
   t.Literal('admin'),
   t.Literal('member'),
+  t.Literal('guest'),
 ])
 
 const InviteBody = t.Object({
@@ -412,7 +412,29 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   // Leave organization
   .post(
     '/leave',
-    async ({ set, request, body }) => {
+    async ({ set, request, body, user }) => {
+      // Guard: last admin cannot leave the organization
+      try {
+        const members = (await auth.api.listMembers({
+          headers: request.headers,
+          query: { organizationId: body.organizationId },
+        })) as unknown as {
+          members: Array<{ userId: string; role: string }>
+          total: number
+        }
+        const admins = members?.members?.filter((m) => m.role === 'admin') ?? []
+        const isLastAdmin = admins.length === 1 && admins[0]?.userId === user?.id
+        if (isLastAdmin) {
+          return jsonError(
+            set,
+            HTTP_STATUS.BAD_REQUEST,
+            'The last admin cannot leave the organization.',
+          )
+        }
+      } catch {
+        // If we cannot verify, continue to attempt leave; Better Auth will validate permissions
+      }
+
       const res = await auth.api.leaveOrganization({
         body,
         headers: request.headers,

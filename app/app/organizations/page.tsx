@@ -1,3 +1,4 @@
+import { Pencil } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import {
@@ -16,16 +17,8 @@ import {
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
-import { Button } from '@/components/atoms/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/atoms/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
 import { Badge } from '@/components/atoms/badge'
-import CreateOrganizationForm from '@/components/molecules/organization/create-organization-form'
 import SetActiveOrgButton from '@/components/molecules/organization/set-active-org-button'
 
 export default async function OrganizationsPage() {
@@ -39,7 +32,7 @@ export default async function OrganizationsPage() {
   type Organization = Organizations extends Array<infer T> ? T : never
   const orgs: Organization[] = Array.isArray(organizations) ? (organizations as Organization[]) : []
   const activeOrgId = activeRes?.activeOrganizationId ?? null
-  const active = orgs.find((org) => org.id === activeOrgId) ?? null
+  // active org data available via activeOrgId; per-row settings dialog handles edits
 
   function initials(name?: string) {
     if (!name) return 'O'
@@ -59,31 +52,9 @@ export default async function OrganizationsPage() {
     <section aria-label={t('aria')}>
       <AcceptInvitationToast />
       <div className='px-6 py-6'>
-        <div className='flex items-start justify-between gap-4'>
-          <div>
-            <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-              {t('title')}
-            </h1>
-            <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-              {t('subtitle')}
-            </p>
-          </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className='px-3'>Create organization</Button>
-            </DialogTrigger>
-            <DialogContent className='sm:max-w-md'>
-              <DialogHeader>
-                <DialogTitle>Create organization</DialogTitle>
-              </DialogHeader>
-              <CreateOrganizationForm />
-            </DialogContent>
-          </Dialog>
-        </div>
-
-        <div className='mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3'>
-          <div className='lg:col-span-2'>
-            <TableRoot className='rounded-lg border border-gray-200 shadow-xs dark:border-gray-800'>
+        <div className='mt-0 grid grid-cols-1 gap-6'>
+          <div className='col-span-1'>
+            <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -133,10 +104,28 @@ export default async function OrganizationsPage() {
                           )}
                         </TableCell>
                         <TableCell className='text-right'>
-                          <div className='flex items-center justify-end gap-2'>
+                          <div className='flex items-center justify-end gap-3'>
                             {!isActive && (
                               <SetActiveOrgButton organizationId={org.id} />
                             )}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <button type='button' className='group inline-flex items-center gap-1 text-emerald-600 hover:underline dark:text-emerald-500'>
+                                  Settings
+                                  <Pencil className='size-3.5 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-600' />
+                                </button>
+                              </DialogTrigger>
+                              <DialogContent className='sm:max-w-md'>
+                                <DialogHeader>
+                                  <DialogTitle>Organization settings</DialogTitle>
+                                </DialogHeader>
+                                <OrgSettingsForm
+                                  organizationId={org.id}
+                                  defaultName={org.name}
+                                  defaultSlug={(org as any).slug ?? ''}
+                                />
+                              </DialogContent>
+                            </Dialog>
                             <OrgAdminDialog
                               orgId={org.id}
                               orgName={org.name}
@@ -152,19 +141,6 @@ export default async function OrganizationsPage() {
               </Table>
             </TableRoot>
           </div>
-
-          {active && (
-            <div className='rounded-lg border border-gray-200 p-4 shadow-xs dark:border-gray-800'>
-              <h2 className='mb-2 text-sm font-medium text-gray-900 dark:text-gray-50'>
-                Organization settings
-              </h2>
-              <OrgSettingsForm
-                organizationId={active.id}
-                defaultName={active.name}
-                defaultSlug={active.slug ?? ''}
-              />
-            </div>
-          )}
         </div>
       </div>
     </section>

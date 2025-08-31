@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useId, useState } from 'react'
+import React, { useCallback, useEffect, useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import {
@@ -73,7 +73,7 @@ export function OrgAdminDialog({
   const [invitationsLoading, setInvitationsLoading] = useState(false)
 
   // Functions to reload data after mutations
-  async function reloadMembers() {
+  const reloadMembers = useCallback(async () => {
     setMembersLoading(true)
     try {
       const res = await fetch(
@@ -111,8 +111,8 @@ export function OrgAdminDialog({
     } finally {
       setMembersLoading(false)
     }
-  }
-  async function reloadInvitations() {
+  }, [orgId])
+  const reloadInvitations = useCallback(async () => {
     setInvitationsLoading(true)
     try {
       const res = await fetch(
@@ -138,7 +138,7 @@ export function OrgAdminDialog({
     } finally {
       setInvitationsLoading(false)
     }
-  }
+  }, [orgId])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -318,15 +318,25 @@ function LoadOnOpen({
   onLoadMembers: () => void
   onLoadInvitations: () => void
 }) {
+  const fetchedRef = React.useRef({ members: false, invites: false })
   useEffect(() => {
-    if (!open) return
-    if (tab === 'members') onLoadMembers()
-    if (tab === 'invites') onLoadInvitations()
+    if (!open) {
+      fetchedRef.current = { members: false, invites: false }
+      return
+    }
+    if (tab === 'members' && !fetchedRef.current.members) {
+      fetchedRef.current.members = true
+      onLoadMembers()
+    }
+    if (tab === 'invites' && !fetchedRef.current.invites) {
+      fetchedRef.current.invites = true
+      onLoadInvitations()
+    }
   }, [open, tab, onLoadMembers, onLoadInvitations])
   return null
 }
 
-type Role = 'owner' | 'admin' | 'member'
+type Role = 'admin' | 'member' | 'guest'
 
 function UpdateRoleButton({
   orgId,
@@ -340,7 +350,7 @@ function UpdateRoleButton({
   onUpdated: () => void
 }) {
   const [open, setOpen] = useState(false)
-  const allowed: readonly Role[] = ['owner', 'admin', 'member']
+  const allowed: readonly Role[] = ['admin', 'member', 'guest']
   const [role, setRole] = useState<Role>(
     allowed.includes(currentRole as Role) ? (currentRole as Role) : 'member',
   )
@@ -372,7 +382,7 @@ function UpdateRoleButton({
             <SelectContent>
               <SelectItem value='member'>member</SelectItem>
               <SelectItem value='admin'>admin</SelectItem>
-              <SelectItem value='owner'>owner</SelectItem>
+              <SelectItem value='guest'>guest</SelectItem>
             </SelectContent>
           </Select>
           <div className='flex justify-end gap-2'>
@@ -444,7 +454,7 @@ function InviteMemberForm({
           <SelectContent>
             <SelectItem value='member'>member</SelectItem>
             <SelectItem value='admin'>admin</SelectItem>
-            <SelectItem value='owner'>owner</SelectItem>
+            <SelectItem value='guest'>guest</SelectItem>
           </SelectContent>
         </Select>
         <Button

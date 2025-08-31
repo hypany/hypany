@@ -1,6 +1,6 @@
 /**
  * Settings API (v1)
- * - Read/update authenticated user settings (theme, notifications, onboarding)
+ * - Read/update authenticated user settings (notifications, onboarding, marketing)
  */
 
 import { and, eq } from 'drizzle-orm'
@@ -17,10 +17,9 @@ import { authPlugin } from './auth-plugin'
 const SettingsSchema = {
   update: t.Object({
     emailNotifications: t.Optional(t.Boolean()),
+    marketingEmails: t.Optional(t.Boolean()),
+    marketingEmailLanguage: t.Optional(t.String()),
     onboardingComplete: t.Optional(t.Boolean()),
-    theme: t.Optional(
-      t.Union([t.Literal('light'), t.Literal('dark'), t.Literal('system')]),
-    ),
   }),
 }
 
@@ -50,7 +49,7 @@ export const settingsApi = new Elysia({ prefix: '/v1/settings' })
         emailNotifications: true,
         id: ulid(),
         onboardingComplete: false,
-        theme: 'system' as const,
+        // marketing fields use DB defaults when omitted
         updatedAt: now,
         userId: user.id,
       }
@@ -94,7 +93,8 @@ export const settingsApi = new Elysia({ prefix: '/v1/settings' })
           emailNotifications: body.emailNotifications ?? true,
           id: ulid(),
           onboardingComplete: body.onboardingComplete ?? false,
-          theme: body.theme ?? 'system',
+          marketingEmails: body.marketingEmails ?? false,
+          marketingEmailLanguage: body.marketingEmailLanguage ?? 'en',
           updatedAt: now,
           userId: user.id,
         }
@@ -108,10 +108,15 @@ export const settingsApi = new Elysia({ prefix: '/v1/settings' })
           ...(body.emailNotifications !== undefined && {
             emailNotifications: body.emailNotifications,
           }),
+          ...(body.marketingEmails !== undefined && {
+            marketingEmails: body.marketingEmails,
+          }),
+          ...(body.marketingEmailLanguage !== undefined && {
+            marketingEmailLanguage: body.marketingEmailLanguage,
+          }),
           ...(body.onboardingComplete !== undefined && {
             onboardingComplete: body.onboardingComplete,
           }),
-          ...(body.theme !== undefined && { theme: body.theme }),
           updatedAt: now,
         })
         .where(
