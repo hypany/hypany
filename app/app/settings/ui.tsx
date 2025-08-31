@@ -25,9 +25,13 @@ export default function SettingsForm({
   initial?: Partial<Settings> | null
 }) {
   const api = getClientApi()
-  const [theme, setTheme] = useState<Settings['theme']>(
-    (initial?.theme as any) || 'system',
-  )
+  function ensureTheme(t?: Settings['theme']): 'light' | 'dark' | 'system' {
+    const allowed = ['light', 'dark', 'system'] as const
+    return allowed.includes(t as typeof allowed[number])
+      ? (t as 'light' | 'dark' | 'system')
+      : 'system'
+  }
+  const [theme, setTheme] = useState<Settings['theme']>(ensureTheme(initial?.theme))
   const [emailNotifications, setEmailNotifications] = useState<boolean>(
     Boolean(initial?.emailNotifications ?? true),
   )

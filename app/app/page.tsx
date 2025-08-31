@@ -72,19 +72,19 @@ export default async function Page() {
   const metrics: Metric[] = [
     {
       fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: t('metrics.visitorConversion'),
+      label: t('metrics.visitor-conversion'),
       percentage: `${(conversion * 100).toFixed(1)}%`,
       value: conversion,
     },
     {
       fraction: `${last7Signups}/${prev7Signups}`,
-      label: t('metrics.signupGrowthWoW'),
+      label: t('metrics.signup-growth-wow'),
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
       fraction: `${readyToLaunch}/${Math.max(3, hypothesesRows.length)}`,
-      label: t('metrics.readyToLaunch'),
+      label: t('metrics.ready-to-launch'),
       percentage: '',
       value: Math.min(1, readyToLaunch / Math.max(3, hypothesesRows.length || 1)),
     },
@@ -101,25 +101,8 @@ export default async function Page() {
   return (
     <section aria-label={t('aria') || 'Dashboard'}>
       <div className='px-6 py-6'>
-        <div className='flex items-start justify-between gap-4'>
-          <div>
-            <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-              {t('title') || 'Dashboard'}
-            </h1>
-          </div>
-          <div className='flex shrink-0 items-center gap-2'>
-            <Button asChild variant='secondary'>
-              <Link href='/app/assets'>{t('actions.upload-asset')}</Link>
-            </Button>
-            <Button asChild>
-              <Link href='/app/hypotheses/create'>
-                {t('actions.create-hypothesis')}
-              </Link>
-            </Button>
-          </div>
-        </div>
         {metricsData ? (
-          <div className='mt-2'>
+          <div className='mt-0'>
             <MetricsCards metrics={metrics} compact />
           </div>
         ) : null}
@@ -192,7 +175,7 @@ export default async function Page() {
                             href={`/app/hypotheses/${h.id}/analytics`}
                             className='text-emerald-600 hover:underline dark:text-emerald-500'
                           >
-                            {t('table.analyticsLink')}
+                            {t('table.analytics-link')}
                           </Link>
                         </TableCell>
                       </TableRow>

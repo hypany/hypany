@@ -58,7 +58,40 @@
         "subtitle": "조직, 구성원, 권한을 관리해요.",
         "title": "조직"
       },
-      "root": { "title": "대시보드" },
+      "root": {
+        "actions": {
+          "create-hypothesis": "가설 만들기",
+          "upload-asset": "에셋 업로드"
+        },
+        "activity": {
+          "page-view": "{source}에서 페이지 조회",
+          "signup": "가입{email}",
+          "verification": "이메일 인증{email}",
+          "view-hypothesis": "가설 보기"
+        },
+        "aria": "대시보드",
+        "create-first": "첫 번째 가설 만들기",
+        "metrics": {
+          "ready-to-launch": "출시 준비 완료",
+          "signup-growth-wow": "가입 증가 (WoW)",
+          "visitor-conversion": "방문자 전환율"
+        },
+        "no-activity": "최근 활동이 없어요.",
+        "no-hypotheses": "아직 가설이 없어요.",
+        "recent-activity": "최근 활동",
+        "table": {
+          "analytics-link": "보기",
+          "columns": {
+            "analytics": "애널리틱스",
+            "hypothesis": "가설",
+            "signups": "가입",
+            "status": "상태"
+          }
+        },
+        "title": "대시보드",
+        "top-hypotheses": "상위 가설",
+        "view-all": "모두 보기"
+      },
       "settings": {
         "aria": "설정",
         "subtitle": "워크스페이스, 설정, 계정을 관리해요.",

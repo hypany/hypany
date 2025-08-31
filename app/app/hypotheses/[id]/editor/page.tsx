@@ -1,5 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
-import { getClientApi } from '@/app/api/client'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getLandingPageIdForOrg } from '@/functions/landing-pages'
 
 export default async function EditorPage({
   params,
@@ -7,11 +9,14 @@ export default async function EditorPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const api = getClientApi()
-  const res = await api.v1['landing-pages']
-    .hypothesis({ hypothesisId: id })
-    .get()
-  const data = res.data
-  if (!data || !data.landingPage) notFound()
-  redirect(`/app/editor/${id}/${data.landingPage.id}`)
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  
+  if (!activeOrgRes?.activeOrganizationId) {
+    notFound()
+  }
+
+  const lp = await getLandingPageIdForOrg(id, activeOrgRes.activeOrganizationId)
+  if (!lp) notFound()
+  redirect(`/app/editor/${id}/${lp.id}`)
 }

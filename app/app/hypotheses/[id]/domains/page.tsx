@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
-import { getClientApi } from '@/app/api/client'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getHypothesisById } from '@/functions/hypotheses'
 import DomainForm from './ui'
 
 export default async function DomainsPage({
@@ -8,12 +10,15 @@ export default async function DomainsPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const api = getClientApi()
-  const res = await api.v1['landing-pages']
-    .hypothesis({ hypothesisId: id })
-    .get()
-  const data = res.data
-  if (!data || !data.landingPage) notFound()
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  
+  if (!activeOrgRes?.activeOrganizationId) {
+    notFound()
+  }
+
+  const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
+  if (!hypothesis) notFound()
 
   return (
     <section>
@@ -27,8 +32,8 @@ export default async function DomainsPage({
       </div>
       <DomainForm
         hypothesisId={id}
-        initialSlug={data.landingPage.slug}
-        initialCustomDomain={data.landingPage.customDomain}
+        initialSlug={hypothesis.slug}
+        initialCustomDomain={hypothesis.customDomain}
       />
     </section>
   )

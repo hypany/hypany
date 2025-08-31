@@ -1,5 +1,8 @@
 import Link from 'next/link'
-import { getClientApi } from '@/app/api/client'
+import { notFound } from 'next/navigation'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getAnalyticsMetrics } from '@/functions/analytics'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
 
@@ -16,13 +19,16 @@ export default async function AnalyticsPage({
   const sp = (await searchParams) ?? {}
   const range = (sp.range as Range) || '30d'
 
-  const api = getClientApi()
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  if (!activeOrgRes?.activeOrganizationId) notFound()
 
-  const { data } = await api.v1.analytics.metrics.get({
-    query: { hypothesisId: id, range },
+  const metrics = await getAnalyticsMetrics(activeOrgRes.activeOrganizationId, {
+    hypothesisId: id,
+    range,
   })
-  const daily = data?.daily ?? []
-  const per = data?.perHypothesis?.[0]
+  const daily = metrics.daily
+  const per = metrics.perHypothesis[0]
 
   const barData = daily.map((d) => ({
     date: d.date,

@@ -116,7 +116,9 @@ export function OrgSwitcherClient({
                 </span>
               )}
             </span>
-            <span className='truncate flex-1 min-w-0 px-2'>{current.name}</span>
+            <span className='truncate flex-1 min-w-0 px-2 text-left'>
+              {current.name}
+            </span>
             <RiArrowDownSFill
               className='size-5 shrink-0 text-gray-400 dark:text-gray-600 ml-auto'
               aria-hidden='true'
@@ -124,7 +126,7 @@ export function OrgSwitcherClient({
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start' className='min-w-72'>
-          <DropdownMenuLabel>Organizations</DropdownMenuLabel>
+          <DropdownMenuLabel className='text-left'>Organizations</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {organizations?.map((org) => {
             const isActive = activeOrg?.id === org.id
@@ -162,7 +164,7 @@ export function OrgSwitcherClient({
                     </span>
                   )}
                 </span>
-                <span className='flex-1 truncate'>{org.name}</span>
+                <span className='flex-1 truncate text-left'>{org.name}</span>
                 {isActive && (
                   <RiCheckLine
                     className='size-4 shrink-0 text-emerald-500'

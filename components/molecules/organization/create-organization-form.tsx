@@ -7,6 +7,7 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { slugify } from '@/lib/slug'
+import { validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
 
 export function CreateOrganizationForm() {
@@ -18,6 +19,9 @@ export function CreateOrganizationForm() {
   const slugId = useId()
 
   const derivedSlug = useMemo(() => (slug ? slug : slugify(name)), [name, slug])
+  const derivedValidation = useMemo(() => {
+    return derivedSlug ? validateSlug(derivedSlug) : { valid: true as const }
+  }, [derivedSlug])
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -30,19 +34,12 @@ export function CreateOrganizationForm() {
       return
     }
     
-    // Validate slug
+    // Validate slug with shared validator
     const finalSlug = derivedSlug
-    if (!finalSlug || finalSlug.length < 3) {
+    const { valid, error } = validateSlug(finalSlug)
+    if (!valid) {
       toast({
-        description: 'Slug must be at least 3 characters long.',
-        title: 'Invalid slug',
-        variant: 'error',
-      })
-      return
-    }
-    if (!/^[a-z0-9-]+$/.test(finalSlug)) {
-      toast({
-        description: 'Slug can only contain lowercase letters, numbers, and dashes.',
+        description: error || 'Please enter a valid subdomain.',
         title: 'Invalid slug',
         variant: 'error',
       })
@@ -106,24 +103,19 @@ export function CreateOrganizationForm() {
         <Input
           id={slugId}
           placeholder='acme-inc'
-          value={slug}
+          value={derivedSlug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           disabled={submitting}
-          pattern='[a-z0-9-]+'
+          pattern='[a-z0-9]([a-z0-9-]*[a-z0-9])?'
           minLength={3}
         />
         <p className='text-xs text-gray-500 dark:text-gray-500'>
           {derivedSlug ? (
             <>
               Will be created as <span className='font-mono'>/o/{derivedSlug}</span>
-              {derivedSlug.length < 3 && (
+              {!derivedValidation.valid && (
                 <span className='ml-2 text-red-600 dark:text-red-400'>
-                  (Must be at least 3 characters)
-                </span>
-              )}
-              {!/^[a-z0-9-]+$/.test(derivedSlug) && (
-                <span className='ml-2 text-red-600 dark:text-red-400'>
-                  (Only lowercase letters, numbers, and dashes allowed)
+                  ({derivedValidation.error})
                 </span>
               )}
             </>

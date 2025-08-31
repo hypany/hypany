@@ -7,6 +7,7 @@ import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { toast } from '@/lib/use-toast'
 import { cx } from '@/lib/utils'
+import { validateSlug } from '@/lib/slug-validation'
 
 type OrgSettingsFormProps = {
   organizationId?: string
@@ -30,19 +31,12 @@ export function OrgSettingsForm({
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     
-    // Validate slug
+    // Validate slug with shared validator
     const trimmedSlug = slug.trim()
-    if (!trimmedSlug || trimmedSlug.length < 3) {
+    const { valid, error } = validateSlug(trimmedSlug)
+    if (!valid) {
       toast({
-        description: 'Slug must be at least 3 characters long.',
-        title: 'Invalid slug',
-        variant: 'error',
-      })
-      return
-    }
-    if (!/^[a-z0-9-]+$/.test(trimmedSlug)) {
-      toast({
-        description: 'Slug can only contain lowercase letters, numbers, and dashes.',
+        description: error || 'Please enter a valid subdomain.',
         title: 'Invalid slug',
         variant: 'error',
       })
@@ -100,7 +94,7 @@ export function OrgSettingsForm({
             value={slug}
             onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
             disabled={isPending}
-            pattern='[a-z0-9-]+'
+            pattern='[a-z0-9]([a-z0-9-]*[a-z0-9])?'
             minLength={3}
             className='font-mono'
           />

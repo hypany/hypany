@@ -21,7 +21,9 @@ export default async function OrganizationsPage() {
     getActiveOrganization(),
     listUserOrganizations(),
   ])
-  const orgs = Array.isArray(organizations) ? organizations : []
+  type Organizations = Awaited<ReturnType<typeof listUserOrganizations>>
+  type Organization = Organizations extends Array<infer T> ? T : never
+  const orgs: Organization[] = Array.isArray(organizations) ? (organizations as Organization[]) : []
   const activeOrgId = activeRes?.activeOrganizationId ?? null
   const active = orgs.find(org => org.id === activeOrgId) ?? null
   return (
@@ -49,7 +51,7 @@ export default async function OrganizationsPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orgs.map((org: any) => (
+                {orgs.map((org) => (
                   <TableRow key={org.id}>
                     <TableCell className='font-medium'>{org.name}</TableCell>
                     <TableCell>{org.slug ?? '-'}</TableCell>
@@ -61,8 +63,8 @@ export default async function OrganizationsPage() {
                         <OrgAdminDialog
                           orgId={org.id}
                           orgName={org.name}
-                          initialMembers={org.members}
-                          initialInvitations={org.invitations}
+                          initialMembers={[]}
+                          initialInvitations={[]}
                         />
                       </div>
                     </TableCell>
@@ -78,9 +80,9 @@ export default async function OrganizationsPage() {
               Organization settings
             </h2>
             <OrgSettingsForm
-              organizationId={(active as any).id}
-              defaultName={(active as any).name}
-              defaultSlug={(active as any).slug}
+              organizationId={active.id}
+              defaultName={active.name}
+              defaultSlug={active.slug ?? ''}
             />
           </div>
         )}
