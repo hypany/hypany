@@ -22,7 +22,6 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CumulativeAreaChart } from './analytics/cumulative-area'
 // Domain edit dialog handled via header button
-import { HypothesisEditButton } from './details/edit-button'
 import { DomainEditButton } from './domains/edit-button'
 
 export default async function HypothesisOverview({
@@ -57,7 +56,6 @@ export default async function HypothesisOverview({
 
   const stats = waitlistData?.stats
   const daily = metrics.daily
-  const exportCsvHref = `/api/v1/waitlists/hypothesis/${id}/export?format=csv`
 
   // Remove grid row height coupling by using flex and min-w-0 for columns
   return (
@@ -102,7 +100,7 @@ export default async function HypothesisOverview({
                     </TableRow>
                   ) : (
                     waitlistEntries.map((e, idx) => (
-                      <TableRow key={idx}>
+                      <TableRow key={e.id ?? idx}>
                         <TableCell className='font-medium'>{e.email}</TableCell>
                         <TableCell>{e.emailVerified ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
                         <TableCell>{e.source ?? t('common.direct')}</TableCell>
@@ -145,7 +143,7 @@ export default async function HypothesisOverview({
                   </TableHead>
                   <TableBody>
                     {pages.map((p, idx) => (
-                      <TableRow key={idx}>
+                      <TableRow key={p.id ?? idx}>
                         <TableCell className='font-medium'>
                           <div className='max-w-xs truncate'>
                             {p.name || '-'}
@@ -166,15 +164,10 @@ export default async function HypothesisOverview({
         <div className="flex-1 min-w-0 flex flex-col gap-4 lg:max-w-sm">
           {/* Overview */}
           <Card className='p-0 overflow-hidden'>
-            <div className='flex items-center justify-between px-4 py-4'>
+            <div className='px-4 py-4'>
               <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
                 {t('pages.hypotheses.detail.headings.overview')}
               </h2>
-              <HypothesisEditButton
-                hypothesisId={id}
-                initialName={hypothesis.name}
-                initialDescription={hypothesis.description ?? null}
-              />
             </div>
             <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
               <Table>
@@ -294,7 +287,7 @@ export default async function HypothesisOverview({
                   else if (a.type === 'signup') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.signup-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.signup')
                   else if (a.type === 'verification') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.verification-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.verification')
                   return (
-                    <li key={idx} className='p-4'>
+                    <li key={a.hypothesisId ?? idx} className='p-4'>
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-50'>

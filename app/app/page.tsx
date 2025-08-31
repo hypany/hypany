@@ -116,7 +116,7 @@ export default async function Page() {
                     </TableRow>
                   ) : (
                     topHypotheses.map((h, idx) => (
-                      <TableRow key={idx}>
+                      <TableRow key={h.id ?? idx}>
                         <TableCell className='font-medium'>
                           <Link
                             href={`/app/hypotheses/${h.id}`}
@@ -172,7 +172,7 @@ export default async function Page() {
                     })
                   return (
                     <li
-                      key={idx}
+                      key={a.hypothesisId ?? idx}
                       className='p-4'
                     >
                       <div className='flex items-center justify-between gap-3'>

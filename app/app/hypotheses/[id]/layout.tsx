@@ -3,6 +3,7 @@ import { getHypothesisById } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
+import { HypothesisEditButton } from './details/edit-button'
 
 export default async function HypothesisLayout({
   children,
@@ -25,14 +26,25 @@ export default async function HypothesisLayout({
   return (
     <div>
       <div className='p-4 border-b border-gray-200 dark:border-gray-800'>
-        <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-          {hypothesis.name}
-        </h1>
-        {hypothesis.description ? (
-          <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-            {hypothesis.description}
-          </p>
-        ) : null}
+        <div className='flex justify-between gap-4 items-stretch'>
+          <div className="flex flex-col justify-center">
+            <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
+              {hypothesis.name}
+            </h1>
+            {hypothesis.description ? (
+              <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
+                {hypothesis.description}
+              </p>
+            ) : null}
+          </div>
+          <div className="flex items-center self-center">
+            <HypothesisEditButton
+              hypothesisId={hypothesis.id}
+              initialName={hypothesis.name}
+              initialDescription={hypothesis.description ?? null}
+            />
+          </div>
+        </div>
       </div>
 
       {children}
