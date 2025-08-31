@@ -13,9 +13,7 @@ export default async function AuthLayout({
     <div className='flex min-h-screen w-full'>
       <main className='flex-1'>
         <div className='flex h-full flex-col items-center justify-center'>
-          <div className='w-full px-4 sm:max-w-sm sm:px-0'>
-            {children}
-          </div>
+          <div className='w-full px-4 sm:max-w-sm sm:px-0'>{children}</div>
         </div>
       </main>
       <aside
@@ -27,7 +25,9 @@ export default async function AuthLayout({
             <h2 className='text-2xl font-semibold leading-9 text-white'>
               {tAuth('aside.title')}
             </h2>
-            <p className='mt-4 text-white/90 break-words'>{tAuth('aside.desc')}</p>
+            <p className='mt-4 text-white/90 break-words'>
+              {tAuth('aside.desc')}
+            </p>
             <div className='mt-10 rounded-xl bg-white/10 p-1.5 ring-1 ring-white/20'>
               <SaaSPreview />
             </div>

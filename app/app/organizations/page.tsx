@@ -57,7 +57,12 @@ export default async function OrganizationsPage() {
                     </TableCell>
                     <TableCell className='text-right'>
                       <div className='flex items-center justify-end gap-2'>
-                        <OrgAdminDialog orgId={org.id} orgName={org.name} />
+                        <OrgAdminDialog
+                          orgId={org.id}
+                          orgName={org.name}
+                          initialMembers={org.members}
+                          initialInvitations={org.invitations}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>

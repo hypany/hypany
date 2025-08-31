@@ -1,3 +1,8 @@
+import { render } from '@react-email/render'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nextCookies } from 'better-auth/next-js'
+import { admin, openAPI, organization } from 'better-auth/plugins'
 import { db } from '@/drizzle'
 import OrganizationInvitationEmail from '@/emails/organization-invitation-email'
 import ResetPasswordEmail from '@/emails/reset-password-email'
@@ -6,11 +11,6 @@ import { sendEmail } from '@/lib/email'
 import { getEnv } from '@/lib/env'
 import { serviceUrl } from '@/lib/url'
 import * as schema from '@/schema'
-import { render } from '@react-email/render'
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { nextCookies } from 'better-auth/next-js'
-import { admin, openAPI, organization } from 'better-auth/plugins'
 
 const { AUTH_SECRET } = getEnv()
 
@@ -117,7 +117,7 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30, // 30 days
     updateAge: 60 * 60 * 24, // 1 day
   },
-  telemetry: { enabled: false }
+  telemetry: { enabled: false },
 })
 
 export type AuthType = {

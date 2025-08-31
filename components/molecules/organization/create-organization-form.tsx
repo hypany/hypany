@@ -48,10 +48,10 @@ export function CreateOrganizationForm() {
       })
       router.push('/app')
       router.refresh()
-    } catch (error) {
+    } catch (e) {
       toast({
         description: 'Please try again.',
-        title: 'Failed to create organization',
+        title: (e as Error).message ?? 'Failed to create organization',
         variant: 'error',
       })
     } finally {

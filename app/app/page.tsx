@@ -69,7 +69,7 @@ export default async function Page() {
   const act = actRes.data
 
   const hypotheses: HypothesisRow[] = Array.isArray(d?.hypotheses)
-    ? d!.hypotheses
+    ? d?.hypotheses
         .map((row: unknown) => {
           if (!row || typeof row !== 'object') return null
           const r = row as Record<string, unknown>
@@ -120,7 +120,7 @@ export default async function Page() {
   ]
 
   const activities: Activity[] = Array.isArray(act?.items)
-    ? act!.items.filter(isActivity)
+    ? act?.items.filter(isActivity)
     : []
 
   return (
@@ -171,8 +171,12 @@ export default async function Page() {
                     <TableHeaderCell>
                       {t('table.columns.hypothesis')}
                     </TableHeaderCell>
-                    <TableHeaderCell>{t('table.columns.status')}</TableHeaderCell>
-                    <TableHeaderCell>{t('table.columns.signups')}</TableHeaderCell>
+                    <TableHeaderCell>
+                      {t('table.columns.status')}
+                    </TableHeaderCell>
+                    <TableHeaderCell>
+                      {t('table.columns.signups')}
+                    </TableHeaderCell>
                     <TableHeaderCell className='text-right'>
                       {t('table.columns.analytics')}
                     </TableHeaderCell>
@@ -238,7 +242,7 @@ export default async function Page() {
                   {t('no-activity')}
                 </li>
               ) : (
-                activities.map((a, idx) => {
+                activities.map((a) => {
                   const ts = a.timestamp.toISOString()
                   let label = ''
                   if (a.type === 'page_view')
@@ -252,7 +256,10 @@ export default async function Page() {
                       email: a.email ? ` (${a.email})` : '',
                     })
                   return (
-                    <li key={idx} className='px-4 py-3'>
+                    <li
+                      key={`${a.hypothesisId}-${a.source}-${a.type}-${a.email}`}
+                      className='px-4 py-3'
+                    >
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-50'>

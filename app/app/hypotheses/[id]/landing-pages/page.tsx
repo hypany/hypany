@@ -32,7 +32,7 @@ export default async function LandingPagesGallery({
 
   const pagesRes = await api.v1['landing-pages']
     .hypothesis({ hypothesisId: id })
-    ['list'].get()
+    .list.get()
   const pages = pagesRes.data?.pages ?? []
   const hyp = {
     customDomain: null as string | null,

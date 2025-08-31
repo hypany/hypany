@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import {
@@ -48,15 +48,71 @@ type Invitation = {
   expiresAt?: string | Date | null
 }
 
+type OrgAdminDialogProps = {
+  orgId: string
+  orgName: string
+  initialMembers: Member[]
+  initialInvitations: Invitation[]
+}
+
 export function OrgAdminDialog({
   orgId,
   orgName,
-}: {
-  orgId: string
-  orgName: string
-}) {
+  initialMembers,
+  initialInvitations,
+}: OrgAdminDialogProps) {
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<'members' | 'invites' | 'admin'>('members')
+  // State for members and invitations, initialized from server data
+  const [members, setMembers] = useState<Member[]>(initialMembers)
+  const [invitations, setInvitations] =
+    useState<Invitation[]>(initialInvitations)
+  const [membersLoading, setMembersLoading] = useState(false)
+  const [invitationsLoading, setInvitationsLoading] = useState(false)
+
+  // Functions to reload data after mutations
+  const api = getClientApi()
+  async function reloadMembers() {
+    setMembersLoading(true)
+    try {
+      const res = await api.v1.organizations.members.get({
+        query: { organizationId: orgId },
+      })
+      const data = res.data?.members ?? []
+      setMembers(
+        data.map((m: any) => ({
+          createdAt: m.createdAt as unknown as string | Date,
+          id: m.id,
+          role: m.role,
+          userId: m.userId,
+        })),
+      )
+    } catch {
+      setMembers([])
+    } finally {
+      setMembersLoading(false)
+    }
+  }
+  async function reloadInvitations() {
+    setInvitationsLoading(true)
+    try {
+      const res = await api.v1.organizations.invitations.get({
+        query: { organizationId: orgId },
+      })
+      const data = res.data ?? []
+      setInvitations(
+        data.map((i: any) => ({
+          email: i.email,
+          expiresAt: i.expiresAt as unknown as string | Date,
+          id: i.id,
+          role: i.role as unknown as string | string[] | null,
+          status: (i as { status?: string }).status ?? 'pending',
+        })),
+      )
+    } finally {
+      setInvitationsLoading(false)
+    }
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -90,44 +146,42 @@ export function OrgAdminDialog({
           </TabNavigation>
         </div>
 
-        {tab === 'members' && <MembersSection orgId={orgId} />}
-        {tab === 'invites' && <InvitationsSection orgId={orgId} />}
+        {tab === 'members' && (
+          <MembersSection
+            orgId={orgId}
+            members={members}
+            loading={membersLoading}
+            onMembersChanged={reloadMembers}
+          />
+        )}
+        {tab === 'invites' && (
+          <InvitationsSection
+            orgId={orgId}
+            invitations={invitations}
+            loading={invitationsLoading}
+            onInvitationsChanged={reloadInvitations}
+          />
+        )}
         {tab === 'admin' && <AdminSection orgId={orgId} />}
       </DialogContent>
     </Dialog>
   )
 }
 
-function MembersSection({ orgId }: { orgId: string }) {
-  const [loading, setLoading] = useState(true)
-  const [members, setMembers] = useState<Member[]>([])
+type MembersSectionProps = {
+  orgId: string
+  members: Member[]
+  loading: boolean
+  onMembersChanged: () => void
+}
+
+function MembersSection({
+  orgId,
+  members,
+  loading,
+  onMembersChanged,
+}: MembersSectionProps) {
   const api = getClientApi()
-
-  async function load() {
-    setLoading(true)
-    try {
-      const res = await api.v1.organizations.members.get({
-        query: { organizationId: orgId },
-      })
-      const data = res.data?.members ?? []
-      setMembers(
-        data.map((m) => ({
-          createdAt: m.createdAt as unknown as string | Date,
-          id: m.id,
-          role: m.role,
-          userId: m.userId,
-        })),
-      )
-    } catch {
-      setMembers([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    load()
-  }, [])
 
   return (
     <div className='space-y-4'>
@@ -151,7 +205,7 @@ function MembersSection({ orgId }: { orgId: string }) {
                       orgId={orgId}
                       memberId={m.id}
                       currentRole={m.role}
-                      onUpdated={load}
+                      onUpdated={onMembersChanged}
                     />
                     <Button
                       variant='secondary'
@@ -168,11 +222,12 @@ function MembersSection({ orgId }: { orgId: string }) {
                             title: 'Member removed',
                             variant: 'success',
                           })
-                          load()
+                          onMembersChanged()
                         } catch (e) {
                           toast({
                             description: 'Please try again.',
-                            title: 'Failed to remove member',
+                            title:
+                              (e as Error).message ?? 'Failed to remove member',
                             variant: 'error',
                           })
                         }
@@ -187,7 +242,7 @@ function MembersSection({ orgId }: { orgId: string }) {
           </TableBody>
         </Table>
       </TableRoot>
-      <InviteMemberForm orgId={orgId} onInvited={() => {}} />
+      <InviteMemberForm orgId={orgId} onInvited={onMembersChanged} />
     </div>
   )
 }
@@ -212,6 +267,7 @@ function UpdateRoleButton({
   )
   const [saving, setSaving] = useState(false)
   const api = getClientApi()
+  const roleId = useId()
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -224,11 +280,14 @@ function UpdateRoleButton({
           <DialogTitle>Update Role</DialogTitle>
         </DialogHeader>
         <div className='space-y-3'>
-          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+          <label
+            className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+            htmlFor={roleId}
+          >
             Role
           </label>
           <Select value={role} onValueChange={(v) => setRole(v as Role)}>
-            <SelectTrigger className='py-1.5'>
+            <SelectTrigger className='py-1.5' id={roleId}>
               <SelectValue placeholder='Select role' />
             </SelectTrigger>
             <SelectContent>
@@ -257,7 +316,7 @@ function UpdateRoleButton({
                 } catch (e) {
                   toast({
                     description: 'Please try again.',
-                    title: 'Failed to update role',
+                    title: (e as Error).message ?? 'Failed to update role',
                     variant: 'error',
                   })
                 } finally {
@@ -333,10 +392,10 @@ function InviteMemberForm({
               })
               setEmail('')
               onInvited()
-            } catch (err) {
+            } catch (e) {
               toast({
                 description: 'Please verify the email and try again.',
-                title: 'Failed to send invitation',
+                title: (e as Error).message ?? 'Failed to send invitation',
                 variant: 'error',
               })
             } finally {
@@ -352,35 +411,20 @@ function InviteMemberForm({
   )
 }
 
-function InvitationsSection({ orgId }: { orgId: string }) {
-  const [invitations, setInvitations] = useState<Invitation[]>([])
-  const [loading, setLoading] = useState(true)
+type InvitationsSectionProps = {
+  orgId: string
+  invitations: Invitation[]
+  loading: boolean
+  onInvitationsChanged: () => void
+}
+
+function InvitationsSection({
+  orgId,
+  invitations,
+  loading,
+  onInvitationsChanged,
+}: InvitationsSectionProps) {
   const api = getClientApi()
-
-  async function load() {
-    setLoading(true)
-    try {
-      const res = await api.v1.organizations.invitations.get({
-        query: { organizationId: orgId },
-      })
-      const data = res.data ?? []
-      setInvitations(
-        data.map((i) => ({
-          email: i.email,
-          expiresAt: i.expiresAt as unknown as string | Date,
-          id: i.id,
-          role: i.role as unknown as string | string[] | null,
-          status: (i as { status?: string }).status ?? 'pending',
-        })),
-      )
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    load()
-  }, [])
 
   return (
     <div className='space-y-4'>
@@ -419,11 +463,13 @@ function InvitationsSection({ orgId }: { orgId: string }) {
                             title: 'Invitation cancelled',
                             variant: 'success',
                           })
-                          load()
+                          onInvitationsChanged()
                         } catch (e) {
                           toast({
                             description: 'Please try again.',
-                            title: 'Failed to cancel invitation',
+                            title:
+                              (e as Error).message ??
+                              'Failed to cancel invitation',
                             variant: 'error',
                           })
                         }
@@ -439,7 +485,7 @@ function InvitationsSection({ orgId }: { orgId: string }) {
         </Table>
       </TableRoot>
 
-      <InviteMemberForm orgId={orgId} onInvited={load} />
+      <InviteMemberForm orgId={orgId} onInvited={onInvitationsChanged} />
     </div>
   )
 }
@@ -468,7 +514,7 @@ function AdminSection({ orgId }: { orgId: string }) {
             } catch (e) {
               toast({
                 description: 'Please try again.',
-                title: 'Failed to leave organization',
+                title: (e as Error).message ?? 'Failed to leave organization',
                 variant: 'error',
               })
             } finally {

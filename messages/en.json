@@ -6,68 +6,6 @@
       "hypotheses": "Hypotheses"
     },
     "hypotheses": {
-      "audits": {
-        "aria": "Audits overview",
-        "auditor": "Auditor",
-        "auditRound": "Audit round",
-        "docStatus": {
-          "inAudit": "In audit",
-          "needsUpdate": "Needs update",
-          "ok": "OK"
-        },
-        "edit": "Edit",
-        "filters": "Filters",
-        "noSlug": "no-slug",
-        "relatedDocs": "Related documents",
-        "reupload": "Re-Upload",
-        "searchPlaceholder": "Search audits...",
-        "status": "Status",
-        "system": "System"
-      },
-      "monitoring": {
-        "aria": "App Monitoring",
-        "cards": {
-          "bidderDensity": {
-            "desc": "Competition level measured by number and size of bidders over time",
-            "title": "Bidder density"
-          },
-          "esgImpact": {
-            "desc": "Evaluation of addressed ESG criteria in biddings over time",
-            "title": "ESG impact"
-          },
-          "inherentRisk": {
-            "desc": "Risk scenarios over time grouped by risk level",
-            "title": "Inherent risk"
-          },
-          "signupsVsVisitors": {
-            "desc": "Daily signups compared to unique visitors in selected range",
-            "title": "Signups vs Visitors"
-          }
-        },
-        "filters": "Report Filters",
-        "rangePlaceholder": "Select range...",
-        "ranges": {
-          "30": "Last 30 days",
-          "90": "Last 90 days",
-          "180": "Last 180 days",
-          "365": "Last 365 days"
-        },
-        "series": {
-          "addressed": "Addressed",
-          "currentYear": "Current year",
-          "density": "Density",
-          "lastYear": "Same period last year",
-          "signups": "Signups",
-          "unrealized": "Unrealized",
-          "visitors": "Visitors"
-        },
-        "yAxis": {
-          "bidderDensity": "Competition density (%)",
-          "esgImpact": "% of criteria addressed",
-          "inherentRisk": "Number of inherent risks",
-          "signupsVisitors": "Signups / Visitors"
-        }
-      },
       "overview": {
         "aria": "Overview Table",
         "assignedPlaceholder": "Assigned to...",
@@ -99,18 +37,7 @@
             "status": "Status"
           }
         }
-      },
-      "tabs": {
-        "audits": "Audits",
-        "monitoring": "Monitoring",
-        "overview": "Overview"
       }
-    },
-    "metrics": {
-      "projectLoad": "Project Load",
-      "title": "Overview",
-      "visitorToSignup": "Visitor-to-Signup Conversion",
-      "winProbability": "Win Probability"
     },
     "pages": {
       "analytics": {
@@ -139,34 +66,34 @@
           "create-hypothesis": "Create Hypothesis",
           "upload-asset": "Upload Asset"
         },
-        "aria": "Dashboard",
-        "create-first": "Create your first hypothesis",
-        "no-activity": "No recent activity.",
-        "no-hypotheses": "No hypotheses yet.",
-        "recent-activity": "Recent Activity",
-        "title": "Dashboard",
-        "top-hypotheses": "Top Hypotheses",
-        "view-all": "View all",
-        "metrics": {
-          "visitor-conversion": "Visitor Conversion Rate",
-          "signup-growth-wow": "Signup Growth (WoW)",
-          "ready-to-launch": "Ready to Launch"
-        },
-        "table": {
-          "columns": {
-            "hypothesis": "Hypothesis",
-            "status": "Status",
-            "signups": "Signups",
-            "analytics": "Analytics"
-          },
-          "analytics-link": "View"
-        },
         "activity": {
           "page-view": "Page view from {source}",
           "signup": "Signup{email}",
           "verification": "Email verified{email}",
           "view-hypothesis": "View hypothesis"
-        }
+        },
+        "aria": "Dashboard",
+        "create-first": "Create your first hypothesis",
+        "metrics": {
+          "ready-to-launch": "Ready to Launch",
+          "signup-growth-wow": "Signup Growth (WoW)",
+          "visitor-conversion": "Visitor Conversion Rate"
+        },
+        "no-activity": "No recent activity.",
+        "no-hypotheses": "No hypotheses yet.",
+        "recent-activity": "Recent Activity",
+        "table": {
+          "analytics-link": "View",
+          "columns": {
+            "analytics": "Analytics",
+            "hypothesis": "Hypothesis",
+            "signups": "Signups",
+            "status": "Status"
+          }
+        },
+        "title": "Dashboard",
+        "top-hypotheses": "Top Hypotheses",
+        "view-all": "View all"
       },
       "settings": {
         "aria": "Settings",

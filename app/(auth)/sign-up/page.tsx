@@ -17,7 +17,7 @@ export default async function SignUpPage() {
     redirect('/app')
   }
   const t = await getTranslations('auth.sign-up')
-  
+
   return (
     <>
       <div className='space-y-1'>

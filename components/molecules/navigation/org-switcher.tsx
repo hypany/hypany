@@ -15,6 +15,9 @@ export default async function OrgSwitcher() {
   const activeOrganizationId = activeRes?.activeOrganizationId ?? null
 
   return (
-    <OrgSwitcherClient organizations={orgs} activeOrganizationId={activeOrganizationId} />
+    <OrgSwitcherClient
+      organizations={orgs}
+      activeOrganizationId={activeOrganizationId}
+    />
   )
 }

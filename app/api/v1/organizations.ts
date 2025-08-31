@@ -4,10 +4,10 @@
  * - Exposes typed endpoints for client/server usage through Eden Treaty
  */
 
+import { Elysia, t } from 'elysia'
 import { auth } from '@/app/api/auth'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
-import { Elysia, t } from 'elysia'
 import 'server-only'
 import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
@@ -86,9 +86,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/create',
     async ({ set, request, body }) => {
-      const org = await auth.api.createOrganization({ body, headers: request.headers })
+      const org = await auth.api.createOrganization({
+        body,
+        headers: request.headers,
+      })
       if (!org) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create organization')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to create organization',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, org)
     },
@@ -113,9 +120,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/set-active',
     async ({ set, request, body }) => {
-      const res = await auth.api.setActiveOrganization({ body, headers: request.headers })
+      const res = await auth.api.setActiveOrganization({
+        body,
+        headers: request.headers,
+      })
       if (!res) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to set active organization')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to set active organization',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
@@ -140,7 +154,9 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .get(
     '/list',
     async ({ set, request }) => {
-      const organizations = await auth.api.listOrganizations({ headers: request.headers })
+      const organizations = await auth.api.listOrganizations({
+        headers: request.headers,
+      })
       return jsonOk(set, HTTP_STATUS.OK, organizations)
     },
     {
@@ -212,9 +228,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/members/update-role',
     async ({ set, request, body }) => {
-      const res = await auth.api.updateMemberRole({ body: body as any, headers: request.headers })
+      const res = await auth.api.updateMemberRole({
+        body: body as any,
+        headers: request.headers,
+      })
       if (!res) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update member role')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to update member role',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
@@ -236,9 +259,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/members/remove',
     async ({ set, request, body }) => {
-      const res = await auth.api.removeMember({ body, headers: request.headers })
+      const res = await auth.api.removeMember({
+        body,
+        headers: request.headers,
+      })
       if (!res) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to remove member')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to remove member',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
@@ -293,9 +323,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/invitations',
     async ({ set, request, body }) => {
-      const res = await auth.api.createInvitation({ body: body as any, headers: request.headers })
+      const res = await auth.api.createInvitation({
+        body: body as any,
+        headers: request.headers,
+      })
       if (!res) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create invitation')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to create invitation',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
@@ -317,9 +354,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/invitations/cancel',
     async ({ set, request, body }) => {
-      const res = await auth.api.cancelInvitation({ body, headers: request.headers })
+      const res = await auth.api.cancelInvitation({
+        body,
+        headers: request.headers,
+      })
       if (!res) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to cancel invitation')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to cancel invitation',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
@@ -341,9 +385,16 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/invitations/accept',
     async ({ set, request, body }) => {
-      const res = await auth.api.acceptInvitation({ headers: request.headers, body })
+      const res = await auth.api.acceptInvitation({
+        body,
+        headers: request.headers,
+      })
       if (!res) {
-        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to accept invitation')
+        return jsonError(
+          set,
+          HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          'Failed to accept invitation',
+        )
       }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
@@ -362,7 +413,10 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/leave',
     async ({ set, request, body }) => {
-      const res = await auth.api.leaveOrganization({ body, headers: request.headers })
+      const res = await auth.api.leaveOrganization({
+        body,
+        headers: request.headers,
+      })
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {

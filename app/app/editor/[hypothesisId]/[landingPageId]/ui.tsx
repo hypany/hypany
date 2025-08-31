@@ -243,17 +243,20 @@ export default function BlocksEditor({
     }
   }
 
-  function onDragStart(e: React.DragEvent<HTMLDivElement>, id: string) {
+  function onDragStart(e: React.DragEvent<HTMLFieldSetElement>, id: string) {
     draggingId.current = id
     e.dataTransfer.effectAllowed = 'move'
   }
 
-  function onDragOver(e: React.DragEvent<HTMLDivElement>) {
+  function onDragOver(e: React.DragEvent<HTMLFieldSetElement>) {
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
   }
 
-  async function onDrop(e: React.DragEvent<HTMLDivElement>, overId: string) {
+  async function onDrop(
+    e: React.DragEvent<HTMLFieldSetElement>,
+    overId: string,
+  ) {
     e.preventDefault()
     const sourceId = draggingId.current
     draggingId.current = null
@@ -275,14 +278,20 @@ export default function BlocksEditor({
     })
   }
 
+  const typeId = useId()
+
   return (
     <div className='space-y-6'>
       <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
         <div>
-          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+          <label
+            className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+            htmlFor={typeId}
+          >
             Type
           </label>
           <Select
+            id={typeId}
             value={newType}
             onValueChange={(v) => setNewType(v as BlockType)}
           >
@@ -331,9 +340,9 @@ function BlockCard({
   onSave,
 }: {
   block: Block
-  onDragStart: (e: React.DragEvent<HTMLDivElement>, id: string) => void
-  onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
-  onDrop: (e: React.DragEvent<HTMLDivElement>, id: string) => void
+  onDragStart: (e: React.DragEvent<HTMLFieldSetElement>, id: string) => void
+  onDragOver: (e: React.DragEvent<HTMLFieldSetElement>) => void
+  onDrop: (e: React.DragEvent<HTMLFieldSetElement>, id: string) => void
   onDelete: () => void
   onSave: (content: string) => void
 }) {
@@ -343,8 +352,7 @@ function BlockCard({
   const jsonId = useId()
 
   return (
-    <div
-      role='group'
+    <fieldset
       aria-label={`${block.type} block`}
       className='rounded-lg border border-gray-200 bg-white p-3 shadow-xs dark:border-gray-800 dark:bg-gray-950'
       draggable
@@ -412,7 +420,7 @@ function BlockCard({
           </AccordionItem>
         </Accordion>
       </div>
-    </div>
+    </fieldset>
   )
 }
 
@@ -424,10 +432,10 @@ function Field({
   children: React.ReactNode
 }) {
   return (
-    <label className='grid gap-1 text-sm'>
+    <span className='grid gap-1 text-sm'>
       <span className='text-gray-700 dark:text-gray-300'>{label}</span>
       {children}
-    </label>
+    </span>
   )
 }
 
@@ -442,7 +450,10 @@ function CTAListEditor({
   return (
     <div className='space-y-2'>
       {list.map((cta, idx) => (
-        <div key={idx} className='grid grid-cols-1 gap-2 sm:grid-cols-3'>
+        <div
+          key={`${cta.label}-${cta.href}-${cta.style}`}
+          className='grid grid-cols-1 gap-2 sm:grid-cols-3'
+        >
           <Input
             placeholder='Label'
             defaultValue={cta.label}
@@ -669,7 +680,10 @@ function BlockForm({
       return (
         <div className='space-y-2'>
           {logos.map((logo, idx) => (
-            <div key={idx} className='grid grid-cols-1 gap-2 sm:grid-cols-3'>
+            <div
+              key={`${logo.name}-${logo.logoSrc}-${logo.href}`}
+              className='grid grid-cols-1 gap-2 sm:grid-cols-3'
+            >
               <Input
                 placeholder='Name'
                 defaultValue={logo.name}
@@ -765,7 +779,10 @@ function BlockForm({
           <div>
             <div className='mb-1 text-sm font-medium'>Secondary features</div>
             {secondary.map((f, idx) => (
-              <div key={idx} className='mb-2 grid gap-2 sm:grid-cols-2'>
+              <div
+                key={`${f.title}-${f.summary}`}
+                className='mb-2 grid gap-2 sm:grid-cols-2'
+              >
                 <Input
                   placeholder='Title'
                   defaultValue={f.title}
@@ -828,7 +845,10 @@ function BlockForm({
           </Field>
           <div className='mt-2 space-y-2'>
             {items.map((it, idx) => (
-              <div key={idx} className='grid gap-2 sm:grid-cols-2'>
+              <div
+                key={`${it.title}-${it.description}`}
+                className='grid gap-2 sm:grid-cols-2'
+              >
                 <Input
                   placeholder='Title'
                   defaultValue={it.title}
@@ -882,7 +902,10 @@ function BlockForm({
           </Field>
           <div className='mt-2 space-y-2'>
             {items.map((it, idx) => (
-              <div key={idx} className='grid gap-2 sm:grid-cols-2'>
+              <div
+                key={`${it.question}-${it.answer}`}
+                className='grid gap-2 sm:grid-cols-2'
+              >
                 <Input
                   placeholder='Question'
                   defaultValue={it.question}
@@ -987,7 +1010,7 @@ function BlockForm({
             <div className='mb-1 text-sm font-medium'>Columns</div>
             {columns.map((col, idx) => (
               <div
-                key={idx}
+                key={col.heading}
                 className='rounded border p-2 dark:border-gray-800'
               >
                 <Field label='Heading'>
@@ -1005,7 +1028,10 @@ function BlockForm({
                 </Field>
                 <div className='mt-2 space-y-2'>
                   {(col.links || []).map((link, j) => (
-                    <div key={j} className='grid gap-2 sm:grid-cols-2'>
+                    <div
+                      key={`${link.label}-${link.href}`}
+                      className='grid gap-2 sm:grid-cols-2'
+                    >
                       <Input
                         placeholder='Label'
                         defaultValue={link.label}

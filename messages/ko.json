@@ -2,68 +2,6 @@
   "app": {
     "breadcrumbs": { "details": "상세", "home": "홈", "hypotheses": "가설" },
     "hypotheses": {
-      "audits": {
-        "aria": "감사 현황",
-        "auditor": "감사자",
-        "auditRound": "감사 회차",
-        "docStatus": {
-          "inAudit": "감사 중",
-          "needsUpdate": "업데이트 필요",
-          "ok": "정상"
-        },
-        "edit": "편집하기",
-        "filters": "필터",
-        "noSlug": "슬러그 없음",
-        "relatedDocs": "관련 문서",
-        "reupload": "다시 업로드",
-        "searchPlaceholder": "감사 검색...",
-        "status": "상태",
-        "system": "시스템"
-      },
-      "monitoring": {
-        "aria": "앱 모니터링",
-        "cards": {
-          "bidderDensity": {
-            "desc": "시간 경과에 따른 입찰자 수와 규모로 측정한 경쟁 수준",
-            "title": "입찰자 밀도"
-          },
-          "esgImpact": {
-            "desc": "입찰에서 충족된 ESG 기준의 시간별 평가",
-            "title": "ESG 영향"
-          },
-          "inherentRisk": {
-            "desc": "위험 수준별 시간 경과에 따른 시나리오",
-            "title": "고유 위험"
-          },
-          "signupsVsVisitors": {
-            "desc": "선택한 기간의 일일 가입 수와 고유 방문자 비교",
-            "title": "가입 vs 방문자"
-          }
-        },
-        "filters": "필터",
-        "rangePlaceholder": "기간을 선택해요",
-        "ranges": {
-          "30": "최근 30일",
-          "90": "최근 90일",
-          "180": "최근 180일",
-          "365": "최근 365일"
-        },
-        "series": {
-          "addressed": "해결됨",
-          "currentYear": "올해",
-          "density": "밀도",
-          "lastYear": "작년 동기간",
-          "signups": "가입",
-          "unrealized": "미실현",
-          "visitors": "방문자"
-        },
-        "yAxis": {
-          "bidderDensity": "경쟁 밀도(%)",
-          "esgImpact": "충족 기준 비율(%)",
-          "inherentRisk": "고유 위험 수",
-          "signupsVisitors": "가입/방문자"
-        }
-      },
       "overview": {
         "aria": "개요 테이블",
         "assignedPlaceholder": "담당자...",
@@ -97,12 +35,6 @@
         }
       },
       "tabs": { "audits": "감사", "monitoring": "모니터링", "overview": "개요" }
-    },
-    "metrics": {
-      "projectLoad": "프로젝트 부하",
-      "title": "개요",
-      "visitorToSignup": "방문자→가입 전환율",
-      "winProbability": "승률"
     },
     "pages": {
       "analytics": {
