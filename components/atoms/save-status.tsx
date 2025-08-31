@@ -38,9 +38,6 @@ export function SaveStatusBadge({ className }: { className?: string }) {
     )
   }
 
-  return (
-    <span className={"inline-flex items-center gap-1 rounded-sm bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300 " + (className || "")}>
-      Synced
-    </span>
-  )
+  // No active saves and no error: hide badge
+  return null
 }

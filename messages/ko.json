@@ -111,8 +111,8 @@
             "domain-settings": "도메인 설정"
           },
           "waitlist": {
-            "summary": "{total}개 전체 • {verified}개 인증됨",
-            "exportCsv": "CSV로 내보내기",
+            "summary": "전체 {total}명, 인증 {verified}명",
+            "exports": "{fileType}로 내보내기",
             "viewAll": "모두 보기",
             "table": { "columns": { "email": "이메일", "verified": "인증됨", "source": "소스" } },
             "empty": "아직 항목이 없어요"
@@ -152,7 +152,7 @@
           },
           "domains": {
             "labels": {
-              "subdomain": "서브도메인 (hypany.app)",
+              "subdomain": "서브도메인",
               "custom-domain": "커스텀 도메인"
             },
             "placeholders": {

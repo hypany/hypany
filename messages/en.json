@@ -126,8 +126,8 @@
             "domain-settings": "Domain Settings"
           },
           "waitlist": {
-            "summary": "{total} total • {verified} verified",
-            "exportCsv": "Export CSV",
+            "summary": "{total} total, {verified} verified",
+            "exports": "Export as {fileType}",
             "viewAll": "View all",
             "table": { "columns": { "email": "Email", "verified": "Verified", "source": "Source" } },
             "empty": "No entries yet"
@@ -167,7 +167,7 @@
           },
           "domains": {
             "labels": {
-              "subdomain": "Subdomain (hypany.app)",
+              "subdomain": "Subdomain",
               "custom-domain": "Custom domain"
             },
             "placeholders": {

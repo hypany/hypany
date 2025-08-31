@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useCallback, useEffect, useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
+import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import {
   Dialog,
@@ -32,7 +32,7 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { toast } from '@/lib/use-toast'
-import { Badge } from '@/components/atoms/badge'
+import React, { useCallback, useEffect, useId, useState } from 'react'
 
 type Member = {
   id: string
@@ -143,7 +143,7 @@ export function OrgAdminDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='secondary' className='py-1.5'>
+        <Button variant='secondary'>
           Manage
         </Button>
       </DialogTrigger>
@@ -269,7 +269,7 @@ function MembersSection({
                     />
                     <Button
                       variant='secondary'
-                      className='py-1.5'
+                     
                       onClick={async () => {
                         try {
                           await api.v1.organizations.members.remove.post({
@@ -360,7 +360,7 @@ function UpdateRoleButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='secondary' className='py-1.5'>
+        <Button variant='secondary'>
           Update Role
         </Button>
       </DialogTrigger>
@@ -376,7 +376,7 @@ function UpdateRoleButton({
             Role
           </label>
           <Select value={role} onValueChange={(v) => setRole(v as Role)}>
-            <SelectTrigger className='py-1.5' id={roleId}>
+            <SelectTrigger id={roleId}>
               <SelectValue placeholder='Select role' />
             </SelectTrigger>
             <SelectContent>
@@ -445,7 +445,7 @@ function InviteMemberForm({
           type='email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className='py-1.5'
+         
         />
         <Select value={role} onValueChange={(v) => setRole(v as Role)}>
           <SelectTrigger className='py-1.5 sm:w-48'>
@@ -553,7 +553,7 @@ function InvitationsSection({
                   <div className='flex items-center justify-end gap-2'>
                     <Button
                       variant='secondary'
-                      className='py-1.5'
+                     
                       onClick={async () => {
                         try {
                           await api.v1.organizations.invitations.cancel.post({

@@ -6,7 +6,6 @@ import { listUserOrganizations } from '@/functions/organizations'
 import { SidebarProvider } from '@/components/atoms/sidebar'
 import { AppHeader } from '@/components/molecules/navigation/app-header'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
-import { SaveStatusProvider } from '@/components/atoms/save-status'
 import '../globals.css'
 
 export const metadata: Metadata = {

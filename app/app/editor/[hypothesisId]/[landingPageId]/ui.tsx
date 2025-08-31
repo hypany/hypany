@@ -1,6 +1,5 @@
 'use client'
 
-import { useId, useMemo, useRef, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import {
   Accordion,
@@ -31,6 +30,7 @@ import type {
   Partners,
   Theme,
 } from '@/templates/types'
+import { useId, useMemo, useRef, useState } from 'react'
 
 type BlockType =
   | 'meta'
@@ -294,7 +294,7 @@ export default function BlocksEditor({
             value={newType}
             onValueChange={(v) => setNewType(v as BlockType)}
           >
-            <SelectTrigger className='py-1.5' id={typeId}>
+            <SelectTrigger id={typeId}>
               <SelectValue placeholder='Select type' />
             </SelectTrigger>
             <SelectContent>

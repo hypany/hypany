@@ -1,8 +1,5 @@
 'use client'
 
-import { useId, useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -11,6 +8,9 @@ import { Textarea } from '@/components/atoms/textarea'
 import { slugify } from '@/lib/slug'
 import { validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
+import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
+import { useId, useMemo, useState } from 'react'
 
 export function CreateHypothesisForm() {
   const t = useTranslations('app')
@@ -117,7 +117,7 @@ export function CreateHypothesisForm() {
           minLength={3}
         />
         <p className='text-xs text-gray-500 dark:text-gray-500'>
-          {t('hypotheses.create.form.slug.help.prefix')}
+          {t('hypotheses.create.form.slug.help.prefix')}{' '}
           {derivedSlug ? (
             <>
               {' '}

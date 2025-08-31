@@ -1,5 +1,6 @@
 import { requireAuth } from '@/auth/server'
 import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
 import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
@@ -13,7 +14,6 @@ import {
   getActiveOrganization,
   listUserOrganizations,
 } from '@/functions/organizations'
-import { Pencil } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 export default async function OrganizationsPage() {
@@ -135,10 +135,9 @@ export default async function OrganizationsPage() {
                             )}
                             <Dialog>
                               <DialogTrigger asChild>
-                                <button type='button' className='group inline-flex items-center gap-1 text-emerald-600 hover:underline dark:text-emerald-500'>
+                                <Button variant='secondary'>
                                   Settings
-                                  <Pencil className='size-3.5 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-600' />
-                                </button>
+                                </Button>
                               </DialogTrigger>
                               <DialogContent className='sm:max-w-md'>
                                 <DialogHeader>

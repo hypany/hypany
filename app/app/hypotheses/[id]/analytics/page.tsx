@@ -1,7 +1,7 @@
 import { requireAuth } from '@/auth/server'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { Card } from '@/components/atoms/card'
-import { ComboChart } from '@/components/atoms/combo-chart'
+import { CumulativeAreaChart } from './cumulative-area'
 import { getAnalyticsMetrics } from '@/functions/analytics'
 import { getActiveOrganization } from '@/functions/organizations'
 import { getTranslations } from 'next-intl/server'
@@ -34,11 +34,6 @@ export default async function AnalyticsPage({
   const t = await getTranslations('app')
 
   const barData = daily.map((d) => ({
-    date: d.date,
-    Signups: d.signups,
-    Visitors: d.visitors,
-  }))
-  const comboData = daily.map((d) => ({
     date: d.date,
     Signups: d.signups,
     Visitors: d.visitors,
@@ -83,23 +78,7 @@ export default async function AnalyticsPage({
       </Card>
 
       <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
-        <Card className='p-0 overflow-hidden'>
-          <div className='px-4 py-4'>
-            <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-              {t('pages.analytics.cards.visitors-vs-signups')}
-            </h2>
-          </div>
-          <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
-            <ComboChart
-              data={comboData}
-              index='date'
-              enableBiaxial
-              barSeries={{ categories: ['Signups'] }}
-              lineSeries={{ categories: ['Visitors'], colors: ['lightGray'] }}
-              className='h-60'
-            />
-          </div>
-        </Card>
+        <CumulativeAreaChart daily={daily} />
         <Card className='p-0 overflow-hidden'>
           <div className='px-4 py-4'>
             <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>

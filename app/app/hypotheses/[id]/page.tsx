@@ -1,6 +1,5 @@
 import { requireAuth } from '@/auth/server'
 import { Card } from '@/components/atoms/card'
-import { ComboChart } from '@/components/atoms/combo-chart'
 import {
   Table,
   TableBody,
@@ -21,8 +20,10 @@ import { getActiveOrganization } from '@/functions/organizations'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import DomainForm from './domains/ui'
-import { RenameLandingPageInline } from './landing-pages/ui'
+import { CumulativeAreaChart } from './analytics/cumulative-area'
+// Domain edit dialog handled via header button
+import { HypothesisEditButton } from './details/edit-button'
+import { DomainEditButton } from './domains/edit-button'
 
 export default async function HypothesisOverview({
   params,
@@ -41,7 +42,7 @@ export default async function HypothesisOverview({
     getHypothesisById(id, activeOrgRes.activeOrganizationId),
     getLandingPagesForHypothesis(id, activeOrgRes.activeOrganizationId),
     getWaitlistByHypothesisId(id, activeOrgRes.activeOrganizationId),
-    getActivityFeed(activeOrgRes.activeOrganizationId, { limit: 20, range: '30d' }),
+    getActivityFeed(activeOrgRes.activeOrganizationId, { limit: 10, range: '30d' }),
     getAnalyticsMetrics(activeOrgRes.activeOrganizationId, { hypothesisId: id, range: '30d' }),
     getWaitlistEntries(id, activeOrgRes.activeOrganizationId, { limit: 10 }),
   ])
@@ -56,38 +57,18 @@ export default async function HypothesisOverview({
 
   const stats = waitlistData?.stats
   const daily = metrics.daily
-  const comboData = daily.map((d) => ({
-    date: d.date,
-    Signups: d.signups,
-    Visitors: d.visitors,
-  }))
   const exportCsvHref = `/api/v1/waitlists/hypothesis/${id}/export?format=csv`
 
+  // Remove grid row height coupling by using flex and min-w-0 for columns
   return (
     <section
       aria-label={t('pages.hypotheses.detail.aria')}
     >
-      <div className='grid grid-cols-1 gap-4 p-4 lg:grid-cols-3'>
+      <div className="flex flex-col gap-4 p-4 lg:flex-row">
         {/* Left column: analytics, waitlist, landing pages */}
-        <div className='grid grid-cols-1 gap-4 lg:col-span-2'>
+        <div className="flex-1 min-w-0 flex flex-col gap-4">
           {/* Analytics */}
-          <Card className='p-0 overflow-hidden'>
-            <div className='px-4 py-4'>
-              <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-                {t('pages.hypotheses.detail.headings.analytics')}
-              </h2>
-            </div>
-            <div className='border-t border-gray-200 dark:border-gray-800'>
-              <ComboChart
-                data={comboData}
-                index='date'
-                enableBiaxial
-                barSeries={{ categories: ['Signups'] }}
-                lineSeries={{ categories: ['Visitors'], colors: ['lightGray'] }}
-                className='h-64'
-              />
-            </div>
-          </Card>
+          <CumulativeAreaChart daily={daily} />
 
           {/* Waitlist */}
           <Card className='p-0 overflow-hidden'>
@@ -97,22 +78,10 @@ export default async function HypothesisOverview({
               </h2>
               <div className='flex items-center gap-3'>
                 {stats && (
-                  <span className='text-sm text-gray-600 dark:text-gray-400'>
+                  <Link href={`/app/hypotheses/${id}/waitlist`} className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'>
                     {t('pages.hypotheses.detail.waitlist.summary', { total: stats.totalEntries, verified: stats.verifiedEntries })}
-                  </span>
+                  </Link>
                 )}
-                <Link
-                  href={`/app/hypotheses/${id}/waitlist`}
-                  className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
-                >
-                  {t('pages.root.view-all')}
-                </Link>
-                <a
-                  className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
-                  href={exportCsvHref}
-                >
-                  {t('pages.hypotheses.detail.waitlist.exportCsv')}
-                </a>
               </div>
             </div>
             <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
@@ -132,8 +101,8 @@ export default async function HypothesisOverview({
                       </TableCell>
                     </TableRow>
                   ) : (
-                    waitlistEntries.map((e) => (
-                      <TableRow key={e.id}>
+                    waitlistEntries.map((e, idx) => (
+                      <TableRow key={idx}>
                         <TableCell className='font-medium'>{e.email}</TableCell>
                         <TableCell>{e.emailVerified ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
                         <TableCell>{e.source ?? t('common.direct')}</TableCell>
@@ -175,14 +144,11 @@ export default async function HypothesisOverview({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {pages.map((p) => (
-                      <TableRow key={p.id}>
+                    {pages.map((p, idx) => (
+                      <TableRow key={idx}>
                         <TableCell className='font-medium'>
-                          <div className='max-w-xs'>
-                            <RenameLandingPageInline
-                              landingPageId={p.id}
-                              initialName={p.name || null}
-                            />
+                          <div className='max-w-xs truncate'>
+                            {p.name || '-'}
                           </div>
                         </TableCell>
                         <TableCell>{p.template || '-'}</TableCell>
@@ -197,13 +163,18 @@ export default async function HypothesisOverview({
         </div>
 
         {/* Right column: overview, recent activity, domain settings */}
-        <div className='grid grid-cols-1 gap-4 lg:col-span-1'>
+        <div className="flex-1 min-w-0 flex flex-col gap-4 lg:max-w-sm">
           {/* Overview */}
           <Card className='p-0 overflow-hidden'>
-            <div className='px-4 py-4'>
+            <div className='flex items-center justify-between px-4 py-4'>
               <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
                 {t('pages.hypotheses.detail.headings.overview')}
               </h2>
+              <HypothesisEditButton
+                hypothesisId={id}
+                initialName={hypothesis.name}
+                initialDescription={hypothesis.description ?? null}
+              />
             </div>
             <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
               <Table>
@@ -218,6 +189,18 @@ export default async function HypothesisOverview({
                   </TableRow>
                 </TableHead>
                 <TableBody>
+                  <TableRow>
+                    <TableCell className='font-medium'>Name</TableCell>
+                    <TableCell className='capitalize'>{hypothesis.name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className='font-medium'>Description</TableCell>
+                    <TableCell>
+                      <div className='max-w-xs truncate text-gray-700 dark:text-gray-300'>
+                        {hypothesis.description || '-'}
+                      </div>
+                    </TableCell>
+                  </TableRow>
                   <TableRow>
                     <TableCell className='font-medium'>
                       {t('pages.hypotheses.detail.table.columns.status')}
@@ -244,7 +227,7 @@ export default async function HypothesisOverview({
                     <TableCell className='font-medium'>
                       {t('pages.hypotheses.detail.table.columns.subdomain')}
                     </TableCell>
-                    <TableCell>{hypothesis.slug ?? '-'}</TableCell>
+                    <TableCell>{hypothesis.slug ?? '-'}.hypany.app</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -257,13 +240,31 @@ export default async function HypothesisOverview({
               <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
                 {t('pages.hypotheses.detail.headings.domain-settings')}
               </h2>
-            </div>
-            <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
-              <DomainForm
+              <DomainEditButton
                 hypothesisId={id}
                 initialSlug={hypothesis.slug}
                 initialCustomDomain={hypothesis.customDomain}
               />
+            </div>
+            <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
+              <div className='grid grid-cols-1 gap-2'>
+                <div>
+                  <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                    {t('pages.hypotheses.detail.domains.labels.subdomain')}
+                  </div>
+                  <div className='mt-0.5 text-sm text-gray-900 dark:text-gray-50'>
+                    {hypothesis.slug || '-'}
+                  </div>
+                </div>
+                <div>
+                  <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+                    {t('pages.hypotheses.detail.domains.labels.custom-domain')}
+                  </div>
+                  <div className='mt-0.5 text-sm text-gray-900 dark:text-gray-50'>
+                    {hypothesis.customDomain || '-'}
+                  </div>
+                </div>
+              </div>
             </div>
           </Card>
 
@@ -286,14 +287,14 @@ export default async function HypothesisOverview({
                   {t('pages.hypotheses.detail.recent-activity.empty')}
                 </li>
               ) : (
-                activities.map((a) => {
+                activities.map((a, idx) => {
                   const ts = a.timestamp instanceof Date ? a.timestamp.toISOString() : String(a.timestamp)
                   let label = ''
                   if (a.type === 'page_view') label = t('pages.hypotheses.detail.recent-activity.labels.page_view', { source: a.source })
                   else if (a.type === 'signup') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.signup-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.signup')
                   else if (a.type === 'verification') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.verification-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.verification')
                   return (
-                    <li key={`${a.hypothesisId}-${a.source}-${a.type}-${a.email}`} className='py-3'>
+                    <li key={idx} className='p-4'>
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-50'>

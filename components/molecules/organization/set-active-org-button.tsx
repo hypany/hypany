@@ -1,9 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { toast } from '@/lib/use-toast'
+import { useRouter } from 'next/navigation'
 
 export default function SetActiveOrgButton({
   organizationId,
@@ -35,7 +35,7 @@ export default function SetActiveOrgButton({
   }
 
   return (
-    <Button variant='secondary' className='py-1.5' onClick={onSetActive}>
+    <Button variant='secondary' onClick={onSetActive}>
       Set active
     </Button>
   )

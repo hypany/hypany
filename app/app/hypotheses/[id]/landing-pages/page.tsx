@@ -2,13 +2,13 @@ import { requireAuth } from '@/auth/server'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeaderCell,
-    TableRoot,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
 } from '@/components/atoms/table'
 import { getHypothesisById, getLandingPagesForHypothesis } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
@@ -16,9 +16,9 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import {
-    CreateLandingPageButton,
-    DuplicateLandingPageButton,
-    RenameLandingPageInline,
+  CreateLandingPageButton,
+  DuplicateLandingPageButton,
+  RenameLandingPageInline,
 } from './ui'
 
 export default async function LandingPagesGallery({
@@ -101,7 +101,7 @@ export default async function LandingPagesGallery({
                     <TableCell>{p.publishedAt ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
                     <TableCell className='text-right'>
                       <div className='flex justify-end gap-2'>
-                        <Button asChild variant='secondary' className='py-1.5'>
+                        <Button asChild variant='secondary' >
                           <Link href={`/app/editor/${id}/${p.id}`}>
                             {t('pages.hypotheses.detail.landing-pages.actions.open-editor')}
                           </Link>
@@ -111,7 +111,7 @@ export default async function LandingPagesGallery({
                           landingPageId={p.id}
                         />
                         {hyp.slug && (
-                          <Button asChild variant='secondary' className='py-1.5'>
+                          <Button asChild variant='secondary' >
                             <Link
                               href={`/${hyp.slug}`}
                               target='_blank'

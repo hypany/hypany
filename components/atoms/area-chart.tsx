@@ -960,7 +960,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                   <Line
                     className={cx('cursor-pointer')}
                     strokeOpacity={0}
-                    key={category}
+                    key={`hit-${category}`}
                     name={category}
                     type='linear'
                     dataKey={category}

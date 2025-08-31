@@ -30,7 +30,6 @@ type Activity = {
   type: 'page_view' | 'signup' | 'verification'
 }
 
-
 export default async function Page() {
   const t = await getTranslations('app')
   const session = await getSession()
@@ -41,7 +40,7 @@ export default async function Page() {
 
   const [hypotheses, activity] = await Promise.all([
     getHypothesesForOrganization(session.session.activeOrganizationId),
-    getActivityFeed(session.session.activeOrganizationId, { limit: 20, range: '30d' }),
+    getActivityFeed(session.session.activeOrganizationId, { limit: 10, range: '30d' }),
   ])
 
   const hypothesesRows: HypothesisRow[] = hypotheses.map(h => ({
@@ -116,8 +115,8 @@ export default async function Page() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    topHypotheses.map((h) => (
-                      <TableRow key={h.id}>
+                    topHypotheses.map((h, idx) => (
+                      <TableRow key={idx}>
                         <TableCell className='font-medium'>
                           <Link
                             href={`/app/hypotheses/${h.id}`}
@@ -158,7 +157,7 @@ export default async function Page() {
                   {t('pages.root.no-activity')}
                 </li>
               ) : (
-                activities.map((a) => {
+                activities.map((a, idx) => {
                   const ts = a.timestamp.toISOString()
                   let label = ''
                   if (a.type === 'page_view')
@@ -173,8 +172,8 @@ export default async function Page() {
                     })
                   return (
                     <li
-                      key={`${a.hypothesisId}-${a.source}-${a.type}-${a.email}`}
-                      className='py-3'
+                      key={idx}
+                      className='p-4'
                     >
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>

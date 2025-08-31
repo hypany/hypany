@@ -1,5 +1,4 @@
 import { requireAuth } from '@/auth/server'
-import { Card } from '@/components/atoms/card'
 import {
   Table,
   TableBody,
@@ -45,23 +44,20 @@ export default async function WaitlistPage({
 
   return (
     <section>
-      <Card className='p-0 overflow-hidden'>
         <div className='flex items-center justify-between px-4 py-4'>
           <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
             {t('pages.hypotheses.detail.headings.waitlist')}
-          </h2>
-          <div className='text-sm text-gray-600 dark:text-gray-400'>
             {stats && (
               <span>
                 {t('pages.hypotheses.detail.waitlist.summary', { total: stats.totalEntries, verified: stats.verifiedEntries })}
               </span>
             )}
-          </div>
+          </h2>
           <a
             className='text-sm font-medium text-emerald-600 hover:underline dark:text-emerald-400'
             href={exportCsvHref}
           >
-            {t('pages.hypotheses.detail.waitlist.exportCsv')}
+            {t('pages.hypotheses.detail.waitlist.exports', { fileType: 'CSV' })}
           </a>
         </div>
         <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
@@ -88,7 +84,6 @@ export default async function WaitlistPage({
             </TableBody>
           </Table>
         </TableRoot>
-      </Card>
     </section>
   )
 }

@@ -1,11 +1,13 @@
 'use client'
-import { useId, useState } from 'react'
-import React from 'react'
-import { useTranslations } from 'next-intl'
 import { getClientApi } from '@/app/api/client'
+import { Button } from '@/components/atoms/button'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
 import { Input } from '@/components/atoms/input'
 import { toast } from '@/lib/use-toast'
-import { useSaveStatusStore } from '@/lib/store/save-status'
+import { validateSlug, normalizeSlug } from '@/lib/slug-validation'
+import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
+import { useId, useState } from 'react'
 
 export default function DomainForm({
   hypothesisId,
@@ -18,172 +20,147 @@ export default function DomainForm({
 }) {
   const api = getClientApi()
   const t = useTranslations('app')
-  const start = useSaveStatusStore((s) => s.start)
-  const finish = useSaveStatusStore((s) => s.finish)
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
   const [slug, setSlug] = useState<string>(initialSlug || '')
   const [customDomain, setCustomDomain] = useState<string>(
     initialCustomDomain || '',
   )
-  const [checking, setChecking] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [lastSavedSlug, setLastSavedSlug] = useState<string>(
-    (initialSlug || '').trim(),
-  )
-  const [lastSavedDomain, setLastSavedDomain] = useState<string>(
-    (initialCustomDomain || '').trim(),
-  )
+
   const slugId = useId()
   const customDomainId = useId()
-  const [availability, setAvailability] = useState<null | {
-    ok: boolean
-    normalized: string
-    error?: string
-  }>(null)
-
-  // Debounced auto-check for slug availability (no explicit button)
-  React.useEffect(() => {
-    const trimmed = slug.trim()
-    if (!trimmed || trimmed.length < 3) {
-      setAvailability(null)
-      setChecking(false)
-      return
-    }
-    // If slug hasn't changed from the initial value, don't show availability banners
-    if ((initialSlug || '') === trimmed) {
-      setAvailability(null)
-      setChecking(false)
-      return
-    }
-    setChecking(true)
-    const t = setTimeout(async () => {
-      try {
-        const res = await api.v1['landing-pages']['check-slug'].post({
-          excludeId: hypothesisId,
-          slug: trimmed,
-        })
-        const d = res.data as
-          | { available: boolean; normalizedSlug: string; error?: string }
-          | undefined
-        if (!d) return
-        setAvailability({
-          error: d.error,
-          normalized: d.normalizedSlug,
-          ok: d.available,
-        })
-      } finally {
-        setChecking(false)
-      }
-    }, 500)
-    return () => clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, initialSlug, hypothesisId])
 
   async function save() {
-    setSaving(true)
-    start()
     try {
+      setSaving(true)
       const body: Record<string, string | null> = {}
       const trimmedSlug = slug.trim()
       const trimmedDomain = customDomain.trim()
-      if (trimmedSlug) body.slug = trimmedSlug
+      if (trimmedSlug) {
+        const normalized = normalizeSlug(trimmedSlug)
+        const validation = validateSlug(normalized)
+        if (!validation.valid) {
+          toast({ title: 'Invalid subdomain', description: validation.error, variant: 'error' })
+          return
+        }
+        // Check availability before submitting
+        const check = await api.v1['landing-pages']['check-slug'].post({
+          excludeId: hypothesisId,
+          slug: normalized,
+        })
+        const available = (check.data as any)?.available as boolean | undefined
+        if (available === false) {
+          const err = (check.data as any)?.error as string | undefined
+          toast({ title: 'Subdomain unavailable', description: err || 'This subdomain is already taken', variant: 'error' })
+          return
+        }
+        body.slug = normalized
+      }
       body.customDomain = trimmedDomain ? trimmedDomain : ''
+
       const r = await api.v1['landing-pages']
         .hypothesis({ hypothesisId })
         .patch(body)
       if (r.data?.success) {
-        finish(true)
-        setLastSavedSlug(trimmedSlug)
-        setLastSavedDomain(trimmedDomain)
-      } else {
-        finish(false)
         toast({
-          description: t('pages.hypotheses.detail.domains.save.error-desc'),
-          title: t('pages.hypotheses.detail.domains.save.error-title'),
-          variant: 'error',
+          title: 'Saved',
+          description: 'Domain settings updated.',
         })
+        setOpen(false)
+        router.refresh()
+      } else {
+        const errObj = (r as any)?.error as
+          | { error?: string; reason?: string }
+          | undefined
+        const message = errObj?.reason
+          ? `${errObj.error || 'Error'}: ${errObj.reason}`
+          : errObj?.error || 'Failed to save domain settings'
+        toast({ title: 'Error', description: message, variant: 'error' })
       }
     } catch {
-      finish(false)
-      toast({
-        description: t('pages.hypotheses.detail.domains.save.error-desc'),
-        title: t('pages.hypotheses.detail.domains.save.error-title'),
-        variant: 'error',
-      })
+      toast({ title: 'Error', description: 'Failed to save domain settings', variant: 'error' })
     } finally {
       setSaving(false)
     }
   }
 
-  // Debounced autosave for slug and custom domain changes
-  React.useEffect(() => {
-    const trimmedSlug = slug.trim()
-    const trimmedDomain = customDomain.trim()
-    const changedSlug = trimmedSlug !== lastSavedSlug
-    const changedDomain = trimmedDomain !== lastSavedDomain
-    if (!changedSlug && !changedDomain) return
-    // Avoid saving an unavailable slug
-    if (changedSlug && availability && availability.ok === false) return
-    const timer = setTimeout(() => {
-      void save()
-    }, 800)
-    return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, customDomain, availability])
-
   return (
-    <div className='grid grid-cols-1 gap-4'>
-      <div>
-        <label
-          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
-          htmlFor={slugId}
-        >
-          {t('pages.hypotheses.detail.domains.labels.subdomain')}
-        </label>
-        <div className='mt-1 flex gap-2'>
-          <Input
-            id={slugId}
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className='py-1.5'
-          />
+    <div className='flex items-start justify-between gap-3'>
+      <div className='grid grid-cols-1 gap-2'>
+        <div>
+          <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+            {t('pages.hypotheses.detail.domains.labels.subdomain')}
+          </div>
+          <div className='mt-0.5 text-sm text-gray-900 dark:text-gray-50'>
+            {initialSlug || '-'}.hypany.app
+          </div>
         </div>
-        {checking ? (
-          <p className='mt-1 text-xs text-gray-500 dark:text-gray-500'>
-            {t('pages.hypotheses.detail.domains.checking-availability')}
-          </p>
-        ) : availability ? (
-          <p className='mt-1 text-xs'>
-            {availability.ok ? (
-              <span className='text-emerald-600'>
-                {t('pages.hypotheses.detail.domains.availability.available-desc', { slug: availability.normalized })}
-              </span>
-            ) : (
-              <span className='text-rose-600'>
-                {availability.error || t('pages.hypotheses.detail.domains.availability.inline-not-available')}
-              </span>
-            )}
-          </p>
-        ) : null}
+        <div>
+          <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+            {t('pages.hypotheses.detail.domains.labels.custom-domain')}
+          </div>
+          <div className='mt-0.5 text-sm text-gray-900 dark:text-gray-50'>
+            {initialCustomDomain || '-'}
+          </div>
+        </div>
       </div>
-      <div>
-        <label
-          className='block text-sm font-medium text-gray-700 dark:text-gray-300'
-          htmlFor={customDomainId}
-        >
-          {t('pages.hypotheses.detail.domains.labels.custom-domain')}
-        </label>
-        <Input
-          id={customDomainId}
-          placeholder={t('pages.hypotheses.detail.domains.placeholders.custom-domain')}
-          value={customDomain}
-          onChange={(e) => setCustomDomain(e.target.value)}
-          className='py-1.5'
-        />
-        <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
-          {t('pages.hypotheses.detail.domains.help.custom-domain')}
-        </p>
-      </div>
-      {/* Autosaves; no explicit button */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button>Edit</Button>
+        </DialogTrigger>
+        <DialogContent className='sm:max-w-md'>
+          <DialogHeader>
+            <DialogTitle>
+              {t('pages.hypotheses.detail.headings.domain-settings')}
+            </DialogTitle>
+          </DialogHeader>
+          <div className='grid grid-cols-1 gap-4'>
+            <div>
+              <label
+                className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+                htmlFor={slugId}
+              >
+                {t('pages.hypotheses.detail.domains.labels.subdomain')}
+              </label>
+              <div className='mt-1 flex gap-2'>
+                <Input
+                  id={slugId}
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+                htmlFor={customDomainId}
+              >
+                {t('pages.hypotheses.detail.domains.labels.custom-domain')}
+              </label>
+              <Input
+                id={customDomainId}
+                placeholder={t('pages.hypotheses.detail.domains.placeholders.custom-domain')}
+                value={customDomain}
+                onChange={(e) => setCustomDomain(e.target.value)}
+              />
+              <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
+                {t('pages.hypotheses.detail.domains.help.custom-domain')}
+              </p>
+            </div>
+          </div>
+          <DialogFooter className='mt-4'>
+            <DialogClose asChild>
+              <Button variant='secondary' disabled={saving}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button onClick={() => void save()} disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
