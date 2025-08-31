@@ -2,6 +2,16 @@
 
 'use client'
 
+import {
+  AvailableChartColors,
+  type AvailableChartColorsKeys,
+  constructCategoryColors,
+  getColorClassName,
+  getYAxisDomain,
+  hasOnlyOneValueForKey,
+} from '@/lib/chart-utils'
+import { useOnWindowResize } from '@/lib/use-on-window-resize'
+import { cx } from '@/lib/utils'
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react'
 import React from 'react'
 import {
@@ -18,16 +28,6 @@ import {
   YAxis,
 } from 'recharts'
 import type { AxisDomain } from 'recharts/types/util/types'
-import {
-  AvailableChartColors,
-  type AvailableChartColorsKeys,
-  constructCategoryColors,
-  getColorClassName,
-  getYAxisDomain,
-  hasOnlyOneValueForKey,
-} from '@/lib/chart-utils'
-import { useOnWindowResize } from '@/lib/use-on-window-resize'
-import { cx } from '@/lib/utils'
 
 //#region Legend
 
@@ -814,13 +814,13 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                 }
               />
             ) : null}
-            {categories.map((category) => {
+            {categories.map((category, idx) => {
               const categoryId = `${areaId}-${category.replace(/[^a-zA-Z0-9]/g, '')}`
               return (
-                <React.Fragment key={category}>
-                  <defs key={category}>
+                <React.Fragment key={`frag-${category}-${idx}`}>
+                  <defs key={`defs-${category}-${idx}`}>
                     <linearGradient
-                      key={category}
+                      key={`grad-${category}-${idx}`}
                       className={cx(
                         getColorClassName(
                           categoryColors.get(
@@ -938,7 +938,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       }
                       return <React.Fragment key={index}></React.Fragment>
                     }}
-                    key={category}
+                    key={`area-${category}`}
                     name={category}
                     type='linear'
                     dataKey={category}
