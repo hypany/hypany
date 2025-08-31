@@ -207,6 +207,10 @@
     }
   },
   "auth": {
+    "aside": {
+      "desc": "Ship landing pages fast, measure interest, and iterate with data.",
+      "title": "Validate startup ideas before you build"
+    },
     "common": {
       "back": "← Back"
     },
