@@ -1,9 +1,6 @@
-import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import { getSession } from '@/auth/server'
-import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
-import { getActivityFeed } from '@/functions/analytics'
 import { Button } from '@/components/atoms/button'
+import { Card } from '@/components/atoms/card'
 import {
   Table,
   TableBody,
@@ -17,6 +14,10 @@ import {
   type Metric,
   MetricsCards,
 } from '@/components/molecules/homepage/metrics-cards'
+import { getActivityFeed } from '@/functions/analytics'
+import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 type HypothesisRow = {
   id: string
@@ -100,30 +101,30 @@ export default async function Page() {
 
   return (
     <section aria-label={t('aria') || 'Dashboard'}>
-      <div className='px-6 py-6'>
+      
         {metricsData ? (
           <div className='mt-0'>
             <MetricsCards metrics={metrics} compact />
           </div>
         ) : null}
-      </div>
+      
 
       <div className='grid grid-cols-1 gap-6 px-6 pb-10 lg:grid-cols-3'>
         <div className='col-span-1 lg:col-span-2'>
-          <div className='rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-925'>
-            <div className='flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800'>
-              <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                {t('top-hypotheses')}
-              </h2>
-              <Link
-                href='/app/hypotheses'
-                className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
-              >
-                {t('view-all')}
-              </Link>
-            </div>
-            <TableRoot>
-              <Table>
+          <Card className='p-0'>
+          <div className='flex items-center justify-between p-3.5'>
+            <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+              {t('top-hypotheses')}
+            </h2>
+            <Link
+              href='/app/hypotheses'
+              className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
+            >
+              {t('view-all')}
+            </Link>
+          </div>
+          <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+            <Table>
                 <TableHead>
                   <TableRow>
                     <TableHeaderCell>
@@ -184,19 +185,19 @@ export default async function Page() {
                 </TableBody>
               </Table>
             </TableRoot>
-          </div>
+          </Card>
         </div>
 
         <div className='col-span-1'>
-          <div className='rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-925'>
-            <div className='border-b border-gray-200 px-4 py-3 dark:border-gray-800'>
-              <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                {t('recent-activity')}
-              </h2>
-            </div>
-            <ul className='divide-y divide-gray-200 dark:divide-gray-800'>
+          <Card className='p-0'>
+          <div className='p-3.5'>
+            <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+              {t('recent-activity')}
+            </h2>
+          </div>
+          <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
               {activities.length === 0 ? (
-                <li className='px-4 py-4 text-sm text-gray-500 dark:text-gray-500'>
+                <li className='py-4 text-sm text-gray-500 dark:text-gray-500 text-center'>
                   {t('no-activity')}
                 </li>
               ) : (
@@ -216,7 +217,7 @@ export default async function Page() {
                   return (
                     <li
                       key={`${a.hypothesisId}-${a.source}-${a.type}-${a.email}`}
-                      className='px-4 py-3'
+                      className='py-3'
                     >
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
@@ -245,9 +246,9 @@ export default async function Page() {
                 })
               )}
             </ul>
+          </Card>
           </div>
         </div>
-      </div>
     </section>
   )
 }

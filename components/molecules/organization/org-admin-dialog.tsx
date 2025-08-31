@@ -1,6 +1,6 @@
 'use client'
 
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import {
@@ -32,12 +32,14 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { toast } from '@/lib/use-toast'
+import { Badge } from '@/components/atoms/badge'
 
 type Member = {
   id: string
   userId: string
   role: string
   createdAt?: string | Date | null
+  user?: { id: string; name: string; email: string; image?: string | null }
 }
 
 type Invitation = {
@@ -71,20 +73,37 @@ export function OrgAdminDialog({
   const [invitationsLoading, setInvitationsLoading] = useState(false)
 
   // Functions to reload data after mutations
-  const api = getClientApi()
   async function reloadMembers() {
     setMembersLoading(true)
     try {
-      const res = await api.v1.organizations.members.get({
-        query: { organizationId: orgId },
-      })
-      const data = res.data?.members ?? []
+      const res = await fetch(
+        `/api/v1/organizations/members?organizationId=${encodeURIComponent(orgId)}`,
+        { method: 'GET' },
+      )
+      const json = (await res.json()) as {
+        members: Array<{
+          createdAt: string | Date
+          id: string
+          organizationId: string
+          role: string
+          user: { id: string; name: string; email: string; image?: string | null }
+          userId: string
+        }>
+        total: number
+      }
+      const data = json.members ?? []
       setMembers(
-        data.map((m: any) => ({
+        data.map((m) => ({
           createdAt: m.createdAt as unknown as string | Date,
           id: m.id,
           role: m.role,
           userId: m.userId,
+          user: {
+            email: m.user?.email as string,
+            id: m.user?.id as string,
+            image: (m.user?.image as string | null) ?? null,
+            name: m.user?.name as string,
+          },
         })),
       )
     } catch {
@@ -96,12 +115,19 @@ export function OrgAdminDialog({
   async function reloadInvitations() {
     setInvitationsLoading(true)
     try {
-      const res = await api.v1.organizations.invitations.get({
-        query: { organizationId: orgId },
-      })
-      const data = res.data ?? []
+      const res = await fetch(
+        `/api/v1/organizations/invitations?organizationId=${encodeURIComponent(orgId)}`,
+        { method: 'GET' },
+      )
+      const data = (await res.json()) as Array<{
+        email: string
+        expiresAt?: string | Date | null
+        id: string
+        role?: string | string[] | null
+        status?: string | null
+      }>
       setInvitations(
-        data.map((i: any) => ({
+        data.map((i) => ({
           email: i.email,
           expiresAt: i.expiresAt as unknown as string | Date,
           id: i.id,
@@ -125,6 +151,13 @@ export function OrgAdminDialog({
         <DialogHeader>
           <DialogTitle>Manage “{orgName}”</DialogTitle>
         </DialogHeader>
+        {/* Load data on open */}
+        <LoadOnOpen
+          open={open}
+          tab={tab}
+          onLoadMembers={reloadMembers}
+          onLoadInvitations={reloadInvitations}
+        />
         <div className='px-1'>
           <TabNavigation className='gap-x-4'>
             {(
@@ -189,7 +222,7 @@ function MembersSection({
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>Member ID</TableHeaderCell>
+              <TableHeaderCell>Member</TableHeaderCell>
               <TableHeaderCell>Role</TableHeaderCell>
               <TableHeaderCell className='text-right'>Actions</TableHeaderCell>
             </TableRow>
@@ -197,8 +230,35 @@ function MembersSection({
           <TableBody>
             {(loading ? [] : members).map((m) => (
               <TableRow key={m.id}>
-                <TableCell className='font-medium'>{m.id}</TableCell>
-                <TableCell>{m.role}</TableCell>
+                <TableCell className='font-medium'>
+                  <div className='flex items-center gap-3'>
+                    <div className='relative inline-flex size-7 items-center justify-center overflow-hidden rounded-sm ring-1 ring-gray-200 dark:ring-gray-800'>
+                      {m.user?.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={m.user.image}
+                          alt={m.user.name}
+                          className='h-full w-full object-cover'
+                        />
+                      ) : (
+                        <span className='grid h-full w-full place-items-center bg-gray-200 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300'>
+                          {m.user?.name?.[0]?.toUpperCase() ?? 'U'}
+                        </span>
+                      )}
+                    </div>
+                    <div className='min-w-0'>
+                      <div className='truncate text-sm text-gray-900 dark:text-gray-50'>
+                        {m.user?.name || m.userId}
+                      </div>
+                      <div className='truncate text-xs text-gray-500 dark:text-gray-500'>
+                        {m.user?.email}
+                      </div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant='neutral'>{m.role}</Badge>
+                </TableCell>
                 <TableCell className='text-right'>
                   <div className='flex items-center justify-end gap-2'>
                     <UpdateRoleButton
@@ -245,6 +305,25 @@ function MembersSection({
       <InviteMemberForm orgId={orgId} onInvited={onMembersChanged} />
     </div>
   )
+}
+
+function LoadOnOpen({
+  open,
+  tab,
+  onLoadMembers,
+  onLoadInvitations,
+}: {
+  open: boolean
+  tab: 'members' | 'invites' | 'admin'
+  onLoadMembers: () => void
+  onLoadInvitations: () => void
+}) {
+  useEffect(() => {
+    if (!open) return
+    if (tab === 'members') onLoadMembers()
+    if (tab === 'invites') onLoadInvitations()
+  }, [open, tab, onLoadMembers, onLoadInvitations])
+  return null
 }
 
 type Role = 'owner' | 'admin' | 'member'
@@ -443,11 +522,23 @@ function InvitationsSection({
               <TableRow key={inv.id}>
                 <TableCell className='font-medium'>{inv.email}</TableCell>
                 <TableCell>
-                  {Array.isArray(inv.role)
-                    ? inv.role.join(', ')
-                    : (inv.role ?? '-')}
+                  {Array.isArray(inv.role) ? (
+                    <span className='flex flex-wrap gap-1'>
+                      {inv.role.map((r) => (
+                        <Badge key={r} variant='neutral'>
+                          {r}
+                        </Badge>
+                      ))}
+                    </span>
+                  ) : inv.role ? (
+                    <Badge variant='neutral'>{inv.role}</Badge>
+                  ) : (
+                    <span className='text-gray-400 dark:text-gray-600'>—</span>
+                  )}
                 </TableCell>
-                <TableCell>{inv.status ?? 'pending'}</TableCell>
+                <TableCell>
+                  <Badge variant='neutral'>{inv.status ?? 'pending'}</Badge>
+                </TableCell>
                 <TableCell className='text-right'>
                   <div className='flex items-center justify-end gap-2'>
                     <Button

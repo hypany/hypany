@@ -1,9 +1,9 @@
 'use client'
 
-import { RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
+import { RiAddLine, RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import {
   Dialog,
@@ -22,6 +22,8 @@ import {
 } from '@/components/atoms/dropdown-menu'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 import { toast } from '@/lib/use-toast'
+import { Input } from '@/components/atoms/input'
+import { Badge } from '@/components/atoms/badge'
 
 type Organization = { id: string; name: string; logo?: string | null }
 
@@ -33,6 +35,7 @@ export function OrgSwitcherClient({
   activeOrganizationId?: string | null
 }) {
   const router = useRouter()
+  const [query, setQuery] = useState('')
 
   const activeOrg = useMemo(() => {
     if (!organizations) return null
@@ -86,16 +89,22 @@ export function OrgSwitcherClient({
   }
 
   const disabled = !organizations || organizations.length === 0
+  const filtered = useMemo(() => {
+    if (!organizations) return [] as Organization[]
+    const q = query.trim().toLowerCase()
+    if (!q) return organizations
+    return organizations.filter((o) => o.name.toLowerCase().includes(q))
+  }, [organizations, query])
 
   return (
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className='flex items-center rounded-md px-2 py-1.5 text-base font-semibold hover:bg-gray-200/50 dark:hover:bg-gray-900 w-full min-w-0'
+          className='flex items-center rounded-lg px-2.5 py-2 text-base font-semibold w-full min-w-0 border border-gray-200 shadow-xs bg-white/70 hover:bg-white dark:border-gray-800 dark:bg-gray-950/40 dark:hover:bg-gray-900/60'
           disabled={disabled}
         >
           <span className='flex items-center justify-between w-full min-w-0'>
-            <span className='relative inline-flex items-center justify-center overflow-hidden rounded-sm ring-1 ring-gray-200 dark:ring-gray-800 shrink-0 w-7 h-7 aspect-square'>
+            <span className='relative inline-flex items-center justify-center overflow-hidden rounded-sm ring-1 ring-gray-200 dark:ring-gray-800 shrink-0 w-7 h-7 aspect-square bg-white dark:bg-gray-900'>
               {current.logo ? (
                 <Image
                   src={current.logo}
@@ -126,9 +135,19 @@ export function OrgSwitcherClient({
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start' className='min-w-72'>
+          <div className='p-2 pt-2'>
+            <Input
+              type='search'
+              placeholder='Search organizations'
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              inputClassName='text-sm'
+              autoFocus
+            />
+          </div>
           <DropdownMenuLabel className='text-left'>Organizations</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {organizations?.map((org) => {
+          {filtered.map((org) => {
             const isActive = activeOrg?.id === org.id
             const logo =
               'logo' in org
@@ -166,6 +185,9 @@ export function OrgSwitcherClient({
                 </span>
                 <span className='flex-1 truncate text-left'>{org.name}</span>
                 {isActive && (
+                  <Badge variant='neutral' className='ml-1'>Active</Badge>
+                )}
+                {isActive && (
                   <RiCheckLine
                     className='size-4 shrink-0 text-emerald-500'
                     aria-hidden='true'
@@ -174,10 +196,19 @@ export function OrgSwitcherClient({
               </DropdownMenuItem>
             )
           })}
+          {filtered.length === 0 && (
+            <div className='px-3 py-6 text-sm text-gray-500 dark:text-gray-600'>
+              No organizations found
+            </div>
+          )}
           <DropdownMenuSeparator />
           <DialogTrigger asChild>
-            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-              + Create organization
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              className='text-emerald-600 dark:text-emerald-500'
+            >
+              <RiAddLine className='mr-1 size-4' aria-hidden='true' />
+              Create organization
             </DropdownMenuItem>
           </DialogTrigger>
           <DropdownMenuItem onClick={() => router.push('/app/organizations')}>

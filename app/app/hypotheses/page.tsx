@@ -16,6 +16,7 @@ import {
   type Metric,
   MetricsCards,
 } from '@/components/molecules/homepage/metrics-cards'
+import { getTranslations } from 'next-intl/server'
 
 type Row = {
   id: string
@@ -28,6 +29,7 @@ type Row = {
 
 export default async function HypothesesPage() {
   await requireAuth()
+  const t = await getTranslations('app.pages.root')
   const activeOrgRes = await getActiveOrganization()
   
   if (!activeOrgRes?.activeOrganizationId) {
@@ -76,19 +78,19 @@ export default async function HypothesesPage() {
   const metrics: Metric[] = [
     {
       fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: 'Visitor Conversion Rate',
+      label: t('metrics.visitor-conversion'),
       percentage: `${(conversion * 100).toFixed(1)}%`,
       value: conversion,
     },
     {
       fraction: `${Number(metricsData?.last7Signups ?? 0)}/${Number(metricsData?.prev7Signups ?? 0)}`,
-      label: 'Signup Growth (WoW)',
+      label: t('metrics.signup-growth-wow'),
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
       fraction: `${readyCount}/${denom}`,
-      label: 'Ready to Launch',
+      label: t('metrics.ready-to-launch'),
       percentage: '',
       value: Math.min(1, readyCount / denom),
     },
