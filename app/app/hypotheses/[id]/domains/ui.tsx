@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { getClientApi } from '@/app/api/client'
 import { Input } from '@/components/atoms/input'
 import { toast } from '@/lib/use-toast'
-import { useSaveStatus } from '@/components/atoms/save-status'
+import { useSaveStatusStore } from '@/lib/store/save-status'
 
 export default function DomainForm({
   hypothesisId,
@@ -18,7 +18,8 @@ export default function DomainForm({
 }) {
   const api = getClientApi()
   const t = useTranslations('app')
-  const { start, finish } = useSaveStatus()
+  const start = useSaveStatusStore((s) => s.start)
+  const finish = useSaveStatusStore((s) => s.finish)
   const [slug, setSlug] = useState<string>(initialSlug || '')
   const [customDomain, setCustomDomain] = useState<string>(
     initialCustomDomain || '',

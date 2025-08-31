@@ -1,16 +1,24 @@
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
+import { getHypothesisById } from '@/functions/hypotheses'
+import { getActiveOrganization } from '@/functions/organizations'
+import { notFound } from 'next/navigation'
 
 export default async function HypothesisBreadcrumbs({
-  id,
-  name,
+  params,
 }: {
-  id: string
-  name: string
+  params: Promise<{ id: string }>
 }) {
   const t = await getTranslations('app')
+  const { id } = await params
+  const activeOrgRes = await getActiveOrganization()
+  if (!activeOrgRes?.activeOrganizationId) notFound()
+  const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
+  if (!hypothesis) notFound()
+
   return (
-    <nav aria-label='Breadcrumb' className='ml-2 px-4 pt-3'>
+    <nav aria-label='Breadcrumb' className='ml-2'>
       <ol className='flex items-center space-x-3 text-sm'>
         <li className='flex'>
           <Link
@@ -20,7 +28,7 @@ export default async function HypothesisBreadcrumbs({
             {t('breadcrumbs.home')}
           </Link>
         </li>
-        <span className='text-gray-600 dark:text-gray-400'>/</span>
+        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
         <li className='flex'>
           <Link
             href='/app/hypotheses'
@@ -29,14 +37,14 @@ export default async function HypothesisBreadcrumbs({
             {t('breadcrumbs.hypotheses')}
           </Link>
         </li>
-        <span className='text-gray-600 dark:text-gray-400'>/</span>
+        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
         <li className='flex'>
           <Link
             href={`/app/hypotheses/${id}`}
             aria-current='page'
             className='text-gray-900 dark:text-gray-50'
           >
-            {name}
+            {hypothesis.name}
           </Link>
         </li>
       </ol>

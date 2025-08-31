@@ -1,16 +1,6 @@
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
-import {
-  getHypothesisById,
-  getLandingPagesForHypothesis,
-  getWaitlistByHypothesisId,
-  getWaitlistEntries,
-} from '@/functions/hypotheses'
-import { getActivityFeed, getAnalyticsMetrics } from '@/functions/analytics'
 import { Card } from '@/components/atoms/card'
+import { ComboChart } from '@/components/atoms/combo-chart'
 import {
   Table,
   TableBody,
@@ -20,9 +10,19 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
+import { getActivityFeed, getAnalyticsMetrics } from '@/functions/analytics'
+import {
+  getHypothesisById,
+  getLandingPagesForHypothesis,
+  getWaitlistByHypothesisId,
+  getWaitlistEntries,
+} from '@/functions/hypotheses'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import DomainForm from './domains/ui'
 import { RenameLandingPageInline } from './landing-pages/ui'
-import { ComboChart } from '@/components/atoms/combo-chart'
 
 export default async function HypothesisOverview({
   params,
@@ -66,7 +66,6 @@ export default async function HypothesisOverview({
   return (
     <section
       aria-label={t('pages.hypotheses.detail.aria')}
-      className='bg-gray-50 dark:bg-gray-950'
     >
       <div className='grid grid-cols-1 gap-4 p-4 lg:grid-cols-3'>
         {/* Left column: analytics, waitlist, landing pages */}

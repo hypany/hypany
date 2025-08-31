@@ -1,24 +1,24 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
-import { getHypothesisById, getLandingPagesForHypothesis } from '@/functions/hypotheses'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeaderCell,
+    TableRoot,
+    TableRow,
 } from '@/components/atoms/table'
+import { getHypothesisById, getLandingPagesForHypothesis } from '@/functions/hypotheses'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import {
-  CreateLandingPageButton,
-  DuplicateLandingPageButton,
-  RenameLandingPageInline,
+    CreateLandingPageButton,
+    DuplicateLandingPageButton,
+    RenameLandingPageInline,
 } from './ui'
 
 export default async function LandingPagesGallery({
@@ -50,7 +50,7 @@ export default async function LandingPagesGallery({
   }
 
   return (
-    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+    <section>
       <Card className='p-0 overflow-hidden'>
         <div className='flex items-center justify-between px-4 py-4'>
           <h2 className='font-semibold text-gray-900 dark:text-gray-50'>

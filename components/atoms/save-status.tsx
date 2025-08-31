@@ -1,47 +1,17 @@
 "use client"
 
 import React from "react"
-
-type SaveStatus = {
-  savingCount: number
-  lastError: string | null
-  start: () => void
-  finish: (ok: boolean, errMsg?: string) => void
-}
-
-const Ctx = React.createContext<SaveStatus | null>(null)
-
-export function SaveStatusProvider({ children }: { children: React.ReactNode }) {
-  const [savingCount, setSavingCount] = React.useState(0)
-  const [lastError, setLastError] = React.useState<string | null>(null)
-
-  const start = React.useCallback(() => {
-    setSavingCount((c) => c + 1)
-  }, [])
-
-  const finish = React.useCallback((ok: boolean, errMsg?: string) => {
-    setSavingCount((c) => Math.max(0, c - 1))
-    setLastError(ok ? null : errMsg || "Failed to save")
-  }, [])
-
-  const value = React.useMemo(
-    () => ({ savingCount, lastError, start, finish }),
-    [savingCount, lastError, start, finish],
-  )
-
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>
-}
-
-export function useSaveStatus() {
-  const ctx = React.useContext(Ctx)
-  if (!ctx) throw new Error("useSaveStatus must be used within SaveStatusProvider")
-  return ctx
-}
+import { usePathname } from "next/navigation"
+import { useSaveStatusStore } from "@/lib/store/save-status"
 
 export function SaveStatusBadge({ className }: { className?: string }) {
-  const { savingCount, lastError } = useSaveStatus()
-  const saving = savingCount > 0
+  const savingCount = useSaveStatusStore((s) => s.savingCount)
+  const lastError = useSaveStatusStore((s) => s.lastError)
+  const pathname = usePathname()
+  const onHypothesis = /^\/app\/hypotheses\/[^/]+$/.test(pathname || "")
+  if (!onHypothesis) return null
 
+  const saving = savingCount > 0
   if (saving) {
     return (
       <span
@@ -51,26 +21,9 @@ export function SaveStatusBadge({ className }: { className?: string }) {
         }
         aria-live="polite"
       >
-        <svg
-          className="size-3 animate-spin"
-          viewBox="0 0 24 24"
-          aria-hidden
-          focusable="false"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-            fill="none"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          />
+        <svg className="size-3 animate-spin" viewBox="0 0 24 24" aria-hidden focusable="false">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
         </svg>
         Saving…
       </span>
@@ -91,4 +44,3 @@ export function SaveStatusBadge({ className }: { className?: string }) {
     </span>
   )
 }
-

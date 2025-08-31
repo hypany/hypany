@@ -1,12 +1,12 @@
 import { requireAuth } from '@/auth/server'
 import { BarChart } from '@/components/atoms/bar-chart'
+import { Card } from '@/components/atoms/card'
 import { ComboChart } from '@/components/atoms/combo-chart'
 import { getAnalyticsMetrics } from '@/functions/analytics'
 import { getActiveOrganization } from '@/functions/organizations'
-import { Card } from '@/components/atoms/card'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
 
 type Range = '7d' | '30d' | '90d'
 
@@ -45,7 +45,7 @@ export default async function AnalyticsPage({
   }))
 
   return (
-    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+    <section>
       <Card className='p-0 overflow-hidden mb-4'>
         <div className='px-4 py-4 flex items-center justify-between'>
         <div>

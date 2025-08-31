@@ -44,8 +44,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  breadcrumbs,
 }: {
   children: React.ReactNode
+  breadcrumbs: React.ReactNode
 }) {
   const session = await getSession()
   if (!session) {
@@ -63,10 +65,8 @@ export default async function RootLayout({
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
       <div className='w-full'>
-        <SaveStatusProvider>
-          <AppHeader />
-          <main>{children}</main>
-        </SaveStatusProvider>
+        <AppHeader breadcrumbs={breadcrumbs} />
+        <main>{children}</main>
       </div>
     </SidebarProvider>
   )

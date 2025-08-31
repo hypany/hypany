@@ -3,7 +3,6 @@ import { getHypothesisById } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
-import HypothesisBreadcrumbs from '@/components/molecules/navigation/hypothesis-breadcrumbs'
 
 export default async function HypothesisLayout({
   children,
@@ -25,7 +24,6 @@ export default async function HypothesisLayout({
 
   return (
     <div>
-      <HypothesisBreadcrumbs id={id} name={hypothesis.name} />
       <div className='p-4 border-b border-gray-200 dark:border-gray-800'>
         <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
           {hypothesis.name}

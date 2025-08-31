@@ -1,5 +1,5 @@
 import { requireAuth } from '@/auth/server'
-import { getTranslations } from 'next-intl/server'
+import { Card } from '@/components/atoms/card'
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
 } from '@/components/atoms/table'
 import { getWaitlistByHypothesisId, getWaitlistEntries } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
-import { Card } from '@/components/atoms/card'
+import { getTranslations } from 'next-intl/server'
 
 function f(date: string | Date) {
   try {
@@ -44,7 +44,7 @@ export default async function WaitlistPage({
   const exportCsvHref = `/api/v1/waitlists/hypothesis/${id}/export?format=csv`
 
   return (
-    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+    <section>
       <Card className='p-0 overflow-hidden'>
         <div className='flex items-center justify-between px-4 py-4'>
           <h2 className='font-semibold text-gray-900 dark:text-gray-50'>

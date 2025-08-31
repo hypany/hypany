@@ -1,9 +1,9 @@
-import { notFound } from 'next/navigation'
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
-import { getHypothesisById } from '@/functions/hypotheses'
-import DomainForm from './ui'
 import { Card } from '@/components/atoms/card'
+import { getHypothesisById } from '@/functions/hypotheses'
+import { getActiveOrganization } from '@/functions/organizations'
+import { notFound } from 'next/navigation'
+import DomainForm from './ui'
 
 export default async function DomainsPage({
   params,
@@ -22,7 +22,7 @@ export default async function DomainsPage({
   if (!hypothesis) notFound()
 
   return (
-    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+    <section>
       <Card className='p-0 overflow-hidden'>
         <div className='px-4 py-4'>
           <h2 className='text-base font-semibold text-gray-900 dark:text-gray-50'>

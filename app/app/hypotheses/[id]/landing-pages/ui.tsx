@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { toast } from '@/lib/use-toast'
-import { useSaveStatus } from '@/components/atoms/save-status'
+import { useSaveStatusStore } from '@/lib/store/save-status'
 
 export function CreateLandingPageButton({
   hypothesisId,
@@ -100,7 +100,8 @@ export function RenameLandingPageInline({
   const [value, setValue] = useState(initialName || '')
   const [saving, setSaving] = useState(false)
   const api = getClientApi()
-  const { start, finish } = useSaveStatus()
+  const start = useSaveStatusStore((s) => s.start)
+  const finish = useSaveStatusStore((s) => s.finish)
   const t = useTranslations('app')
   async function save(next?: string) {
     const name = (next ?? value).trim()
