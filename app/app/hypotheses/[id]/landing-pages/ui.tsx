@@ -102,14 +102,15 @@ export function RenameLandingPageInline({
   const api = getClientApi()
   const { start, finish } = useSaveStatus()
   const t = useTranslations('app')
-  async function save() {
-    if (!value || saving) return
+  async function save(next?: string) {
+    const name = (next ?? value).trim()
+    if (!name || saving) return
     setSaving(true)
     start()
     try {
       await api.v1['landing-pages']
         ['by-id']({ landingPageId })
-        .patch({ name: value })
+        .patch({ name })
       finish(true)
     } catch {
       finish(false)
@@ -123,10 +124,11 @@ export function RenameLandingPageInline({
       <input
         className='w-full rounded-md border px-2 py-1 text-sm outline-hidden dark:border-gray-800'
         placeholder={t('pages.hypotheses.detail.landing-pages.placeholders.name')}
-        defaultValue={value}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => {
-          setValue(e.target.value)
-          if (e.target.value !== initialName) void save()
+          const nextVal = e.currentTarget.value
+          if (nextVal !== (initialName || '')) void save(nextVal)
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
