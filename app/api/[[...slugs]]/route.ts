@@ -7,7 +7,7 @@
 import 'server-only'
 import swagger from '@elysiajs/swagger'
 import { Elysia } from 'elysia'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 import { swaggerInfo, swaggerTags } from '../docs'
 import { analyticsApi } from '../v1/analytics'
 import { assetsApi } from '../v1/assets'
@@ -17,6 +17,7 @@ import { landingPagesApi } from '../v1/landing-pages'
 import { publicApi } from '../v1/public'
 import { sessionsApi } from '../v1/sessions'
 import { settingsApi } from '../v1/settings'
+import { organizationsApi } from '../v1/organizations'
 import { uploadsApi } from '../v1/uploads'
 import { waitlistsApi } from '../v1/waitlists'
 
@@ -45,6 +46,7 @@ const app = new Elysia({ prefix: '/api' })
   .use(uploadsApi)
   .use(analyticsApi)
   .use(settingsApi)
+  .use(organizationsApi)
   // Mount Better Auth handler last to avoid interfering with other routes
   .mount(auth.handler)
 

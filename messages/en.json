@@ -112,7 +112,7 @@
       "visitorToSignup": "Visitor-to-Signup Conversion",
       "winProbability": "Win Probability"
     },
-    "pages": {
+  "pages": {
       "analytics": {
         "aria": "Analytics",
         "subtitle": "Track performance, conversion, and user engagement.",
@@ -134,7 +134,20 @@
         "subtitle": "Manage organizations, members, and permissions.",
         "title": "Organizations"
       },
-      "root": { "title": "Dashboard" },
+      "root": {
+        "aria": "Dashboard",
+        "title": "Dashboard",
+        "topHypotheses": "Top Hypotheses",
+        "recentActivity": "Recent Activity",
+        "viewAll": "View all",
+        "noHypotheses": "No hypotheses yet.",
+        "createFirst": "Create your first hypothesis",
+        "noActivity": "No recent activity.",
+        "actions": {
+          "createHypothesis": "Create Hypothesis",
+          "uploadAsset": "Upload Asset"
+        }
+      },
       "settings": {
         "aria": "Settings",
         "subtitle": "Configure your workspace, preferences, and account.",

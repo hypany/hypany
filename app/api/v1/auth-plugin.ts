@@ -2,7 +2,7 @@
 // when `auth: true` is present in the route options. Replies 401 otherwise.
 
 import { Elysia } from 'elysia'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 
 export const authPlugin = new Elysia({ name: 'better-auth' }).macro({
   auth: {

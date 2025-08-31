@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useId, useMemo, useState } from 'react'
-import { client } from '@/auth/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
@@ -31,19 +31,16 @@ export function CreateOrganizationForm() {
     }
     setSubmitting(true)
     try {
-      const { data: org, error } = await client.organization.create({
+      const api = getClientApi()
+      const res = await api.v1.organizations.create.post({
         name: name.trim(),
         slug: derivedSlug,
       })
-      if (error || !org) {
-        toast({
-          description: 'Please try again.',
-          title: error?.message || 'Failed to create organization',
-          variant: 'error',
-        })
-        return
-      }
-      await client.organization.setActive({ organizationId: org.id })
+      const org = res.data
+      if (!org) throw new Error('No organization returned')
+      await api.v1.organizations['set-active'].post({
+        organizationId: (org as { id: string }).id,
+      })
       toast({
         description: 'Switching to your new organization...',
         title: 'Organization created',
@@ -52,7 +49,6 @@ export function CreateOrganizationForm() {
       router.push('/app')
       router.refresh()
     } catch (error) {
-      console.error(error)
       toast({
         description: 'Please try again.',
         title: 'Failed to create organization',

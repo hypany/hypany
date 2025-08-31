@@ -7,7 +7,7 @@
 import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
 import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
-import { getWaitlistIdForOrg } from '@/lib/api-utils'
+import { getWaitlistIdForOrg } from '../utils'
 import { HTTP_STATUS } from '@/lib/constants'
 import { toCsv } from '@/lib/csv'
 import { jsonError, jsonOk } from '@/lib/http'

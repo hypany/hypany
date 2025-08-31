@@ -1,5 +1,5 @@
 import 'server-only'
-import { auth } from './index'
+import { auth } from '@/app/api/auth'
 
 // Helper function to verify session in Elysia routes
 export async function verifySession(headers: Headers) {

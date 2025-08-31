@@ -125,3 +125,4 @@ export type AuthType = {
     session: typeof auth.$Infer.Session.session | null
   }
 }
+

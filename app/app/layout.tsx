@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 import { getSession } from '@/auth/server'
 import { SidebarProvider } from '@/components/atoms/sidebar'
 import { AppHeader } from '@/components/molecules/navigation/app-header'

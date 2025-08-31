@@ -1,5 +1,5 @@
 import { headers } from 'next/headers'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 import { OrgSwitcherClient } from './org-switcher.client'
 
 type Organization = Awaited<

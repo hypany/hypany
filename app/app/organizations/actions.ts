@@ -1,7 +1,7 @@
 'use server'
 
 import { headers } from 'next/headers'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 
 export async function updateOrganizationAction(input: {
   organizationId?: string

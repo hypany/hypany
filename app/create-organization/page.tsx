@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 
 export const metadata: Metadata = {

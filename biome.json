@@ -86,6 +86,19 @@
         "noUnusedImports": "error"
       },
       "recommended": true,
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "@/drizzle": {
+                "importNames": ["db"],
+                "message": "Only use `db` within files under app/api/**"
+              }
+            }
+          }
+        }
+      },
       "suspicious": {
         "noDocumentCookie": "off",
         "noExplicitAny": "off"
@@ -93,5 +106,17 @@
     }
   },
 
-  "overrides": [{ "includes": ["*.ts", "*.tsx"] }]
+  "overrides": [
+    { "includes": ["*.ts", "*.tsx"] },
+    {
+      "includes": ["app/api/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    }
+  ]
 }

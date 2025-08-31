@@ -1,6 +1,6 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { auth } from '@/auth'
+import { auth } from '@/app/api/auth'
 
 export default async function AcceptInvitationPage({
   searchParams,

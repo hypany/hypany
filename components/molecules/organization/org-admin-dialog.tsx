@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { client } from '@/auth/client'
+import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import {
   Dialog,
@@ -101,23 +101,22 @@ export function OrgAdminDialog({
 function MembersSection({ orgId }: { orgId: string }) {
   const [loading, setLoading] = useState(true)
   const [members, setMembers] = useState<Member[]>([])
+  const api = getClientApi()
 
   async function load() {
     setLoading(true)
     try {
-      const res = await client.organization.listMembers({
+      const res = await api.v1.organizations.members.get({
         query: { organizationId: orgId },
       })
-      const data = (res?.data as any) || []
+      const data = res.data?.members ?? []
       setMembers(
-        Array.isArray(data)
-          ? data.map((m: any) => ({
-              createdAt: m.createdAt,
-              id: m.id,
-              role: m.role,
-              userId: m.userId,
-            }))
-          : [],
+        data.map((m) => ({
+          createdAt: m.createdAt as unknown as string | Date,
+          id: m.id,
+          role: m.role,
+          userId: m.userId,
+        })),
       )
     } catch {
       setMembers([])
@@ -125,6 +124,10 @@ function MembersSection({ orgId }: { orgId: string }) {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    load()
+  }, [])
 
   return (
     <div className='space-y-4'>
@@ -155,7 +158,7 @@ function MembersSection({ orgId }: { orgId: string }) {
                       className='py-1.5'
                       onClick={async () => {
                         try {
-                          await client.organization.removeMember({
+                          await api.v1.organizations.members.remove.post({
                             memberIdOrEmail: m.id,
                             organizationId: orgId,
                           })
@@ -203,12 +206,12 @@ function UpdateRoleButton({
   onUpdated: () => void
 }) {
   const [open, setOpen] = useState(false)
+  const allowed: readonly Role[] = ['owner', 'admin', 'member']
   const [role, setRole] = useState<Role>(
-    (['owner', 'admin', 'member'] as const).includes(currentRole as any)
-      ? (currentRole as Role)
-      : 'member',
+    allowed.includes(currentRole as Role) ? (currentRole as Role) : 'member',
   )
   const [saving, setSaving] = useState(false)
+  const api = getClientApi()
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -239,7 +242,7 @@ function UpdateRoleButton({
               onClick={async () => {
                 setSaving(true)
                 try {
-                  await client.organization.updateMemberRole({
+                  await api.v1.organizations.members['update-role'].post({
                     memberId,
                     organizationId: orgId,
                     role,
@@ -282,6 +285,7 @@ function InviteMemberForm({
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<Role>('member')
   const [inviting, setInviting] = useState(false)
+  const api = getClientApi()
   return (
     <div className='rounded-md border border-gray-200 p-3 dark:border-gray-800'>
       <h3 className='text-sm font-medium text-gray-900 dark:text-gray-50'>
@@ -317,7 +321,7 @@ function InviteMemberForm({
             }
             setInviting(true)
             try {
-              await client.organization.inviteMember({
+              await api.v1.organizations.invitations.post({
                 email: e,
                 organizationId: orgId,
                 role,
@@ -351,24 +355,23 @@ function InviteMemberForm({
 function InvitationsSection({ orgId }: { orgId: string }) {
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [loading, setLoading] = useState(true)
+  const api = getClientApi()
 
   async function load() {
     setLoading(true)
     try {
-      const res = await client.organization.listInvitations({
+      const res = await api.v1.organizations.invitations.get({
         query: { organizationId: orgId },
       })
-      const data = (res?.data as any) || []
+      const data = res.data ?? []
       setInvitations(
-        Array.isArray(data)
-          ? data.map((i: any) => ({
-              email: i.email,
-              expiresAt: i.expiresAt,
-              id: i.id,
-              role: i.role,
-              status: i.status,
-            }))
-          : [],
+        data.map((i) => ({
+          email: i.email,
+          expiresAt: i.expiresAt as unknown as string | Date,
+          id: i.id,
+          role: i.role as unknown as string | string[] | null,
+          status: (i as { status?: string }).status ?? 'pending',
+        })),
       )
     } finally {
       setLoading(false)
@@ -408,7 +411,7 @@ function InvitationsSection({ orgId }: { orgId: string }) {
                       className='py-1.5'
                       onClick={async () => {
                         try {
-                          await client.organization.cancelInvitation({
+                          await api.v1.organizations.invitations.cancel.post({
                             invitationId: inv.id,
                           })
                           toast({
@@ -443,6 +446,7 @@ function InvitationsSection({ orgId }: { orgId: string }) {
 
 function AdminSection({ orgId }: { orgId: string }) {
   const [leaving, setLeaving] = useState(false)
+  const api = getClientApi()
   return (
     <div className='space-y-3'>
       <p className='text-sm text-gray-600 dark:text-gray-400'>
@@ -454,7 +458,7 @@ function AdminSection({ orgId }: { orgId: string }) {
           onClick={async () => {
             setLeaving(true)
             try {
-              await client.organization.leave({ organizationId: orgId })
+              await api.v1.organizations.leave.post({ organizationId: orgId })
               toast({
                 description: 'You have left the organization.',
                 title: 'Left organization',

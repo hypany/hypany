@@ -43,7 +43,6 @@ export async function computeWaitlistPositionByCreatedAt(
   waitlistId: string,
   createdAt: Date,
 ) {
-  // Use Drizzle query builder and compute count on server
   const rows = await db
     .select({ id: waitlistEntries.id })
     .from(waitlistEntries)
@@ -58,3 +57,4 @@ export async function computeWaitlistPositionByCreatedAt(
   const position = rows.length
   return position > 0 ? position : 1
 }
+

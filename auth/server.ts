@@ -1,6 +1,6 @@
 import 'server-only'
 import { headers } from 'next/headers'
-import { auth } from './index'
+import { auth } from '@/app/api/auth'
 
 export async function getSession() {
   const session = await auth.api.getSession({

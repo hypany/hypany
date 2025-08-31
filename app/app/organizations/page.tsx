@@ -1,6 +1,5 @@
-import { headers } from 'next/headers'
 import { getTranslations } from 'next-intl/server'
-import { auth } from '@/auth'
+import { getServerApi } from '@/app/api/server'
 import {
   Table,
   TableBody,
@@ -16,13 +15,14 @@ import { OrgSettingsForm } from '@/components/molecules/organization/org-setting
 
 export default async function OrganizationsPage() {
   const t = await getTranslations('app.pages.organizations')
-  const hdrs = await headers()
-  // Get active organization details
-  const active = await auth.api.getFullOrganization({ headers: hdrs })
-  const session = await auth.api.getSession({ headers: hdrs })
-  const activeOrgId = session?.session?.activeOrganizationId ?? null
-  const orgs = await auth.api.listOrganizations({ headers: hdrs })
-  const organizations = Array.isArray(orgs) ? orgs : []
+  const api = await getServerApi()
+  const [{ data: activeRes }, { data: organizations }] = await Promise.all([
+    api.v1.organizations.active.get(),
+    api.v1.organizations.list.get(),
+  ])
+  const active = activeRes?.activeOrganization ?? null
+  const activeOrgId = activeRes?.activeOrganizationId ?? null
+  const orgs = Array.isArray(organizations) ? organizations : []
   return (
     <section aria-label={t('aria')}>
       {/* Show toast after redirects for invitation acceptance */}
@@ -48,7 +48,7 @@ export default async function OrganizationsPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {organizations.map((org: any) => (
+                {orgs.map((org: any) => (
                   <TableRow key={org.id}>
                     <TableCell className='font-medium'>{org.name}</TableCell>
                     <TableCell>{org.slug ?? '-'}</TableCell>
