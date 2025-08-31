@@ -291,11 +291,10 @@ export default function BlocksEditor({
             Type
           </label>
           <Select
-            id={typeId}
             value={newType}
             onValueChange={(v) => setNewType(v as BlockType)}
           >
-            <SelectTrigger className='py-1.5'>
+            <SelectTrigger className='py-1.5' id={typeId}>
               <SelectValue placeholder='Select type' />
             </SelectTrigger>
             <SelectContent>
