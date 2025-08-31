@@ -10,6 +10,7 @@ This document outlines the engineering principles and patterns used in this code
 - Use Tailwind and Tremor (NOT shadcn/ui)
 - Use React Server Components
 - Use React Query for data mutations
+- Do not use Unicode Icons or Emojis; use Lucide Icons instead
 
 ## Core Principles
 
