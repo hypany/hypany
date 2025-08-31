@@ -160,72 +160,8 @@ export default async function HypothesisOverview({
           </Card>
         </div>
 
-        {/* Right column: overview, recent activity, domain settings */}
+        {/* Right column: recent activity, domain settings */}
         <div className="flex-1 min-w-0 flex flex-col gap-4 lg:max-w-sm">
-          {/* Overview */}
-          <Card className='p-0 overflow-hidden'>
-            <div className='px-4 py-4'>
-              <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-                {t('pages.hypotheses.detail.headings.overview')}
-              </h2>
-            </div>
-            <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableHeaderCell>
-                      {t('pages.hypotheses.detail.table.columns.field')}
-                    </TableHeaderCell>
-                    <TableHeaderCell>
-                      {t('pages.hypotheses.detail.table.columns.value')}
-                    </TableHeaderCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className='font-medium'>Name</TableCell>
-                    <TableCell className='capitalize'>{hypothesis.name}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>Description</TableCell>
-                    <TableCell>
-                      <div className='max-w-xs truncate text-gray-700 dark:text-gray-300'>
-                        {hypothesis.description || '-'}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      {t('pages.hypotheses.detail.table.columns.status')}
-                    </TableCell>
-                    <TableCell className='capitalize'>
-                      {hypothesis.status}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      {t('pages.hypotheses.detail.table.columns.signups')}
-                    </TableCell>
-                    <TableCell>
-                      {stats ? (
-                        <span>
-                          {stats.totalEntries} total • {stats.verifiedEntries} verified
-                        </span>
-                      ) : (
-                        '-'
-                      )}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='font-medium'>
-                      {t('pages.hypotheses.detail.table.columns.subdomain')}
-                    </TableCell>
-                    <TableCell>{hypothesis.slug ?? '-'}.hypany.app</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableRoot>
-          </Card>
 
           {/* Domain Settings */}
           <Card className='p-0 overflow-hidden'>
@@ -239,26 +175,28 @@ export default async function HypothesisOverview({
                 initialCustomDomain={hypothesis.customDomain}
               />
             </div>
-            <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
-              <div className='grid grid-cols-1 gap-2'>
-                <div>
-                  <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
-                    {t('pages.hypotheses.detail.domains.labels.subdomain')}
-                  </div>
-                  <div className='mt-0.5 text-sm text-gray-900 dark:text-gray-50'>
-                    {hypothesis.slug || '-'}
-                  </div>
-                </div>
-                <div>
-                  <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>
-                    {t('pages.hypotheses.detail.domains.labels.custom-domain')}
-                  </div>
-                  <div className='mt-0.5 text-sm text-gray-900 dark:text-gray-50'>
-                    {hypothesis.customDomain || '-'}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className='font-medium'>
+                      {t('pages.hypotheses.detail.domains.labels.subdomain')}
+                    </TableCell>
+                    <TableCell className='text-gray-900 dark:text-gray-50'>
+                      {hypothesis.slug ? `${hypothesis.slug}.hypany.app` : '-'}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className='font-medium'>
+                      {t('pages.hypotheses.detail.domains.labels.custom-domain')}
+                    </TableCell>
+                    <TableCell className='text-gray-900 dark:text-gray-50'>
+                      {hypothesis.customDomain || '-'}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableRoot>
           </Card>
 
           {/* Recent Activity */}

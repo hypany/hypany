@@ -142,13 +142,13 @@
             "analyticsLink": "애널리틱스",
             "empty": "최근 활동이 없어요",
             "labels": {
-              "page_view": "페이지 조회 • {source}",
+              "page_view": "{source}",
               "signup": "가입",
-              "signup-with-email": "가입 ({email})",
+              "signup-with-email": "{email}",
               "verification": "인증",
-              "verification-with-email": "인증 ({email})"
+              "verification-with-email": "{email}"
             },
-            "badge": { "page_view": "페이지 조회", "signup": "가입", "verification": "인증" }
+            "badge": { "page_view": "방문", "signup": "가입", "verification": "인증" }
           },
           "domains": {
             "labels": {
