@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { getActiveOrganization } from '@/functions/organizations'
 import { getHypothesisById } from '@/functions/hypotheses'
@@ -26,6 +27,7 @@ export default async function HypothesisLayout({
 
   const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
   if (!hypothesis) notFound()
+  const t = await getTranslations('app.pages.hypotheses')
 
   return (
     <div>
@@ -43,14 +45,11 @@ export default async function HypothesisLayout({
       <div>
         <TabNavigation className='gap-x-4'>
           {[
-            { href: `/app/hypotheses/${id}`, name: 'Overview' },
-            {
-              href: `/app/hypotheses/${id}/landing-pages`,
-              name: 'Landing Pages',
-            },
-            { href: `/app/hypotheses/${id}/domains`, name: 'Domains' },
-            { href: `/app/hypotheses/${id}/waitlist`, name: 'Waitlist' },
-            { href: `/app/hypotheses/${id}/analytics`, name: 'Analytics' },
+            { href: `/app/hypotheses/${id}`, name: t('overview-link') },
+            { href: `/app/hypotheses/${id}/landing-pages`, name: t('tabs.landing-pages') },
+            { href: `/app/hypotheses/${id}/domains`, name: t('tabs.domains') },
+            { href: `/app/hypotheses/${id}/waitlist`, name: t('tabs.waitlist') },
+            { href: `/app/hypotheses/${id}/analytics`, name: t('tabs.analytics') },
           ].map((item) => (
             <TabNavigationLink
               key={item.href}

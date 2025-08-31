@@ -17,6 +17,7 @@ import { getActivityFeed } from '@/functions/analytics'
 import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { Card } from '@/components/atoms/card'
 
 type HypothesisRow = {
   id: string
@@ -110,19 +111,20 @@ export default async function Page() {
 
       <div className='grid grid-cols-1 gap-6 px-6 pb-10 lg:grid-cols-3'>
         <div className='col-span-1 lg:col-span-2'>
-          <div className='flex items-center justify-between pb-2'>
-            <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-              {t('top-hypotheses')}
-            </h2>
-            <Link
-              href='/app/hypotheses'
-              className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
-            >
-              {t('view-all')}
-            </Link>
-          </div>
-          <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
-            <Table>
+          <Card className='p-0 overflow-hidden'>
+            <div className='flex items-center justify-between px-4 pt-4 pb-3'>
+              <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+                {t('top-hypotheses')}
+              </h2>
+              <Link
+                href='/app/hypotheses'
+                className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
+              >
+                {t('view-all')}
+              </Link>
+            </div>
+            <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableHeaderCell>
@@ -183,15 +185,17 @@ export default async function Page() {
                 </TableBody>
               </Table>
             </TableRoot>
+          </Card>
         </div>
 
         <div className='col-span-1'>
-          <div className='pb-2'>
-            <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-              {t('recent-activity')}
-            </h2>
-          </div>
-          <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
+          <Card className='p-0 overflow-hidden'>
+            <div className='px-4 pt-4 pb-3'>
+              <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+                {t('recent-activity')}
+              </h2>
+            </div>
+            <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
               {activities.length === 0 ? (
                 <li className='py-4 text-sm text-gray-500 dark:text-gray-500 text-center'>
                   {t('no-activity')}
@@ -242,8 +246,9 @@ export default async function Page() {
                 })
               )}
             </ul>
-          </div>
+          </Card>
         </div>
+      </div>
     </section>
   )
 }

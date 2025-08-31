@@ -51,7 +51,31 @@
         "aria": "가설",
         "overview-link": "개요",
         "subtitle": "가설을 살펴보고 관리해요.",
-        "subtitle-2": "테이블 보기예요."
+        "subtitle-2": "테이블 보기예요.",
+        "create": {
+          "back-link": "가설 목록으로 돌아가기",
+          "subtitle": "초안 랜딩 페이지와 웨이트리스트를 자동으로 준비해요.",
+          "title": "새 가설 만들기"
+        },
+        "detail": {
+          "table": {
+            "columns": {
+              "field": "항목",
+              "signups": "가입",
+              "status": "상태",
+              "subdomain": "서브도메인",
+              "value": "값"
+            }
+          }
+        },
+        "no-active-organization": "활성화된 조직이 없어요.",
+        "no-data": "데이터가 없어요.",
+        "tabs": {
+          "analytics": "애널리틱스",
+          "domains": "도메인",
+          "landing-pages": "랜딩 페이지",
+          "waitlist": "웨이트리스트"
+        }
       },
       "organizations": {
         "aria": "조직",
@@ -184,6 +208,43 @@
       "footer-text": "이미 계정이 있나요?",
       "subtitle": "시작하려면 정보를 입력해요",
       "title": "계정 만들기"
+    }
+  },
+  "app.hypotheses": {
+    "create": {
+      "form": {
+        "actions": { "create": "가설 만들기", "creating": "만드는 중…" },
+        "description": {
+          "label": "설명 (선택)",
+          "placeholder": "문제와 접근 방식을 한 문장으로 적어주세요."
+        },
+        "errors": {
+          "generic": { "desc": "가설 생성에 실패했어요", "title": "오류" },
+          "name": {
+            "required": { "desc": "가설 이름을 입력해주세요.", "title": "이름이 필요해요" }
+          },
+          "slug": {
+            "invalid": { "desc": "올바른 서브도메인을 입력해주세요.", "title": "서브도메인이 올바르지 않아요" }
+          }
+        },
+        "name": {
+          "help": "아이디어를 잘 드러내는 간결한 이름이에요.",
+          "label": "이름",
+          "placeholder": "AI 로고 생성기"
+        },
+        "slug": {
+          "help": {
+            "empty": "비워두면 자동으로 생성돼요.",
+            "prefix": "공개 서브도메인에 사용돼요.",
+            "present": "{slug}.hypany.app 로 생성돼요. 언제든 수정하거나 커스텀 도메인을 연결할 수 있어요."
+          },
+          "label": "서브도메인 (선택)",
+          "placeholder": "ai-logo"
+        },
+        "toasts": {
+          "created": { "desc": "개요 페이지로 이동해요...", "title": "가설이 생성됐어요" }
+        }
+      }
     }
   },
   "common": {

@@ -54,7 +54,31 @@
         "aria": "Hypotheses",
         "overview-link": "Overview",
         "subtitle": "Explore and manage your hypotheses.",
-        "subtitle-2": "for a table view."
+        "subtitle-2": "for a table view.",
+        "create": {
+          "back-link": "Back to hypotheses",
+          "subtitle": "We'll set up a draft landing page and a waitlist automatically.",
+          "title": "Create a new hypothesis"
+        },
+        "detail": {
+          "table": {
+            "columns": {
+              "field": "Field",
+              "signups": "Signups",
+              "status": "Status",
+              "subdomain": "Subdomain",
+              "value": "Value"
+            }
+          }
+        },
+        "no-active-organization": "No active organization.",
+        "no-data": "No data.",
+        "tabs": {
+          "analytics": "Analytics",
+          "domains": "Domains",
+          "landing-pages": "Landing Pages",
+          "waitlist": "Waitlist"
+        }
       },
       "organizations": {
         "aria": "Organizations",
@@ -195,6 +219,52 @@
       "footer-text": "Already have an account?",
       "subtitle": "Enter your information to get started",
       "title": "Create an account"
+    }
+  },
+  "app.hypotheses": {
+    "create": {
+      "form": {
+        "actions": { "create": "Create Hypothesis", "creating": "Creating…" },
+        "description": {
+          "label": "Description (optional)",
+          "placeholder": "One sentence describing the problem and your approach."
+        },
+        "errors": {
+          "generic": { "desc": "Failed to create hypothesis", "title": "Error" },
+          "name": {
+            "required": {
+              "desc": "Please enter a hypothesis name to continue.",
+              "title": "Name is required"
+            }
+          },
+          "slug": {
+            "invalid": {
+              "desc": "Please enter a valid subdomain.",
+              "title": "Invalid subdomain"
+            }
+          }
+        },
+        "name": {
+          "help": "A concise, memorable name for your idea.",
+          "label": "Name",
+          "placeholder": "AI Logo Generator"
+        },
+        "slug": {
+          "help": {
+            "empty": "Leave blank to auto-generate.",
+            "prefix": "Used for your public subdomain.",
+            "present": "Will be created as {slug}.hypany.app. You can update this or link your custom domain anytime."
+          },
+          "label": "Subdomain (optional)",
+          "placeholder": "ai-logo"
+        },
+        "toasts": {
+          "created": {
+            "desc": "Redirecting to the overview...",
+            "title": "Hypothesis created"
+          }
+        }
+      }
     }
   },
   "common": {

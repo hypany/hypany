@@ -75,12 +75,14 @@ export async function getActivityFeed(
         inArray(pageVisits.hypothesisId, hypothesisIds),
         gt(pageVisits.createdAt, startDate),
         cursorCondition,
-        // Filter out bots
+        // Filter out bots: allow null UA, otherwise ensure none of the patterns are present
         or(
           isNull(pageVisits.userAgent),
-          ...BOT_PATTERNS.map(pattern => 
-            sql`LOWER(${pageVisits.userAgent}) NOT LIKE '%${pattern}%'`
-          )
+          and(
+            ...BOT_PATTERNS.map((pattern) =>
+              sql`LOWER(${pageVisits.userAgent}) NOT LIKE ${'%' + pattern + '%'}`,
+            ),
+          ),
         )
       ),
     )
@@ -225,12 +227,14 @@ export async function getTrafficSources(
       and(
         inArray(pageVisits.hypothesisId, hypothesisIds),
         gt(pageVisits.createdAt, startDate),
-        // Filter out bots
+        // Filter out bots: allow null UA, otherwise ensure none of the patterns are present
         or(
           isNull(pageVisits.userAgent),
-          ...BOT_PATTERNS.map(pattern => 
-            sql`LOWER(${pageVisits.userAgent}) NOT LIKE '%${pattern}%'`
-          )
+          and(
+            ...BOT_PATTERNS.map((pattern) =>
+              sql`LOWER(${pageVisits.userAgent}) NOT LIKE ${'%' + pattern + '%'}`,
+            ),
+          ),
         )
       ),
     )

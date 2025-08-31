@@ -1,10 +1,7 @@
 'use client'
 
-import { RiAddLine, RiArrowDownSFill, RiCheckLine } from '@remixicon/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
+import { Badge } from '@/components/atoms/badge'
 import {
   Dialog,
   DialogContent,
@@ -20,10 +17,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
+import { Input } from '@/components/atoms/input'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 import { toast } from '@/lib/use-toast'
-import { Input } from '@/components/atoms/input'
-import { Badge } from '@/components/atoms/badge'
+import { RiAddLine, RiCheckLine } from '@remixicon/react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react'
 
 type Organization = { id: string; name: string; logo?: string | null }
 
@@ -128,10 +128,6 @@ export function OrgSwitcherClient({
             <span className='truncate flex-1 min-w-0 px-2 text-left'>
               {current.name}
             </span>
-            <RiArrowDownSFill
-              className='size-5 shrink-0 text-gray-400 dark:text-gray-600 ml-auto'
-              aria-hidden='true'
-            />
           </span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start' className='min-w-72'>

@@ -5,15 +5,8 @@ import {
   getActiveOrganization,
   listUserOrganizations,
 } from '@/functions/organizations'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
-} from '@/components/atoms/table'
+import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
+import { Card } from '@/components/atoms/card'
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
@@ -54,8 +47,9 @@ export default async function OrganizationsPage() {
       <div className='px-6 py-6'>
         <div className='mt-0 grid grid-cols-1 gap-6'>
           <div className='col-span-1'>
-            <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
-              <Table>
+            <Card className='p-0 overflow-hidden'>
+              <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+                <Table>
                 <TableHead>
                   <TableRow>
                     <TableHeaderCell>Name</TableHeaderCell>
@@ -138,8 +132,9 @@ export default async function OrganizationsPage() {
                     )
                   })}
                 </TableBody>
-              </Table>
-            </TableRoot>
+                </Table>
+              </TableRoot>
+            </Card>
           </div>
         </div>
       </div>
