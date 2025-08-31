@@ -346,10 +346,10 @@
       }
     },
     "hero": {
-      "cta": "Start Testing Ideas",
+      "cta": "Validate Ideas Without Codework",
       "sub": {
-        "line-1": "But they might want your 97th idea.",
-        "line-2": "Hypany helps you fail fast."
+        "line-1": "They might want your 97th idea.",
+        "line-2": "Then 96 times of codework is too expensive."
       },
       "title": {
         "part-1": "Nobody",
