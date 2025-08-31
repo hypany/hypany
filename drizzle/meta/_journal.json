@@ -1,48 +1,13 @@
 {
+  "version": "7",
   "dialect": "postgresql",
   "entries": [
     {
-      "breakpoints": true,
       "idx": 0,
-      "tag": "0000_ancient_hex",
       "version": "7",
-      "when": 1756471398071
-    },
-    {
-      "breakpoints": true,
-      "idx": 1,
-      "tag": "0001_fresh_puma",
-      "version": "7",
-      "when": 1756492458267
-    },
-    {
-      "breakpoints": true,
-      "idx": 2,
-      "tag": "0002_wooden_firestar",
-      "version": "7",
-      "when": 1756496049069
-    },
-    {
-      "breakpoints": true,
-      "idx": 3,
-      "tag": "0003_big_doctor_doom",
-      "version": "7",
-      "when": 1756559437463
-    },
-    {
-      "breakpoints": true,
-      "idx": 4,
-      "tag": "0004_eminent_wendell_vaughn",
-      "version": "7",
-      "when": 1756560020595
-    },
-    {
-      "breakpoints": true,
-      "idx": 5,
-      "tag": "0005_rich_tattoo",
-      "version": "7",
-      "when": 1756560767273
+      "when": 1756622606750,
+      "tag": "0000_volatile_freak",
+      "breakpoints": true
     }
-  ],
-  "version": "7"
+  ]
 }

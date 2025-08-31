@@ -30,13 +30,27 @@ CREATE TABLE "assets" (
 --> statement-breakpoint
 CREATE TABLE "hypotheses" (
 	"created_at" timestamp NOT NULL,
+	"custom_domain" text,
 	"deleted_at" timestamp,
 	"description" text,
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
+	"organization_id" text NOT NULL,
+	"slug" text,
 	"status" text DEFAULT 'draft' NOT NULL,
 	"updated_at" timestamp NOT NULL,
-	"user_id" text NOT NULL
+	"user_id" text NOT NULL,
+	CONSTRAINT "hypotheses_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "invitations" (
+	"email" text NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
+	"inviter_id" text NOT NULL,
+	"organization_id" text NOT NULL,
+	"role" text,
+	"status" text DEFAULT 'pending' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "landing_page_blocks" (
@@ -53,20 +67,35 @@ CREATE TABLE "landing_page_blocks" (
 CREATE TABLE "landing_pages" (
 	"created_at" timestamp NOT NULL,
 	"custom_css" text,
-	"custom_domain" text,
 	"deleted_at" timestamp,
 	"favicon" text,
 	"hypothesis_id" text NOT NULL,
 	"id" text PRIMARY KEY NOT NULL,
 	"meta_description" text,
 	"meta_title" text,
+	"name" text,
 	"og_image" text,
 	"published_at" timestamp,
-	"slug" text,
 	"template" text DEFAULT 'default' NOT NULL,
-	"updated_at" timestamp NOT NULL,
-	CONSTRAINT "landing_pages_hypothesis_id_unique" UNIQUE("hypothesis_id"),
-	CONSTRAINT "landing_pages_slug_unique" UNIQUE("slug")
+	"updated_at" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "members" (
+	"created_at" timestamp NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
+	"organization_id" text NOT NULL,
+	"role" text DEFAULT 'member' NOT NULL,
+	"user_id" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "organizations" (
+	"created_at" timestamp NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
+	"logo" text,
+	"metadata" text,
+	"name" text NOT NULL,
+	"slug" text,
+	CONSTRAINT "organizations_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "page_visits" (
@@ -81,6 +110,7 @@ CREATE TABLE "page_visits" (
 );
 --> statement-breakpoint
 CREATE TABLE "sessions" (
+	"active_organization_id" text,
 	"created_at" timestamp NOT NULL,
 	"expires_at" timestamp NOT NULL,
 	"id" text PRIMARY KEY NOT NULL,
@@ -161,9 +191,14 @@ CREATE TABLE "waitlists" (
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "assets" ADD CONSTRAINT "assets_hypothesis_id_hypotheses_id_fk" FOREIGN KEY ("hypothesis_id") REFERENCES "public"."hypotheses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "assets" ADD CONSTRAINT "assets_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "hypotheses" ADD CONSTRAINT "hypotheses_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "hypotheses" ADD CONSTRAINT "hypotheses_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "invitations" ADD CONSTRAINT "invitations_inviter_id_users_id_fk" FOREIGN KEY ("inviter_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "invitations" ADD CONSTRAINT "invitations_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "landing_page_blocks" ADD CONSTRAINT "landing_page_blocks_landing_page_id_landing_pages_id_fk" FOREIGN KEY ("landing_page_id") REFERENCES "public"."landing_pages"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "landing_pages" ADD CONSTRAINT "landing_pages_hypothesis_id_hypotheses_id_fk" FOREIGN KEY ("hypothesis_id") REFERENCES "public"."hypotheses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "members" ADD CONSTRAINT "members_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "members" ADD CONSTRAINT "members_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "page_visits" ADD CONSTRAINT "page_visits_hypothesis_id_hypotheses_id_fk" FOREIGN KEY ("hypothesis_id") REFERENCES "public"."hypotheses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "page_visits" ADD CONSTRAINT "page_visits_landing_page_id_landing_pages_id_fk" FOREIGN KEY ("landing_page_id") REFERENCES "public"."landing_pages"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -173,19 +208,16 @@ ALTER TABLE "waitlists" ADD CONSTRAINT "waitlists_hypothesis_id_hypotheses_id_fk
 CREATE INDEX "assets_hypothesis_id_idx" ON "assets" USING btree ("hypothesis_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "assets_key_unique" ON "assets" USING btree ("key");--> statement-breakpoint
 CREATE INDEX "assets_user_id_idx" ON "assets" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "hypotheses_org_id_idx" ON "hypotheses" USING btree ("organization_id");--> statement-breakpoint
 CREATE INDEX "hypotheses_user_id_idx" ON "hypotheses" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "landing_page_blocks_landing_page_id_idx" ON "landing_page_blocks" USING btree ("landing_page_id");--> statement-breakpoint
-CREATE INDEX "landing_pages_custom_domain_idx" ON "landing_pages" USING btree ("custom_domain");--> statement-breakpoint
 CREATE INDEX "landing_pages_hypothesis_id_idx" ON "landing_pages" USING btree ("hypothesis_id");--> statement-breakpoint
 CREATE INDEX "page_visits_created_at_idx" ON "page_visits" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "page_visits_hypothesis_idx" ON "page_visits" USING btree ("hypothesis_id");--> statement-breakpoint
 CREATE INDEX "page_visits_landing_page_idx" ON "page_visits" USING btree ("landing_page_id");--> statement-breakpoint
 CREATE INDEX "page_visits_visitor_idx" ON "page_visits" USING btree ("visitor_id");--> statement-breakpoint
-CREATE INDEX "sessions_token_idx" ON "sessions" USING btree ("token");--> statement-breakpoint
-CREATE INDEX "sessions_user_id_idx" ON "sessions" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "user_settings_user_id_idx" ON "user_settings" USING btree ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_settings_user_id_unique_idx" ON "user_settings" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "users_email_idx" ON "users" USING btree ("email");--> statement-breakpoint
 CREATE INDEX "waitlist_entries_visitor_idx" ON "waitlist_entries" USING btree ("visitor_id");--> statement-breakpoint
 CREATE INDEX "waitlist_entries_waitlist_id_created_at_idx" ON "waitlist_entries" USING btree ("waitlist_id","created_at");--> statement-breakpoint
 CREATE INDEX "waitlist_entries_waitlist_id_idx" ON "waitlist_entries" USING btree ("waitlist_id");--> statement-breakpoint
