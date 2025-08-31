@@ -1,6 +1,4 @@
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
-import { getWaitlistByHypothesisId, getWaitlistEntries } from '@/functions/hypotheses'
 import {
   Table,
   TableBody,
@@ -10,6 +8,8 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
+import { getWaitlistByHypothesisId, getWaitlistEntries } from '@/functions/hypotheses'
+import { getActiveOrganization } from '@/functions/organizations'
 
 function f(date: string | Date) {
   try {
@@ -42,18 +42,13 @@ export default async function WaitlistPage({
 
   return (
     <section>
-      <div className='mb-4 flex items-center justify-between'>
+      <div className='p-4 flex items-center justify-between'>
         <div>
-          <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-            Waitlist
-          </h1>
           <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-            {stats ? (
+            {stats && (
               <span>
                 {stats.totalEntries} total • {stats.verifiedEntries} verified
               </span>
-            ) : (
-              <span>Loading…</span>
             )}
           </p>
         </div>

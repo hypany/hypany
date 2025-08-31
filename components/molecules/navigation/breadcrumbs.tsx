@@ -9,9 +9,7 @@ type Crumb = { href: string; label: string }
 
 export function Breadcrumbs() {
   const pathname = usePathname()
-  const tCrumbs = useTranslations('app.breadcrumbs')
-  const tPages = useTranslations('app.pages')
-  const tHypTabs = useTranslations('app.hypotheses.tabs')
+  const tApp = useTranslations('app')
 
   const base = '/app'
   const segmentsAll = pathname.split('/').filter(Boolean)
@@ -28,24 +26,24 @@ export function Breadcrumbs() {
   }
 
   function labelFor(seg: string): string {
-    if (isIdLike(seg)) return tCrumbs('details')
+    if (isIdLike(seg)) return tApp('breadcrumbs.details')
     switch (seg) {
       case 'hypotheses':
-        return tCrumbs('hypotheses')
+        return tApp('breadcrumbs.hypotheses')
       case 'assets':
-        return tPages('assets.title')
+        return tApp('pages.assets.title')
       case 'analytics':
-        return tPages('analytics.title')
+        return tApp('pages.analytics.title')
       case 'waitlists':
-        return tPages('waitlists.title')
+        return tApp('pages.waitlists.title')
       case 'settings':
-        return tPages('settings.title')
+        return tApp('pages.settings.title')
       case 'organizations':
-        return tPages('organizations.title')
+        return tApp('pages.organizations.title')
       case 'monitoring':
-        return tHypTabs('monitoring')
+        return tApp('hypotheses.tabs.monitoring')
       case 'audits':
-        return tHypTabs('audits')
+        return tApp('hypotheses.tabs.audits')
       default:
         return humanize(seg)
     }
@@ -69,7 +67,7 @@ export function Breadcrumbs() {
     )
   }
 
-  const crumbs: Crumb[] = [{ href: base, label: tCrumbs('home') }]
+  const crumbs: Crumb[] = [{ href: base, label: tApp('breadcrumbs.home') }]
   let acc = base
   for (const seg of segments) {
     const nextAcc = `${acc}/${seg}`

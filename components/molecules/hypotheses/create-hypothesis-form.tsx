@@ -13,7 +13,7 @@ import { validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
 
 export function CreateHypothesisForm() {
-  const t = useTranslations('app.hypotheses.create.form')
+  const t = useTranslations('app')
   const router = useRouter()
 
   const [name, setName] = useState('')
@@ -35,8 +35,8 @@ export function CreateHypothesisForm() {
     e.preventDefault()
     if (!name.trim()) {
       toast({
-        title: t('errors.name.required.title'),
-        description: t('errors.name.required.desc'),
+        title: t('hypotheses.create.form.errors.name.required.title'),
+        description: t('hypotheses.create.form.errors.name.required.desc'),
         variant: 'error',
       })
       return
@@ -47,8 +47,8 @@ export function CreateHypothesisForm() {
       const { valid, error } = validateSlug(finalSlug)
       if (!valid) {
         toast({
-          title: t('errors.slug.invalid.title'),
-          description: error || t('errors.slug.invalid.desc'),
+          title: t('hypotheses.create.form.errors.slug.invalid.title'),
+          description: error || t('hypotheses.create.form.errors.slug.invalid.desc'),
           variant: 'error',
         })
         return
@@ -68,12 +68,12 @@ export function CreateHypothesisForm() {
         | undefined
       if (!data?.hypothesis?.id) throw new Error('Failed to create hypothesis')
 
-      toast({ title: t('toasts.created.title'), description: t('toasts.created.desc'), variant: 'success' })
+      toast({ title: t('hypotheses.create.form.toasts.created.title'), description: t('hypotheses.create.form.toasts.created.desc'), variant: 'success' })
       router.push(`/app/hypotheses/${data.hypothesis.id}`)
       router.refresh()
     } catch (err) {
-      const message = (err as Error)?.message || t('errors.generic.desc')
-      toast({ title: t('errors.generic.title'), description: message, variant: 'error' })
+      const message = (err as Error)?.message || t('hypotheses.create.form.errors.generic.desc')
+      toast({ title: t('hypotheses.create.form.errors.generic.title'), description: message, variant: 'error' })
     } finally {
       setSubmitting(false)
     }
@@ -82,22 +82,22 @@ export function CreateHypothesisForm() {
   return (
     <form onSubmit={onSubmit} className='space-y-5'>
       <div className='space-y-2'>
-        <Label htmlFor={nameId}>{t('name.label')}</Label>
+        <Label htmlFor={nameId}>{t('hypotheses.create.form.name.label')}</Label>
         <Input
           id={nameId}
-          placeholder={t('name.placeholder')}
+          placeholder={t('hypotheses.create.form.name.placeholder')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={submitting}
         />
-        <p className='text-xs text-gray-500 dark:text-gray-500'>{t('name.help')}</p>
+        <p className='text-xs text-gray-500 dark:text-gray-500'>{t('hypotheses.create.form.name.help')}</p>
       </div>
 
       <div className='space-y-2'>
-        <Label htmlFor={descId}>{t('description.label')}</Label>
+        <Label htmlFor={descId}>{t('hypotheses.create.form.description.label')}</Label>
         <Textarea
           id={descId}
-          placeholder={t('description.placeholder')}
+          placeholder={t('hypotheses.create.form.description.placeholder')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={submitting}
@@ -106,10 +106,10 @@ export function CreateHypothesisForm() {
       </div>
 
       <div className='space-y-2'>
-        <Label htmlFor={slugId}>{t('slug.label')}</Label>
+        <Label htmlFor={slugId}>{t('hypotheses.create.form.slug.label')}</Label>
         <Input
           id={slugId}
-          placeholder={t('slug.placeholder')}
+          placeholder={t('hypotheses.create.form.slug.placeholder')}
           value={derivedSlug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           disabled={submitting}
@@ -117,11 +117,11 @@ export function CreateHypothesisForm() {
           minLength={3}
         />
         <p className='text-xs text-gray-500 dark:text-gray-500'>
-          {t('slug.help.prefix')}
+          {t('hypotheses.create.form.slug.help.prefix')}
           {derivedSlug ? (
             <>
               {' '}
-              {t('slug.help.present', { slug: derivedSlug })}
+              {t('hypotheses.create.form.slug.help.present', { slug: derivedSlug })}
               {!slugValidation.valid && (
                 <span className='ml-2 text-red-600 dark:text-red-400'>
                   ({slugValidation.error})
@@ -129,14 +129,14 @@ export function CreateHypothesisForm() {
               )}
             </>
           ) : (
-            t('slug.help.empty')
+            t('hypotheses.create.form.slug.help.empty')
           )}
         </p>
       </div>
 
       <div className='pt-2'>
         <Button className='w-full sm:w-auto' disabled={submitting}>
-          {submitting ? t('actions.creating') : t('actions.create')}
+          {submitting ? t('hypotheses.create.form.actions.creating') : t('hypotheses.create.form.actions.create')}
         </Button>
       </div>
     </form>

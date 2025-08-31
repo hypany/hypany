@@ -39,7 +39,7 @@ export function DropdownUserProfile({
   const router = useRouter()
   const locale = useLocale()
   const t = useTranslations('nav')
-  const tApp = useTranslations('app.userMenu')
+  const tApp = useTranslations('app')
   const [isPending, startTransition] = useTransition()
   useEffect(() => {
     setMounted(true)
@@ -78,7 +78,7 @@ export function DropdownUserProfile({
         <DropdownMenuGroup>
           <DropdownMenuSubMenu>
             <DropdownMenuSubMenuTrigger>
-              {tApp('theme')}
+              {tApp('userMenu.theme')}
             </DropdownMenuSubMenuTrigger>
             <DropdownMenuSubMenuContent>
               <DropdownMenuRadioGroup
@@ -141,21 +141,21 @@ export function DropdownUserProfile({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            {tApp('changelog')}
+            {tApp('userMenu.changelog')}
             <ArrowUpRight
               className='mb-1 ml-1 size-3 shrink-0 text-gray-500 dark:text-gray-500'
               aria-hidden='true'
             />
           </DropdownMenuItem>
           <DropdownMenuItem>
-            {tApp('documentation')}
+            {tApp('userMenu.documentation')}
             <ArrowUpRight
               className='mb-1 ml-1 size-3 shrink-0 text-gray-500'
               aria-hidden='true'
             />
           </DropdownMenuItem>
           <DropdownMenuItem>
-            {tApp('joinSlack')}
+            {tApp('userMenu.joinSlack')}
             <ArrowUpRight
               className='mb-1 ml-1 size-3 shrink-0 text-gray-500'
               aria-hidden='true'
@@ -165,7 +165,7 @@ export function DropdownUserProfile({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={handleSignOut}>
-            {tApp('signOut')}
+            {tApp('userMenu.signOut')}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

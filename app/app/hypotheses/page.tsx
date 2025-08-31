@@ -29,17 +29,14 @@ type Row = {
 
 export default async function HypothesesPage() {
   await requireAuth()
-  const [tRoot, tHyp] = await Promise.all([
-    getTranslations('app.pages.root'),
-    getTranslations('app.pages.hypotheses'),
-  ])
+  const t = await getTranslations('app')
   const activeOrgRes = await getActiveOrganization()
   
   if (!activeOrgRes?.activeOrganizationId) {
     return (
       <section className='px-4 py-6 sm:p-6'>
         <p className='text-sm text-gray-500 dark:text-gray-500'>
-          {tHyp('no-active-organization')}
+          {t('pages.hypotheses.no-active-organization')}
         </p>
       </section>
     )
@@ -54,7 +51,7 @@ export default async function HypothesesPage() {
     return (
       <section className='px-4 py-6 sm:p-6'>
         <p className='text-sm text-gray-500 dark:text-gray-500'>
-          {tHyp('no-data')}
+          {t('pages.hypotheses.no-data')}
         </p>
       </section>
     )
@@ -85,19 +82,19 @@ export default async function HypothesesPage() {
   const metrics: Metric[] = [
     {
       fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: tRoot('metrics.visitor-conversion'),
+      label: t('pages.root.metrics.visitor-conversion'),
       percentage: `${(conversion * 100).toFixed(1)}%`,
       value: conversion,
     },
     {
       fraction: `${Number(metricsData?.last7Signups ?? 0)}/${Number(metricsData?.prev7Signups ?? 0)}`,
-      label: tRoot('metrics.signup-growth-wow'),
+      label: t('pages.root.metrics.signup-growth-wow'),
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
       fraction: `${readyCount}/${denom}`,
-      label: tRoot('metrics.ready-to-launch'),
+      label: t('pages.root.metrics.ready-to-launch'),
       percentage: '',
       value: Math.min(1, readyCount / denom),
     },
@@ -112,10 +109,10 @@ export default async function HypothesesPage() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>{tRoot('table.columns.hypothesis')}</TableHeaderCell>
-              <TableHeaderCell>{tRoot('table.columns.status')}</TableHeaderCell>
-              <TableHeaderCell>{tRoot('table.columns.signups')}</TableHeaderCell>
-              <TableHeaderCell>{tRoot('table.columns.analytics')}</TableHeaderCell>
+              <TableHeaderCell>{t('pages.root.table.columns.hypothesis')}</TableHeaderCell>
+              <TableHeaderCell>{t('pages.root.table.columns.status')}</TableHeaderCell>
+              <TableHeaderCell>{t('pages.root.table.columns.signups')}</TableHeaderCell>
+              <TableHeaderCell>{t('pages.root.table.columns.analytics')}</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>

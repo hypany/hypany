@@ -4,6 +4,8 @@ import { requireAuth } from '@/auth/server'
 import {
   getActiveOrganization,
   listUserOrganizations,
+  countMembers,
+  countInvitations,
 } from '@/functions/organizations'
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
 import { Card } from '@/components/atoms/card'
@@ -13,9 +15,10 @@ import { OrgSettingsForm } from '@/components/molecules/organization/org-setting
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
 import { Badge } from '@/components/atoms/badge'
 import SetActiveOrgButton from '@/components/molecules/organization/set-active-org-button'
+import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
 
 export default async function OrganizationsPage() {
-  const t = await getTranslations('app.pages.organizations')
+  const t = await getTranslations('app')
   await requireAuth()
   const [activeRes, organizations] = await Promise.all([
     getActiveOrganization(),
@@ -26,6 +29,33 @@ export default async function OrganizationsPage() {
   const orgs: Organization[] = Array.isArray(organizations) ? (organizations as Organization[]) : []
   const activeOrgId = activeRes?.activeOrganizationId ?? null
   // active org data available via activeOrgId; per-row settings dialog handles edits
+  const [membersTotal, invitesTotal] = activeOrgId
+    ? await Promise.all([
+        countMembers(activeOrgId),
+        countInvitations(activeOrgId),
+      ])
+    : [0, 0]
+  const orgCount = orgs.length
+  const metrics: Metric[] = [
+    {
+      fraction: String(orgCount),
+      label: 'Organizations',
+      percentage: '',
+      value: Math.min(1, orgCount / 3),
+    },
+    {
+      fraction: String(membersTotal),
+      label: 'Members (active org)',
+      percentage: '',
+      value: Math.min(1, membersTotal / 10),
+    },
+    {
+      fraction: String(invitesTotal),
+      label: 'Pending invites',
+      percentage: '',
+      value: Math.min(1, invitesTotal / 5),
+    },
+  ]
 
   function initials(name?: string) {
     if (!name) return 'O'
@@ -42,9 +72,12 @@ export default async function OrganizationsPage() {
   }
 
   return (
-    <section aria-label={t('aria')}>
+    <section aria-label={t('pages.organizations.aria')}>
       <AcceptInvitationToast />
       <div className='px-6 py-6'>
+        <div className='mt-0'>
+          <MetricsCards metrics={metrics} compact />
+        </div>
         <div className='mt-0 grid grid-cols-1 gap-6'>
           <div className='col-span-1'>
             <Card className='p-0 overflow-hidden'>

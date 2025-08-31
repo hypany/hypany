@@ -69,3 +69,32 @@ export async function acceptInvitation(invitationId: string) {
   })
   return response
 }
+
+/**
+ * Count members for an organization (server-only)
+ */
+export async function countMembers(organizationId: string) {
+  const hdrs = await headers()
+  const res = await auth.api.listMembers({
+    headers: hdrs,
+    query: { organizationId },
+  })
+  if (!res) return 0
+  if (typeof (res as any).total === 'number') return (res as any).total as number
+  const members = (res as any).members as unknown[] | undefined
+  return Array.isArray(members) ? members.length : 0
+}
+
+/**
+ * Count pending invitations for an organization (server-only)
+ */
+export async function countInvitations(organizationId: string) {
+  const hdrs = await headers()
+  const res = (await auth.api.listInvitations({
+    headers: hdrs,
+    query: { organizationId },
+  })) as unknown
+  if (Array.isArray(res)) return res.length
+  if (res && typeof (res as any).total === 'number') return (res as any).total
+  return 0
+}

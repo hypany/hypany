@@ -27,7 +27,7 @@ export default async function HypothesisLayout({
 
   const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
   if (!hypothesis) notFound()
-  const t = await getTranslations('app.pages.hypotheses')
+  const t = await getTranslations('app')
 
   return (
     <div>
@@ -45,11 +45,11 @@ export default async function HypothesisLayout({
       <div>
         <TabNavigation className='gap-x-4'>
           {[
-            { href: `/app/hypotheses/${id}`, name: t('overview-link') },
-            { href: `/app/hypotheses/${id}/landing-pages`, name: t('tabs.landing-pages') },
-            { href: `/app/hypotheses/${id}/domains`, name: t('tabs.domains') },
-            { href: `/app/hypotheses/${id}/waitlist`, name: t('tabs.waitlist') },
-            { href: `/app/hypotheses/${id}/analytics`, name: t('tabs.analytics') },
+            { href: `/app/hypotheses/${id}`, name: t('pages.hypotheses.overview-link') },
+            { href: `/app/hypotheses/${id}/landing-pages`, name: t('pages.hypotheses.tabs.landing-pages') },
+            { href: `/app/hypotheses/${id}/domains`, name: t('pages.hypotheses.tabs.domains') },
+            { href: `/app/hypotheses/${id}/waitlist`, name: t('pages.hypotheses.tabs.waitlist') },
+            { href: `/app/hypotheses/${id}/analytics`, name: t('pages.hypotheses.tabs.analytics') },
           ].map((item) => (
             <TabNavigationLink
               key={item.href}

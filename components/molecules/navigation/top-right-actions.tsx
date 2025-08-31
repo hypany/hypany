@@ -14,7 +14,7 @@ import { CreateOrganizationForm } from '@/components/molecules/organization/crea
 
 export function TopRightActions() {
   const pathname = usePathname()
-  const t = useTranslations('app.pages.root')
+  const t = useTranslations('app')
 
   // Show actions per page
   const onDashboard = pathname === '/app'
@@ -26,12 +26,12 @@ export function TopRightActions() {
     <div className='ml-auto flex items-center gap-2'>
       {onDashboard ? (
         <Button asChild variant='secondary'>
-          <Link href='/app/assets'>{t('actions.upload-asset')}</Link>
+          <Link href='/app/assets'>{t('pages.root.actions.upload-asset')}</Link>
         </Button>
       ) : null}
       {onHypotheses && (
         <Button asChild>
-          <Link href='/app/hypotheses/create'>{t('actions.create-hypothesis')}</Link>
+          <Link href='/app/hypotheses/create'>{t('pages.root.actions.create-hypothesis')}</Link>
         </Button>
       )}
       {onOrganizations && (

@@ -37,6 +37,50 @@
             "status": "Status"
           }
         }
+      },
+      "create": {
+        "form": {
+          "actions": { "create": "Create Hypothesis", "creating": "Creating…" },
+          "description": {
+            "label": "Description (optional)",
+            "placeholder": "One sentence describing the problem and your approach."
+          },
+          "errors": {
+            "generic": { "desc": "Failed to create hypothesis", "title": "Error" },
+            "name": {
+              "required": {
+                "desc": "Please enter a hypothesis name to continue.",
+                "title": "Name is required"
+              }
+            },
+            "slug": {
+              "invalid": {
+                "desc": "Please enter a valid subdomain.",
+                "title": "Invalid subdomain"
+              }
+            }
+          },
+          "name": {
+            "help": "A concise, memorable name for your idea.",
+            "label": "Name",
+            "placeholder": "AI Logo Generator"
+          },
+          "slug": {
+            "help": {
+              "empty": "Leave blank to auto-generate.",
+              "prefix": "Used for your public subdomain.",
+              "present": "Will be created as {slug}.hypany.app. You can update this or link your custom domain anytime."
+            },
+            "label": "Subdomain (optional)",
+            "placeholder": "ai-logo"
+          },
+          "toasts": {
+            "created": {
+              "desc": "Redirecting to the overview...",
+              "title": "Hypothesis created"
+            }
+          }
+        }
       }
     },
     "pages": {
@@ -221,52 +265,7 @@
       "title": "Create an account"
     }
   },
-  "app.hypotheses": {
-    "create": {
-      "form": {
-        "actions": { "create": "Create Hypothesis", "creating": "Creating…" },
-        "description": {
-          "label": "Description (optional)",
-          "placeholder": "One sentence describing the problem and your approach."
-        },
-        "errors": {
-          "generic": { "desc": "Failed to create hypothesis", "title": "Error" },
-          "name": {
-            "required": {
-              "desc": "Please enter a hypothesis name to continue.",
-              "title": "Name is required"
-            }
-          },
-          "slug": {
-            "invalid": {
-              "desc": "Please enter a valid subdomain.",
-              "title": "Invalid subdomain"
-            }
-          }
-        },
-        "name": {
-          "help": "A concise, memorable name for your idea.",
-          "label": "Name",
-          "placeholder": "AI Logo Generator"
-        },
-        "slug": {
-          "help": {
-            "empty": "Leave blank to auto-generate.",
-            "prefix": "Used for your public subdomain.",
-            "present": "Will be created as {slug}.hypany.app. You can update this or link your custom domain anytime."
-          },
-          "label": "Subdomain (optional)",
-          "placeholder": "ai-logo"
-        },
-        "toasts": {
-          "created": {
-            "desc": "Redirecting to the overview...",
-            "title": "Hypothesis created"
-          }
-        }
-      }
-    }
-  },
+  
   "common": {
     "aria": {
       "product-showcase": "Product showcase"

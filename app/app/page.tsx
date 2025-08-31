@@ -1,5 +1,6 @@
 import { getSession } from '@/auth/server'
 import { Button } from '@/components/atoms/button'
+import { Card } from '@/components/atoms/card'
 import {
   Table,
   TableBody,
@@ -10,14 +11,12 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import {
-  type Metric,
-  MetricsCards,
+  type Metric
 } from '@/components/molecules/homepage/metrics-cards'
 import { getActivityFeed } from '@/functions/analytics'
 import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { Card } from '@/components/atoms/card'
 
 type HypothesisRow = {
   id: string
@@ -36,7 +35,7 @@ type Activity = {
 
 
 export default async function Page() {
-  const t = await getTranslations('app.pages.root')
+  const t = await getTranslations('app')
   const session = await getSession()
   
   if (!session?.session?.activeOrganizationId) {
@@ -73,19 +72,19 @@ export default async function Page() {
   const metrics: Metric[] = [
     {
       fraction: `${signups30d}/${uniqueVisitors30d || 0}`,
-      label: t('metrics.visitor-conversion'),
+      label: t('pages.root.metrics.visitor-conversion'),
       percentage: `${(conversion * 100).toFixed(1)}%`,
       value: conversion,
     },
     {
       fraction: `${last7Signups}/${prev7Signups}`,
-      label: t('metrics.signup-growth-wow'),
+      label: t('pages.root.metrics.signup-growth-wow'),
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
       fraction: `${readyToLaunch}/${Math.max(3, hypothesesRows.length)}`,
-      label: t('metrics.ready-to-launch'),
+      label: t('pages.root.metrics.ready-to-launch'),
       percentage: '',
       value: Math.min(1, readyToLaunch / Math.max(3, hypothesesRows.length || 1)),
     },
@@ -100,27 +99,19 @@ export default async function Page() {
   }))
 
   return (
-    <section aria-label={t('aria') || 'Dashboard'}>
-      <div className='px-6 py-6'>
-        {metricsData ? (
-          <div className='mt-0'>
-            <MetricsCards metrics={metrics} compact />
-          </div>
-        ) : null}
-      </div>
-
-      <div className='grid grid-cols-1 gap-6 px-6 pb-10 lg:grid-cols-3'>
+    <section aria-label={t('pages.root.aria') || 'Dashboard'}>
+      <div className='grid grid-cols-1 gap-4 p-4 lg:grid-cols-3'>
         <div className='col-span-1 lg:col-span-2'>
           <Card className='p-0 overflow-hidden'>
             <div className='flex items-center justify-between px-4 pt-4 pb-3'>
               <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-                {t('top-hypotheses')}
+                {t('pages.root.top-hypotheses')}
               </h2>
               <Link
                 href='/app/hypotheses'
                 className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
               >
-                {t('view-all')}
+                {t('pages.root.view-all')}
               </Link>
             </div>
             <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
@@ -128,16 +119,16 @@ export default async function Page() {
                 <TableHead>
                   <TableRow>
                     <TableHeaderCell>
-                      {t('table.columns.hypothesis')}
+                      {t('pages.root.table.columns.hypothesis')}
                     </TableHeaderCell>
                     <TableHeaderCell>
-                      {t('table.columns.status')}
+                      {t('pages.root.table.columns.status')}
                     </TableHeaderCell>
                     <TableHeaderCell>
-                      {t('table.columns.signups')}
+                      {t('pages.root.table.columns.signups')}
                     </TableHeaderCell>
                     <TableHeaderCell className='text-right'>
-                      {t('table.columns.analytics')}
+                      {t('pages.root.table.columns.analytics')}
                     </TableHeaderCell>
                   </TableRow>
                 </TableHead>
@@ -149,10 +140,10 @@ export default async function Page() {
                         className='text-center text-sm text-gray-500 dark:text-gray-500'
                       >
                         <div className='flex flex-col items-center gap-3 py-6'>
-                          <div>{t('no-hypotheses')}</div>
+                          <div>{t('pages.root.no-hypotheses')}</div>
                           <Button asChild>
                             <Link href='/app/hypotheses/create'>
-                              {t('create-first')}
+                              {t('pages.root.create-first')}
                             </Link>
                           </Button>
                         </div>
@@ -176,7 +167,7 @@ export default async function Page() {
                             href={`/app/hypotheses/${h.id}/analytics`}
                             className='text-emerald-600 hover:underline dark:text-emerald-500'
                           >
-                            {t('table.analytics-link')}
+                            {t('pages.root.table.analytics-link')}
                           </Link>
                         </TableCell>
                       </TableRow>
@@ -191,27 +182,27 @@ export default async function Page() {
         <div className='col-span-1'>
           <Card className='p-0 overflow-hidden'>
             <div className='px-4 pt-4 pb-3'>
-              <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-                {t('recent-activity')}
-              </h2>
-            </div>
-            <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
+            <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+              {t('pages.root.recent-activity')}
+            </h2>
+          </div>
+          <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
               {activities.length === 0 ? (
                 <li className='py-4 text-sm text-gray-500 dark:text-gray-500 text-center'>
-                  {t('no-activity')}
+                  {t('pages.root.no-activity')}
                 </li>
               ) : (
                 activities.map((a) => {
                   const ts = a.timestamp.toISOString()
                   let label = ''
                   if (a.type === 'page_view')
-                    label = t('activity.page-view', { source: a.source })
+                    label = t('pages.root.activity.page-view', { source: a.source })
                   else if (a.type === 'signup')
-                    label = t('activity.signup', {
+                    label = t('pages.root.activity.signup', {
                       email: a.email ? ` (${a.email})` : '',
                     })
                   else if (a.type === 'verification')
-                    label = t('activity.verification', {
+                    label = t('pages.root.activity.verification', {
                       email: a.email ? ` (${a.email})` : '',
                     })
                   return (
@@ -229,7 +220,7 @@ export default async function Page() {
                               href={`/app/hypotheses/${a.hypothesisId}`}
                               className='hover:underline'
                             >
-                              {t('activity.view-hypothesis')}
+                              {t('pages.root.activity.view-hypothesis')}
                             </Link>
                             <span className='mx-1'>•</span>
                             <time dateTime={ts}>

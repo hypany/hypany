@@ -34,7 +34,42 @@
           }
         }
       },
-      "tabs": { "audits": "감사", "monitoring": "모니터링", "overview": "개요" }
+      "tabs": { "audits": "감사", "monitor링": "모니터링", "overview": "개요" },
+      "create": {
+        "form": {
+          "actions": { "create": "가설 만들기", "creating": "만드는 중…" },
+          "description": {
+            "label": "설명 (선택)",
+            "placeholder": "문제와 접근 방식을 한 문장으로 적어주세요."
+          },
+          "errors": {
+            "generic": { "desc": "가설 생성에 실패했어요", "title": "오류" },
+            "name": {
+              "required": { "desc": "가설 이름을 입력해주세요.", "title": "이름이 필요해요" }
+            },
+            "slug": {
+              "invalid": { "desc": "올바른 서브도메인을 입력해주세요.", "title": "서브도메인이 올바르지 않아요" }
+            }
+          },
+          "name": {
+            "help": "아이디어를 잘 드러내는 간결한 이름이에요.",
+            "label": "이름",
+            "placeholder": "AI 로고 생성기"
+          },
+          "slug": {
+            "help": {
+              "empty": "비워두면 자동으로 생성돼요.",
+              "prefix": "공개 서브도메인에 사용돼요.",
+              "present": "{slug}.hypany.app 로 생성돼요. 언제든 수정하거나 커스텀 도메인을 연결할 수 있어요."
+            },
+            "label": "서브도메인 (선택)",
+            "placeholder": "ai-logo"
+          },
+          "toasts": {
+            "created": { "desc": "개요 페이지로 이동해요...", "title": "가설이 생성됐어요" }
+          }
+        }
+      }
     },
     "pages": {
       "analytics": {
@@ -208,43 +243,6 @@
       "footer-text": "이미 계정이 있나요?",
       "subtitle": "시작하려면 정보를 입력해요",
       "title": "계정 만들기"
-    }
-  },
-  "app.hypotheses": {
-    "create": {
-      "form": {
-        "actions": { "create": "가설 만들기", "creating": "만드는 중…" },
-        "description": {
-          "label": "설명 (선택)",
-          "placeholder": "문제와 접근 방식을 한 문장으로 적어주세요."
-        },
-        "errors": {
-          "generic": { "desc": "가설 생성에 실패했어요", "title": "오류" },
-          "name": {
-            "required": { "desc": "가설 이름을 입력해주세요.", "title": "이름이 필요해요" }
-          },
-          "slug": {
-            "invalid": { "desc": "올바른 서브도메인을 입력해주세요.", "title": "서브도메인이 올바르지 않아요" }
-          }
-        },
-        "name": {
-          "help": "아이디어를 잘 드러내는 간결한 이름이에요.",
-          "label": "이름",
-          "placeholder": "AI 로고 생성기"
-        },
-        "slug": {
-          "help": {
-            "empty": "비워두면 자동으로 생성돼요.",
-            "prefix": "공개 서브도메인에 사용돼요.",
-            "present": "{slug}.hypany.app 로 생성돼요. 언제든 수정하거나 커스텀 도메인을 연결할 수 있어요."
-          },
-          "label": "서브도메인 (선택)",
-          "placeholder": "ai-logo"
-        },
-        "toasts": {
-          "created": { "desc": "개요 페이지로 이동해요...", "title": "가설이 생성됐어요" }
-        }
-      }
     }
   },
   "common": {

@@ -1,10 +1,10 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
-import { getAnalyticsMetrics } from '@/functions/analytics'
 import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
+import { getAnalyticsMetrics } from '@/functions/analytics'
+import { getActiveOrganization } from '@/functions/organizations'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 type Range = '7d' | '30d' | '90d'
 
@@ -43,21 +43,16 @@ export default async function AnalyticsPage({
 
   return (
     <section>
-      <div className='mb-4 flex items-center justify-between'>
+      <div className='p-4 flex items-center justify-between'>
         <div>
-          <h1 className='text-xl font-semibold text-gray-900 dark:text-gray-50'>
-            Analytics
-          </h1>
           <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-            {per ? (
+            {per && (
               <span>
                 {Math.round(per.uniqueVisitors)} visitors •{' '}
                 {Math.round(per.signups)} signups •
                 {` ${per.uniqueVisitors ? ((per.signups / per.uniqueVisitors) * 100).toFixed(1) : '0.0'}%`}{' '}
                 conv
               </span>
-            ) : (
-              <span>Loading…</span>
             )}
           </p>
         </div>
