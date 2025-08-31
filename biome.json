@@ -86,19 +86,6 @@
         "noUnusedImports": "error"
       },
       "recommended": true,
-      "style": {
-        "noRestrictedImports": {
-          "level": "error",
-          "options": {
-            "paths": {
-              "@/drizzle": {
-                "importNames": ["db"],
-                "message": "Only use `db` within files under app/api/**"
-              }
-            }
-          }
-        }
-      },
       "suspicious": {
         "noDocumentCookie": "off",
         "noExplicitAny": "off"

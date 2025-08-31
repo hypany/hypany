@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getHypothesisById, getLandingPagesForHypothesis } from '@/functions/hypotheses'
 import { Button } from '@/components/atoms/button'
 import {
   Table,
@@ -23,22 +25,25 @@ export default async function LandingPagesGallery({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  
+  if (!activeOrgRes?.activeOrganizationId) {
+    notFound()
+  }
 
-  const api = await getServerApi()
+  const [hypothesis, pages] = await Promise.all([
+    getHypothesisById(id, activeOrgRes.activeOrganizationId),
+    getLandingPagesForHypothesis(id, activeOrgRes.activeOrganizationId),
+  ])
 
-  const hypRes = await api.v1.hypotheses({ id }).get()
-  const hypData = hypRes.data
-  if (!hypData || !hypData.hypothesis) notFound()
+  if (!hypothesis) notFound()
 
-  const pagesRes = await api.v1['landing-pages']
-    .hypothesis({ hypothesisId: id })
-    .list.get()
-  const pages = pagesRes.data?.pages ?? []
   const hyp = {
-    customDomain: null as string | null,
-    id: hypData.hypothesis.id,
-    name: hypData.hypothesis.name,
-    slug: (hypData.hypothesis as { slug?: string | null }).slug ?? null,
+    customDomain: hypothesis.customDomain,
+    id: hypothesis.id,
+    name: hypothesis.name,
+    slug: hypothesis.slug,
   }
 
   return (

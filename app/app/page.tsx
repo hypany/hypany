@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
-import { getServerApi } from '@/app/api/server'
+import { getSession } from '@/auth/server'
+import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
+import { getActivityFeed } from '@/functions/analytics'
 import { Button } from '@/components/atoms/button'
 import {
   Table,
@@ -31,71 +33,40 @@ type Activity = {
   type: 'page_view' | 'signup' | 'verification'
 }
 
-function isHypothesisRow(o: unknown): o is HypothesisRow {
-  if (!o || typeof o !== 'object') return false
-  const x = o as Record<string, unknown>
-  return (
-    typeof x.id === 'string' &&
-    typeof x.name === 'string' &&
-    typeof x.status === 'string' &&
-    typeof x.signupCount === 'number'
-  )
-}
-
-function isActivity(o: unknown): o is Activity {
-  if (!o || typeof o !== 'object') return false
-  const x = o as Record<string, unknown>
-  const typeOk =
-    x.type === 'page_view' || x.type === 'signup' || x.type === 'verification'
-  return (
-    typeOk &&
-    typeof x.hypothesisId === 'string' &&
-    typeof x.source === 'string' &&
-    x.timestamp instanceof Date &&
-    (x.email === null || typeof x.email === 'string')
-  )
-}
 
 export default async function Page() {
   const t = await getTranslations('app.pages.root')
-  const api = await getServerApi()
+  const session = await getSession()
+  
+  if (!session?.session?.activeOrganizationId) {
+    return <div>No active organization</div>
+  }
 
-  const [hypRes, actRes] = await Promise.all([
-    api.v1.hypotheses.get({ query: {} }),
-    api.v1.analytics.activity.get({ query: { limit: 20, range: '30d' } }),
+  const [hypotheses, metricsData, activity] = await Promise.all([
+    getHypothesesForOrganization(session.session.activeOrganizationId),
+    getHypothesesMetrics(session.session.activeOrganizationId),
+    getActivityFeed(session.session.activeOrganizationId, { limit: 20, range: '30d' }),
   ])
 
-  const d = hypRes.data
-  const act = actRes.data
+  const hypothesesRows: HypothesisRow[] = hypotheses.map(h => ({
+    id: h.id,
+    name: h.name,
+    status: h.status,
+    signupCount: h.signupCount,
+  }))
 
-  const hypotheses: HypothesisRow[] = Array.isArray(d?.hypotheses)
-    ? d?.hypotheses
-        .map((row: unknown) => {
-          if (!row || typeof row !== 'object') return null
-          const r = row as Record<string, unknown>
-          const signupCount =
-            typeof r.signupCount === 'number' ? r.signupCount : 0
-          const id = typeof r.id === 'string' ? r.id : ''
-          const name = typeof r.name === 'string' ? r.name : ''
-          const status = typeof r.status === 'string' ? r.status : 'draft'
-          const next: HypothesisRow = { id, name, signupCount, status }
-          return isHypothesisRow(next) ? next : null
-        })
-        .filter((v): v is HypothesisRow => Boolean(v))
-    : []
-
-  const topHypotheses = hypotheses
+  const topHypotheses = hypothesesRows
     .slice()
     .sort((a, b) => b.signupCount - a.signupCount)
     .slice(0, 5)
 
   // Metrics summary
-  const growthRate7d = Number(d?.metrics?.growthRate7d ?? 0)
-  const uniqueVisitors30d = Number(d?.metrics?.uniqueVisitors30d ?? 0)
-  const signups30d = Number(d?.metrics?.signups30d ?? 0)
-  const readyToLaunch = Number(d?.metrics?.readyToLaunch ?? 0)
-  const last7Signups = Number(d?.metrics?.last7Signups ?? 0)
-  const prev7Signups = Number(d?.metrics?.prev7Signups ?? 0)
+  const growthRate7d = metricsData.growthRate7d
+  const uniqueVisitors30d = metricsData.uniqueVisitors30d
+  const signups30d = metricsData.signups30d
+  const readyToLaunch = metricsData.readyToLaunch
+  const last7Signups = metricsData.last7Signups
+  const prev7Signups = metricsData.prev7Signups
   const conversion = uniqueVisitors30d > 0 ? signups30d / uniqueVisitors30d : 0
 
   const metrics: Metric[] = [
@@ -112,16 +83,20 @@ export default async function Page() {
       value: Math.max(0, Math.min(1, growthRate7d / 100)),
     },
     {
-      fraction: `${readyToLaunch}/${Math.max(3, hypotheses.length)}`,
+      fraction: `${readyToLaunch}/${Math.max(3, hypothesesRows.length)}`,
       label: t('metrics.readyToLaunch'),
       percentage: '',
-      value: Math.min(1, readyToLaunch / Math.max(3, hypotheses.length || 1)),
+      value: Math.min(1, readyToLaunch / Math.max(3, hypothesesRows.length || 1)),
     },
   ]
 
-  const activities: Activity[] = Array.isArray(act?.items)
-    ? act?.items.filter(isActivity)
-    : []
+  const activities: Activity[] = activity.items.map(item => ({
+    type: item.type as 'page_view' | 'signup' | 'verification',
+    hypothesisId: item.hypothesisId,
+    source: item.source,
+    timestamp: new Date(item.timestamp),
+    email: item.email,
+  }))
 
   return (
     <section aria-label={t('aria') || 'Dashboard'}>
@@ -143,7 +118,7 @@ export default async function Page() {
             </Button>
           </div>
         </div>
-        {d?.metrics ? (
+        {metricsData ? (
           <div className='mt-2'>
             <MetricsCards metrics={metrics} compact />
           </div>

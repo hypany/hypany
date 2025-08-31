@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { listUserOrganizations, getActiveOrganization } from '@/functions/organizations'
 import {
   Table,
   TableBody,
@@ -15,14 +16,14 @@ import { OrgSettingsForm } from '@/components/molecules/organization/org-setting
 
 export default async function OrganizationsPage() {
   const t = await getTranslations('app.pages.organizations')
-  const api = await getServerApi()
-  const [{ data: activeRes }, { data: organizations }] = await Promise.all([
-    api.v1.organizations.active.get(),
-    api.v1.organizations.list.get(),
+  await requireAuth()
+  const [activeRes, organizations] = await Promise.all([
+    getActiveOrganization(),
+    listUserOrganizations(),
   ])
-  const active = activeRes?.activeOrganization ?? null
-  const activeOrgId = activeRes?.activeOrganizationId ?? null
   const orgs = Array.isArray(organizations) ? organizations : []
+  const activeOrgId = activeRes?.activeOrganizationId ?? null
+  const active = orgs.find(org => org.id === activeOrgId) ?? null
   return (
     <section aria-label={t('aria')}>
       {/* Show toast after redirects for invitation acceptance */}

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getServerApi } from '@/app/api/server'
+import { getPublicPageBySlug } from '@/functions/public'
 import { Template1 } from '@/templates/template-1'
 import type { LandingConfig } from '@/templates/types'
 
@@ -10,26 +10,14 @@ export default async function PublicBySlug({
 }) {
   const { slug } = await params
 
-  const api = await getServerApi()
-  const res = await api.v1.public['by-slug']({ slug }).get()
-  const data = res.data
-  if (!data || !('hypothesis' in data)) notFound()
-  const ok = data as {
-    blocks: Array<{ id: string; type: string; order: string; content: string }>
-    hypothesis: { id: string; name: string; description: string | null }
-    landingPage: {
-      customCss: string | null
-      favicon: string | null
-      metaDescription: string | null
-      metaTitle: string | null
-      ogImage: string | null
-      template: string
-    }
-  }
+  const data = await getPublicPageBySlug(slug)
+  if (!data) notFound()
+  
+  const { hypothesis, landingPage, blocks } = data
 
   // Convert blocks to config
   const config = blocksToConfig(
-    ok.blocks.map((b) => ({
+    blocks.map((b) => ({
       content: b.content,
       id: b.id,
       order: b.order,
@@ -38,20 +26,20 @@ export default async function PublicBySlug({
   )
 
   // Add metadata from landing page
-  if (ok.landingPage.metaTitle || ok.landingPage.metaDescription) {
+  if (landingPage.metaTitle || landingPage.metaDescription) {
     config.meta = {
       ...config.meta,
-      description: ok.landingPage.metaDescription || config.meta.description,
-      ogImage: ok.landingPage.ogImage || config.meta.ogImage,
-      title: ok.landingPage.metaTitle || config.meta.title,
+      description: landingPage.metaDescription || config.meta.description,
+      ogImage: landingPage.socialImageUrl || config.meta.ogImage,
+      title: landingPage.metaTitle || config.meta.title,
     }
   }
 
   return (
     <Template1
       config={config}
-      hypothesisId={ok.hypothesis.id}
-      customCss={ok.landingPage.customCss}
+      hypothesisId={hypothesis.id}
+      customCss={landingPage.customCss}
     />
   )
 }

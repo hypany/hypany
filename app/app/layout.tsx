@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getServerApi } from '@/app/api/server'
 import { getSession } from '@/auth/server'
+import { listUserOrganizations } from '@/functions/organizations'
 import { SidebarProvider } from '@/components/atoms/sidebar'
 import { AppHeader } from '@/components/molecules/navigation/app-header'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
@@ -51,9 +51,8 @@ export default async function RootLayout({
     redirect('/sign-in')
   }
   // Ensure user has at least one organization
-  const api = await getServerApi()
-  const { data: orgs } = await api.v1.organizations.list.get()
-  if (!orgs || (Array.isArray(orgs) && orgs.length === 0)) {
+  const orgs = await listUserOrganizations()
+  if (!orgs || orgs.length === 0) {
     redirect('/create-organization')
   }
   const cookieStore = await cookies()

@@ -1,13 +1,14 @@
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { listUserOrganizations, getActiveOrganization } from '@/functions/organizations'
 import { OrgSwitcherClient } from './org-switcher.client'
 
 type Organization = { id: string; name: string; logo?: string | null }
 
 export default async function OrgSwitcher() {
-  const api = await getServerApi()
-  const [{ data: activeRes }, { data: organizations }] = await Promise.all([
-    api.v1.organizations.active.get(),
-    api.v1.organizations.list.get(),
+  await requireAuth()
+  const [activeRes, organizations] = await Promise.all([
+    getActiveOrganization(),
+    listUserOrganizations(),
   ])
   const orgs = Array.isArray(organizations)
     ? (organizations as Organization[])

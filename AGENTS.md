@@ -8,33 +8,56 @@ This document outlines the engineering principles and patterns used in this code
 ## Core Principles
 
 ### 1. Server-First Architecture
-**Do NOT fetch on the client what you can fetch on the server through Elysia Eden Treaty.**
+**React Server Components fetch directly from the database. Client Components receive initial data from Server Components and use React Query for revalidation.**
+
+⚠️ **CRITICAL: Never use Eden Treaty (HTTP requests) in Server Components - it causes infinite loops during SSR!**
+⚠️ **CRITICAL: All data access functions must be in `/functions` directory at root!**
 
 ❌ **Wrong:**
 ```tsx
-// Client component with useEffect fetching
-'use client'
-export function BadComponent() {
-  const [data, setData] = useState(null)
-  
-  useEffect(() => {
-    fetch('/api/data')
-      .then(res => res.json())
-      .then(setData)
-  }, [])
-  
+// Server component making HTTP request to itself - CAUSES DEADLOCK!
+export async function BadServerComponent() {
+  const api = await getServerApi() // This uses Eden Treaty internally
+  const data = await api.v1.hypotheses.get() // HTTP request to self = deadlock
   return <div>{data}</div>
 }
 ```
 
-✅ **Right:**
+✅ **Right Pattern:**
 ```tsx
-// Server component with Elysia Eden Treaty
-export async function GoodComponent() {
-  const data = await client.api.get('...')
-  return <div>{data}</div>
+// functions/hypotheses.ts - Shared data access
+export async function getHypotheses() {
+  const [data] = await db.select().from(hypotheses)
+  return data
 }
-```
+
+// Server Component - Fetches initial data
+import { getHypotheses } from '@/functions/hypotheses'
+
+export async function ParentServerComponent() {
+  const initialData = await getHypotheses()
+  return <ClientComponent initialData={initialData} />
+}
+
+// Client Component - Uses initial data + React Query for revalidation
+'use client'
+import { useQuery } from '@tanstack/react-query'
+
+export function ClientComponent({ initialData }) {
+  const { data } = useQuery({
+    queryKey: ['hypotheses'],
+    queryFn: () => fetch('/api/v1/hypotheses').then(r => r.json()),
+    initialData,
+    staleTime: 30 * 1000, // Consider data fresh for 30s
+  })
+  
+  return <div>{/* Use data */}</div>
+}
+
+// For mutations - use Eden Treaty
+const mutation = useMutation({
+  mutationFn: (data) => client.api.v1.hypotheses.post(data)
+})
 
 ### 2. Type Safety Without Compromise
 **Never use `any`. Ever.**
@@ -78,7 +101,7 @@ await client.subscription.upgrade({
 ```
 
 ### 4. Direct Over Indirect
-**Access data directly when possible.**
+**Access data directly when possible. Share data access functions between Elysia routes and Server Components.**
 
 ❌ **Wrong:**
 ```tsx
@@ -89,12 +112,26 @@ const campaign = await response.json()
 
 ✅ **Right:**
 ```tsx
-// Direct database query
-const [campaign] = await db
-  .select()
-  .from(campaigns)
-  .where(eq(campaigns.id, id))
-  .limit(1)
+// Shared data access function used by both Elysia and Server Components
+// functions/campaigns.ts (MUST be in /functions directory!)
+export async function getCampaign(id: string) {
+  const [campaign] = await db
+    .select()
+    .from(campaigns)
+    .where(eq(campaigns.id, id))
+    .limit(1)
+  return campaign
+}
+
+// In Server Component
+import { getCampaign } from '@/functions/campaigns'
+const campaign = await getCampaign(id)
+
+// In Elysia route
+import { getCampaign } from '@/functions/campaigns'
+.get('/:id', async ({ params }) => {
+  return await getCampaign(params.id)
+})
 ```
 
 ### 5. Performance is Not Optional
@@ -132,7 +169,10 @@ const [user, org, members] = await Promise.all([
 - Use `referenceId` for multi-tenant scenarios (users, organizations)
 
 ### Elysia & Eden Treaty
-- Use Eden Treaty for type-safe client-server communication
+- Use Eden Treaty ONLY for mutations in Client Components
+- Never use Eden Treaty in Server Components (causes SSR deadlock)
+- Create shared data access functions in `/functions` directory for use in both Elysia routes and Server Components
+- Client Components should receive initial data from Server Components and use React Query for revalidation
 - Handle errors with proper type narrowing
 - Always check for error responses before accessing data
 

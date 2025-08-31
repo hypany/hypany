@@ -248,6 +248,17 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Waitlist not found')
       }
 
+      // Get landing page ID
+      const [landingPage] = await db
+        .select({ id: landingPages.id })
+        .from(landingPages)
+        .where(eq(landingPages.hypothesisId, hypothesis.id))
+        .limit(1)
+
+      if (!landingPage) {
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      }
+
       // No plan-based waitlist limits; unlimited signups
 
       // Check for existing signup
@@ -281,15 +292,13 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
 
       // Create entry
       await db.insert(waitlistEntries).values({
-        createdAt: new Date(),
         email: body.email.toLowerCase(),
-        emailRevealed: false,
         emailVerified: false,
         id: entryId,
+        landingPageId: landingPage.id,
         metadata: body.metadata ? JSON.stringify(body.metadata) : null,
         name: body.name || null,
         source: resolvedSource,
-        updatedAt: new Date(),
         utmCampaign: body.utmCampaign || null,
         utmContent: body.utmContent || null,
         utmMedium: body.utmMedium || null,

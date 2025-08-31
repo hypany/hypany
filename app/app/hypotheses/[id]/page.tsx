@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getHypothesisById } from '@/functions/hypotheses'
 import {
   Table,
   TableBody,
@@ -16,10 +18,15 @@ export default async function HypothesisOverview({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const api = await getServerApi()
-  const res = await api.v1.hypotheses({ id }).get()
-  const data = res.data
-  if (!data || !data.hypothesis) notFound()
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  
+  if (!activeOrgRes?.activeOrganizationId) {
+    notFound()
+  }
+
+  const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
+  if (!hypothesis) notFound()
 
   return (
     <section>
@@ -35,17 +42,17 @@ export default async function HypothesisOverview({
             <TableRow>
               <TableCell className='font-medium'>Status</TableCell>
               <TableCell className='capitalize'>
-                {data.hypothesis.status}
+                {hypothesis.status}
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell className='font-medium'>Signups</TableCell>
-              <TableCell>{data.signupCount ?? '-'}</TableCell>
+              <TableCell>-</TableCell>
             </TableRow>
             <TableRow>
               <TableCell className='font-medium'>Subdomain</TableCell>
               <TableCell>
-                {(data.hypothesis as { slug?: string | null }).slug ?? '-'}
+                {hypothesis.slug ?? '-'}
               </TableCell>
             </TableRow>
           </TableBody>

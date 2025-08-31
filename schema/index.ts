@@ -242,14 +242,12 @@ export const waitlistEntries = pgTable(
       .notNull(),
     deletedAt: timestamp('deleted_at'), // Soft delete field
     email: text('email').notNull(),
-    emailRevealed: boolean('email_revealed').default(false).notNull(), // Track if email has been revealed/paid for
     emailVerified: boolean('email_verified').default(false),
     id: text('id')
       .primaryKey()
       .$defaultFn(() => ulid()),
     metadata: text('metadata'), // JSON string for additional data
     name: text('name'),
-    revealedAt: timestamp('revealed_at'), // When the email was revealed
     source: text('source'), // organic, social, ad
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
@@ -263,6 +261,9 @@ export const waitlistEntries = pgTable(
     waitlistId: text('waitlist_id')
       .notNull()
       .references(() => waitlists.id, { onDelete: 'cascade' }),
+      landingPageId: text('landing_page_id')
+      .notNull()
+      .references(() => landingPages.id, { onDelete: 'cascade' }),
   },
   (table) => ({
     visitorIdx: index('waitlist_entries_visitor_idx').on(table.visitorId),
@@ -271,6 +272,9 @@ export const waitlistEntries = pgTable(
     ).on(table.waitlistId, table.createdAt),
     waitlistIdIdx: index('waitlist_entries_waitlist_id_idx').on(
       table.waitlistId,
+    ),
+    landingPageIdIdx: index('waitlist_entries_landing_page_id_idx').on(
+      table.landingPageId,
     ),
   }),
 )
@@ -318,7 +322,8 @@ export const userSettings = pgTable(
       .primaryKey()
       .$defaultFn(() => ulid()),
     onboardingComplete: boolean('onboarding_complete').default(false).notNull(),
-    theme: text('theme').default('system'), // light | dark | system
+    marketingEmails: boolean('marketing_emails').default(false).notNull(),
+    marketingEmailLanguage: text('marketing_email_language').default('en'), // en | ko | etc
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),

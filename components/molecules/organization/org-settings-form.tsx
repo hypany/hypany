@@ -29,18 +29,47 @@ export function OrgSettingsForm({
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
+    
+    // Validate slug
+    const trimmedSlug = slug.trim()
+    if (!trimmedSlug || trimmedSlug.length < 3) {
+      toast({
+        description: 'Slug must be at least 3 characters long.',
+        title: 'Invalid slug',
+        variant: 'error',
+      })
+      return
+    }
+    if (!/^[a-z0-9-]+$/.test(trimmedSlug)) {
+      toast({
+        description: 'Slug can only contain lowercase letters, numbers, and dashes.',
+        title: 'Invalid slug',
+        variant: 'error',
+      })
+      return
+    }
+    
     startTransition(async () => {
       const res = await updateOrganizationAction({
         name: name.trim(),
         organizationId,
-        slug: slug.trim(),
+        slug: trimmedSlug,
       })
       if (!res.ok) {
-        toast({
-          description: 'Please check your changes and try again.',
-          title: res.error || 'Failed to update organization',
-          variant: 'error',
-        })
+        // Check for slug uniqueness error
+        if (res.error?.toLowerCase().includes('slug') || res.error?.toLowerCase().includes('unique')) {
+          toast({
+            description: 'This slug is already taken. Please choose another.',
+            title: 'Slug already exists',
+            variant: 'error',
+          })
+        } else {
+          toast({
+            description: 'Please check your changes and try again.',
+            title: res.error || 'Failed to update organization',
+            variant: 'error',
+          })
+        }
         return
       }
       toast({
@@ -63,15 +92,26 @@ export function OrgSettingsForm({
         />
       </div>
       <div className='space-y-2'>
-        <Label htmlFor={slugId}>Slug</Label>
-        <Input
-          id={slugId}
-          value={slug}
-          onChange={(e) => setSlug(e.target.value.replace(/[^a-z0-9-]/g, ''))}
-          disabled={isPending}
-        />
+        <Label htmlFor={slugId}>Organization URL</Label>
+        <div className='flex items-center gap-2'>
+          <span className='text-sm text-gray-500 dark:text-gray-400'>/o/</span>
+          <Input
+            id={slugId}
+            value={slug}
+            onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+            disabled={isPending}
+            pattern='[a-z0-9-]+'
+            minLength={3}
+            className='font-mono'
+          />
+        </div>
         <p className='text-xs text-gray-500 dark:text-gray-500'>
-          Used in URLs. Only lowercase letters, numbers, and dashes.
+          Only lowercase letters, numbers, and dashes. Minimum 3 characters.
+          {slug && slug.length < 3 && (
+            <span className='ml-2 text-red-600 dark:text-red-400'>
+              (Too short)
+            </span>
+          )}
         </p>
       </div>
       <Button type='submit' disabled={isPending} className='w-full sm:w-fit'>

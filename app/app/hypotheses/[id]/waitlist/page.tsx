@@ -1,4 +1,6 @@
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getWaitlistByHypothesisId, getWaitlistEntries } from '@/functions/hypotheses'
 import {
   Table,
   TableBody,
@@ -23,16 +25,19 @@ export default async function WaitlistPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const api = await getServerApi()
-  const [{ data: wl }, { data: ent }] = await Promise.all([
-    api.v1.waitlists.hypothesis({ hypothesisId: id }).get(),
-    api.v1.waitlists.hypothesis({ hypothesisId: id }).entries.get({
-      query: { limit: 50 },
-    }),
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  
+  if (!activeOrgRes?.activeOrganizationId) {
+    return <div>No active organization</div>
+  }
+
+  const [waitlistData, entries] = await Promise.all([
+    getWaitlistByHypothesisId(id, activeOrgRes.activeOrganizationId),
+    getWaitlistEntries(id, activeOrgRes.activeOrganizationId, { limit: 50 }),
   ])
 
-  const stats = wl?.stats
-  const entries = ent?.entries ?? []
+  const stats = waitlistData?.stats
   const exportCsvHref = `/api/v1/waitlists/hypothesis/${id}/export?format=csv`
 
   return (

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { getServerApi } from '@/app/api/server'
+import { getSession } from '@/auth/server'
+import { acceptInvitation, listUserOrganizations } from '@/functions/organizations'
 
 export default async function AcceptInvitationPage({
   searchParams,
@@ -14,10 +15,17 @@ export default async function AcceptInvitationPage({
   }
 
   // Ensure user is authenticated before accepting
-  const api = await getServerApi()
+  const session = await getSession()
+  if (!session) {
+    const next = encodeURIComponent(
+      `/organization/accept-invitation?id=${invitationId}`,
+    )
+    redirect(`/sign-in?next=${next}`)
+  }
+
   try {
-    // Perform an authenticated call to check session
-    await api.v1.organizations.list.get()
+    // Verify user can access organizations (auth check)
+    await listUserOrganizations()
   } catch {
     const next = encodeURIComponent(
       `/organization/accept-invitation?id=${invitationId}`,
@@ -26,7 +34,7 @@ export default async function AcceptInvitationPage({
   }
 
   try {
-    await api.v1.organizations.invitations.accept.post({ invitationId })
+    await acceptInvitation(invitationId)
     redirect('/app/organizations?accepted=1')
   } catch (_e) {
     redirect('/app/organizations?accepted=0')

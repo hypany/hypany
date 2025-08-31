@@ -29,12 +29,32 @@ export function CreateOrganizationForm() {
       })
       return
     }
+    
+    // Validate slug
+    const finalSlug = derivedSlug
+    if (!finalSlug || finalSlug.length < 3) {
+      toast({
+        description: 'Slug must be at least 3 characters long.',
+        title: 'Invalid slug',
+        variant: 'error',
+      })
+      return
+    }
+    if (!/^[a-z0-9-]+$/.test(finalSlug)) {
+      toast({
+        description: 'Slug can only contain lowercase letters, numbers, and dashes.',
+        title: 'Invalid slug',
+        variant: 'error',
+      })
+      return
+    }
+    
     setSubmitting(true)
     try {
       const api = getClientApi()
       const res = await api.v1.organizations.create.post({
         name: name.trim(),
-        slug: derivedSlug,
+        slug: finalSlug,
       })
       const org = res.data
       if (!org) throw new Error('No organization returned')
@@ -49,11 +69,21 @@ export function CreateOrganizationForm() {
       router.push('/app')
       router.refresh()
     } catch (e) {
-      toast({
-        description: 'Please try again.',
-        title: (e as Error).message ?? 'Failed to create organization',
-        variant: 'error',
-      })
+      const errorMessage = (e as Error).message ?? 'Failed to create organization'
+      // Check for slug uniqueness error
+      if (errorMessage.toLowerCase().includes('slug') || errorMessage.toLowerCase().includes('unique')) {
+        toast({
+          description: 'This slug is already taken. Please choose another.',
+          title: 'Slug already exists',
+          variant: 'error',
+        })
+      } else {
+        toast({
+          description: 'Please try again.',
+          title: errorMessage,
+          variant: 'error',
+        })
+      }
     } finally {
       setSubmitting(false)
     }
@@ -72,18 +102,34 @@ export function CreateOrganizationForm() {
         />
       </div>
       <div className='space-y-2'>
-        <Label htmlFor={slugId}>Slug (optional)</Label>
+        <Label htmlFor={slugId}>Organization URL</Label>
         <Input
           id={slugId}
           placeholder='acme-inc'
           value={slug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           disabled={submitting}
+          pattern='[a-z0-9-]+'
+          minLength={3}
         />
         <p className='text-xs text-gray-500 dark:text-gray-500'>
-          {derivedSlug
-            ? `Will be created as /o/${derivedSlug}`
-            : 'Slug auto-generated from name'}
+          {derivedSlug ? (
+            <>
+              Will be created as <span className='font-mono'>/o/{derivedSlug}</span>
+              {derivedSlug.length < 3 && (
+                <span className='ml-2 text-red-600 dark:text-red-400'>
+                  (Must be at least 3 characters)
+                </span>
+              )}
+              {!/^[a-z0-9-]+$/.test(derivedSlug) && (
+                <span className='ml-2 text-red-600 dark:text-red-400'>
+                  (Only lowercase letters, numbers, and dashes allowed)
+                </span>
+              )}
+            </>
+          ) : (
+            'Slug will be auto-generated from name'
+          )}
         </p>
       </div>
       <Button disabled={submitting} className='w-full'>

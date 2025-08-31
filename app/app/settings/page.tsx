@@ -1,10 +1,20 @@
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { getUserSettings } from '@/functions/settings'
 import SettingsForm from './ui'
 
 export default async function SettingsPage() {
-  const api = await getServerApi()
-  const res = await api.v1.settings.me.get()
-  const settings = res.data?.settings
+  const session = await requireAuth()
+  const settings = await getUserSettings(session.user.id)
+  
+  // Convert settings to the expected format
+  const formattedSettings = settings ? {
+    id: settings.id,
+    emailNotifications: settings.emailNotifications,
+    marketingEmails: settings.marketingEmails,
+    marketingEmailLanguage: settings.marketingEmailLanguage,
+    onboardingComplete: settings.onboardingComplete,
+  } : null
+  
   return (
     <section>
       <div className='mb-4'>
@@ -15,7 +25,7 @@ export default async function SettingsPage() {
           Update your preferences
         </p>
       </div>
-      <SettingsForm initial={settings} />
+      <SettingsForm initial={formattedSettings} />
     </section>
   )
 }

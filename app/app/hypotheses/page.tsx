@@ -1,6 +1,8 @@
 import { Pencil } from 'lucide-react'
 import Link from 'next/link'
-import { getServerApi } from '@/app/api/server'
+import { requireAuth } from '@/auth/server'
+import { getActiveOrganization } from '@/functions/organizations'
+import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
 import {
   Table,
   TableBody,
@@ -25,35 +27,48 @@ type Row = {
 }
 
 export default async function HypothesesPage() {
-  const api = await getServerApi()
+  await requireAuth()
+  const activeOrgRes = await getActiveOrganization()
+  
+  if (!activeOrgRes?.activeOrganizationId) {
+    return (
+      <section className='px-4 py-6 sm:p-6'>
+        <p className='text-sm text-gray-500 dark:text-gray-500'>No active organization.</p>
+      </section>
+    )
+  }
 
-  const res = await api.v1.hypotheses.get({ query: {} })
-  const d = res.data
-  if (!d || !d.hypotheses) {
+  const [hypotheses, metricsData] = await Promise.all([
+    getHypothesesForOrganization(activeOrgRes.activeOrganizationId),
+    getHypothesesMetrics(activeOrgRes.activeOrganizationId),
+  ])
+
+  if (!hypotheses || hypotheses.length === 0) {
     return (
       <section className='px-4 py-6 sm:p-6'>
         <p className='text-sm text-gray-500 dark:text-gray-500'>No data.</p>
       </section>
     )
   }
-  const data: Row[] = (d.hypotheses as any[]).map((h) => ({
+  
+  const data: Row[] = hypotheses.map((h) => ({
     id: h.id,
-    landingPageId: h.landingPage?.id ?? null,
+    landingPageId: h.landingPageId ?? null,
     name: h.name,
     signupCount: h.signupCount ?? 0,
-    slug: (h as { slug?: string | null }).slug ?? null,
+    slug: h.slug ?? null,
     status: h.status,
   }))
 
-  // Compute metrics from API-provided summary
-  const growthRate7d = Number(d.metrics?.growthRate7d ?? 0)
-  const uniqueVisitors30d = Number(d.metrics?.uniqueVisitors30d ?? 0)
-  const signups30d = Number(d.metrics?.signups30d ?? 0)
+  // Compute metrics from direct database calls
+  const growthRate7d = Number(metricsData?.growthRate7d ?? 0)
+  const uniqueVisitors30d = Number(metricsData?.uniqueVisitors30d ?? 0)
+  const signups30d = Number(metricsData?.signups30d ?? 0)
 
   // We skip sparkline details here; link to analytics page for details
 
-  // Use API-provided ready-to-launch count
-  const readyToLaunch = Number(d.metrics?.readyToLaunch ?? 0)
+  // Use database-provided ready-to-launch count
+  const readyToLaunch = Number(metricsData?.readyToLaunch ?? 0)
 
   const conversion = uniqueVisitors30d > 0 ? signups30d / uniqueVisitors30d : 0
   const denom = 3
@@ -66,7 +81,7 @@ export default async function HypothesesPage() {
       value: conversion,
     },
     {
-      fraction: `${Number(d.metrics?.last7Signups ?? 0)}/${Number(d.metrics?.prev7Signups ?? 0)}`,
+      fraction: `${Number(metricsData?.last7Signups ?? 0)}/${Number(metricsData?.prev7Signups ?? 0)}`,
       label: 'Signup Growth (WoW)',
       percentage: `${growthRate7d >= 0 ? '+' : ''}${growthRate7d.toFixed(1)}%`,
       value: Math.max(0, Math.min(1, growthRate7d / 100)),

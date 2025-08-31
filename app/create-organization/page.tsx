@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { getServerApi } from '@/app/api/server'
+import { getSession } from '@/auth/server'
+import { listUserOrganizations } from '@/functions/organizations'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 
 export const metadata: Metadata = {
@@ -10,9 +11,13 @@ export const metadata: Metadata = {
 
 export default async function CreateOrganizationPage() {
   // If the user already has an organization, bounce back to app
-  const api = await getServerApi()
+  const session = await getSession()
+  if (!session) {
+    redirect('/sign-in?next=/create-organization')
+  }
+
   try {
-    const { data: orgs } = await api.v1.organizations.list.get()
+    const orgs = await listUserOrganizations()
     if (Array.isArray(orgs) && orgs.length > 0) {
       redirect('/app')
     }
