@@ -1,4 +1,3 @@
-import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getServerApi } from '@/app/api/server'
 
@@ -13,8 +12,6 @@ export default async function AcceptInvitationPage({
   if (!invitationId) {
     redirect('/app/organizations?accepted=0&reason=missing_id')
   }
-
-  const hdrs = await headers()
 
   // Ensure user is authenticated before accepting
   const api = await getServerApi()

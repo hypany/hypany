@@ -4,11 +4,11 @@
  * - Exposes typed endpoints for client/server usage through Eden Treaty
  */
 
-import 'server-only'
-import { Elysia, t } from 'elysia'
 import { auth } from '@/app/api/auth'
 import { HTTP_STATUS } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
+import { Elysia, t } from 'elysia'
+import 'server-only'
 import { ErrorResponse } from '../docs'
 import { authPlugin } from './auth-plugin'
 
@@ -21,8 +21,6 @@ const MemberRole = t.Union([
   t.Literal('owner'),
   t.Literal('admin'),
   t.Literal('member'),
-  // allow custom roles if configured
-  t.String(),
 ])
 
 const InviteBody = t.Object({
@@ -89,6 +87,9 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
     '/create',
     async ({ set, request, body }) => {
       const org = await auth.api.createOrganization({ body, headers: request.headers })
+      if (!org) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create organization')
+      }
       return jsonOk(set, HTTP_STATUS.OK, org)
     },
     {
@@ -113,6 +114,9 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
     '/set-active',
     async ({ set, request, body }) => {
       const res = await auth.api.setActiveOrganization({ body, headers: request.headers })
+      if (!res) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to set active organization')
+      }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -191,7 +195,7 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
               user: t.Object({
                 email: t.String(),
                 id: t.String(),
-                image: t.Nullable(t.String()),
+                image: t.Optional(t.Nullable(t.String())),
                 name: t.String(),
               }),
               userId: t.String(),
@@ -208,7 +212,10 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/members/update-role',
     async ({ set, request, body }) => {
-      const res = await auth.api.updateMemberRole({ body, headers: request.headers })
+      const res = await auth.api.updateMemberRole({ body: body as any, headers: request.headers })
+      if (!res) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update member role')
+      }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -230,6 +237,9 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
     '/members/remove',
     async ({ set, request, body }) => {
       const res = await auth.api.removeMember({ body, headers: request.headers })
+      if (!res) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to remove member')
+      }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -283,7 +293,10 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
   .post(
     '/invitations',
     async ({ set, request, body }) => {
-      const res = await auth.api.createInvitation({ body, headers: request.headers })
+      const res = await auth.api.createInvitation({ body: body as any, headers: request.headers })
+      if (!res) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create invitation')
+      }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -305,6 +318,9 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
     '/invitations/cancel',
     async ({ set, request, body }) => {
       const res = await auth.api.cancelInvitation({ body, headers: request.headers })
+      if (!res) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to cancel invitation')
+      }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
@@ -326,6 +342,9 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
     '/invitations/accept',
     async ({ set, request, body }) => {
       const res = await auth.api.acceptInvitation({ headers: request.headers, body })
+      if (!res) {
+        return jsonError(set, HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to accept invitation')
+      }
       return jsonOk(set, HTTP_STATUS.OK, res)
     },
     {
