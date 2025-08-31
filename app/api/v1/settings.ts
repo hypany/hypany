@@ -17,8 +17,8 @@ import { authPlugin } from './auth-plugin'
 const SettingsSchema = {
   update: t.Object({
     emailNotifications: t.Optional(t.Boolean()),
-    marketingEmails: t.Optional(t.Boolean()),
     marketingEmailLanguage: t.Optional(t.String()),
+    marketingEmails: t.Optional(t.Boolean()),
     onboardingComplete: t.Optional(t.Boolean()),
   }),
 }
@@ -92,9 +92,9 @@ export const settingsApi = new Elysia({ prefix: '/v1/settings' })
           createdAt: now,
           emailNotifications: body.emailNotifications ?? true,
           id: ulid(),
-          onboardingComplete: body.onboardingComplete ?? false,
-          marketingEmails: body.marketingEmails ?? false,
           marketingEmailLanguage: body.marketingEmailLanguage ?? 'en',
+          marketingEmails: body.marketingEmails ?? false,
+          onboardingComplete: body.onboardingComplete ?? false,
           updatedAt: now,
           userId: user.id,
         }

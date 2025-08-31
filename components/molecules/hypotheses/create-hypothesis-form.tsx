@@ -1,5 +1,8 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useId, useMemo, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -8,9 +11,6 @@ import { Textarea } from '@/components/atoms/textarea'
 import { slugify } from '@/lib/slug'
 import { validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
-import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
-import { useId, useMemo, useState } from 'react'
 
 export function CreateHypothesisForm() {
   const t = useTranslations('app')
@@ -35,8 +35,8 @@ export function CreateHypothesisForm() {
     e.preventDefault()
     if (!name.trim()) {
       toast({
-        title: t('hypotheses.create.form.errors.name.required.title'),
         description: t('hypotheses.create.form.errors.name.required.desc'),
+        title: t('hypotheses.create.form.errors.name.required.title'),
         variant: 'error',
       })
       return
@@ -47,8 +47,9 @@ export function CreateHypothesisForm() {
       const { valid, error } = validateSlug(finalSlug)
       if (!valid) {
         toast({
+          description:
+            error || t('hypotheses.create.form.errors.slug.invalid.desc'),
           title: t('hypotheses.create.form.errors.slug.invalid.title'),
-          description: error || t('hypotheses.create.form.errors.slug.invalid.desc'),
           variant: 'error',
         })
         return
@@ -59,21 +60,29 @@ export function CreateHypothesisForm() {
     try {
       const api = getClientApi()
       const res = await api.v1.hypotheses.post({
-        name: name.trim(),
         description: description.trim() || undefined,
+        name: name.trim(),
         slug: finalSlug || undefined,
       })
-      const data = res.data as
-        | { hypothesis: { id: string } }
-        | undefined
+      const data = res.data as { hypothesis: { id: string } } | undefined
       if (!data?.hypothesis?.id) throw new Error('Failed to create hypothesis')
 
-      toast({ title: t('hypotheses.create.form.toasts.created.title'), description: t('hypotheses.create.form.toasts.created.desc'), variant: 'success' })
+      toast({
+        description: t('hypotheses.create.form.toasts.created.desc'),
+        title: t('hypotheses.create.form.toasts.created.title'),
+        variant: 'success',
+      })
       router.push(`/app/hypotheses/${data.hypothesis.id}`)
       router.refresh()
     } catch (err) {
-      const message = (err as Error)?.message || t('hypotheses.create.form.errors.generic.desc')
-      toast({ title: t('hypotheses.create.form.errors.generic.title'), description: message, variant: 'error' })
+      const message =
+        (err as Error)?.message ||
+        t('hypotheses.create.form.errors.generic.desc')
+      toast({
+        description: message,
+        title: t('hypotheses.create.form.errors.generic.title'),
+        variant: 'error',
+      })
     } finally {
       setSubmitting(false)
     }
@@ -90,11 +99,15 @@ export function CreateHypothesisForm() {
           onChange={(e) => setName(e.target.value)}
           disabled={submitting}
         />
-        <p className='text-xs text-gray-500 dark:text-gray-500'>{t('hypotheses.create.form.name.help')}</p>
+        <p className='text-xs text-gray-500 dark:text-gray-500'>
+          {t('hypotheses.create.form.name.help')}
+        </p>
       </div>
 
       <div className='space-y-2'>
-        <Label htmlFor={descId}>{t('hypotheses.create.form.description.label')}</Label>
+        <Label htmlFor={descId}>
+          {t('hypotheses.create.form.description.label')}
+        </Label>
         <Textarea
           id={descId}
           placeholder={t('hypotheses.create.form.description.placeholder')}
@@ -121,7 +134,9 @@ export function CreateHypothesisForm() {
           {derivedSlug ? (
             <>
               {' '}
-              {t('hypotheses.create.form.slug.help.present', { slug: derivedSlug })}
+              {t('hypotheses.create.form.slug.help.present', {
+                slug: derivedSlug,
+              })}
               {!slugValidation.valid && (
                 <span className='ml-2 text-red-600 dark:text-red-400'>
                   ({slugValidation.error})
@@ -136,7 +151,9 @@ export function CreateHypothesisForm() {
 
       <div className='pt-2'>
         <Button className='w-full sm:w-auto' disabled={submitting}>
-          {submitting ? t('hypotheses.create.form.actions.creating') : t('hypotheses.create.form.actions.create')}
+          {submitting
+            ? t('hypotheses.create.form.actions.creating')
+            : t('hypotheses.create.form.actions.create')}
         </Button>
       </div>
     </form>

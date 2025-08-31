@@ -1,5 +1,5 @@
-import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 export default async function BreadcrumbsDefault() {
   const t = await getTranslations('app')
@@ -18,4 +18,3 @@ export default async function BreadcrumbsDefault() {
     </nav>
   )
 }
-

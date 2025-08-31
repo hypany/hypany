@@ -1,9 +1,9 @@
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { getActiveOrganization } from '@/functions/organizations'
 import { resolveEntityNameById } from '@/functions/resolve'
-import { notFound } from 'next/navigation'
 
 export default async function HypothesisWaitlistBreadcrumbs({
   params,
@@ -14,7 +14,10 @@ export default async function HypothesisWaitlistBreadcrumbs({
   const { id } = await params
   const activeOrgRes = await getActiveOrganization()
   if (!activeOrgRes?.activeOrganizationId) notFound()
-  const resolved = await resolveEntityNameById(id, activeOrgRes.activeOrganizationId)
+  const resolved = await resolveEntityNameById(
+    id,
+    activeOrgRes.activeOrganizationId,
+  )
   if (!resolved) notFound()
 
   return (
@@ -28,7 +31,10 @@ export default async function HypothesisWaitlistBreadcrumbs({
             {t('breadcrumbs.home')}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href='/app/hypotheses'
@@ -37,7 +43,10 @@ export default async function HypothesisWaitlistBreadcrumbs({
             {t('breadcrumbs.hypotheses')}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href={`/app/hypotheses/${id}`}
@@ -46,7 +55,10 @@ export default async function HypothesisWaitlistBreadcrumbs({
             {resolved.name}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href={`/app/hypotheses/${id}/waitlist`}
@@ -60,4 +72,3 @@ export default async function HypothesisWaitlistBreadcrumbs({
     </nav>
   )
 }
-

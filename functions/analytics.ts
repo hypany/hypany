@@ -1,8 +1,20 @@
-import 'server-only'
-import { and, count, countDistinct, desc, eq, gt, inArray, isNull, lte, or, sql } from 'drizzle-orm'
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNull,
+  lte,
+  or,
+  sql,
+} from 'drizzle-orm'
 import { db } from '@/drizzle'
-import { hypotheses, pageVisits, waitlistEntries, waitlists } from '@/schema'
 import { resolveRange } from '@/lib/time-range'
+import { hypotheses, pageVisits, waitlistEntries, waitlists } from '@/schema'
+import 'server-only'
 
 const BOT_PATTERNS = [
   'bot',
@@ -23,7 +35,7 @@ export async function getActivityFeed(
     limit?: number
     range?: '7d' | '30d' | '90d'
     cursor?: string
-  }
+  },
 ) {
   const { limit = 20, range = '30d', cursor } = options || {}
 
@@ -63,11 +75,11 @@ export async function getActivityFeed(
   // Get page views
   const views = await db
     .select({
-      type: sql<string>`'page_view'`,
-      hypothesisId: pageVisits.hypothesisId,
-      timestamp: pageVisits.createdAt,
-      source: pageVisits.referrer,
       email: sql<string | null>`NULL`,
+      hypothesisId: pageVisits.hypothesisId,
+      source: pageVisits.referrer,
+      timestamp: pageVisits.createdAt,
+      type: sql<string>`'page_view'`,
     })
     .from(pageVisits)
     .where(
@@ -79,11 +91,12 @@ export async function getActivityFeed(
         or(
           isNull(pageVisits.userAgent),
           and(
-            ...BOT_PATTERNS.map((pattern) =>
-              sql`LOWER(${pageVisits.userAgent}) NOT LIKE ${'%' + pattern + '%'}`,
+            ...BOT_PATTERNS.map(
+              (pattern) =>
+                sql`LOWER(${pageVisits.userAgent}) NOT LIKE ${`%${pattern}%`}`,
             ),
           ),
-        )
+        ),
       ),
     )
     .orderBy(desc(pageVisits.createdAt))
@@ -92,11 +105,11 @@ export async function getActivityFeed(
   // Get signups
   const signups = await db
     .select({
-      type: sql<string>`'signup'`,
-      hypothesisId: waitlists.hypothesisId,
-      timestamp: waitlistEntries.createdAt,
-      source: waitlistEntries.utmSource,
       email: waitlistEntries.email,
+      hypothesisId: waitlists.hypothesisId,
+      source: waitlistEntries.utmSource,
+      timestamp: waitlistEntries.createdAt,
+      type: sql<string>`'signup'`,
     })
     .from(waitlistEntries)
     .innerJoin(waitlists, eq(waitlistEntries.waitlistId, waitlists.id))
@@ -113,11 +126,11 @@ export async function getActivityFeed(
   // Get verifications (using emailVerified field)
   const verifs = await db
     .select({
-      type: sql<string>`'verification'`,
-      hypothesisId: waitlists.hypothesisId,
-      timestamp: waitlistEntries.createdAt,
-      source: waitlistEntries.utmSource,
       email: waitlistEntries.email,
+      hypothesisId: waitlists.hypothesisId,
+      source: waitlistEntries.utmSource,
+      timestamp: waitlistEntries.createdAt,
+      type: sql<string>`'verification'`,
     })
     .from(waitlistEntries)
     .innerJoin(waitlists, eq(waitlistEntries.waitlistId, waitlists.id))
@@ -135,19 +148,25 @@ export async function getActivityFeed(
   // Combine and sort all activities
   const allActivities = [...views, ...signups, ...verifs]
     .sort((a, b) => {
-      const timeA = a.timestamp instanceof Date ? a.timestamp.getTime() : new Date(a.timestamp).getTime()
-      const timeB = b.timestamp instanceof Date ? b.timestamp.getTime() : new Date(b.timestamp).getTime()
+      const timeA =
+        a.timestamp instanceof Date
+          ? a.timestamp.getTime()
+          : new Date(a.timestamp).getTime()
+      const timeB =
+        b.timestamp instanceof Date
+          ? b.timestamp.getTime()
+          : new Date(b.timestamp).getTime()
       return timeB - timeA
     })
     .slice(0, limit)
 
   return {
-    items: allActivities.map(a => ({
-      type: a.type,
-      hypothesisId: a.hypothesisId,
-      timestamp: a.timestamp,
-      source: a.source || 'direct',
+    items: allActivities.map((a) => ({
       email: a.email,
+      hypothesisId: a.hypothesisId,
+      source: a.source || 'direct',
+      timestamp: a.timestamp,
+      type: a.type,
     })),
   }
 }
@@ -157,7 +176,7 @@ export async function getActivityFeed(
  */
 export async function getTrafficSources(
   organizationId: string,
-  range: '7d' | '30d' | '90d' = '30d'
+  range: '7d' | '30d' | '90d' = '30d',
 ) {
   const now = new Date()
   const daysMap = { '7d': 7, '30d': 30, '90d': 90 }
@@ -189,13 +208,13 @@ export async function getTrafficSources(
   // Get UTM sources from signups
   const utmSources = await db
     .select({
+      count: count(),
       source: sql<string>`COALESCE(
         ${waitlistEntries.utmSource},
         ${waitlistEntries.utmMedium},
         ${waitlistEntries.utmCampaign},
         'direct'
       )`,
-      count: count(),
     })
     .from(waitlistEntries)
     .where(
@@ -214,13 +233,13 @@ export async function getTrafficSources(
   // Get referrers from page visits
   const referrerSources = await db
     .select({
+      count: countDistinct(pageVisits.visitorId),
       source: sql<string>`
         CASE 
           WHEN ${pageVisits.referrer} IS NULL OR ${pageVisits.referrer} = '' THEN 'direct'
           ELSE REGEXP_REPLACE(${pageVisits.referrer}, '^https?://([^/]+).*', '\\1')
         END
       `,
-      count: countDistinct(pageVisits.visitorId),
     })
     .from(pageVisits)
     .where(
@@ -231,11 +250,12 @@ export async function getTrafficSources(
         or(
           isNull(pageVisits.userAgent),
           and(
-            ...BOT_PATTERNS.map((pattern) =>
-              sql`LOWER(${pageVisits.userAgent}) NOT LIKE ${'%' + pattern + '%'}`,
+            ...BOT_PATTERNS.map(
+              (pattern) =>
+                sql`LOWER(${pageVisits.userAgent}) NOT LIKE ${`%${pattern}%`}`,
             ),
           ),
-        )
+        ),
       ),
     )
     .groupBy(sql`
@@ -248,26 +268,33 @@ export async function getTrafficSources(
   // Combine sources
   const sourceMap = new Map<string, { signups: number; visitors: number }>()
 
-  utmSources.forEach(s => {
+  utmSources.forEach((s) => {
     if (!sourceMap.has(s.source)) {
       sourceMap.set(s.source, { signups: 0, visitors: 0 })
     }
-    sourceMap.get(s.source)!.signups = s.count
+    const signupSource = sourceMap.get(s.source)
+    if (signupSource) {
+      signupSource.signups = s.count
+    }
   })
 
-  referrerSources.forEach(s => {
+  referrerSources.forEach((s) => {
     if (!sourceMap.has(s.source)) {
       sourceMap.set(s.source, { signups: 0, visitors: 0 })
     }
-    sourceMap.get(s.source)!.visitors = s.count
+    const visitorSource = sourceMap.get(s.source)
+    if (visitorSource) {
+      visitorSource.visitors = s.count
+    }
   })
 
   const sources = Array.from(sourceMap.entries())
     .map(([source, data]) => ({
-      source,
+      conversionRate:
+        data.visitors > 0 ? (data.signups / data.visitors) * 100 : 0,
       signups: data.signups,
+      source,
       visitors: data.visitors,
-      conversionRate: data.visitors > 0 ? (data.signups / data.visitors) * 100 : 0,
     }))
     .sort((a, b) => b.visitors - a.visitors)
 
@@ -296,7 +323,18 @@ export async function getAnalyticsMetrics(
     : hypothesisIds
 
   if (targetHypothesisIds.length === 0) {
-    return { daily: [], perHypothesis: [], totals: { pageViews: 0, uniqueVisitors: 0, signups: 0, verifiedSignups: 0, conversionVisitorsToSignups: 0, conversionVisitorsToVerified: 0 } }
+    return {
+      daily: [],
+      perHypothesis: [],
+      totals: {
+        conversionVisitorsToSignups: 0,
+        conversionVisitorsToVerified: 0,
+        pageViews: 0,
+        signups: 0,
+        uniqueVisitors: 0,
+        verifiedSignups: 0,
+      },
+    }
   }
 
   // Gather page views (aggregate counts and unique visitors in range)
@@ -321,8 +359,8 @@ export async function getAnalyticsMetrics(
     .select({
       createdAt: pageVisits.createdAt,
       hypothesisId: pageVisits.hypothesisId,
-      visitorId: pageVisits.visitorId,
       userAgent: pageVisits.userAgent,
+      visitorId: pageVisits.visitorId,
     })
     .from(pageVisits)
     .where(
@@ -359,13 +397,18 @@ export async function getAnalyticsMetrics(
 
   const waitlistIds = userWaitlists.map((w) => w.id)
   const waitlistToHypothesis = new Map<string, string>()
-  userWaitlists.forEach((w) => waitlistToHypothesis.set(w.id, w.hypothesisId))
+  userWaitlists.forEach((w) => {
+    waitlistToHypothesis.set(w.id, w.hypothesisId)
+  })
 
   // Daily signups
   let dailySignups: Array<{ date: string; signups: number }> = []
   if (waitlistIds.length > 0) {
     const rows = await db
-      .select({ createdAt: waitlistEntries.createdAt, waitlistId: waitlistEntries.waitlistId })
+      .select({
+        createdAt: waitlistEntries.createdAt,
+        waitlistId: waitlistEntries.waitlistId,
+      })
       .from(waitlistEntries)
       .where(
         and(
@@ -381,30 +424,40 @@ export async function getAnalyticsMetrics(
       const dateStr = d.toISOString().slice(0, 10)
       map.set(dateStr, (map.get(dateStr) ?? 0) + 1)
     }
-    dailySignups = Array.from(map.entries()).map(([date, signups]) => ({ date, signups }))
+    dailySignups = Array.from(map.entries()).map(([date, signups]) => ({
+      date,
+      signups,
+    }))
   }
 
   // Merge daily
   const dailyMap = new Map<string, { visitors: number; signups: number }>()
   for (const dv of dailyVisitors) {
-    dailyMap.set(dv.date, { visitors: Number(dv.visitors || 0), signups: 0 })
+    dailyMap.set(dv.date, { signups: 0, visitors: Number(dv.visitors || 0) })
   }
   for (const ds of dailySignups) {
     const ex = dailyMap.get(ds.date)
     if (ex) ex.signups = Number(ds.signups || 0)
-    else dailyMap.set(ds.date, { visitors: 0, signups: Number(ds.signups || 0) })
+    else
+      dailyMap.set(ds.date, { signups: Number(ds.signups || 0), visitors: 0 })
   }
   const daily = Array.from(dailyMap.entries())
     .map(([date, data]) => ({ date, ...data }))
     .sort((a, b) => a.date.localeCompare(b.date))
 
   // Signups/verified per hypothesis
-  let signupData: Array<{ waitlistId: string; signups: number; verifiedSignups: number }> = []
+  let signupData: Array<{
+    waitlistId: string
+    signups: number
+    verifiedSignups: number
+  }> = []
   if (waitlistIds.length > 0) {
     const rows = await db
       .select({
         signups: count(waitlistEntries.id),
-        verifiedSignups: count(sql<number>`CASE WHEN ${waitlistEntries.emailVerified} = true THEN 1 END`),
+        verifiedSignups: count(
+          sql<number>`CASE WHEN ${waitlistEntries.emailVerified} = true THEN 1 END`,
+        ),
         waitlistId: waitlistEntries.waitlistId,
       })
       .from(waitlistEntries)
@@ -467,7 +520,8 @@ export async function getAnalyticsMetrics(
   for (const m of perHypothesisMap.values()) {
     if (m.uniqueVisitors > 0) {
       m.conversionVisitorsToSignups = (m.signups / m.uniqueVisitors) * 100
-      m.conversionVisitorsToVerified = (m.verifiedSignups / m.uniqueVisitors) * 100
+      m.conversionVisitorsToVerified =
+        (m.verifiedSignups / m.uniqueVisitors) * 100
     }
   }
 
@@ -481,14 +535,18 @@ export async function getAnalyticsMetrics(
       acc.verifiedSignups += m.verifiedSignups
       return acc
     },
-    { pageViews: 0, uniqueVisitors: 0, signups: 0, verifiedSignups: 0 },
+    { pageViews: 0, signups: 0, uniqueVisitors: 0, verifiedSignups: 0 },
   )
   const totalsWithConv = {
     ...totals,
     conversionVisitorsToSignups:
-      totals.uniqueVisitors > 0 ? (totals.signups / totals.uniqueVisitors) * 100 : 0,
+      totals.uniqueVisitors > 0
+        ? (totals.signups / totals.uniqueVisitors) * 100
+        : 0,
     conversionVisitorsToVerified:
-      totals.uniqueVisitors > 0 ? (totals.verifiedSignups / totals.uniqueVisitors) * 100 : 0,
+      totals.uniqueVisitors > 0
+        ? (totals.verifiedSignups / totals.uniqueVisitors) * 100
+        : 0,
   }
 
   return { daily, perHypothesis, totals: totalsWithConv }

@@ -1,6 +1,12 @@
 import type { Metric } from './metrics-cards'
 
-export function KpiBar({ metrics, ariaLabel }: { metrics: Metric[]; ariaLabel?: string }) {
+export function KpiBar({
+  metrics,
+  ariaLabel,
+}: {
+  metrics: Metric[]
+  ariaLabel?: string
+}) {
   return (
     <div className='w-full'>
       <dl
@@ -26,4 +32,3 @@ export function KpiBar({ metrics, ariaLabel }: { metrics: Metric[]; ariaLabel?: 
     </div>
   )
 }
-

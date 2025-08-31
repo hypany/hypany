@@ -5,6 +5,9 @@
  * - Resolve and verify domain connectivity
  */
 
+import { and, eq, isNull, ne } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import humanId from 'human-id'
 import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { normalizeHostname } from '@/lib/domains'
@@ -16,9 +19,6 @@ import {
   removeVercelProjectDomains,
 } from '@/lib/vercel'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
-import { and, eq, isNull, ne } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import humanId from 'human-id'
 import 'server-only'
 import { ulid } from 'ulid'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
@@ -165,11 +165,9 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         createdAt: new Date(),
         hypothesisId: params.hypothesisId,
         id,
-        name: humanId(
-          {
-            separator: '-',
-          }
-        )
+        name: humanId({
+          separator: '-',
+        })
           .replace(/([a-z])([A-Z])/g, '$1-$2')
           .toLowerCase(),
         template: 'default',

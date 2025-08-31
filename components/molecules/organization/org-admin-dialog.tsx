@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+import React, { useCallback, useEffect, useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
@@ -32,7 +34,6 @@ import {
   TableRow,
 } from '@/components/atoms/table'
 import { toast } from '@/lib/use-toast'
-import React, { useCallback, useEffect, useId, useState } from 'react'
 
 type Member = {
   id: string
@@ -86,7 +87,12 @@ export function OrgAdminDialog({
           id: string
           organizationId: string
           role: string
-          user: { id: string; name: string; email: string; image?: string | null }
+          user: {
+            id: string
+            name: string
+            email: string
+            image?: string | null
+          }
           userId: string
         }>
         total: number
@@ -97,13 +103,13 @@ export function OrgAdminDialog({
           createdAt: m.createdAt as unknown as string | Date,
           id: m.id,
           role: m.role,
-          userId: m.userId,
           user: {
             email: m.user?.email as string,
             id: m.user?.id as string,
             image: (m.user?.image as string | null) ?? null,
             name: m.user?.name as string,
           },
+          userId: m.userId,
         })),
       )
     } catch {
@@ -143,9 +149,7 @@ export function OrgAdminDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='secondary'>
-          Manage
-        </Button>
+        <Button variant='secondary'>Manage</Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-3xl'>
         <DialogHeader>
@@ -234,8 +238,7 @@ function MembersSection({
                   <div className='flex items-center gap-3'>
                     <div className='relative inline-flex size-7 items-center justify-center overflow-hidden rounded-sm ring-1 ring-gray-200 dark:ring-gray-800'>
                       {m.user?.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={m.user.image}
                           alt={m.user.name}
                           className='h-full w-full object-cover'
@@ -269,7 +272,6 @@ function MembersSection({
                     />
                     <Button
                       variant='secondary'
-                     
                       onClick={async () => {
                         try {
                           await api.v1.organizations.members.remove.post({
@@ -285,9 +287,11 @@ function MembersSection({
                           onMembersChanged()
                         } catch (e) {
                           toast({
-                            description: 'Please try again.',
-                            title:
-                              (e as Error).message ?? 'Failed to remove member',
+                            description:
+                              e instanceof Error
+                                ? e.message
+                                : 'Failed to remove member',
+                            title: 'Error',
                             variant: 'error',
                           })
                         }
@@ -318,10 +322,10 @@ function LoadOnOpen({
   onLoadMembers: () => void
   onLoadInvitations: () => void
 }) {
-  const fetchedRef = React.useRef({ members: false, invites: false })
+  const fetchedRef = React.useRef({ invites: false, members: false })
   useEffect(() => {
     if (!open) {
-      fetchedRef.current = { members: false, invites: false }
+      fetchedRef.current = { invites: false, members: false }
       return
     }
     if (tab === 'members' && !fetchedRef.current.members) {
@@ -360,9 +364,7 @@ function UpdateRoleButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='secondary'>
-          Update Role
-        </Button>
+        <Button variant='secondary'>Update Role</Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-md'>
         <DialogHeader>
@@ -404,8 +406,9 @@ function UpdateRoleButton({
                   onUpdated()
                 } catch (e) {
                   toast({
-                    description: 'Please try again.',
-                    title: (e as Error).message ?? 'Failed to update role',
+                    description:
+                      e instanceof Error ? e.message : 'Failed to update role',
+                    title: 'Error',
                     variant: 'error',
                   })
                 } finally {
@@ -445,7 +448,6 @@ function InviteMemberForm({
           type='email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-         
         />
         <Select value={role} onValueChange={(v) => setRole(v as Role)}>
           <SelectTrigger className='py-1.5 sm:w-48'>
@@ -483,8 +485,10 @@ function InviteMemberForm({
               onInvited()
             } catch (e) {
               toast({
-                description: 'Please verify the email and try again.',
-                title: (e as Error).message ?? 'Failed to send invitation',
+                description:
+                  e instanceof Error ? e.message : 'Failed to send invitation',
+                title:
+                  e instanceof Error ? e.message : 'Failed to send invitation',
                 variant: 'error',
               })
             } finally {
@@ -553,7 +557,6 @@ function InvitationsSection({
                   <div className='flex items-center justify-end gap-2'>
                     <Button
                       variant='secondary'
-                     
                       onClick={async () => {
                         try {
                           await api.v1.organizations.invitations.cancel.post({
@@ -569,8 +572,9 @@ function InvitationsSection({
                           toast({
                             description: 'Please try again.',
                             title:
-                              (e as Error).message ??
-                              'Failed to cancel invitation',
+                              e instanceof Error
+                                ? e.message
+                                : 'Failed to cancel invitation',
                             variant: 'error',
                           })
                         }
@@ -614,8 +618,11 @@ function AdminSection({ orgId }: { orgId: string }) {
               window.location.reload()
             } catch (e) {
               toast({
-                description: 'Please try again.',
-                title: (e as Error).message ?? 'Failed to leave organization',
+                description:
+                  e instanceof Error
+                    ? e.message
+                    : 'Failed to leave organization',
+                title: 'Error',
                 variant: 'error',
               })
             } finally {

@@ -1,5 +1,8 @@
 import { requireAuth } from '@/auth/server'
-import { listUserOrganizations, getActiveOrganization } from '@/functions/organizations'
+import {
+  getActiveOrganization,
+  listUserOrganizations,
+} from '@/functions/organizations'
 import { OrgSwitcherClient } from './org-switcher.client'
 
 type Organization = { id: string; name: string; logo?: string | null }

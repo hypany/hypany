@@ -187,7 +187,9 @@ export function SignInForm({ className, next, ...props }: SignInFormProps) {
           )}
         </div>
         <Button disabled={isSubmitting} className='w-full'>
-          {isSubmitting ? t('form.actions.signing-in') : t('form.actions.continue')}
+          {isSubmitting
+            ? t('form.actions.signing-in')
+            : t('form.actions.continue')}
         </Button>
       </form>
     </div>

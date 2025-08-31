@@ -28,7 +28,12 @@ export async function getLandingPageByIdForOrg(
   if (!lp) return null
 
   const blocks = await db
-    .select({ id: landingPageBlocks.id, type: landingPageBlocks.type, content: landingPageBlocks.content, order: landingPageBlocks.order })
+    .select({
+      content: landingPageBlocks.content,
+      id: landingPageBlocks.id,
+      order: landingPageBlocks.order,
+      type: landingPageBlocks.type,
+    })
     .from(landingPageBlocks)
     .where(
       and(
@@ -38,7 +43,7 @@ export async function getLandingPageByIdForOrg(
     )
     .orderBy(landingPageBlocks.order)
 
-  return { landingPage: lp, blocks }
+  return { blocks, landingPage: lp }
 }
 
 export async function getLandingPageIdForOrg(
@@ -60,4 +65,3 @@ export async function getLandingPageIdForOrg(
 
   return lp || null
 }
-

@@ -246,6 +246,9 @@ export const waitlistEntries = pgTable(
     id: text('id')
       .primaryKey()
       .$defaultFn(() => ulid()),
+    landingPageId: text('landing_page_id')
+      .notNull()
+      .references(() => landingPages.id, { onDelete: 'cascade' }),
     metadata: text('metadata'), // JSON string for additional data
     name: text('name'),
     source: text('source'), // organic, social, ad
@@ -261,20 +264,17 @@ export const waitlistEntries = pgTable(
     waitlistId: text('waitlist_id')
       .notNull()
       .references(() => waitlists.id, { onDelete: 'cascade' }),
-      landingPageId: text('landing_page_id')
-      .notNull()
-      .references(() => landingPages.id, { onDelete: 'cascade' }),
   },
   (table) => ({
+    landingPageIdIdx: index('waitlist_entries_landing_page_id_idx').on(
+      table.landingPageId,
+    ),
     visitorIdx: index('waitlist_entries_visitor_idx').on(table.visitorId),
     waitlistIdCreatedIdx: index(
       'waitlist_entries_waitlist_id_created_at_idx',
     ).on(table.waitlistId, table.createdAt),
     waitlistIdIdx: index('waitlist_entries_waitlist_id_idx').on(
       table.waitlistId,
-    ),
-    landingPageIdIdx: index('waitlist_entries_landing_page_id_idx').on(
-      table.landingPageId,
     ),
   }),
 )
@@ -321,9 +321,9 @@ export const userSettings = pgTable(
     id: text('id')
       .primaryKey()
       .$defaultFn(() => ulid()),
-    onboardingComplete: boolean('onboarding_complete').default(false).notNull(),
-    marketingEmails: boolean('marketing_emails').default(false).notNull(),
     marketingEmailLanguage: text('marketing_email_language').default('en'), // en | ko | etc
+    marketingEmails: boolean('marketing_emails').default(false).notNull(),
+    onboardingComplete: boolean('onboarding_complete').default(false).notNull(),
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),

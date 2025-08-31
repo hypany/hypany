@@ -1,7 +1,7 @@
 "use client"
 
-import React from "react"
 import { usePathname } from "next/navigation"
+import React from "react"
 import { useSaveStatusStore } from "@/lib/store/save-status"
 
 export function SaveStatusBadge({ className }: { className?: string }) {

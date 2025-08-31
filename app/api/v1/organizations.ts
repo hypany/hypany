@@ -423,7 +423,8 @@ export const organizationsApi = new Elysia({ prefix: '/v1/organizations' })
           total: number
         }
         const admins = members?.members?.filter((m) => m.role === 'admin') ?? []
-        const isLastAdmin = admins.length === 1 && admins[0]?.userId === user?.id
+        const isLastAdmin =
+          admins.length === 1 && admins[0]?.userId === user?.id
         if (isLastAdmin) {
           return jsonError(
             set,

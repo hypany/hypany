@@ -1,7 +1,55 @@
 {
   "app": {
     "breadcrumbs": { "details": "상세", "home": "홈", "hypotheses": "가설" },
+    "common": {
+      "boolean": { "no": "아니오", "yes": "예" },
+      "direct": "직접"
+    },
     "hypotheses": {
+      "create": {
+        "form": {
+          "actions": { "create": "가설 만들기", "creating": "만드는 중…" },
+          "description": {
+            "label": "설명 (선택)",
+            "placeholder": "문제와 접근 방식을 한 문장으로 적어주세요."
+          },
+          "errors": {
+            "generic": { "desc": "가설 생성에 실패했어요", "title": "오류" },
+            "name": {
+              "required": {
+                "desc": "가설 이름을 입력해주세요.",
+                "title": "이름이 필요해요"
+              }
+            },
+            "slug": {
+              "invalid": {
+                "desc": "올바른 서브도메인을 입력해주세요.",
+                "title": "서브도메인이 올바르지 않아요"
+              }
+            }
+          },
+          "name": {
+            "help": "아이디어를 잘 드러내는 간결한 이름이에요.",
+            "label": "이름",
+            "placeholder": "AI 로고 생성기"
+          },
+          "slug": {
+            "help": {
+              "empty": "비워두면 자동으로 생성돼요.",
+              "prefix": "공개 서브도메인에 사용돼요.",
+              "present": "{slug}.hypany.app 로 생성돼요. 언제든 수정하거나 커스텀 도메인을 연결할 수 있어요."
+            },
+            "label": "서브도메인 (선택)",
+            "placeholder": "ai-logo"
+          },
+          "toasts": {
+            "created": {
+              "desc": "개요 페이지로 이동해요...",
+              "title": "가설이 생성됐어요"
+            }
+          }
+        }
+      },
       "overview": {
         "aria": "개요 테이블",
         "assignedPlaceholder": "담당자...",
@@ -34,67 +82,29 @@
           }
         }
       },
-      "tabs": { "audits": "감사", "monitoring": "모니터링", "overview": "개요" },
-      "create": {
-        "form": {
-          "actions": { "create": "가설 만들기", "creating": "만드는 중…" },
-          "description": {
-            "label": "설명 (선택)",
-            "placeholder": "문제와 접근 방식을 한 문장으로 적어주세요."
-          },
-          "errors": {
-            "generic": { "desc": "가설 생성에 실패했어요", "title": "오류" },
-            "name": {
-              "required": { "desc": "가설 이름을 입력해주세요.", "title": "이름이 필요해요" }
-            },
-            "slug": {
-              "invalid": { "desc": "올바른 서브도메인을 입력해주세요.", "title": "서브도메인이 올바르지 않아요" }
-            }
-          },
-          "name": {
-            "help": "아이디어를 잘 드러내는 간결한 이름이에요.",
-            "label": "이름",
-            "placeholder": "AI 로고 생성기"
-          },
-          "slug": {
-            "help": {
-              "empty": "비워두면 자동으로 생성돼요.",
-              "prefix": "공개 서브도메인에 사용돼요.",
-              "present": "{slug}.hypany.app 로 생성돼요. 언제든 수정하거나 커스텀 도메인을 연결할 수 있어요."
-            },
-            "label": "서브도메인 (선택)",
-            "placeholder": "ai-logo"
-          },
-          "toasts": {
-            "created": { "desc": "개요 페이지로 이동해요...", "title": "가설이 생성됐어요" }
-          }
-        }
-      }
+      "tabs": { "audits": "감사", "monitoring": "모니터링", "overview": "개요" }
     },
     "pages": {
       "analytics": {
         "aria": "애널리틱스",
-        "subtitle": "성과, 전환율, 참여도를 확인해요.",
-        "title": "애널리틱스",
+        "cards": {
+          "daily-visitors": "일별 방문자",
+          "visitors-vs-signups": "방문자 vs 가입"
+        },
         "metrics": {
           "summary": "{visitors}명 방문 • {signups}명 가입 • {conv}% 전환"
         },
-        "cards": {
-          "visitors-vs-signups": "방문자 vs 가입",
-          "daily-visitors": "일별 방문자"
-        }
+        "subtitle": "성과, 전환율, 참여도를 확인해요.",
+        "title": "애널리틱스"
       },
       "assets": {
         "aria": "에셋",
         "subtitle": "가설과 캠페인 에셋을 관리해요.",
         "title": "에셋"
       },
-      
+
       "hypotheses": {
         "aria": "가설",
-        "overview-link": "개요",
-        "subtitle": "가설을 살펴보고 관리해요.",
-        "subtitle-2": "테이블 보기예요.",
         "create": {
           "back-link": "가설 목록으로 돌아가기",
           "subtitle": "초안 랜딩 페이지와 웨이트리스트를 자동으로 준비해요.",
@@ -102,64 +112,13 @@
         },
         "detail": {
           "aria": "가설 개요",
-          "headings": {
-            "analytics": "애널리틱스 (30일)",
-            "waitlist": "웨이트리스트",
-            "landing-pages": "랜딩 페이지",
-            "overview": "개요",
-            "recent-activity": "최근 활동",
-            "domain-settings": "도메인 설정"
-          },
-          "waitlist": {
-            "summary": "전체 {total}명, 인증 {verified}명",
-            "exports": "{fileType}로 내보내기",
-            "viewAll": "모두 보기",
-            "table": { "columns": { "email": "이메일", "verified": "인증됨", "source": "소스" } },
-            "empty": "아직 항목이 없어요"
-          },
-          "landing-pages": {
-            "manage": "관리",
-            "empty": "아직 랜딩 페이지가 없어요.",
-            "empty-hint": "아직 랜딩 페이지가 없어요. 도메인 탭에서 첫 페이지를 설정하세요.",
-            "table": { "columns": { "name": "이름", "template": "템플릿", "published": "게시됨", "actions": "작업" } },
-            "buttons": {
-              "new": "새 랜딩 페이지",
-              "creating": "생성 중…",
-              "duplicate": "복제",
-              "duplicating": "복제 중…"
-            },
-            "placeholders": { "name": "세-단어-식별자" },
-            "toasts": {
-              "created": { "title": "랜딩 페이지가 생성됐어요" },
-              "create-error": { "title": "랜딩 페이지 생성에 실패했어요" },
-              "duplicated": { "title": "랜딩 페이지를 복제했어요" },
-              "duplicate-error": { "title": "복제에 실패했어요" },
-              "save-name-error": { "title": "이름 저장에 실패했어요" }
-            },
-            "actions": { "open-editor": "에디터 열기", "view": "보기" }
-          },
-          "recent-activity": {
-            "analyticsLink": "애널리틱스",
-            "empty": "최근 활동이 없어요",
-            "labels": {
-              "page_view": "{source}",
-              "signup": "가입",
-              "signup-with-email": "{email}",
-              "verification": "인증",
-              "verification-with-email": "{email}"
-            },
-            "badge": { "page_view": "방문", "signup": "가입", "verification": "인증" }
-          },
           "domains": {
-            "labels": {
-              "subdomain": "서브도메인",
-              "custom-domain": "커스텀 도메인"
-            },
-            "placeholders": {
-              "custom-domain": "yourdomain.com"
-            },
-            "help": {
-              "custom-domain": "비워두면 커스텀 도메인이 제거돼요."
+            "availability": {
+              "available-desc": "{slug}.hypany.app 로 사용할 수 있어요",
+              "available-title": "서브도메인을 사용할 수 있어요",
+              "inline-not-available": "사용 불가",
+              "unavailable-desc": "다른 서브도메인을 선택해주세요.",
+              "unavailable-title": "서브도메인을 사용할 수 없어요"
             },
             "buttons": {
               "check": "확인",
@@ -167,16 +126,71 @@
               "save": "설정 저장"
             },
             "checking-availability": "사용 가능 여부 확인 중…",
-            "availability": {
-              "available-title": "서브도메인을 사용할 수 있어요",
-              "available-desc": "{slug}.hypany.app 로 사용할 수 있어요",
-              "unavailable-title": "서브도메인을 사용할 수 없어요",
-              "unavailable-desc": "다른 서브도메인을 선택해주세요.",
-              "inline-not-available": "사용 불가"
+            "help": {
+              "custom-domain": "비워두면 커스텀 도메인이 제거돼요."
+            },
+            "labels": {
+              "custom-domain": "커스텀 도메인",
+              "subdomain": "서브도메인"
+            },
+            "placeholders": {
+              "custom-domain": "yourdomain.com"
             },
             "save": {
-              "error-title": "도메인 설정 저장에 실패했어요",
-              "error-desc": "값을 확인한 뒤 다시 시도해주세요."
+              "error-desc": "값을 확인한 뒤 다시 시도해주세요.",
+              "error-title": "도메인 설정 저장에 실패했어요"
+            }
+          },
+          "headings": {
+            "analytics": "애널리틱스 (30일)",
+            "domain-settings": "도메인 설정",
+            "landing-pages": "랜딩 페이지",
+            "overview": "개요",
+            "recent-activity": "최근 활동",
+            "waitlist": "웨이트리스트"
+          },
+          "landing-pages": {
+            "actions": { "open-editor": "에디터 열기", "view": "보기" },
+            "buttons": {
+              "creating": "생성 중…",
+              "duplicate": "복제",
+              "duplicating": "복제 중…",
+              "new": "새 랜딩 페이지"
+            },
+            "empty": "아직 랜딩 페이지가 없어요.",
+            "empty-hint": "아직 랜딩 페이지가 없어요. 도메인 탭에서 첫 페이지를 설정하세요.",
+            "manage": "관리",
+            "placeholders": { "name": "세-단어-식별자" },
+            "table": {
+              "columns": {
+                "actions": "작업",
+                "name": "이름",
+                "published": "게시됨",
+                "template": "템플릿"
+              }
+            },
+            "toasts": {
+              "create-error": { "title": "랜딩 페이지 생성에 실패했어요" },
+              "created": { "title": "랜딩 페이지가 생성됐어요" },
+              "duplicate-error": { "title": "복제에 실패했어요" },
+              "duplicated": { "title": "랜딩 페이지를 복제했어요" },
+              "save-name-error": { "title": "이름 저장에 실패했어요" }
+            }
+          },
+          "recent-activity": {
+            "analyticsLink": "애널리틱스",
+            "badge": {
+              "page_view": "방문",
+              "signup": "가입",
+              "verification": "인증"
+            },
+            "empty": "최근 활동이 없어요",
+            "labels": {
+              "page_view": "{source}",
+              "signup": "가입",
+              "signup-with-email": "{email}",
+              "verification": "인증",
+              "verification-with-email": "{email}"
             }
           },
           "table": {
@@ -187,10 +201,26 @@
               "subdomain": "서브도메인",
               "value": "값"
             }
+          },
+          "waitlist": {
+            "empty": "아직 항목이 없어요",
+            "exports": "{fileType}로 내보내기",
+            "summary": "전체 {total}명, 인증 {verified}명",
+            "table": {
+              "columns": {
+                "email": "이메일",
+                "source": "소스",
+                "verified": "인증됨"
+              }
+            },
+            "viewAll": "모두 보기"
           }
         },
         "no-active-organization": "활성화된 조직이 없어요.",
         "no-data": "데이터가 없어요.",
+        "overview-link": "개요",
+        "subtitle": "가설을 살펴보고 관리해요.",
+        "subtitle-2": "테이블 보기예요.",
         "tabs": {
           "analytics": "애널리틱스",
           "domains": "도메인",
@@ -242,21 +272,21 @@
         "subtitle": "워크스페이스, 설정, 계정을 관리해요.",
         "title": "설정"
       },
-      "waitlists": {
-        "aria": "웨이트리스트",
-        "subtitle": "모든 웨이트리스트를 관리해요.",
-        "title": "웨이트리스트"
-      },
       "waitlist": {
         "table": {
           "columns": {
             "email": "이메일",
             "name": "이름",
-            "verified": "인증됨",
+            "signed-up": "가입일",
             "source": "소스",
-            "signed-up": "가입일"
+            "verified": "인증됨"
           }
         }
+      },
+      "waitlists": {
+        "aria": "웨이트리스트",
+        "subtitle": "모든 웨이트리스트를 관리해요.",
+        "title": "웨이트리스트"
       }
     },
     "sidebar": {
@@ -276,10 +306,6 @@
       "joinSlack": "Slack 커뮤니티에 참여하기",
       "signOut": "로그아웃하기",
       "theme": "테마"
-    },
-    "common": {
-      "boolean": { "yes": "예", "no": "아니오" },
-      "direct": "직접"
     }
   },
   "auth": {
@@ -350,6 +376,8 @@
     "aria": {
       "product-showcase": "제품 쇼케이스"
     },
+    "boolean": { "no": "아니오", "yes": "예" },
+    "direct": "직접",
     "input": {
       "password": {
         "hide": "비밀번호 숨기기",
@@ -367,9 +395,7 @@
       "light": "라이트",
       "system": "시스템",
       "toggle-aria": "테마 바꾸기"
-    },
-    "boolean": { "yes": "예", "no": "아니오" },
-    "direct": "직접"
+    }
   },
   "footer": {
     "creator-name": "조성현",

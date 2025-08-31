@@ -1,7 +1,7 @@
+import Link from 'next/link'
+import { SaveStatusBadge } from '@/components/atoms/save-status'
 import { SidebarTrigger } from '@/components/atoms/sidebar'
 import { TopRightActions } from '@/components/molecules/navigation/top-right-actions'
-import { SaveStatusBadge } from '@/components/atoms/save-status'
-import Link from 'next/link'
 
 export async function AppHeader({
   breadcrumbs,

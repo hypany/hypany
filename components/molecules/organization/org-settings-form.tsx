@@ -5,9 +5,9 @@ import { updateOrganizationAction } from '@/app/app/organizations/actions'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
+import { validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
 import { cx } from '@/lib/utils'
-import { validateSlug } from '@/lib/slug-validation'
 
 type OrgSettingsFormProps = {
   organizationId?: string
@@ -30,7 +30,7 @@ export function OrgSettingsForm({
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    
+
     // Validate slug with shared validator
     const trimmedSlug = slug.trim()
     const { valid, error } = validateSlug(trimmedSlug)
@@ -42,7 +42,7 @@ export function OrgSettingsForm({
       })
       return
     }
-    
+
     startTransition(async () => {
       const res = await updateOrganizationAction({
         name: name.trim(),
@@ -51,7 +51,10 @@ export function OrgSettingsForm({
       })
       if (!res.ok) {
         // Check for slug uniqueness error
-        if (res.error?.toLowerCase().includes('slug') || res.error?.toLowerCase().includes('unique')) {
+        if (
+          res.error?.toLowerCase().includes('slug') ||
+          res.error?.toLowerCase().includes('unique')
+        ) {
           toast({
             description: 'This slug is already taken. Please choose another.',
             title: 'Slug already exists',
@@ -92,7 +95,9 @@ export function OrgSettingsForm({
           <Input
             id={slugId}
             value={slug}
-            onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+            onChange={(e) =>
+              setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
+            }
             disabled={isPending}
             pattern='[a-z0-9]([a-z0-9-]*[a-z0-9])?'
             minLength={3}

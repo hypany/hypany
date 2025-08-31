@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/auth/server'
-import { listUserOrganizations } from '@/functions/organizations'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
+import { listUserOrganizations } from '@/functions/organizations'
 
 export const metadata: Metadata = {
   description: 'Create your first organization to get started.',

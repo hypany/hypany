@@ -1,6 +1,6 @@
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 export default async function HypothesesIndexBreadcrumbs() {
   const t = await getTranslations('app')
@@ -15,7 +15,10 @@ export default async function HypothesesIndexBreadcrumbs() {
             {t('breadcrumbs.home')}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href='/app/hypotheses'
@@ -29,4 +32,3 @@ export default async function HypothesesIndexBreadcrumbs() {
     </nav>
   )
 }
-

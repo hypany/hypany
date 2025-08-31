@@ -1,6 +1,6 @@
 import 'server-only'
-import { auth } from '@/app/api/auth'
 import { headers } from 'next/headers'
+import { auth } from '@/app/api/auth'
 
 /**
  * List all organizations for the current user
@@ -25,7 +25,7 @@ export async function getActiveOrganization() {
     return null
   }
   return {
-    activeOrganizationId: session.session.activeOrganizationId
+    activeOrganizationId: session.session.activeOrganizationId,
   }
 }
 
@@ -40,8 +40,8 @@ export async function createOrganization(data: {
 }) {
   const hdrs = await headers()
   const response = await auth.api.createOrganization({
-    headers: hdrs,
     body: data,
+    headers: hdrs,
   })
   return response
 }
@@ -52,8 +52,8 @@ export async function createOrganization(data: {
 export async function setActiveOrganization(organizationId: string) {
   const hdrs = await headers()
   const response = await auth.api.setActiveOrganization({
-    headers: hdrs,
     body: { organizationId },
+    headers: hdrs,
   })
   return response
 }
@@ -64,8 +64,8 @@ export async function setActiveOrganization(organizationId: string) {
 export async function acceptInvitation(invitationId: string) {
   const hdrs = await headers()
   const response = await auth.api.acceptInvitation({
-    headers: hdrs,
     body: { invitationId },
+    headers: hdrs,
   })
   return response
 }
@@ -80,7 +80,8 @@ export async function countMembers(organizationId: string) {
     query: { organizationId },
   })
   if (!res) return 0
-  if (typeof (res as any).total === 'number') return (res as any).total as number
+  if (typeof (res as any).total === 'number')
+    return (res as any).total as number
   const members = (res as any).members as unknown[] | undefined
   return Array.isArray(members) ? members.length : 0
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { useId, useMemo, useRef, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import {
   Accordion,
@@ -30,7 +31,6 @@ import type {
   Partners,
   Theme,
 } from '@/templates/types'
-import { useId, useMemo, useRef, useState } from 'react'
 
 type BlockType =
   | 'meta'

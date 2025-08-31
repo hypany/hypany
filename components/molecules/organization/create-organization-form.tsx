@@ -33,7 +33,7 @@ export function CreateOrganizationForm() {
       })
       return
     }
-    
+
     // Validate slug with shared validator
     const finalSlug = derivedSlug
     const { valid, error } = validateSlug(finalSlug)
@@ -45,7 +45,7 @@ export function CreateOrganizationForm() {
       })
       return
     }
-    
+
     setSubmitting(true)
     try {
       const api = getClientApi()
@@ -66,9 +66,13 @@ export function CreateOrganizationForm() {
       router.push('/app')
       router.refresh()
     } catch (e) {
-      const errorMessage = (e as Error).message ?? 'Failed to create organization'
+      const errorMessage =
+        e instanceof Error ? e.message : 'Failed to create organization'
       // Check for slug uniqueness error
-      if (errorMessage.toLowerCase().includes('slug') || errorMessage.toLowerCase().includes('unique')) {
+      if (
+        errorMessage.toLowerCase().includes('slug') ||
+        errorMessage.toLowerCase().includes('unique')
+      ) {
         toast({
           description: 'This slug is already taken. Please choose another.',
           title: 'Slug already exists',
@@ -112,7 +116,8 @@ export function CreateOrganizationForm() {
         <p className='text-xs text-gray-500 dark:text-gray-500'>
           {derivedSlug ? (
             <>
-              Will be created as <span className='font-mono'>/o/{derivedSlug}</span>
+              Will be created as{' '}
+              <span className='font-mono'>/o/{derivedSlug}</span>
               {!derivedValidation.valid && (
                 <span className='ml-2 text-red-600 dark:text-red-400'>
                   ({derivedValidation.error})

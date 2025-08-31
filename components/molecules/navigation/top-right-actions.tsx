@@ -31,7 +31,9 @@ export function TopRightActions() {
       ) : null}
       {onHypotheses && (
         <Button asChild>
-          <Link href='/app/hypotheses/create'>{t('pages.root.actions.create-hypothesis')}</Link>
+          <Link href='/app/hypotheses/create'>
+            {t('pages.root.actions.create-hypothesis')}
+          </Link>
         </Button>
       )}
       {onOrganizations && (

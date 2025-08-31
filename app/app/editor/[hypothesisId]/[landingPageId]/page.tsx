@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
 import { getLandingPageByIdForOrg } from '@/functions/landing-pages'
+import { getActiveOrganization } from '@/functions/organizations'
 import BlocksEditor from './ui'
 
 export default async function EditorByLandingPage({
@@ -12,13 +12,16 @@ export default async function EditorByLandingPage({
   const { landingPageId } = await params
   await requireAuth()
   const activeOrgRes = await getActiveOrganization()
-  
+
   if (!activeOrgRes?.activeOrganizationId) {
     notFound()
   }
 
   // Get landing page and blocks by landing page ID
-  const data = await getLandingPageByIdForOrg(landingPageId, activeOrgRes.activeOrganizationId)
+  const data = await getLandingPageByIdForOrg(
+    landingPageId,
+    activeOrgRes.activeOrganizationId,
+  )
   if (!data || !data.landingPage) notFound()
 
   // Basic guard: if the landing page doesn't belong to the provided hypothesis, bounce to the hypothesis overview

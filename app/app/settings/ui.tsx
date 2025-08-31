@@ -52,8 +52,8 @@ export default function SettingsForm({
     try {
       await api.v1.settings.me.patch({
         emailNotifications,
-        marketingEmails,
         marketingEmailLanguage,
+        marketingEmails,
         onboardingComplete,
       })
       toast({

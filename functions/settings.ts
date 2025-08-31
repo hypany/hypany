@@ -1,8 +1,8 @@
 import 'server-only'
 import { eq } from 'drizzle-orm'
+import { ulid } from 'ulid'
 import { db } from '@/drizzle'
 import { userSettings } from '@/schema'
-import { ulid } from 'ulid'
 
 /**
  * Get user settings, creating defaults if they don't exist
@@ -20,14 +20,14 @@ export async function getUserSettings(userId: string) {
 
   // Create default settings
   const newSettings = {
-    id: ulid(),
-    userId,
-    emailNotifications: true,
-    marketingEmails: false,
-    marketingEmailLanguage: 'en',
-    onboardingComplete: false,
     createdAt: new Date(),
+    emailNotifications: true,
+    id: ulid(),
+    marketingEmailLanguage: 'en',
+    marketingEmails: false,
+    onboardingComplete: false,
     updatedAt: new Date(),
+    userId,
   }
 
   await db.insert(userSettings).values(newSettings)
@@ -44,16 +44,20 @@ export async function updateUserSettings(
     marketingEmails?: boolean
     marketingEmailLanguage?: string
     onboardingComplete?: boolean
-  }
+  },
 ) {
   // Ensure settings exist
   await getUserSettings(userId)
 
   const updateData: any = { updatedAt: new Date() }
-  if (updates.emailNotifications !== undefined) updateData.emailNotifications = updates.emailNotifications
-  if (updates.marketingEmails !== undefined) updateData.marketingEmails = updates.marketingEmails
-  if (updates.marketingEmailLanguage !== undefined) updateData.marketingEmailLanguage = updates.marketingEmailLanguage
-  if (updates.onboardingComplete !== undefined) updateData.onboardingComplete = updates.onboardingComplete
+  if (updates.emailNotifications !== undefined)
+    updateData.emailNotifications = updates.emailNotifications
+  if (updates.marketingEmails !== undefined)
+    updateData.marketingEmails = updates.marketingEmails
+  if (updates.marketingEmailLanguage !== undefined)
+    updateData.marketingEmailLanguage = updates.marketingEmailLanguage
+  if (updates.onboardingComplete !== undefined)
+    updateData.onboardingComplete = updates.onboardingComplete
 
   await db
     .update(userSettings)

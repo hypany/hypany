@@ -1,7 +1,7 @@
 import 'server-only'
 import { and, eq, isNull } from 'drizzle-orm'
 import { db } from '@/drizzle'
-import { hypotheses, landingPages, landingPageBlocks } from '@/schema'
+import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
 
 /**
  * Get public landing page data by slug
@@ -48,30 +48,30 @@ export async function getPublicPageBySlug(slug: string) {
     .orderBy(landingPageBlocks.order)
 
   return {
+    blocks: blocks.map((block) => ({
+      content: block.content,
+      id: block.id,
+      order: block.order,
+      type: block.type,
+    })),
     hypothesis: {
+      description: hypothesis.description,
       id: hypothesis.id,
       name: hypothesis.name,
-      description: hypothesis.description,
       slug: hypothesis.slug,
     },
     landingPage: {
-      id: landingPage.id,
-      hypothesisId: landingPage.hypothesisId,
       customCss: landingPage.customCss,
-      metaTitle: landingPage.metaTitle,
-      metaDescription: landingPage.metaDescription,
       // Schema-aligned fields
       favicon: landingPage.favicon,
-      ogImage: landingPage.ogImage,
+      hypothesisId: landingPage.hypothesisId,
+      id: landingPage.id,
+      metaDescription: landingPage.metaDescription,
+      metaTitle: landingPage.metaTitle,
       name: landingPage.name,
-      template: landingPage.template,
+      ogImage: landingPage.ogImage,
       publishedAt: landingPage.publishedAt,
+      template: landingPage.template,
     },
-    blocks: blocks.map(block => ({
-      id: block.id,
-      type: block.type,
-      content: block.content,
-      order: block.order,
-    })),
   }
 }

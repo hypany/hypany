@@ -62,11 +62,11 @@ function MetricCard({ metric }: { metric: Metric }) {
         <p className='text-lg font-semibold text-gray-900 dark:text-gray-50 flex items-center gap-2'>
           {metric.percentage || metric.fraction}
           <span className='text-sm font-medium text-gray-400 dark:text-gray-600'>
-          {metric.fraction ? (
-            <span className='text-sm font-medium text-gray-400 dark:text-gray-600'>
-              {metric.percentage ? metric.fraction : ''}
-            </span>
-          ) : null}
+            {metric.fraction ? (
+              <span className='text-sm font-medium text-gray-400 dark:text-gray-600'>
+                {metric.percentage ? metric.fraction : ''}
+              </span>
+            ) : null}
           </span>
         </p>
       </dd>

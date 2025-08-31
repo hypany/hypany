@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getSession } from '@/auth/server'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
@@ -12,8 +14,6 @@ import {
 } from '@/components/atoms/table'
 import { getActivityFeed } from '@/functions/analytics'
 import { getHypothesesForOrganization } from '@/functions/hypotheses'
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
 
 type HypothesisRow = {
   id: string
@@ -33,21 +33,24 @@ type Activity = {
 export default async function Page() {
   const t = await getTranslations('app')
   const session = await getSession()
-  
+
   if (!session?.session?.activeOrganizationId) {
     return <div>No active organization</div>
   }
 
   const [hypotheses, activity] = await Promise.all([
     getHypothesesForOrganization(session.session.activeOrganizationId),
-    getActivityFeed(session.session.activeOrganizationId, { limit: 10, range: '30d' }),
+    getActivityFeed(session.session.activeOrganizationId, {
+      limit: 10,
+      range: '30d',
+    }),
   ])
 
-  const hypothesesRows: HypothesisRow[] = hypotheses.map(h => ({
+  const hypothesesRows: HypothesisRow[] = hypotheses.map((h) => ({
     id: h.id,
     name: h.name,
-    status: h.status,
     signupCount: h.signupCount,
+    status: h.status,
   }))
 
   const topHypotheses = hypothesesRows
@@ -55,12 +58,12 @@ export default async function Page() {
     .sort((a, b) => b.signupCount - a.signupCount)
     .slice(0, 5)
 
-  const activities: Activity[] = activity.items.map(item => ({
-    type: item.type as 'page_view' | 'signup' | 'verification',
+  const activities: Activity[] = activity.items.map((item) => ({
+    email: item.email,
     hypothesisId: item.hypothesisId,
     source: item.source,
     timestamp: new Date(item.timestamp),
-    email: item.email,
+    type: item.type as 'page_view' | 'signup' | 'verification',
   }))
 
   return (
@@ -147,11 +150,11 @@ export default async function Page() {
         <div className='col-span-1'>
           <Card className='p-0 overflow-hidden'>
             <div className='px-4 pt-4 pb-3'>
-            <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
-              {t('pages.root.recent-activity')}
-            </h2>
-          </div>
-          <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
+              <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+                {t('pages.root.recent-activity')}
+              </h2>
+            </div>
+            <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
               {activities.length === 0 ? (
                 <li className='py-4 text-sm text-gray-500 dark:text-gray-500 text-center'>
                   {t('pages.root.no-activity')}
@@ -161,7 +164,9 @@ export default async function Page() {
                   const ts = a.timestamp.toISOString()
                   let label = ''
                   if (a.type === 'page_view')
-                    label = t('pages.root.activity.page-view', { source: a.source })
+                    label = t('pages.root.activity.page-view', {
+                      source: a.source,
+                    })
                   else if (a.type === 'signup')
                     label = t('pages.root.activity.signup', {
                       email: a.email ? ` (${a.email})` : '',
@@ -171,10 +176,7 @@ export default async function Page() {
                       email: a.email ? ` (${a.email})` : '',
                     })
                   return (
-                    <li
-                      key={a.hypothesisId ?? idx}
-                      className='p-4'
-                    >
+                    <li key={a.hypothesisId ?? idx} className='p-4'>
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-50'>

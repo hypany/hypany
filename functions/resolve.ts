@@ -5,7 +5,12 @@ import { hypotheses, landingPages, waitlists } from '@/schema'
 
 export type ResolvedEntity =
   | { type: 'hypothesis'; id: string; name: string }
-  | { type: 'landing_page'; id: string; name: string | null; hypothesisId: string }
+  | {
+      type: 'landing_page'
+      id: string
+      name: string | null
+      hypothesisId: string
+    }
   | { type: 'waitlist'; id: string; name: string; hypothesisId: string }
 
 /**
@@ -28,14 +33,14 @@ export async function resolveEntityNameById(
       ),
     )
     .limit(1)
-  if (hypo) return { type: 'hypothesis', id: hypo.id, name: hypo.name }
+  if (hypo) return { id: hypo.id, name: hypo.name, type: 'hypothesis' }
 
   // Landing page by id (join to hypotheses for org check)
   const [lp] = await db
     .select({
+      hypothesisId: landingPages.hypothesisId,
       id: landingPages.id,
       name: landingPages.name,
-      hypothesisId: landingPages.hypothesisId,
     })
     .from(landingPages)
     .where(eq(landingPages.id, id))
@@ -64,7 +69,11 @@ export async function resolveEntityNameById(
 
   // Waitlist by id (join to hypotheses for org check)
   const [wl] = await db
-    .select({ id: waitlists.id, name: waitlists.name, hypothesisId: waitlists.hypothesisId })
+    .select({
+      hypothesisId: waitlists.hypothesisId,
+      id: waitlists.id,
+      name: waitlists.name,
+    })
     .from(waitlists)
     .where(eq(waitlists.id, id))
     .limit(1)
@@ -92,4 +101,3 @@ export async function resolveEntityNameById(
 
   return null
 }
-

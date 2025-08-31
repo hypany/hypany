@@ -1,13 +1,21 @@
 'use client'
+import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/atoms/dialog'
 import { Input } from '@/components/atoms/input'
+import { normalizeSlug, validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
-import { validateSlug, normalizeSlug } from '@/lib/slug-validation'
-import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
-import { useId, useState } from 'react'
 
 export default function DomainForm({
   hypothesisId,
@@ -41,7 +49,11 @@ export default function DomainForm({
         const normalized = normalizeSlug(trimmedSlug)
         const validation = validateSlug(normalized)
         if (!validation.valid) {
-          toast({ title: 'Invalid subdomain', description: validation.error, variant: 'error' })
+          toast({
+            description: validation.error,
+            title: 'Invalid subdomain',
+            variant: 'error',
+          })
           return
         }
         // Check availability before submitting
@@ -52,7 +64,11 @@ export default function DomainForm({
         const available = (check.data as any)?.available as boolean | undefined
         if (available === false) {
           const err = (check.data as any)?.error as string | undefined
-          toast({ title: 'Subdomain unavailable', description: err || 'This subdomain is already taken', variant: 'error' })
+          toast({
+            description: err || 'This subdomain is already taken',
+            title: 'Subdomain unavailable',
+            variant: 'error',
+          })
           return
         }
         body.slug = normalized
@@ -64,8 +80,8 @@ export default function DomainForm({
         .patch(body)
       if (r.data?.success) {
         toast({
-          title: 'Saved',
           description: 'Domain settings updated.',
+          title: 'Saved',
         })
         setOpen(false)
         router.refresh()
@@ -76,10 +92,14 @@ export default function DomainForm({
         const message = errObj?.reason
           ? `${errObj.error || 'Error'}: ${errObj.reason}`
           : errObj?.error || 'Failed to save domain settings'
-        toast({ title: 'Error', description: message, variant: 'error' })
+        toast({ description: message, title: 'Error', variant: 'error' })
       }
     } catch {
-      toast({ title: 'Error', description: 'Failed to save domain settings', variant: 'error' })
+      toast({
+        description: 'Failed to save domain settings',
+        title: 'Error',
+        variant: 'error',
+      })
     } finally {
       setSaving(false)
     }
@@ -140,7 +160,9 @@ export default function DomainForm({
               </label>
               <Input
                 id={customDomainId}
-                placeholder={t('pages.hypotheses.detail.domains.placeholders.custom-domain')}
+                placeholder={t(
+                  'pages.hypotheses.detail.domains.placeholders.custom-domain',
+                )}
                 value={customDomain}
                 onChange={(e) => setCustomDomain(e.target.value)}
               />

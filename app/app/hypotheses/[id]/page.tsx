@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { Card } from '@/components/atoms/card'
 import {
@@ -17,9 +20,6 @@ import {
   getWaitlistEntries,
 } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { CumulativeAreaChart } from './analytics/cumulative-area'
 // Domain edit dialog handled via header button
 import { DomainEditButton } from './domains/edit-button'
@@ -32,24 +32,39 @@ export default async function HypothesisOverview({
   const { id } = await params
   await requireAuth()
   const activeOrgRes = await getActiveOrganization()
-  
+
   if (!activeOrgRes?.activeOrganizationId) {
     notFound()
   }
 
-  const [hypothesis, pages, waitlistData, orgActivity, metrics, waitlistEntries] = await Promise.all([
+  const [
+    hypothesis,
+    pages,
+    waitlistData,
+    orgActivity,
+    metrics,
+    waitlistEntries,
+  ] = await Promise.all([
     getHypothesisById(id, activeOrgRes.activeOrganizationId),
     getLandingPagesForHypothesis(id, activeOrgRes.activeOrganizationId),
     getWaitlistByHypothesisId(id, activeOrgRes.activeOrganizationId),
-    getActivityFeed(activeOrgRes.activeOrganizationId, { limit: 10, range: '30d' }),
-    getAnalyticsMetrics(activeOrgRes.activeOrganizationId, { hypothesisId: id, range: '30d' }),
+    getActivityFeed(activeOrgRes.activeOrganizationId, {
+      limit: 10,
+      range: '30d',
+    }),
+    getAnalyticsMetrics(activeOrgRes.activeOrganizationId, {
+      hypothesisId: id,
+      range: '30d',
+    }),
     getWaitlistEntries(id, activeOrgRes.activeOrganizationId, { limit: 10 }),
   ])
 
   if (!hypothesis) notFound()
   const t = await getTranslations('app')
 
-  type ActivityItem = Awaited<ReturnType<typeof getActivityFeed>>['items'][number]
+  type ActivityItem = Awaited<
+    ReturnType<typeof getActivityFeed>
+  >['items'][number]
   const activities: ActivityItem[] = (orgActivity.items || []).filter(
     (a) => a.hypothesisId === id,
   )
@@ -59,12 +74,10 @@ export default async function HypothesisOverview({
 
   // Remove grid row height coupling by using flex and min-w-0 for columns
   return (
-    <section
-      aria-label={t('pages.hypotheses.detail.aria')}
-    >
-      <div className="flex flex-col gap-4 p-4 lg:flex-row">
+    <section aria-label={t('pages.hypotheses.detail.aria')}>
+      <div className='flex flex-col gap-4 p-4 lg:flex-row'>
         {/* Left column: analytics, waitlist, landing pages */}
-        <div className="flex-1 min-w-0 flex flex-col gap-4">
+        <div className='flex-1 min-w-0 flex flex-col gap-4'>
           {/* Analytics */}
           <CumulativeAreaChart daily={daily} />
 
@@ -76,8 +89,14 @@ export default async function HypothesisOverview({
               </h2>
               <div className='flex items-center gap-3'>
                 {stats && (
-                  <Link href={`/app/hypotheses/${id}/waitlist`} className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'>
-                    {t('pages.hypotheses.detail.waitlist.summary', { total: stats.totalEntries, verified: stats.verifiedEntries })}
+                  <Link
+                    href={`/app/hypotheses/${id}/waitlist`}
+                    className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
+                  >
+                    {t('pages.hypotheses.detail.waitlist.summary', {
+                      total: stats.totalEntries,
+                      verified: stats.verifiedEntries,
+                    })}
                   </Link>
                 )}
               </div>
@@ -86,15 +105,30 @@ export default async function HypothesisOverview({
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableHeaderCell>{t('pages.hypotheses.detail.waitlist.table.columns.email')}</TableHeaderCell>
-                    <TableHeaderCell>{t('pages.hypotheses.detail.waitlist.table.columns.verified')}</TableHeaderCell>
-                    <TableHeaderCell>{t('pages.hypotheses.detail.waitlist.table.columns.source')}</TableHeaderCell>
+                    <TableHeaderCell>
+                      {t(
+                        'pages.hypotheses.detail.waitlist.table.columns.email',
+                      )}
+                    </TableHeaderCell>
+                    <TableHeaderCell>
+                      {t(
+                        'pages.hypotheses.detail.waitlist.table.columns.verified',
+                      )}
+                    </TableHeaderCell>
+                    <TableHeaderCell>
+                      {t(
+                        'pages.hypotheses.detail.waitlist.table.columns.source',
+                      )}
+                    </TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {waitlistEntries.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={3} className='text-center text-sm text-gray-500'>
+                      <TableCell
+                        colSpan={3}
+                        className='text-center text-sm text-gray-500'
+                      >
                         {t('pages.hypotheses.detail.waitlist.empty')}
                       </TableCell>
                     </TableRow>
@@ -102,7 +136,11 @@ export default async function HypothesisOverview({
                     waitlistEntries.map((e, idx) => (
                       <TableRow key={e.id ?? idx}>
                         <TableCell className='font-medium'>{e.email}</TableCell>
-                        <TableCell>{e.emailVerified ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
+                        <TableCell>
+                          {e.emailVerified
+                            ? t('common.boolean.yes')
+                            : t('common.boolean.no')}
+                        </TableCell>
                         <TableCell>{e.source ?? t('common.direct')}</TableCell>
                       </TableRow>
                     ))
@@ -136,9 +174,21 @@ export default async function HypothesisOverview({
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.name')}</TableHeaderCell>
-                      <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.template')}</TableHeaderCell>
-                      <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.published')}</TableHeaderCell>
+                      <TableHeaderCell>
+                        {t(
+                          'pages.hypotheses.detail.landing-pages.table.columns.name',
+                        )}
+                      </TableHeaderCell>
+                      <TableHeaderCell>
+                        {t(
+                          'pages.hypotheses.detail.landing-pages.table.columns.template',
+                        )}
+                      </TableHeaderCell>
+                      <TableHeaderCell>
+                        {t(
+                          'pages.hypotheses.detail.landing-pages.table.columns.published',
+                        )}
+                      </TableHeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -150,7 +200,11 @@ export default async function HypothesisOverview({
                           </div>
                         </TableCell>
                         <TableCell>{p.template || '-'}</TableCell>
-                        <TableCell>{p.publishedAt ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
+                        <TableCell>
+                          {p.publishedAt
+                            ? t('common.boolean.yes')
+                            : t('common.boolean.no')}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -161,8 +215,7 @@ export default async function HypothesisOverview({
         </div>
 
         {/* Right column: recent activity, domain settings */}
-        <div className="flex-1 min-w-0 flex flex-col gap-4 lg:max-w-sm">
-
+        <div className='flex-1 min-w-0 flex flex-col gap-4 lg:max-w-sm'>
           {/* Domain Settings */}
           <Card className='p-0 overflow-hidden'>
             <div className='flex items-center justify-between px-4 py-4'>
@@ -188,7 +241,9 @@ export default async function HypothesisOverview({
                   </TableRow>
                   <TableRow>
                     <TableCell className='font-medium'>
-                      {t('pages.hypotheses.detail.domains.labels.custom-domain')}
+                      {t(
+                        'pages.hypotheses.detail.domains.labels.custom-domain',
+                      )}
                     </TableCell>
                     <TableCell className='text-gray-900 dark:text-gray-50'>
                       {hypothesis.customDomain || '-'}
@@ -219,11 +274,34 @@ export default async function HypothesisOverview({
                 </li>
               ) : (
                 activities.map((a, idx) => {
-                  const ts = a.timestamp instanceof Date ? a.timestamp.toISOString() : String(a.timestamp)
+                  const ts =
+                    a.timestamp instanceof Date
+                      ? a.timestamp.toISOString()
+                      : String(a.timestamp)
                   let label = ''
-                  if (a.type === 'page_view') label = t('pages.hypotheses.detail.recent-activity.labels.page_view', { source: a.source })
-                  else if (a.type === 'signup') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.signup-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.signup')
-                  else if (a.type === 'verification') label = a.email ? t('pages.hypotheses.detail.recent-activity.labels.verification-with-email', { email: a.email }) : t('pages.hypotheses.detail.recent-activity.labels.verification')
+                  if (a.type === 'page_view')
+                    label = t(
+                      'pages.hypotheses.detail.recent-activity.labels.page_view',
+                      { source: a.source },
+                    )
+                  else if (a.type === 'signup')
+                    label = a.email
+                      ? t(
+                          'pages.hypotheses.detail.recent-activity.labels.signup-with-email',
+                          { email: a.email },
+                        )
+                      : t(
+                          'pages.hypotheses.detail.recent-activity.labels.signup',
+                        )
+                  else if (a.type === 'verification')
+                    label = a.email
+                      ? t(
+                          'pages.hypotheses.detail.recent-activity.labels.verification-with-email',
+                          { email: a.email },
+                        )
+                      : t(
+                          'pages.hypotheses.detail.recent-activity.labels.verification',
+                        )
                   return (
                     <li key={idx} className='p-4'>
                       <div className='flex items-center justify-between gap-3'>
@@ -232,11 +310,15 @@ export default async function HypothesisOverview({
                             {label}
                           </p>
                           <p className='mt-0.5 truncate text-xs text-gray-500 dark:text-gray-500'>
-                            <time dateTime={ts}>{new Date(ts).toLocaleString()}</time>
+                            <time dateTime={ts}>
+                              {new Date(ts).toLocaleString()}
+                            </time>
                           </p>
                         </div>
                         <span className='shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'>
-                          {t(`pages.hypotheses.detail.recent-activity.badge.${a.type}`)}
+                          {t(
+                            `pages.hypotheses.detail.recent-activity.badge.${a.type}`,
+                          )}
                         </span>
                       </div>
                     </li>

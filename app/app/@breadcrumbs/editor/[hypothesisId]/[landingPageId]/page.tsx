@@ -1,9 +1,9 @@
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { getActiveOrganization } from '@/functions/organizations'
 import { resolveEntityNameById } from '@/functions/resolve'
-import { notFound } from 'next/navigation'
 
 export default async function EditorBreadcrumbs({
   params,
@@ -14,8 +14,14 @@ export default async function EditorBreadcrumbs({
   const { hypothesisId, landingPageId } = await params
   const activeOrgRes = await getActiveOrganization()
   if (!activeOrgRes?.activeOrganizationId) notFound()
-  const hypo = await resolveEntityNameById(hypothesisId, activeOrgRes.activeOrganizationId)
-  const lp = await resolveEntityNameById(landingPageId, activeOrgRes.activeOrganizationId)
+  const hypo = await resolveEntityNameById(
+    hypothesisId,
+    activeOrgRes.activeOrganizationId,
+  )
+  const lp = await resolveEntityNameById(
+    landingPageId,
+    activeOrgRes.activeOrganizationId,
+  )
   if (!hypo) notFound()
 
   return (
@@ -29,7 +35,10 @@ export default async function EditorBreadcrumbs({
             {t('breadcrumbs.home')}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href='/app/hypotheses'
@@ -38,7 +47,10 @@ export default async function EditorBreadcrumbs({
             {t('breadcrumbs.hypotheses')}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href={`/app/hypotheses/${hypothesisId}`}
@@ -47,7 +59,10 @@ export default async function EditorBreadcrumbs({
             {hypo.name}
           </Link>
         </li>
-        <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+        <ChevronRight
+          className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+          aria-hidden='true'
+        />
         <li className='flex'>
           <Link
             href={`/app/hypotheses/${hypothesisId}/landing-pages`}
@@ -58,7 +73,10 @@ export default async function EditorBreadcrumbs({
         </li>
         {lp ? (
           <>
-            <ChevronRight className='size-4 shrink-0 text-gray-600 dark:text-gray-400' aria-hidden='true' />
+            <ChevronRight
+              className='size-4 shrink-0 text-gray-600 dark:text-gray-400'
+              aria-hidden='true'
+            />
             <li className='flex'>
               <Link
                 href={`/app/editor/${hypothesisId}/${landingPageId}`}
@@ -74,4 +92,3 @@ export default async function EditorBreadcrumbs({
     </nav>
   )
 }
-

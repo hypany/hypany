@@ -1,11 +1,10 @@
 'use client'
 
-import { useId, useState } from 'react'
-import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
-import { Input } from '@/components/atoms/input'
 import {
   Dialog,
   DialogClose,
@@ -15,8 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/atoms/dialog'
+import { Input } from '@/components/atoms/input'
+import { normalizeSlug, validateSlug } from '@/lib/slug-validation'
 import { toast } from '@/lib/use-toast'
-import { validateSlug, normalizeSlug } from '@/lib/slug-validation'
 
 export function DomainEditButton({
   hypothesisId,
@@ -47,7 +47,11 @@ export function DomainEditButton({
         const normalized = normalizeSlug(trimmedSlug)
         const validation = validateSlug(normalized)
         if (!validation.valid) {
-          toast({ title: 'Invalid subdomain', description: validation.error, variant: 'error' })
+          toast({
+            description: validation.error,
+            title: 'Invalid subdomain',
+            variant: 'error',
+          })
           return
         }
         // Check availability before submitting
@@ -58,7 +62,11 @@ export function DomainEditButton({
         const available = (check.data as any)?.available as boolean | undefined
         if (available === false) {
           const err = (check.data as any)?.error as string | undefined
-          toast({ title: 'Subdomain unavailable', description: err || 'This subdomain is already taken', variant: 'error' })
+          toast({
+            description: err || 'This subdomain is already taken',
+            title: 'Subdomain unavailable',
+            variant: 'error',
+          })
           return
         }
         body.slug = normalized
@@ -69,7 +77,7 @@ export function DomainEditButton({
         .hypothesis({ hypothesisId })
         .patch(body)
       if (r.data?.success) {
-        toast({ title: 'Saved', description: 'Domain settings updated.' })
+        toast({ description: 'Domain settings updated.', title: 'Saved' })
         setOpen(false)
         router.refresh()
       } else {
@@ -79,10 +87,14 @@ export function DomainEditButton({
         const message = errObj?.reason
           ? `${errObj.error || 'Error'}: ${errObj.reason}`
           : errObj?.error || 'Failed to save domain settings'
-        toast({ title: 'Error', description: message, variant: 'error' })
+        toast({ description: message, title: 'Error', variant: 'error' })
       }
     } catch {
-      toast({ title: 'Error', description: 'Failed to save domain settings', variant: 'error' })
+      toast({
+        description: 'Failed to save domain settings',
+        title: 'Error',
+        variant: 'error',
+      })
     } finally {
       setSaving(false)
     }
@@ -95,7 +107,9 @@ export function DomainEditButton({
       </DialogTrigger>
       <DialogContent className='sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle>{t('pages.hypotheses.detail.headings.domain-settings')}</DialogTitle>
+          <DialogTitle>
+            {t('pages.hypotheses.detail.headings.domain-settings')}
+          </DialogTitle>
         </DialogHeader>
         <div className='grid grid-cols-1 gap-4'>
           <div>
@@ -121,7 +135,9 @@ export function DomainEditButton({
             </label>
             <Input
               id={customDomainId}
-              placeholder={t('pages.hypotheses.detail.domains.placeholders.custom-domain')}
+              placeholder={t(
+                'pages.hypotheses.detail.domains.placeholders.custom-domain',
+              )}
               value={customDomain}
               onChange={(e) => setCustomDomain(e.target.value)}
               className='mt-1 py-1.5'
@@ -133,7 +149,9 @@ export function DomainEditButton({
         </div>
         <DialogFooter className='mt-4'>
           <DialogClose asChild>
-            <Button variant='secondary' disabled={saving}>Cancel</Button>
+            <Button variant='secondary' disabled={saving}>
+              Cancel
+            </Button>
           </DialogClose>
           <Button onClick={() => void save()} disabled={saving}>
             {saving ? 'Saving…' : 'Save'}

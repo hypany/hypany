@@ -1,9 +1,27 @@
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog'
-import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRoot, TableRow } from '@/components/atoms/table'
-import { MetricsCards, type Metric } from '@/components/molecules/homepage/metrics-cards'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/atoms/dialog'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from '@/components/atoms/table'
+import {
+  type Metric,
+  MetricsCards,
+} from '@/components/molecules/homepage/metrics-cards'
 import AcceptInvitationToast from '@/components/molecules/organization/accept-toast'
 import { OrgAdminDialog } from '@/components/molecules/organization/org-admin-dialog'
 import { OrgSettingsForm } from '@/components/molecules/organization/org-settings-form'
@@ -14,7 +32,6 @@ import {
   getActiveOrganization,
   listUserOrganizations,
 } from '@/functions/organizations'
-import { getTranslations } from 'next-intl/server'
 
 export default async function OrganizationsPage() {
   const t = await getTranslations('app')
@@ -25,7 +42,9 @@ export default async function OrganizationsPage() {
   ])
   type Organizations = Awaited<ReturnType<typeof listUserOrganizations>>
   type Organization = Organizations extends Array<infer T> ? T : never
-  const orgs: Organization[] = Array.isArray(organizations) ? (organizations as Organization[]) : []
+  const orgs: Organization[] = Array.isArray(organizations)
+    ? (organizations as Organization[])
+    : []
   const activeOrgId = activeRes?.activeOrganizationId ?? null
   // active org data available via activeOrgId; per-row settings dialog handles edits
   const [membersTotal, invitesTotal] = activeOrgId
@@ -79,14 +98,16 @@ export default async function OrganizationsPage() {
         </div>
         <div className='mt-0 grid grid-cols-1 gap-6'>
           <div className='col-span-1'>
-              <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
-                <Table>
+            <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableHeaderCell>Name</TableHeaderCell>
                     <TableHeaderCell>URL</TableHeaderCell>
                     <TableHeaderCell>Status</TableHeaderCell>
-                    <TableHeaderCell className='text-right'>Actions</TableHeaderCell>
+                    <TableHeaderCell className='text-right'>
+                      Actions
+                    </TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -125,7 +146,9 @@ export default async function OrganizationsPage() {
                           {isActive ? (
                             <Badge variant='success'>Active</Badge>
                           ) : (
-                            <span className='text-gray-400 dark:text-gray-600'>—</span>
+                            <span className='text-gray-400 dark:text-gray-600'>
+                              —
+                            </span>
                           )}
                         </TableCell>
                         <TableCell className='text-right'>
@@ -135,13 +158,13 @@ export default async function OrganizationsPage() {
                             )}
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button variant='secondary'>
-                                  Settings
-                                </Button>
+                                <Button variant='secondary'>Settings</Button>
                               </DialogTrigger>
                               <DialogContent className='sm:max-w-md'>
                                 <DialogHeader>
-                                  <DialogTitle>Organization settings</DialogTitle>
+                                  <DialogTitle>
+                                    Organization settings
+                                  </DialogTitle>
                                 </DialogHeader>
                                 <OrgSettingsForm
                                   organizationId={org.id}
@@ -162,8 +185,8 @@ export default async function OrganizationsPage() {
                     )
                   })}
                 </TableBody>
-                </Table>
-              </TableRoot>
+              </Table>
+            </TableRoot>
           </div>
         </div>
       </div>

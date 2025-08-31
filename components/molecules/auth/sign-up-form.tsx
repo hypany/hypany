@@ -26,7 +26,12 @@ interface SignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {
   next?: string
 }
 
-export function SignUpForm({ className, defaultEmail, next, ...props }: SignUpFormProps) {
+export function SignUpForm({
+  className,
+  defaultEmail,
+  next,
+  ...props
+}: SignUpFormProps) {
   const nameId = useId()
   const emailId = useId()
   const passwordId = useId()
@@ -36,8 +41,8 @@ export function SignUpForm({ className, defaultEmail, next, ...props }: SignUpFo
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
     defaultValues: { email: defaultEmail ?? '' },
+    resolver: zodResolver(signUpSchema),
   })
 
   async function onSubmit(data: SignUpFormData) {
@@ -89,7 +94,9 @@ export function SignUpForm({ className, defaultEmail, next, ...props }: SignUpFo
           title: 'Account created successfully!',
           variant: 'success',
         })
-        const dest = next ? `/sign-in?next=${encodeURIComponent(next)}` : '/sign-in'
+        const dest = next
+          ? `/sign-in?next=${encodeURIComponent(next)}`
+          : '/sign-in'
         router.push(dest)
       }
     } catch (error) {

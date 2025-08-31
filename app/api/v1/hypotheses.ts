@@ -21,7 +21,13 @@ import { db } from '@/drizzle'
 import { HTTP_STATUS, ULID_PATTERN, WAITLIST_THRESHOLD } from '@/lib/constants'
 import { jsonError, jsonOk } from '@/lib/http'
 import { logger } from '@/lib/logger'
-import { hypotheses, landingPages, pageVisits, waitlistEntries, waitlists } from '@/schema'
+import {
+  hypotheses,
+  landingPages,
+  pageVisits,
+  waitlistEntries,
+  waitlists,
+} from '@/schema'
 import 'server-only'
 import {
   ErrorResponse,
@@ -463,16 +469,20 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
       const orgId = session.activeOrganizationId
       if (!orgId)
         return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
-      
+
       // Use shared data access function to ensure atomicity/consistency
       const { createHypothesis } = await import('@/functions/hypotheses')
 
       try {
-        const { id: hypothesisId, landingPageId, waitlistId } = await createHypothesis({
-          name: body.name,
+        const {
+          id: hypothesisId,
+          landingPageId,
+          waitlistId,
+        } = await createHypothesis({
           description: body.description ?? undefined,
-          slug: body.slug ?? undefined,
+          name: body.name,
           organizationId: orgId,
+          slug: body.slug ?? undefined,
           userId: user.id,
         })
 

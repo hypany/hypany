@@ -2,16 +2,6 @@
 
 'use client'
 
-import {
-  AvailableChartColors,
-  type AvailableChartColorsKeys,
-  constructCategoryColors,
-  getColorClassName,
-  getYAxisDomain,
-  hasOnlyOneValueForKey,
-} from '@/lib/chart-utils'
-import { useOnWindowResize } from '@/lib/use-on-window-resize'
-import { cx } from '@/lib/utils'
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react'
 import React from 'react'
 import {
@@ -28,6 +18,16 @@ import {
   YAxis,
 } from 'recharts'
 import type { AxisDomain } from 'recharts/types/util/types'
+import {
+  AvailableChartColors,
+  type AvailableChartColorsKeys,
+  constructCategoryColors,
+  getColorClassName,
+  getYAxisDomain,
+  hasOnlyOneValueForKey,
+} from '@/lib/chart-utils'
+import { useOnWindowResize } from '@/lib/use-on-window-resize'
+import { cx } from '@/lib/utils'
 
 //#region Legend
 

@@ -5,8 +5,9 @@ import { requireAuth } from '@/auth/server'
 import { CreateHypothesisForm } from '@/components/molecules/hypotheses/create-hypothesis-form'
 
 export const metadata: Metadata = {
+  description:
+    'Add a new hypothesis with an initial waitlist and landing page.',
   title: 'Create Hypothesis - Hypany',
-  description: 'Add a new hypothesis with an initial waitlist and landing page.',
 }
 
 export default async function CreateHypothesisPage() {

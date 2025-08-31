@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation'
 import { getSession } from '@/auth/server'
-import { acceptInvitation, listUserOrganizations } from '@/functions/organizations'
+import {
+  acceptInvitation,
+  listUserOrganizations,
+} from '@/functions/organizations'
 
 export default async function AcceptInvitationPage({
   searchParams,
@@ -26,7 +29,11 @@ export default async function AcceptInvitationPage({
   }
 
   // If logged in, verify account email matches the invitation email when provided
-  if (email && session.user?.email && email.toLowerCase() !== session.user.email.toLowerCase()) {
+  if (
+    email &&
+    session.user?.email &&
+    email.toLowerCase() !== session.user.email.toLowerCase()
+  ) {
     redirect('/app/organizations?accepted=0&reason=wrong_account')
   }
 

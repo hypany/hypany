@@ -1,3 +1,6 @@
+import { Pencil } from 'lucide-react'
+import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import {
   Table,
@@ -12,11 +15,11 @@ import {
   type Metric,
   MetricsCards,
 } from '@/components/molecules/homepage/metrics-cards'
-import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
+import {
+  getHypothesesForOrganization,
+  getHypothesesMetrics,
+} from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
-import { Pencil } from 'lucide-react'
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
 
 type Row = {
   id: string
@@ -31,7 +34,7 @@ export default async function HypothesesPage() {
   await requireAuth()
   const t = await getTranslations('app')
   const activeOrgRes = await getActiveOrganization()
-  
+
   if (!activeOrgRes?.activeOrganizationId) {
     return (
       <section className='px-4 py-6 sm:p-6'>
@@ -56,7 +59,7 @@ export default async function HypothesesPage() {
       </section>
     )
   }
-  
+
   const data: Row[] = hypotheses.map((h) => ({
     id: h.id,
     landingPageId: h.landingPageId ?? null,
@@ -107,10 +110,18 @@ export default async function HypothesesPage() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableHeaderCell>{t('pages.root.table.columns.hypothesis')}</TableHeaderCell>
-              <TableHeaderCell>{t('pages.root.table.columns.status')}</TableHeaderCell>
-              <TableHeaderCell>{t('pages.root.table.columns.signups')}</TableHeaderCell>
-              <TableHeaderCell>{t('pages.root.table.columns.analytics')}</TableHeaderCell>
+              <TableHeaderCell>
+                {t('pages.root.table.columns.hypothesis')}
+              </TableHeaderCell>
+              <TableHeaderCell>
+                {t('pages.root.table.columns.status')}
+              </TableHeaderCell>
+              <TableHeaderCell>
+                {t('pages.root.table.columns.signups')}
+              </TableHeaderCell>
+              <TableHeaderCell>
+                {t('pages.root.table.columns.analytics')}
+              </TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -1,8 +1,8 @@
+import { notFound } from 'next/navigation'
 import { requireAuth } from '@/auth/server'
 import { Card } from '@/components/atoms/card'
 import { getHypothesisById } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
-import { notFound } from 'next/navigation'
 import DomainForm from './ui'
 
 export default async function DomainsPage({
@@ -13,12 +13,15 @@ export default async function DomainsPage({
   const { id } = await params
   await requireAuth()
   const activeOrgRes = await getActiveOrganization()
-  
+
   if (!activeOrgRes?.activeOrganizationId) {
     notFound()
   }
 
-  const hypothesis = await getHypothesisById(id, activeOrgRes.activeOrganizationId)
+  const hypothesis = await getHypothesisById(
+    id,
+    activeOrgRes.activeOrganizationId,
+  )
   if (!hypothesis) notFound()
 
   return (

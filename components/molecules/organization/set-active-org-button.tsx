@@ -1,9 +1,9 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { toast } from '@/lib/use-toast'
-import { useRouter } from 'next/navigation'
 
 export default function SetActiveOrgButton({
   organizationId,
@@ -20,15 +20,15 @@ export default function SetActiveOrgButton({
       })
       if (!res.data) throw new Error('No response')
       toast({
-        title: 'Organization switched',
         description: 'Active organization updated.',
+        title: 'Organization switched',
         variant: 'success',
       })
       router.refresh()
     } catch (e) {
       toast({
-        title: 'Failed to switch organization',
         description: (e as Error).message ?? 'Please try again.',
+        title: 'Failed to switch organization',
         variant: 'error',
       })
     }
@@ -40,4 +40,3 @@ export default function SetActiveOrgButton({
     </Button>
   )
 }
-

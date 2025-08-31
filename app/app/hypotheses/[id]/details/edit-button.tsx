@@ -1,11 +1,9 @@
 'use client'
 
-import { useId, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useId, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
-import { Input } from '@/components/atoms/input'
-import { Textarea } from '@/components/atoms/textarea'
 import {
   Dialog,
   DialogClose,
@@ -15,6 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/atoms/dialog'
+import { Input } from '@/components/atoms/input'
+import { Textarea } from '@/components/atoms/textarea'
 import { toast } from '@/lib/use-toast'
 
 export function HypothesisEditButton({
@@ -38,18 +38,23 @@ export function HypothesisEditButton({
   async function save() {
     const trimmedName = name.trim()
     if (!trimmedName) {
-      toast({ title: 'Name required', description: 'Please enter a name.', variant: 'error' })
+      toast({
+        description: 'Please enter a name.',
+        title: 'Name required',
+        variant: 'error',
+      })
       return
     }
     try {
       setSaving(true)
       const r = await api.v1.hypotheses({ id: hypothesisId }).patch({
-        name: trimmedName,
         description: description.trim() || undefined,
+        name: trimmedName,
       })
-      const ok = (r as any)?.status === 200 || Boolean((r as any)?.data?.hypothesis?.id)
+      const ok =
+        (r as any)?.status === 200 || Boolean((r as any)?.data?.hypothesis?.id)
       if (ok) {
-        toast({ title: 'Saved', description: 'Hypothesis updated.' })
+        toast({ description: 'Hypothesis updated.', title: 'Saved' })
         setOpen(false)
         router.refresh()
       } else {
@@ -59,10 +64,15 @@ export function HypothesisEditButton({
         const message = errObj?.reason
           ? `${errObj.error || 'Error'}: ${errObj.reason}`
           : errObj?.error || 'Failed to update hypothesis'
-        toast({ title: 'Error', description: message, variant: 'error' })
+        toast({ description: message, title: 'Error', variant: 'error' })
       }
     } catch (e) {
-      toast({ title: 'Error', description: 'Failed to update hypothesis', variant: 'error' })
+      toast({
+        description:
+          e instanceof Error ? e.message : 'Failed to update hypothesis',
+        title: 'Error',
+        variant: 'error',
+      })
     } finally {
       setSaving(false)
     }
@@ -79,7 +89,10 @@ export function HypothesisEditButton({
         </DialogHeader>
         <div className='grid grid-cols-1 gap-4'>
           <div>
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300' htmlFor={nameId}>
+            <label
+              className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+              htmlFor={nameId}
+            >
               Name
             </label>
             <Input
@@ -91,7 +104,10 @@ export function HypothesisEditButton({
             />
           </div>
           <div>
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300' htmlFor={descId}>
+            <label
+              className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+              htmlFor={descId}
+            >
               Description
             </label>
             <Textarea
@@ -106,7 +122,9 @@ export function HypothesisEditButton({
         </div>
         <DialogFooter className='mt-4'>
           <DialogClose asChild>
-            <Button variant='secondary' disabled={saving}>Cancel</Button>
+            <Button variant='secondary' disabled={saving}>
+              Cancel
+            </Button>
           </DialogClose>
           <Button onClick={() => void save()} disabled={saving}>
             {saving ? 'Saving…' : 'Save'}
@@ -118,4 +136,3 @@ export function HypothesisEditButton({
 }
 
 export default HypothesisEditButton
-

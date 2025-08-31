@@ -1,12 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
-import { toast } from '@/lib/use-toast'
 import { useSaveStatusStore } from '@/lib/store/save-status'
+import { toast } from '@/lib/use-toast'
 
 export function CreateLandingPageButton({
   hypothesisId,
@@ -28,13 +28,28 @@ export function CreateLandingPageButton({
           ? (res.data as { id: string }).id
           : null
       if (id) {
-        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.created.title'), variant: 'success' })
+        toast({
+          title: t(
+            'pages.hypotheses.detail.landing-pages.toasts.created.title',
+          ),
+          variant: 'success',
+        })
         router.push(`/app/editor/${hypothesisId}/${id}`)
       } else {
-        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.create-error.title'), variant: 'error' })
+        toast({
+          title: t(
+            'pages.hypotheses.detail.landing-pages.toasts.create-error.title',
+          ),
+          variant: 'error',
+        })
       }
     } catch {
-      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.create-error.title'), variant: 'error' })
+      toast({
+        title: t(
+          'pages.hypotheses.detail.landing-pages.toasts.create-error.title',
+        ),
+        variant: 'error',
+      })
     } finally {
       setLoading(false)
     }
@@ -70,13 +85,28 @@ export function DuplicateLandingPageButton({
           ? (res.data as { id: string }).id
           : null
       if (id) {
-        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.duplicated.title'), variant: 'success' })
+        toast({
+          title: t(
+            'pages.hypotheses.detail.landing-pages.toasts.duplicated.title',
+          ),
+          variant: 'success',
+        })
         router.push(`/app/editor/${hypothesisId}/${id}`)
       } else {
-        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.duplicate-error.title'), variant: 'error' })
+        toast({
+          title: t(
+            'pages.hypotheses.detail.landing-pages.toasts.duplicate-error.title',
+          ),
+          variant: 'error',
+        })
       }
     } catch {
-      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.duplicate-error.title'), variant: 'error' })
+      toast({
+        title: t(
+          'pages.hypotheses.detail.landing-pages.toasts.duplicate-error.title',
+        ),
+        variant: 'error',
+      })
     } finally {
       setLoading(false)
     }
@@ -109,13 +139,16 @@ export function RenameLandingPageInline({
     setSaving(true)
     start()
     try {
-      await api.v1['landing-pages']
-        ['by-id']({ landingPageId })
-        .patch({ name })
+      await api.v1['landing-pages']['by-id']({ landingPageId }).patch({ name })
       finish(true)
     } catch {
       finish(false)
-      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.save-name-error.title'), variant: 'error' })
+      toast({
+        title: t(
+          'pages.hypotheses.detail.landing-pages.toasts.save-name-error.title',
+        ),
+        variant: 'error',
+      })
     } finally {
       setSaving(false)
     }
@@ -124,7 +157,9 @@ export function RenameLandingPageInline({
     <div className='flex items-center gap-2'>
       <input
         className='w-full rounded-md border px-2 py-1 text-sm outline-hidden dark:border-gray-800'
-        placeholder={t('pages.hypotheses.detail.landing-pages.placeholders.name')}
+        placeholder={t(
+          'pages.hypotheses.detail.landing-pages.placeholders.name',
+        )}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => {

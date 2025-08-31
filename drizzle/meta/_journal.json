@@ -9,11 +9,11 @@
       "when": 1756622606750
     },
     {
+      "breakpoints": true,
       "idx": 1,
-      "version": "7",
-      "when": 1756630793646,
       "tag": "0001_nappy_radioactive_man",
-      "breakpoints": true
+      "version": "7",
+      "when": 1756630793646
     }
   ],
   "version": "7"

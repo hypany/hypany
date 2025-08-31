@@ -1,6 +1,6 @@
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { getUserSettings } from '@/functions/settings'
-import { getTranslations } from 'next-intl/server'
 import SettingsForm from './ui'
 
 export default async function SettingsPage() {
@@ -10,10 +10,10 @@ export default async function SettingsPage() {
 
   const formattedSettings = settings
     ? {
-        id: settings.id,
         emailNotifications: settings.emailNotifications,
-        marketingEmails: settings.marketingEmails,
+        id: settings.id,
         marketingEmailLanguage: settings.marketingEmailLanguage ?? 'en',
+        marketingEmails: settings.marketingEmails,
         onboardingComplete: settings.onboardingComplete,
       }
     : null

@@ -1,5 +1,9 @@
 'use client'
 
+import { RiAddLine, RiCheckLine } from '@remixicon/react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import { getClientApi } from '@/app/api/client'
 import { Badge } from '@/components/atoms/badge'
 import {
@@ -20,10 +24,6 @@ import {
 import { Input } from '@/components/atoms/input'
 import { CreateOrganizationForm } from '@/components/molecules/organization/create-organization-form'
 import { toast } from '@/lib/use-toast'
-import { RiAddLine, RiCheckLine } from '@remixicon/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
 
 type Organization = { id: string; name: string; logo?: string | null }
 
@@ -141,7 +141,9 @@ export function OrgSwitcherClient({
               autoFocus
             />
           </div>
-          <DropdownMenuLabel className='text-left'>Organizations</DropdownMenuLabel>
+          <DropdownMenuLabel className='text-left'>
+            Organizations
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {filtered.map((org) => {
             const isActive = activeOrg?.id === org.id
@@ -181,7 +183,9 @@ export function OrgSwitcherClient({
                 </span>
                 <span className='flex-1 truncate text-left'>{org.name}</span>
                 {isActive && (
-                  <Badge variant='neutral' className='ml-1'>Active</Badge>
+                  <Badge variant='neutral' className='ml-1'>
+                    Active
+                  </Badge>
                 )}
                 {isActive && (
                   <RiCheckLine

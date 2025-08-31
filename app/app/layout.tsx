@@ -2,10 +2,10 @@ import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/auth/server'
-import { listUserOrganizations } from '@/functions/organizations'
 import { SidebarProvider } from '@/components/atoms/sidebar'
 import { AppHeader } from '@/components/molecules/navigation/app-header'
 import { AppSidebar } from '@/components/molecules/navigation/app-sidebar'
+import { listUserOrganizations } from '@/functions/organizations'
 import '../globals.css'
 
 export const metadata: Metadata = {

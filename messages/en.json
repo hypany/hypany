@@ -5,41 +5,12 @@
       "home": "Home",
       "hypotheses": "Hypotheses"
     },
-    
+    "common": {
+      "boolean": { "no": "No", "yes": "Yes" },
+      "direct": "direct"
+    },
+
     "hypotheses": {
-      "overview": {
-        "aria": "Overview Table",
-        "assignedPlaceholder": "Assigned to...",
-        "export": "Export",
-        "noSlug": "no-slug",
-        "regions": {
-          "archived": "Archived",
-          "draft": "Draft",
-          "published": "Published"
-        },
-        "row": {
-          "conversionRate30d": "{value}% conv (30d)",
-          "pageViews30d": "{count} page views (30d)",
-          "signupCount": "{count} signups"
-        },
-        "searchPlaceholder": "Search hypotheses...",
-        "statusLabel": {
-          "closed": "Closed",
-          "drafted": "Drafted",
-          "sent": "Sent"
-        },
-        "table": {
-          "columns": {
-            "conv30d": "Conv. (30d)",
-            "hypothesis": "Hypothesis",
-            "landing": "Landing",
-            "pageViews30d": "Page Views (30d)",
-            "signups": "Signups",
-            "status": "Status"
-          }
-        }
-      },
-      "tabs": { "audits": "Audits", "monitoring": "Monitoring", "overview": "Overview" },
       "create": {
         "form": {
           "actions": { "create": "Create Hypothesis", "creating": "Creating…" },
@@ -48,7 +19,10 @@
             "placeholder": "One sentence describing the problem and your approach."
           },
           "errors": {
-            "generic": { "desc": "Failed to create hypothesis", "title": "Error" },
+            "generic": {
+              "desc": "Failed to create hypothesis",
+              "title": "Error"
+            },
             "name": {
               "required": {
                 "desc": "Please enter a hypothesis name to continue.",
@@ -83,33 +57,66 @@
             }
           }
         }
+      },
+      "overview": {
+        "aria": "Overview Table",
+        "assignedPlaceholder": "Assigned to...",
+        "export": "Export",
+        "noSlug": "no-slug",
+        "regions": {
+          "archived": "Archived",
+          "draft": "Draft",
+          "published": "Published"
+        },
+        "row": {
+          "conversionRate30d": "{value}% conv (30d)",
+          "pageViews30d": "{count} page views (30d)",
+          "signupCount": "{count} signups"
+        },
+        "searchPlaceholder": "Search hypotheses...",
+        "statusLabel": {
+          "closed": "Closed",
+          "drafted": "Drafted",
+          "sent": "Sent"
+        },
+        "table": {
+          "columns": {
+            "conv30d": "Conv. (30d)",
+            "hypothesis": "Hypothesis",
+            "landing": "Landing",
+            "pageViews30d": "Page Views (30d)",
+            "signups": "Signups",
+            "status": "Status"
+          }
+        }
+      },
+      "tabs": {
+        "audits": "Audits",
+        "monitoring": "Monitoring",
+        "overview": "Overview"
       }
     },
     "pages": {
       "analytics": {
         "aria": "Analytics",
-        "subtitle": "Track performance, conversion, and user engagement.",
-        "title": "Analytics",
+        "cards": {
+          "daily-visitors": "Daily Visitors",
+          "visitors-vs-signups": "Visitors vs Signups"
+        },
         "metrics": {
           "summary": "{visitors} visitors • {signups} signups • {conv}% conv"
         },
-        "cards": {
-          "visitors-vs-signups": "Visitors vs Signups",
-          "daily-visitors": "Daily Visitors"
-        }
+        "subtitle": "Track performance, conversion, and user engagement.",
+        "title": "Analytics"
       },
       "assets": {
         "aria": "Assets",
         "subtitle": "Manage assets related to your hypotheses and campaigns.",
         "title": "Assets"
       },
-      
+
       "hypotheses": {
         "aria": "Hypotheses",
-        "overview-link": "Overview",
-        "subtitle": "Explore and manage your hypotheses.",
-        "subtitle-2": "for a table view.",
-        "tabs": { "audits": "Audits", "monitoring": "Monitoring", "overview": "Overview" },
         "create": {
           "back-link": "Back to hypotheses",
           "subtitle": "We'll set up a draft landing page and a waitlist automatically.",
@@ -117,64 +124,13 @@
         },
         "detail": {
           "aria": "Hypothesis overview",
-          "headings": {
-            "analytics": "Analytics (30d)",
-            "waitlist": "Waitlist",
-            "landing-pages": "Landing Pages",
-            "overview": "Overview",
-            "recent-activity": "Recent Activity",
-            "domain-settings": "Domain Settings"
-          },
-          "waitlist": {
-            "summary": "{total} total, {verified} verified",
-            "exports": "Export as {fileType}",
-            "viewAll": "View all",
-            "table": { "columns": { "email": "Email", "verified": "Verified", "source": "Source" } },
-            "empty": "No entries yet"
-          },
-          "landing-pages": {
-            "manage": "Manage",
-            "empty": "No landing pages yet.",
-            "empty-hint": "No landing pages yet. Use the Domains tab to configure your first page.",
-            "table": { "columns": { "name": "Name", "template": "Template", "published": "Published", "actions": "Actions" } },
-            "buttons": {
-              "new": "New Landing Page",
-              "creating": "Creating…",
-              "duplicate": "Duplicate",
-              "duplicating": "Duplicating…"
-            },
-            "placeholders": { "name": "three-words-identifier" },
-            "toasts": {
-              "created": { "title": "Landing page created" },
-              "create-error": { "title": "Failed to create landing page" },
-              "duplicated": { "title": "Duplicated landing page" },
-              "duplicate-error": { "title": "Failed to duplicate" },
-              "save-name-error": { "title": "Failed to save name" }
-            },
-            "actions": { "open-editor": "Open Editor", "view": "View" }
-          },
-          "recent-activity": {
-            "analyticsLink": "Analytics",
-            "empty": "No recent activity",
-            "labels": {
-              "page_view": "Page view • {source}",
-              "signup": "Signup",
-              "signup-with-email": "Signup ({email})",
-              "verification": "Verification",
-              "verification-with-email": "Verification ({email})"
-            },
-            "badge": { "page_view": "page view", "signup": "signup", "verification": "verification" }
-          },
           "domains": {
-            "labels": {
-              "subdomain": "Subdomain",
-              "custom-domain": "Custom domain"
-            },
-            "placeholders": {
-              "custom-domain": "yourdomain.com"
-            },
-            "help": {
-              "custom-domain": "Leave empty to remove custom domain."
+            "availability": {
+              "available-desc": "Available as {slug}.hypany.app",
+              "available-title": "Subdomain is available",
+              "inline-not-available": "Not available",
+              "unavailable-desc": "Please choose a different subdomain.",
+              "unavailable-title": "Subdomain unavailable"
             },
             "buttons": {
               "check": "Check",
@@ -182,16 +138,71 @@
               "save": "Save Settings"
             },
             "checking-availability": "Checking availability…",
-            "availability": {
-              "available-title": "Subdomain is available",
-              "available-desc": "Available as {slug}.hypany.app",
-              "unavailable-title": "Subdomain unavailable",
-              "unavailable-desc": "Please choose a different subdomain.",
-              "inline-not-available": "Not available"
+            "help": {
+              "custom-domain": "Leave empty to remove custom domain."
+            },
+            "labels": {
+              "custom-domain": "Custom domain",
+              "subdomain": "Subdomain"
+            },
+            "placeholders": {
+              "custom-domain": "yourdomain.com"
             },
             "save": {
-              "error-title": "Failed to save domain settings",
-              "error-desc": "Please check your values and try again."
+              "error-desc": "Please check your values and try again.",
+              "error-title": "Failed to save domain settings"
+            }
+          },
+          "headings": {
+            "analytics": "Analytics (30d)",
+            "domain-settings": "Domain Settings",
+            "landing-pages": "Landing Pages",
+            "overview": "Overview",
+            "recent-activity": "Recent Activity",
+            "waitlist": "Waitlist"
+          },
+          "landing-pages": {
+            "actions": { "open-editor": "Open Editor", "view": "View" },
+            "buttons": {
+              "creating": "Creating…",
+              "duplicate": "Duplicate",
+              "duplicating": "Duplicating…",
+              "new": "New Landing Page"
+            },
+            "empty": "No landing pages yet.",
+            "empty-hint": "No landing pages yet. Use the Domains tab to configure your first page.",
+            "manage": "Manage",
+            "placeholders": { "name": "three-words-identifier" },
+            "table": {
+              "columns": {
+                "actions": "Actions",
+                "name": "Name",
+                "published": "Published",
+                "template": "Template"
+              }
+            },
+            "toasts": {
+              "create-error": { "title": "Failed to create landing page" },
+              "created": { "title": "Landing page created" },
+              "duplicate-error": { "title": "Failed to duplicate" },
+              "duplicated": { "title": "Duplicated landing page" },
+              "save-name-error": { "title": "Failed to save name" }
+            }
+          },
+          "recent-activity": {
+            "analyticsLink": "Analytics",
+            "badge": {
+              "page_view": "page view",
+              "signup": "signup",
+              "verification": "verification"
+            },
+            "empty": "No recent activity",
+            "labels": {
+              "page_view": "Page view • {source}",
+              "signup": "Signup",
+              "signup-with-email": "Signup ({email})",
+              "verification": "Verification",
+              "verification-with-email": "Verification ({email})"
             }
           },
           "table": {
@@ -202,26 +213,31 @@
               "subdomain": "Subdomain",
               "value": "Value"
             }
+          },
+          "waitlist": {
+            "empty": "No entries yet",
+            "exports": "Export as {fileType}",
+            "summary": "{total} total, {verified} verified",
+            "table": {
+              "columns": {
+                "email": "Email",
+                "source": "Source",
+                "verified": "Verified"
+              }
+            },
+            "viewAll": "View all"
           }
         },
         "no-active-organization": "No active organization.",
         "no-data": "No data.",
+        "overview-link": "Overview",
+        "subtitle": "Explore and manage your hypotheses.",
+        "subtitle-2": "for a table view.",
         "tabs": {
           "analytics": "Analytics",
           "domains": "Domains",
           "landing-pages": "Landing Pages",
           "waitlist": "Waitlist"
-        }
-      },
-      "waitlist": {
-        "table": {
-          "columns": {
-            "email": "Email",
-            "name": "Name",
-            "verified": "Verified",
-            "source": "Source",
-            "signed-up": "Signed up"
-          }
         }
       },
       "organizations": {
@@ -268,6 +284,17 @@
         "subtitle": "Configure your workspace, preferences, and account.",
         "title": "Settings"
       },
+      "waitlist": {
+        "table": {
+          "columns": {
+            "email": "Email",
+            "name": "Name",
+            "signed-up": "Signed up",
+            "source": "Source",
+            "verified": "Verified"
+          }
+        }
+      },
       "waitlists": {
         "aria": "Waitlists",
         "subtitle": "Review and manage all product waitlists.",
@@ -299,10 +326,6 @@
       "joinSlack": "Join Slack community",
       "signOut": "Sign out",
       "theme": "Theme"
-    },
-    "common": {
-      "boolean": { "yes": "Yes", "no": "No" },
-      "direct": "direct"
     }
   },
   "auth": {
@@ -369,11 +392,13 @@
       "title": "Create an account"
     }
   },
-  
+
   "common": {
     "aria": {
       "product-showcase": "Product showcase"
     },
+    "boolean": { "no": "No", "yes": "Yes" },
+    "direct": "direct",
     "input": {
       "password": {
         "hide": "Hide password",
@@ -391,9 +416,7 @@
       "light": "Light",
       "system": "System",
       "toggle-aria": "Toggle theme"
-    },
-    "boolean": { "yes": "Yes", "no": "No" },
-    "direct": "direct"
+    }
   },
   "footer": {
     "creator-name": "Sunghyun Cho",

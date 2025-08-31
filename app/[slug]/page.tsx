@@ -12,7 +12,7 @@ export default async function PublicBySlug({
 
   const data = await getPublicPageBySlug(slug)
   if (!data) notFound()
-  
+
   const { hypothesis, landingPage, blocks } = data
 
   // Convert blocks to config

@@ -87,6 +87,7 @@
       },
       "recommended": true,
       "suspicious": {
+        "noArrayIndexKey": "off",
         "noDocumentCookie": "off",
         "noExplicitAny": "off"
       }

@@ -1,3 +1,6 @@
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
@@ -10,11 +13,11 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
-import { getHypothesisById, getLandingPagesForHypothesis } from '@/functions/hypotheses'
+import {
+  getHypothesisById,
+  getLandingPagesForHypothesis,
+} from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
-import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import {
   CreateLandingPageButton,
   DuplicateLandingPageButton,
@@ -30,7 +33,7 @@ export default async function LandingPagesGallery({
   await requireAuth()
   const activeOrgRes = await getActiveOrganization()
   const t = await getTranslations('app')
-  
+
   if (!activeOrgRes?.activeOrganizationId) {
     notFound()
   }
@@ -72,11 +75,25 @@ export default async function LandingPagesGallery({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.name')}</TableHeaderCell>
-                  <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.template')}</TableHeaderCell>
-                  <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.published')}</TableHeaderCell>
+                  <TableHeaderCell>
+                    {t(
+                      'pages.hypotheses.detail.landing-pages.table.columns.name',
+                    )}
+                  </TableHeaderCell>
+                  <TableHeaderCell>
+                    {t(
+                      'pages.hypotheses.detail.landing-pages.table.columns.template',
+                    )}
+                  </TableHeaderCell>
+                  <TableHeaderCell>
+                    {t(
+                      'pages.hypotheses.detail.landing-pages.table.columns.published',
+                    )}
+                  </TableHeaderCell>
                   <TableHeaderCell className='text-right'>
-                    {t('pages.hypotheses.detail.landing-pages.table.columns.actions')}
+                    {t(
+                      'pages.hypotheses.detail.landing-pages.table.columns.actions',
+                    )}
                   </TableHeaderCell>
                 </TableRow>
               </TableHead>
@@ -98,12 +115,18 @@ export default async function LandingPagesGallery({
                       </div>
                     </TableCell>
                     <TableCell>{p.template}</TableCell>
-                    <TableCell>{p.publishedAt ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
+                    <TableCell>
+                      {p.publishedAt
+                        ? t('common.boolean.yes')
+                        : t('common.boolean.no')}
+                    </TableCell>
                     <TableCell className='text-right'>
                       <div className='flex justify-end gap-2'>
-                        <Button asChild variant='secondary' >
+                        <Button asChild variant='secondary'>
                           <Link href={`/app/editor/${id}/${p.id}`}>
-                            {t('pages.hypotheses.detail.landing-pages.actions.open-editor')}
+                            {t(
+                              'pages.hypotheses.detail.landing-pages.actions.open-editor',
+                            )}
                           </Link>
                         </Button>
                         <DuplicateLandingPageButton
@@ -111,13 +134,15 @@ export default async function LandingPagesGallery({
                           landingPageId={p.id}
                         />
                         {hyp.slug && (
-                          <Button asChild variant='secondary' >
+                          <Button asChild variant='secondary'>
                             <Link
                               href={`/${hyp.slug}`}
                               target='_blank'
                               rel='noopener noreferrer'
                             >
-                              {t('pages.hypotheses.detail.landing-pages.actions.view')}
+                              {t(
+                                'pages.hypotheses.detail.landing-pages.actions.view',
+                              )}
                             </Link>
                           </Button>
                         )}

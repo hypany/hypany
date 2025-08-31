@@ -1,8 +1,24 @@
-import 'server-only'
-import { and, count, countDistinct, desc, eq, gt, inArray, isNull, lte } from 'drizzle-orm'
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNull,
+  lte,
+} from 'drizzle-orm'
 import { db } from '@/drizzle'
-import { hypotheses, landingPages, pageVisits, waitlistEntries, waitlists } from '@/schema'
 import { WAITLIST_THRESHOLD } from '@/lib/constants'
+import {
+  hypotheses,
+  landingPages,
+  pageVisits,
+  waitlistEntries,
+  waitlists,
+} from '@/schema'
+import 'server-only'
 import { ulid } from 'ulid'
 
 /**
@@ -10,7 +26,7 @@ import { ulid } from 'ulid'
  */
 export async function getHypothesesForOrganization(
   organizationId: string,
-  options?: { limit?: number; offset?: number }
+  options?: { limit?: number; offset?: number },
 ) {
   const { limit = 20, offset = 0 } = options || {}
 
@@ -42,34 +58,31 @@ export async function getHypothesesForOrganization(
   if (waitlistIds.length > 0) {
     const counts = await db
       .select({
-        waitlistId: waitlistEntries.waitlistId,
         count: count(waitlistEntries.id),
+        waitlistId: waitlistEntries.waitlistId,
       })
       .from(waitlistEntries)
       .where(inArray(waitlistEntries.waitlistId, waitlistIds))
       .groupBy(waitlistEntries.waitlistId)
 
-    signupCounts = counts.reduce(
-      (acc, row) => ({
-        ...acc,
-        [row.waitlistId]: row.count,
-      }),
-      {},
-    )
+    signupCounts = counts.reduce<Record<string, number>>((acc, row) => {
+      acc[row.waitlistId] = row.count
+      return acc
+    }, {})
   }
 
   // Map to response format
   const hypothesesWithCounts = userHypotheses.map((row) => ({
-    id: row.hypothesis.id,
-    name: row.hypothesis.name,
-    slug: row.hypothesis.slug,
-    description: row.hypothesis.description,
-    status: row.hypothesis.status,
     createdAt: row.hypothesis.createdAt,
-    updatedAt: row.hypothesis.updatedAt,
+    description: row.hypothesis.description,
+    id: row.hypothesis.id,
     landingPageId: row.landingPage?.id,
-    waitlistId: row.waitlist?.id,
+    name: row.hypothesis.name,
     signupCount: row.waitlist?.id ? signupCounts[row.waitlist.id] || 0 : 0,
+    slug: row.hypothesis.slug,
+    status: row.hypothesis.status,
+    updatedAt: row.hypothesis.updatedAt,
+    waitlistId: row.waitlist?.id,
   }))
 
   return hypothesesWithCounts
@@ -118,12 +131,12 @@ export async function getHypothesesMetrics(organizationId: string) {
 
   if (hypothesisIds.length === 0) {
     return {
-      uniqueVisitors30d: 0,
-      signups30d: 0,
+      growthRate7d: 0,
       last7Signups: 0,
       prev7Signups: 0,
-      growthRate7d: 0,
       readyToLaunch: 0,
+      signups30d: 0,
+      uniqueVisitors30d: 0,
     }
   }
 
@@ -189,9 +202,8 @@ export async function getHypothesesMetrics(organizationId: string) {
   const prev7Signups = signupStats[2][0]?.count || 0
 
   // Calculate growth rate
-  const growthRate7d = prev7Signups > 0 
-    ? ((last7Signups - prev7Signups) / prev7Signups) * 100 
-    : 0
+  const growthRate7d =
+    prev7Signups > 0 ? ((last7Signups - prev7Signups) / prev7Signups) * 100 : 0
 
   // Count hypotheses ready to launch (>= threshold signups)
   const readyHypotheses = await db
@@ -208,27 +220,25 @@ export async function getHypothesesMetrics(organizationId: string) {
   const readyToLaunch = readyHypotheses.length
 
   return {
-    uniqueVisitors30d,
-    signups30d,
+    growthRate7d,
     last7Signups,
     prev7Signups,
-    growthRate7d,
     readyToLaunch,
+    signups30d,
+    uniqueVisitors30d,
   }
 }
 
 /**
  * Create a new hypothesis with landing page and waitlist
  */
-export async function createHypothesis(
-  data: {
-    name: string
-    description?: string
-    slug?: string
-    organizationId: string
-    userId: string
-  }
-) {
+export async function createHypothesis(data: {
+  name: string
+  description?: string
+  slug?: string
+  organizationId: string
+  userId: string
+}) {
   const hypothesisId = ulid()
   const landingPageId = ulid()
   const waitlistId = ulid()
@@ -237,25 +247,25 @@ export async function createHypothesis(
   await db.transaction(async (tx) => {
     // 1) Create parent hypothesis first
     await tx.insert(hypotheses).values({
+      description: data.description,
       id: hypothesisId,
       name: data.name,
-      description: data.description,
+      organizationId: data.organizationId,
       slug: data.slug || hypothesisId.toLowerCase(),
       status: 'draft',
-      organizationId: data.organizationId,
       userId: data.userId,
     })
 
     // 2) Then create dependent records in parallel
     await Promise.all([
       tx.insert(landingPages).values({
-        id: landingPageId,
         hypothesisId,
+        id: landingPageId,
         name: data.name,
       }),
       tx.insert(waitlists).values({
-        id: waitlistId,
         hypothesisId,
+        id: waitlistId,
         name: `${data.name} Waitlist`,
       }),
     ])
@@ -278,7 +288,7 @@ export async function updateHypothesis(
     name?: string
     description?: string
     status?: 'draft' | 'published' | 'archived'
-  }
+  },
 ) {
   const updates: any = { updatedAt: new Date() }
   if (data.name !== undefined) updates.name = data.name
@@ -320,7 +330,10 @@ export async function deleteHypothesis(id: string, organizationId: string) {
 /**
  * Get waitlist by hypothesis ID with stats
  */
-export async function getWaitlistByHypothesisId(hypothesisId: string, organizationId: string) {
+export async function getWaitlistByHypothesisId(
+  hypothesisId: string,
+  organizationId: string,
+) {
   // First verify the hypothesis belongs to the organization
   const hypothesis = await getHypothesisById(hypothesisId, organizationId)
   if (!hypothesis) return null
@@ -361,11 +374,11 @@ export async function getWaitlistByHypothesisId(hypothesisId: string, organizati
     )
 
   return {
-    waitlist,
     stats: {
       totalEntries: statsResult?.totalEntries || 0,
       verifiedEntries: verifiedResult?.verifiedEntries || 0,
     },
+    waitlist,
   }
 }
 
@@ -375,7 +388,7 @@ export async function getWaitlistByHypothesisId(hypothesisId: string, organizati
 export async function getWaitlistEntries(
   hypothesisId: string,
   organizationId: string,
-  options?: { limit?: number; offset?: number }
+  options?: { limit?: number; offset?: number },
 ) {
   const { limit = 50, offset = 0 } = options || {}
 
@@ -412,7 +425,7 @@ export async function getWaitlistEntries(
  */
 export async function getLandingPagesForHypothesis(
   hypothesisId: string,
-  organizationId: string
+  organizationId: string,
 ) {
   // First verify the hypothesis belongs to the organization
   const hypothesis = await getHypothesisById(hypothesisId, organizationId)
