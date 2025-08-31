@@ -5,6 +5,7 @@
       "home": "Home",
       "hypotheses": "Hypotheses"
     },
+    
     "hypotheses": {
       "overview": {
         "aria": "Overview Table",
@@ -38,6 +39,7 @@
           }
         }
       },
+      "tabs": { "audits": "Audits", "monitoring": "Monitoring", "overview": "Overview" },
       "create": {
         "form": {
           "actions": { "create": "Create Hypothesis", "creating": "Creating…" },
@@ -87,24 +89,111 @@
       "analytics": {
         "aria": "Analytics",
         "subtitle": "Track performance, conversion, and user engagement.",
-        "title": "Analytics"
+        "title": "Analytics",
+        "metrics": {
+          "summary": "{visitors} visitors • {signups} signups • {conv}% conv"
+        },
+        "cards": {
+          "visitors-vs-signups": "Visitors vs Signups",
+          "daily-visitors": "Daily Visitors"
+        }
       },
       "assets": {
         "aria": "Assets",
         "subtitle": "Manage assets related to your hypotheses and campaigns.",
         "title": "Assets"
       },
+      
       "hypotheses": {
         "aria": "Hypotheses",
         "overview-link": "Overview",
         "subtitle": "Explore and manage your hypotheses.",
         "subtitle-2": "for a table view.",
+        "tabs": { "audits": "Audits", "monitoring": "Monitoring", "overview": "Overview" },
         "create": {
           "back-link": "Back to hypotheses",
           "subtitle": "We'll set up a draft landing page and a waitlist automatically.",
           "title": "Create a new hypothesis"
         },
         "detail": {
+          "aria": "Hypothesis overview",
+          "headings": {
+            "analytics": "Analytics (30d)",
+            "waitlist": "Waitlist",
+            "landing-pages": "Landing Pages",
+            "overview": "Overview",
+            "recent-activity": "Recent Activity",
+            "domain-settings": "Domain Settings"
+          },
+          "waitlist": {
+            "summary": "{total} total • {verified} verified",
+            "exportCsv": "Export CSV",
+            "viewAll": "View all",
+            "table": { "columns": { "email": "Email", "verified": "Verified", "source": "Source" } },
+            "empty": "No entries yet"
+          },
+          "landing-pages": {
+            "manage": "Manage",
+            "empty": "No landing pages yet.",
+            "empty-hint": "No landing pages yet. Use the Domains tab to configure your first page.",
+            "table": { "columns": { "name": "Name", "template": "Template", "published": "Published", "actions": "Actions" } },
+            "buttons": {
+              "new": "New Landing Page",
+              "creating": "Creating…",
+              "duplicate": "Duplicate",
+              "duplicating": "Duplicating…"
+            },
+            "placeholders": { "name": "three-words-identifier" },
+            "toasts": {
+              "created": { "title": "Landing page created" },
+              "create-error": { "title": "Failed to create landing page" },
+              "duplicated": { "title": "Duplicated landing page" },
+              "duplicate-error": { "title": "Failed to duplicate" },
+              "save-name-error": { "title": "Failed to save name" }
+            },
+            "actions": { "open-editor": "Open Editor", "view": "View" }
+          },
+          "recent-activity": {
+            "analyticsLink": "Analytics",
+            "empty": "No recent activity",
+            "labels": {
+              "page_view": "Page view • {source}",
+              "signup": "Signup",
+              "signup-with-email": "Signup ({email})",
+              "verification": "Verification",
+              "verification-with-email": "Verification ({email})"
+            },
+            "badge": { "page_view": "page view", "signup": "signup", "verification": "verification" }
+          },
+          "domains": {
+            "labels": {
+              "subdomain": "Subdomain (hypany.app)",
+              "custom-domain": "Custom domain"
+            },
+            "placeholders": {
+              "custom-domain": "yourdomain.com"
+            },
+            "help": {
+              "custom-domain": "Leave empty to remove custom domain."
+            },
+            "buttons": {
+              "check": "Check",
+              "checking": "Checking…",
+              "save": "Save Settings"
+            },
+            "checking-availability": "Checking availability…",
+            "availability": {
+              "available-title": "Subdomain is available",
+              "available-desc": "Available as {slug}.hypany.app",
+              "unavailable-title": "Subdomain unavailable",
+              "unavailable-desc": "Please choose a different subdomain.",
+              "inline-not-available": "Not available"
+            },
+            "save": {
+              "error-title": "Failed to save domain settings",
+              "error-desc": "Please check your values and try again."
+            }
+          },
           "table": {
             "columns": {
               "field": "Field",
@@ -122,6 +211,17 @@
           "domains": "Domains",
           "landing-pages": "Landing Pages",
           "waitlist": "Waitlist"
+        }
+      },
+      "waitlist": {
+        "table": {
+          "columns": {
+            "email": "Email",
+            "name": "Name",
+            "verified": "Verified",
+            "source": "Source",
+            "signed-up": "Signed up"
+          }
         }
       },
       "organizations": {
@@ -199,6 +299,10 @@
       "joinSlack": "Join Slack community",
       "signOut": "Sign out",
       "theme": "Theme"
+    },
+    "common": {
+      "boolean": { "yes": "Yes", "no": "No" },
+      "direct": "direct"
     }
   },
   "auth": {
@@ -287,7 +391,9 @@
       "light": "Light",
       "system": "System",
       "toggle-aria": "Toggle theme"
-    }
+    },
+    "boolean": { "yes": "Yes", "no": "No" },
+    "direct": "direct"
   },
   "footer": {
     "creator-name": "Sunghyun Cho",

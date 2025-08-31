@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { getActiveOrganization } from '@/functions/organizations'
 import { getHypothesisById, getLandingPagesForHypothesis } from '@/functions/hypotheses'
 import { Button } from '@/components/atoms/button'
+import { Card } from '@/components/atoms/card'
 import {
   Table,
   TableBody,
@@ -27,6 +29,7 @@ export default async function LandingPagesGallery({
   const { id } = await params
   await requireAuth()
   const activeOrgRes = await getActiveOrganization()
+  const t = await getTranslations('app')
   
   if (!activeOrgRes?.activeOrganizationId) {
     notFound()
@@ -47,80 +50,85 @@ export default async function LandingPagesGallery({
   }
 
   return (
-    <section>
-      <div className='mb-4 flex justify-end'>
-        <CreateLandingPageButton hypothesisId={id} />
-      </div>
+    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+      <Card className='p-0 overflow-hidden'>
+        <div className='flex items-center justify-between px-4 py-4'>
+          <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+            {t('pages.hypotheses.detail.headings.landing-pages')}
+          </h2>
+          <CreateLandingPageButton hypothesisId={id} />
+        </div>
+      </Card>
 
       {pages.length === 0 ? (
-        <div className='rounded-md border border-dashed p-6 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-400'>
-          No landing pages yet. Use the Domains tab to configure your first
-          page.
-        </div>
+        <Card className='mt-4 p-0 overflow-hidden'>
+          <div className='px-4 py-6 text-sm text-gray-600 dark:text-gray-400'>
+            {t('pages.hypotheses.detail.landing-pages.empty-hint')}
+          </div>
+        </Card>
       ) : (
-        <TableRoot>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Template</TableHeaderCell>
-                <TableHeaderCell>Published</TableHeaderCell>
-                <TableHeaderCell className='text-right'>
-                  Actions
-                </TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pages.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell className='font-medium'>
-                    <div className='max-w-xs'>
-                      <RenameLandingPageInline
-                        landingPageId={p.id}
-                        initialName={p.name || null}
-                      />
-                      <div className='mt-1 text-xs text-gray-500'>
-                        ID: {p.id}
+        <Card className='mt-4 p-0 overflow-hidden'>
+          <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.name')}</TableHeaderCell>
+                  <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.template')}</TableHeaderCell>
+                  <TableHeaderCell>{t('pages.hypotheses.detail.landing-pages.table.columns.published')}</TableHeaderCell>
+                  <TableHeaderCell className='text-right'>
+                    {t('pages.hypotheses.detail.landing-pages.table.columns.actions')}
+                  </TableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {pages.map((p) => (
+                  <TableRow key={p.id}>
+                    <TableCell className='font-medium'>
+                      <div className='max-w-xs'>
+                        <RenameLandingPageInline
+                          landingPageId={p.id}
+                          initialName={p.name || null}
+                        />
+                        {(hyp.customDomain || hyp.slug) && (
+                          <div className='mt-1 text-xs text-gray-500'>
+                            {hyp.customDomain ||
+                              (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
+                          </div>
+                        )}
                       </div>
-                      {(hyp.customDomain || hyp.slug) && (
-                        <div className='text-xs text-gray-500'>
-                          {hyp.customDomain ||
-                            (hyp.slug ? `${hyp.slug}.hypany.app` : '')}
-                        </div>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{p.template}</TableCell>
-                  <TableCell>{p.publishedAt ? 'Yes' : 'No'}</TableCell>
-                  <TableCell className='text-right'>
-                    <div className='flex justify-end gap-2'>
-                      <Button asChild variant='secondary' className='py-1.5'>
-                        <Link href={`/app/editor/${id}/${p.id}`}>
-                          Open Editor
-                        </Link>
-                      </Button>
-                      <DuplicateLandingPageButton
-                        hypothesisId={id}
-                        landingPageId={p.id}
-                      />
-                      {hyp.slug && (
+                    </TableCell>
+                    <TableCell>{p.template}</TableCell>
+                    <TableCell>{p.publishedAt ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
+                    <TableCell className='text-right'>
+                      <div className='flex justify-end gap-2'>
                         <Button asChild variant='secondary' className='py-1.5'>
-                          <Link
-                            href={`/${hyp.slug}`}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                          >
-                            View
+                          <Link href={`/app/editor/${id}/${p.id}`}>
+                            {t('pages.hypotheses.detail.landing-pages.actions.open-editor')}
                           </Link>
                         </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableRoot>
+                        <DuplicateLandingPageButton
+                          hypothesisId={id}
+                          landingPageId={p.id}
+                        />
+                        {hyp.slug && (
+                          <Button asChild variant='secondary' className='py-1.5'>
+                            <Link
+                              href={`/${hyp.slug}`}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
+                              {t('pages.hypotheses.detail.landing-pages.actions.view')}
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableRoot>
+        </Card>
       )}
     </section>
   )

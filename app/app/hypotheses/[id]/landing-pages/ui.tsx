@@ -2,9 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { getClientApi } from '@/app/api/client'
 import { Button } from '@/components/atoms/button'
 import { toast } from '@/lib/use-toast'
+import { useSaveStatus } from '@/components/atoms/save-status'
 
 export function CreateLandingPageButton({
   hypothesisId,
@@ -14,6 +16,7 @@ export function CreateLandingPageButton({
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const api = getClientApi()
+  const t = useTranslations('app')
   async function create() {
     setLoading(true)
     try {
@@ -25,20 +28,22 @@ export function CreateLandingPageButton({
           ? (res.data as { id: string }).id
           : null
       if (id) {
-        toast({ title: 'Landing page created', variant: 'success' })
+        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.created.title'), variant: 'success' })
         router.push(`/app/editor/${hypothesisId}/${id}`)
       } else {
-        toast({ title: 'Failed to create landing page', variant: 'error' })
+        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.create-error.title'), variant: 'error' })
       }
     } catch {
-      toast({ title: 'Failed to create landing page', variant: 'error' })
+      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.create-error.title'), variant: 'error' })
     } finally {
       setLoading(false)
     }
   }
   return (
     <Button onClick={create} disabled={loading}>
-      {loading ? 'Creating…' : 'New Landing Page'}
+      {loading
+        ? t('pages.hypotheses.detail.landing-pages.buttons.creating')
+        : t('pages.hypotheses.detail.landing-pages.buttons.new')}
     </Button>
   )
 }
@@ -53,6 +58,7 @@ export function DuplicateLandingPageButton({
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const api = getClientApi()
+  const t = useTranslations('app')
   async function duplicate() {
     setLoading(true)
     try {
@@ -64,20 +70,22 @@ export function DuplicateLandingPageButton({
           ? (res.data as { id: string }).id
           : null
       if (id) {
-        toast({ title: 'Duplicated landing page', variant: 'success' })
+        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.duplicated.title'), variant: 'success' })
         router.push(`/app/editor/${hypothesisId}/${id}`)
       } else {
-        toast({ title: 'Failed to duplicate', variant: 'error' })
+        toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.duplicate-error.title'), variant: 'error' })
       }
     } catch {
-      toast({ title: 'Failed to duplicate landing page', variant: 'error' })
+      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.duplicate-error.title'), variant: 'error' })
     } finally {
       setLoading(false)
     }
   }
   return (
     <Button variant='secondary' onClick={duplicate} disabled={loading}>
-      {loading ? 'Duplicating…' : 'Duplicate'}
+      {loading
+        ? t('pages.hypotheses.detail.landing-pages.buttons.duplicating')
+        : t('pages.hypotheses.detail.landing-pages.buttons.duplicate')}
     </Button>
   )
 }
@@ -92,16 +100,20 @@ export function RenameLandingPageInline({
   const [value, setValue] = useState(initialName || '')
   const [saving, setSaving] = useState(false)
   const api = getClientApi()
+  const { start, finish } = useSaveStatus()
+  const t = useTranslations('app')
   async function save() {
     if (!value || saving) return
     setSaving(true)
+    start()
     try {
       await api.v1['landing-pages']
         ['by-id']({ landingPageId })
         .patch({ name: value })
-      toast({ title: 'Name saved', variant: 'success' })
+      finish(true)
     } catch {
-      toast({ title: 'Failed to save name', variant: 'error' })
+      finish(false)
+      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.save-name-error.title'), variant: 'error' })
     } finally {
       setSaving(false)
     }
@@ -110,7 +122,7 @@ export function RenameLandingPageInline({
     <div className='flex items-center gap-2'>
       <input
         className='w-full rounded-md border px-2 py-1 text-sm outline-hidden dark:border-gray-800'
-        placeholder='three-words-identifier'
+        placeholder={t('pages.hypotheses.detail.landing-pages.placeholders.name')}
         defaultValue={value}
         onBlur={(e) => {
           setValue(e.target.value)
@@ -122,7 +134,6 @@ export function RenameLandingPageInline({
           }
         }}
       />
-      {saving && <span className='text-xs text-gray-500'>Saving…</span>}
     </div>
   )
 }

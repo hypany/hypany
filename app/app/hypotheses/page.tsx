@@ -1,8 +1,4 @@
-import { Pencil } from 'lucide-react'
-import Link from 'next/link'
 import { requireAuth } from '@/auth/server'
-import { getActiveOrganization } from '@/functions/organizations'
-import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
 import {
   Table,
   TableBody,
@@ -16,7 +12,11 @@ import {
   type Metric,
   MetricsCards,
 } from '@/components/molecules/homepage/metrics-cards'
+import { getHypothesesForOrganization, getHypothesesMetrics } from '@/functions/hypotheses'
+import { getActiveOrganization } from '@/functions/organizations'
+import { Pencil } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 type Row = {
   id: string
@@ -103,8 +103,6 @@ export default async function HypothesesPage() {
   return (
     <section>
       <MetricsCards metrics={metrics} compact />
-
-      {/** Global chart removed for clarity */}
       <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
         <Table>
           <TableHead>

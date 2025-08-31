@@ -1,4 +1,5 @@
 import { requireAuth } from '@/auth/server'
+import { getTranslations } from 'next-intl/server'
 import {
   Table,
   TableBody,
@@ -10,6 +11,7 @@ import {
 } from '@/components/atoms/table'
 import { getWaitlistByHypothesisId, getWaitlistEntries } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
+import { Card } from '@/components/atoms/card'
 
 function f(date: string | Date) {
   try {
@@ -27,9 +29,10 @@ export default async function WaitlistPage({
   const { id } = await params
   await requireAuth()
   const activeOrgRes = await getActiveOrganization()
+  const t = await getTranslations('app')
   
   if (!activeOrgRes?.activeOrganizationId) {
-    return <div>No active organization</div>
+    return <div>{t('pages.hypotheses.no-active-organization')}</div>
   }
 
   const [waitlistData, entries] = await Promise.all([
@@ -41,49 +44,51 @@ export default async function WaitlistPage({
   const exportCsvHref = `/api/v1/waitlists/hypothesis/${id}/export?format=csv`
 
   return (
-    <section>
-      <div className='p-4 flex items-center justify-between'>
-        <div>
-          <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
+    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+      <Card className='p-0 overflow-hidden'>
+        <div className='flex items-center justify-between px-4 py-4'>
+          <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
+            {t('pages.hypotheses.detail.headings.waitlist')}
+          </h2>
+          <div className='text-sm text-gray-600 dark:text-gray-400'>
             {stats && (
               <span>
-                {stats.totalEntries} total • {stats.verifiedEntries} verified
+                {t('pages.hypotheses.detail.waitlist.summary', { total: stats.totalEntries, verified: stats.verifiedEntries })}
               </span>
             )}
-          </p>
+          </div>
+          <a
+            className='text-sm font-medium text-emerald-600 hover:underline dark:text-emerald-400'
+            href={exportCsvHref}
+          >
+            {t('pages.hypotheses.detail.waitlist.exportCsv')}
+          </a>
         </div>
-        <a
-          className='text-sm font-medium text-emerald-600 hover:underline dark:text-emerald-400'
-          href={exportCsvHref}
-        >
-          Export CSV
-        </a>
-      </div>
-
-      <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableHeaderCell>Email</TableHeaderCell>
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell>Verified</TableHeaderCell>
-              <TableHeaderCell>Source</TableHeaderCell>
-              <TableHeaderCell>Signed up</TableHeaderCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {entries.map((e) => (
-              <TableRow key={e.id}>
-                <TableCell className='font-medium'>{e.email}</TableCell>
-                <TableCell>{e.name ?? ''}</TableCell>
-                <TableCell>{e.emailVerified ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{e.source ?? 'direct'}</TableCell>
-                <TableCell>{f(e.createdAt)}</TableCell>
+        <TableRoot className='border-t border-gray-200 dark:border-gray-800'>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeaderCell>{t('pages.waitlist.table.columns.email')}</TableHeaderCell>
+                <TableHeaderCell>{t('pages.waitlist.table.columns.name')}</TableHeaderCell>
+                <TableHeaderCell>{t('pages.waitlist.table.columns.verified')}</TableHeaderCell>
+                <TableHeaderCell>{t('pages.waitlist.table.columns.source')}</TableHeaderCell>
+                <TableHeaderCell>{t('pages.waitlist.table.columns.signed-up')}</TableHeaderCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableRoot>
+            </TableHead>
+            <TableBody>
+              {entries.map((e) => (
+                <TableRow key={e.id}>
+                  <TableCell className='font-medium'>{e.email}</TableCell>
+                  <TableCell>{e.name ?? ''}</TableCell>
+                  <TableCell>{e.emailVerified ? t('common.boolean.yes') : t('common.boolean.no')}</TableCell>
+                  <TableCell>{e.source ?? t('common.direct')}</TableCell>
+                  <TableCell>{f(e.createdAt)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableRoot>
+      </Card>
     </section>
   )
 }

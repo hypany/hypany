@@ -1,11 +1,5 @@
 'use client'
 
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
-import { RiCloseLine } from '@remixicon/react'
-import { PanelLeft } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import * as React from 'react'
 import {
   Drawer,
   DrawerClose,
@@ -14,6 +8,12 @@ import {
 } from '@/components/atoms/drawer'
 import { useIsMobile } from '@/lib/use-mobile'
 import { cx, focusRing } from '@/lib/utils'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { RiCloseLine } from '@remixicon/react'
+import { PanelLeft } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import * as React from 'react'
 import { Button } from './button'
 
 // This component is based on shadcn's sidebar component
@@ -189,7 +189,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(
         >
           <div
             data-sidebar='sidebar'
-            className='bg-sidebar flex h-full w-full flex-col'
+            className='dark:bg-gray-925 flex h-full w-full flex-col'
           >
             {children}
           </div>
@@ -289,6 +289,7 @@ const SidebarLink = React.forwardRef<HTMLAnchorElement, SidebarLinkProps>(
   ({ children, isActive, icon, notifications, className, ...props }, ref) => {
     const Icon = icon
     const pathname = usePathname()
+    const { isMobile, setOpenMobile } = useSidebar()
 
     // Auto-detect active for top-level links: exact match only
     let active = isActive
@@ -300,6 +301,12 @@ const SidebarLink = React.forwardRef<HTMLAnchorElement, SidebarLinkProps>(
         active = pathname === hrefPath
       }
     }
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // Invoke user onClick first if present
+      ;(props as any)?.onClick?.(e)
+      if (isMobile) setOpenMobile(false)
+    }
+
     return (
       <Link
         ref={ref}
@@ -312,6 +319,7 @@ const SidebarLink = React.forwardRef<HTMLAnchorElement, SidebarLinkProps>(
           focusRing,
           className,
         )}
+        onClick={handleClick}
         {...props}
       >
         <span className='flex items-center gap-x-2.5'>
@@ -384,6 +392,7 @@ type SidebarSubLinkProps = React.ComponentProps<typeof Link> & {
 const SidebarSubLink = React.forwardRef<HTMLAnchorElement, SidebarSubLinkProps>(
   ({ isActive, children, className, ...props }, ref) => {
     const pathname = usePathname()
+    const { isMobile, setOpenMobile } = useSidebar()
     // Auto-detect active for sub-links: exact or descendant paths
     let active = isActive
     if (active === undefined) {
@@ -396,6 +405,11 @@ const SidebarSubLink = React.forwardRef<HTMLAnchorElement, SidebarSubLinkProps>(
         active = pathname === base || pathname.startsWith(withSlash)
       }
     }
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      ;(props as any)?.onClick?.(e)
+      if (isMobile) setOpenMobile(false)
+    }
+
     return (
       <Link
         ref={ref}
@@ -408,6 +422,7 @@ const SidebarSubLink = React.forwardRef<HTMLAnchorElement, SidebarSubLinkProps>(
           focusRing,
           className,
         )}
+        onClick={handleClick}
         {...props}
       >
         {active && (
@@ -450,5 +465,6 @@ export {
   SidebarProvider,
   SidebarSubLink,
   SidebarTrigger,
-  useSidebar,
+  useSidebar
 }
+

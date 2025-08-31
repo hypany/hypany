@@ -31,7 +31,7 @@ const Table = React.forwardRef<
     ref={forwardedRef}
     className={cx(
       // base
-      'w-full caption-bottom',
+      'w-full border-collapse caption-bottom',
       // border color
       'border-gray-200 dark:border-gray-800',
       className,

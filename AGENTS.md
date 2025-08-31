@@ -1,9 +1,15 @@
-
 # Engineering Philosophy
 
 For UI Engineering, follow the instructions in ./agents/ui/index.md.
 
 This document outlines the engineering principles and patterns used in this codebase. When making changes or additions, follow these guidelines to maintain consistency and quality.
+
+## Simple Rules
+
+- Use Bun
+- Use Tailwind and Tremor (NOT shadcn/ui)
+- Use React Server Components
+- Use React Query for data mutations
 
 ## Core Principles
 

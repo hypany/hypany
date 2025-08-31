@@ -100,7 +100,7 @@ export function OrgSwitcherClient({
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger
-          className='flex items-center rounded-lg px-2.5 py-2 text-base font-semibold w-full min-w-0 border border-gray-200 shadow-xs bg-white/70 hover:bg-white dark:border-gray-800 dark:bg-gray-950/40 dark:hover:bg-gray-900/60'
+          className='flex items-center rounded-lg px-2.5 py-2 text-base font-semibold w-full min-w-0'
           disabled={disabled}
         >
           <span className='flex items-center justify-between w-full min-w-0'>

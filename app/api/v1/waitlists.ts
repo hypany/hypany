@@ -4,17 +4,17 @@
  * - List and export entries, analytics insights
  */
 
-import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
 import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { toCsv } from '@/lib/csv'
 import { jsonError, jsonOk } from '@/lib/http'
 import { resolveRange } from '@/lib/time-range'
 import { hypotheses, waitlistEntries, waitlists } from '@/schema'
-import { getWaitlistIdForOrg } from '../utils'
+import { and, desc, eq, gte, inArray, lte } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
 import 'server-only'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
+import { getWaitlistIdForOrg } from '../utils'
 import { authPlugin } from './auth-plugin'
 
 // Validation schemas
@@ -182,7 +182,6 @@ export const waitlistsApi = new Elysia({ prefix: '/v1/waitlists' })
           eq(waitlistEntries.emailVerified, query.emailVerified),
         )
       }
-      // Reveal filtering removed
 
       const entries = await entriesQuery
         .orderBy(desc(waitlistEntries.createdAt))

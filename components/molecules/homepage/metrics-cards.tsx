@@ -7,8 +7,9 @@ export type Metric = {
 }
 
 const getCategory = (value: number): Category => {
-  if (value < 0.3) return 'red'
-  if (value < 0.7) return 'orange'
+  if (value === 0) return 'gray'
+  if (value < 0.03) return 'red'
+  if (value < 0.07) return 'orange'
   return 'emerald'
 }
 
@@ -58,14 +59,15 @@ function MetricCard({ metric }: { metric: Metric }) {
       </dt>
       <dd className='mt-1.5 flex items-center gap-2'>
         <Indicator number={metric.value} />
-        <p className='text-lg font-semibold text-gray-900 dark:text-gray-50'>
-          {metric.percentage}
+        <p className='text-lg font-semibold text-gray-900 dark:text-gray-50 flex items-center gap-2'>
+          {metric.percentage || metric.fraction}
+          <span className='text-sm font-medium text-gray-400 dark:text-gray-600'>
           {metric.fraction ? (
-            <span className='font-medium text-gray-400 dark:text-gray-600'>
-              {metric.percentage ? ' - ' : ''}
-              {metric.fraction}
+            <span className='text-sm font-medium text-gray-400 dark:text-gray-600'>
+              {metric.percentage ? metric.fraction : ''}
             </span>
           ) : null}
+          </span>
         </p>
       </dd>
     </div>

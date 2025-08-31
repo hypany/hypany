@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
+import React from 'react'
 
 type Crumb = { href: string; label: string }
 
@@ -63,11 +64,43 @@ export function Breadcrumbs() {
     )
   }
 
+  // Optional: fetch entity names for id-like segments (e.g., /app/hypotheses/:id)
+  const [hypoName, setHypoName] = React.useState<string | null>(null)
+  React.useEffect(() => {
+    const idx = segments.findIndex((s) => s === 'hypotheses')
+    if (idx !== -1 && segments[idx + 1] && isIdLike(segments[idx + 1]!)) {
+      const id = segments[idx + 1]!
+      let ignore = false
+      ;(async () => {
+        try {
+          const res = await fetch(`/api/v1/hypotheses/${id}`)
+          if (!res.ok) return
+          const data = (await res.json()) as any
+          const name = data?.hypothesis?.name as string | undefined
+          if (!ignore && name) setHypoName(name)
+        } catch {
+          /* ignore */
+        }
+      })()
+      return () => {
+        ignore = true
+      }
+    } else {
+      setHypoName(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
+
   const crumbs: Crumb[] = [{ href: base, label: tApp('breadcrumbs.home') }]
   let acc = base
-  for (const seg of segments) {
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i]!
     const nextAcc = `${acc}/${seg}`
-    crumbs.push({ href: nextAcc, label: labelFor(seg) })
+    let label = labelFor(seg)
+    if (isIdLike(seg) && i > 0 && segments[i - 1] === 'hypotheses' && hypoName) {
+      label = hypoName
+    }
+    crumbs.push({ href: nextAcc, label })
     acc = nextAcc
   }
 

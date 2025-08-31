@@ -5,9 +5,6 @@
  * - Resolve and verify domain connectivity
  */
 
-import { and, eq, isNull, ne } from 'drizzle-orm'
-import { Elysia, t } from 'elysia'
-import humanId from 'human-id'
 import { db } from '@/drizzle'
 import { HTTP_STATUS } from '@/lib/constants'
 import { normalizeHostname } from '@/lib/domains'
@@ -19,10 +16,13 @@ import {
   removeVercelProjectDomains,
 } from '@/lib/vercel'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
-import { getLandingPageIdForOrg } from '../utils'
+import { and, eq, isNull, ne } from 'drizzle-orm'
+import { Elysia, t } from 'elysia'
+import humanId from 'human-id'
 import 'server-only'
 import { ulid } from 'ulid'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
+import { getLandingPageIdForOrg } from '../utils'
 import { authPlugin } from './auth-plugin'
 
 // Block types for landing pages (aligned with templates/types.ts)
@@ -165,7 +165,13 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         createdAt: new Date(),
         hypothesisId: params.hypothesisId,
         id,
-        name: humanId(),
+        name: humanId(
+          {
+            separator: '-',
+          }
+        )
+          .replace(/([a-z])([A-Z])/g, '$1-$2')
+          .toLowerCase(),
         template: 'default',
         updatedAt: new Date(),
       })
@@ -859,7 +865,10 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
         createdAt: now,
         hypothesisId: src.hypothesisId,
         id: newId,
-        name: humanId(),
+        // Generate a three-word identifier and convert to hyphenated lowercase
+        name: humanId()
+          .replace(/([a-z])([A-Z])/g, '$1-$2')
+          .toLowerCase(),
         template: src.template,
         updatedAt: now,
       })

@@ -3,8 +3,10 @@ import { BarChart } from '@/components/atoms/bar-chart'
 import { ComboChart } from '@/components/atoms/combo-chart'
 import { getAnalyticsMetrics } from '@/functions/analytics'
 import { getActiveOrganization } from '@/functions/organizations'
+import { Card } from '@/components/atoms/card'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 
 type Range = '7d' | '30d' | '90d'
 
@@ -29,6 +31,7 @@ export default async function AnalyticsPage({
   })
   const daily = metrics.daily
   const per = metrics.perHypothesis[0]
+  const t = await getTranslations('app')
 
   const barData = daily.map((d) => ({
     date: d.date,
@@ -42,16 +45,20 @@ export default async function AnalyticsPage({
   }))
 
   return (
-    <section>
-      <div className='p-4 flex items-center justify-between'>
+    <section className='bg-gray-50 p-4 dark:bg-gray-950'>
+      <Card className='p-0 overflow-hidden mb-4'>
+        <div className='px-4 py-4 flex items-center justify-between'>
         <div>
           <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
             {per && (
               <span>
-                {Math.round(per.uniqueVisitors)} visitors •{' '}
-                {Math.round(per.signups)} signups •
-                {` ${per.uniqueVisitors ? ((per.signups / per.uniqueVisitors) * 100).toFixed(1) : '0.0'}%`}{' '}
-                conv
+                {t('pages.analytics.metrics.summary', {
+                  visitors: Math.round(per.uniqueVisitors),
+                  signups: Math.round(per.signups),
+                  conv: per.uniqueVisitors
+                    ? ((per.signups / per.uniqueVisitors) * 100).toFixed(1)
+                    : '0.0',
+                })}
               </span>
             )}
           </p>
@@ -72,34 +79,43 @@ export default async function AnalyticsPage({
             </Link>
           ))}
         </div>
-      </div>
+        </div>
+      </Card>
 
-      <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-        <div>
-          <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-            Visitors vs Signups
-          </h2>
-          <ComboChart
-            data={comboData}
-            index='date'
-            enableBiaxial
-            barSeries={{ categories: ['Signups'] }}
-            lineSeries={{ categories: ['Visitors'], colors: ['lightGray'] }}
-            className='mt-4 h-60'
-          />
-        </div>
-        <div>
-          <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
-            Daily Visitors
-          </h2>
-          <BarChart
-            data={barData}
-            index='date'
-            categories={['Visitors']}
-            colors={['orange']}
-            className='mt-4 h-60'
-          />
-        </div>
+      <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+        <Card className='p-0 overflow-hidden'>
+          <div className='px-4 py-4'>
+            <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+              {t('pages.analytics.cards.visitors-vs-signups')}
+            </h2>
+          </div>
+          <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
+            <ComboChart
+              data={comboData}
+              index='date'
+              enableBiaxial
+              barSeries={{ categories: ['Signups'] }}
+              lineSeries={{ categories: ['Visitors'], colors: ['lightGray'] }}
+              className='h-60'
+            />
+          </div>
+        </Card>
+        <Card className='p-0 overflow-hidden'>
+          <div className='px-4 py-4'>
+            <h2 className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+              {t('pages.analytics.cards.daily-visitors')}
+            </h2>
+          </div>
+          <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
+            <BarChart
+              data={barData}
+              index='date'
+              categories={['Visitors']}
+              colors={['orange']}
+              className='h-60'
+            />
+          </div>
+        </Card>
       </div>
     </section>
   )
