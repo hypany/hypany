@@ -30,7 +30,7 @@ export default async function PublicBySlug({
     config.meta = {
       ...config.meta,
       description: landingPage.metaDescription || config.meta.description,
-      ogImage: landingPage.socialImageUrl || config.meta.ogImage,
+      ogImage: landingPage.ogImage || config.meta.ogImage,
       title: landingPage.metaTitle || config.meta.title,
     }
   }
