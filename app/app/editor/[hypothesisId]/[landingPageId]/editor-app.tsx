@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { getClientApi } from '@/app/api/client'
-import { Button } from '@/components/atoms/button'
 import type { PageDocument } from '@/lib/page-document'
 import { emptyDocument } from '@/lib/page-document'
 import { toast } from '@/lib/use-toast'
@@ -11,13 +10,12 @@ import { useEditorStore } from '@/lib/store/editor'
 import EditorCanvas from './editor-canvas'
 import LibraryPanel from './library'
 import InspectorPanel from './inspector'
-import VersionsPanel from './versions'
 
 export default function EditorApp({
   landingPageId,
   hypothesisId,
   initialDoc,
-  previewUrl,
+  previewUrl: _previewUrl,
 }: {
   landingPageId: string
   hypothesisId: string
@@ -27,10 +25,7 @@ export default function EditorApp({
   const baseDoc = useMemo(() => initialDoc ?? emptyDocument(), [initialDoc])
   const doc = useEditorStore((s) => s.doc)
   const setDoc = useEditorStore((s) => s.setDoc)
-  const zoom = useEditorStore((s) => s.zoom)
-  const setZoom = useEditorStore((s) => s.setZoom)
-  const breakpoint = useEditorStore((s) => s.breakpoint)
-  const setBreakpoint = useEditorStore((s) => s.setBreakpoint)
+  // Controls moved to header
   const dirty = useEditorStore((s) => s.dirty)
   const markSaved = useEditorStore((s) => s.markSaved)
 
@@ -44,8 +39,7 @@ export default function EditorApp({
         .put({ doc: JSON.stringify(doc) })
     },
     onSuccess: () => {
-      const wasDirty = useEditorStore.getState().dirty
-      if (wasDirty) toast({ title: 'Draft saved', variant: 'success' })
+      // Silent success; only mark clean
       markSaved()
     },
     onError: () => {
@@ -53,20 +47,7 @@ export default function EditorApp({
     },
   })
 
-  const publishMutation = useMutation({
-    mutationFn: async () => {
-      return api.v1['landing-pages']
-        ['by-id']({ landingPageId })
-        ['publish']
-        .post()
-    },
-    onSuccess: () => {
-      toast({ title: 'Published', variant: 'success' })
-    },
-    onError: () => {
-      toast({ title: 'Failed to publish', variant: 'error' })
-    },
-  })
+  // Publish handled elsewhere (header actions or dedicated button)
 
   // Initialize store doc on mount
   useEffect(() => {
@@ -124,7 +105,7 @@ export default function EditorApp({
   }, [saveMutation])
 
   return (
-    <div className='flex h-[calc(100dvh-8rem)] gap-4'>
+    <div className='flex min-h-[calc(100dvh-4rem)] gap-4'>
       {/* Library */}
       <aside className='hidden w-64 shrink-0 rounded border p-3 dark:border-gray-800 md:block'>
         <LibraryPanel />
@@ -132,41 +113,6 @@ export default function EditorApp({
 
       {/* Canvas */}
       <div className='flex min-w-0 flex-1 flex-col rounded border dark:border-gray-800'>
-        <div className='flex items-center justify-between border-b p-2 dark:border-gray-800'>
-          <div className='text-sm font-medium'>Editor</div>
-          <div className='flex items-center gap-2'>
-            <div className='flex items-center gap-1'>
-              <Button variant='secondary' onClick={() => setBreakpoint('sm')} aria-pressed={breakpoint==='sm'}>Phone</Button>
-              <Button variant='secondary' onClick={() => setBreakpoint('md')} aria-pressed={breakpoint==='md'}>Tablet</Button>
-              <Button variant='secondary' onClick={() => setBreakpoint('lg')} aria-pressed={breakpoint==='lg'}>Desktop</Button>
-              <Button variant='secondary' onClick={() => setBreakpoint('base')} aria-pressed={breakpoint==='base'}>Full</Button>
-            </div>
-            <div className='flex items-center gap-1'>
-              <Button variant='secondary' onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}>-</Button>
-              <span className='w-10 text-center text-xs'>{Math.round(zoom*100)}%</span>
-              <Button variant='secondary' onClick={() => setZoom(Math.min(2, zoom + 0.1))}>+</Button>
-            </div>
-            <Button
-              variant='secondary'
-              onClick={() => previewUrl && window.open(previewUrl, '_blank', 'noopener,noreferrer')}
-              disabled={!previewUrl}
-            >
-              Preview
-            </Button>
-            <VersionsPanel landingPageId={landingPageId} />
-            
-            <Button
-              variant='secondary'
-              onClick={() => { if (useEditorStore.getState().dirty) saveMutation.mutate(); else toast({ title: 'Up to date', variant: 'success' }) }}
-              disabled={saveMutation.isPending}
-            >
-              Save Draft
-            </Button>
-            <Button onClick={() => publishMutation.mutate()} disabled={publishMutation.isPending}>
-              Publish
-            </Button>
-          </div>
-        </div>
         <EditorCanvas />
       </div>
 

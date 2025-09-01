@@ -313,6 +313,11 @@ export default function InspectorPanel({ hypothesisId }: { hypothesisId: string 
       )
     }
     default:
-      return <p className='text-xs text-gray-500'>No editable content for this element.</p>
+      return (
+        <div className='space-y-2'>
+          <div className='text-xs text-gray-500'>No editable fields. You can still delete it.</div>
+          <Button variant='destructive' onClick={() => removeNode(node.id)}>Delete component</Button>
+        </div>
+      )
   }
 }

@@ -8,6 +8,7 @@ type Breakpoint = 'base' | 'sm' | 'md' | 'lg'
 
 type EditorState = {
   doc: PageDocument
+  fitMode: boolean
   dirty: boolean
   selectedId: NodeId | null
   draggingId: NodeId | null
@@ -16,6 +17,7 @@ type EditorState = {
   zoom: number
   breakpoint: Breakpoint
   setDoc: (doc: PageDocument) => void
+  setFitMode: (fit: boolean) => void
   markSaved: () => void
   select: (id: NodeId | null) => void
   dragStart: (id: NodeId) => void
@@ -121,6 +123,7 @@ function isDescendant(nodes: Node[], ancestorId: NodeId, childId: NodeId): boole
 export const useEditorStore = create<EditorState>((set) => ({
   breakpoint: 'base',
   doc: { version: 1, nodes: [] },
+  fitMode: true,
   dirty: false,
   draggingId: null,
   dropPosition: null,
@@ -134,8 +137,9 @@ export const useEditorStore = create<EditorState>((set) => ({
   selectedId: null,
   setBreakpoint: (bp) => set({ breakpoint: bp }),
   setDoc: (doc) => set({ doc }),
+  setFitMode: (fit) => set({ fitMode: fit }),
   markSaved: () => set({ dirty: false }),
-  setZoom: (z) => set({ zoom: Math.min(2, Math.max(0.5, z)) }),
+  setZoom: (z) => set({ fitMode: false, zoom: Math.min(2, Math.max(0.5, z)) }),
   updateNode: (id, updater) => set((s) => ({ dirty: true, doc: { ...s.doc, nodes: updateNodeInTree(s.doc.nodes, id, updater) } })),
   removeNode: (id) => set((s) => ({
     dirty: true,

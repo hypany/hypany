@@ -4,6 +4,9 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { getActiveOrganization } from '@/functions/organizations'
 import { resolveEntityNameById } from '@/functions/resolve'
+import { getLandingPageByIdForOrg } from '@/functions/landing-pages'
+import { serviceUrl } from '@/lib/url'
+import EditorHeaderActions from './header-actions.client'
 
 export default async function EditorBreadcrumbs({
   params,
@@ -24,9 +27,19 @@ export default async function EditorBreadcrumbs({
   )
   if (!hypo) notFound()
 
+  // Fetch landing page meta (customDomain + slug) for preview URL
+  const lpMeta = await getLandingPageByIdForOrg(
+    landingPageId,
+    activeOrgRes.activeOrganizationId,
+  )
+  const cd = (lpMeta as any)?.landingPage?.customDomain as string | undefined
+  const slug = (lpMeta as any)?.landingPage?.slug as string | undefined
+  const previewUrl = cd ? `https://${cd}` : slug ? `${serviceUrl}/preview/${slug}` : null
+
   return (
-    <nav aria-label='Breadcrumb' className='ml-2'>
-      <ol className='flex items-center space-x-3 text-sm'>
+    <div className='ml-2 flex w-full items-center'>
+      <nav aria-label='Breadcrumb' className='flex-1'>
+        <ol className='flex items-center space-x-3 text-sm'>
         <li className='flex'>
           <Link
             href='/app'
@@ -88,7 +101,9 @@ export default async function EditorBreadcrumbs({
             </li>
           </>
         ) : null}
-      </ol>
-    </nav>
+        </ol>
+      </nav>
+      <EditorHeaderActions previewUrl={previewUrl} landingPageId={landingPageId} />
+    </div>
   )
 }

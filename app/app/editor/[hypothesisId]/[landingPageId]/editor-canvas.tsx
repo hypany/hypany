@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useEditorStore } from '@/lib/store/editor'
 import type { Node } from '@/lib/page-document'
 import { ICONS, isIconName } from '@/lib/icons'
@@ -323,6 +323,10 @@ export default function EditorCanvas() {
   const select = useEditorStore((s) => s.select)
   const zoom = useEditorStore((s) => s.zoom)
   const breakpoint = useEditorStore((s) => s.breakpoint)
+  const fitMode = useEditorStore((s) => s.fitMode)
+
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [fitScale, setFitScale] = useState(1)
 
   const width = useMemo(() => {
     switch (breakpoint) {
@@ -338,11 +342,27 @@ export default function EditorCanvas() {
     }
   }, [breakpoint])
 
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const compute = () => {
+      const available = el.clientWidth - 32 // p-4 padding on container
+      if (available > 0) {
+        const scale = Math.min(1, available / width)
+        setFitScale(scale)
+      }
+    }
+    compute()
+    const ro = new ResizeObserver(compute)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [width])
+
   return (
-    <div className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 p-4 dark:bg-gray-950' onClick={() => select(null)}>
+    <div ref={containerRef} className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 p-4 dark:bg-gray-950' onClick={() => select(null)}>
       <div
         className='mx-auto rounded bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-800'
-        style={{ width, transform: `scale(${zoom})`, transformOrigin: 'top center' }}
+        style={{ width, transform: `scale(${fitMode ? fitScale : zoom})`, transformOrigin: 'top center' }}
       >
         <div className='p-6 space-y-4'>
           {doc.nodes.map((n) => (
