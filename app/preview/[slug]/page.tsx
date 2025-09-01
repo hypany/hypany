@@ -4,6 +4,8 @@ import { DocumentRenderer } from '@/components/public-landing/document-renderer'
 import { PublicLandingRenderer } from '@/components/public-landing/renderer'
 import { parseDocument } from '@/lib/page-document'
 
+export const dynamic = 'force-dynamic'
+
 export default async function PreviewBySlug({
   params,
 }: {
