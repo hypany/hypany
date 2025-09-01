@@ -1,12 +1,12 @@
+import { HypanyLogo } from '@/public/brand/hypany-logo'
 import {
   RiGithubFill,
   RiSlackFill,
   RiTwitterXFill,
   RiYoutubeFill,
 } from '@remixicon/react'
-import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { HypanyLogo } from '@/public/brand/hypany-logo'
+import Link from 'next/link'
 import { LocaleSwitcher } from '../locale-switcher'
 import { ThemeToggle } from './theme-toggle'
 
@@ -193,7 +193,7 @@ export const Footer = () => {
         <div className='mt-10 w-full border-t border-gray-200 py-3 dark:border-gray-800'>
           <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
             <div className='text-sm text-gray-700 dark:text-gray-400'>
-              &copy; {CURRENT_YEAR} {tFooter('creator-name')}
+              &copy; {CURRENT_YEAR} {tFooter('creator-label')}
             </div>
             <div className='flex items-center gap-2'>
               <LocaleSwitcher />
