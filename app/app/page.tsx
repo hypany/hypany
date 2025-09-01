@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import { getSession } from '@/auth/server'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
@@ -14,6 +12,8 @@ import {
 } from '@/components/atoms/table'
 import { getActivityFeed } from '@/functions/analytics'
 import { getHypothesesForOrganization } from '@/functions/hypotheses'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 type HypothesisRow = {
   id: string
@@ -176,7 +176,7 @@ export default async function Page() {
                       email: a.email ? ` (${a.email})` : '',
                     })
                   return (
-                    <li key={a.hypothesisId ?? idx} className='p-4'>
+                    <li key={idx} className='p-4'>
                       <div className='flex items-center justify-between gap-3'>
                         <div className='min-w-0'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-50'>
