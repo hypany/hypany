@@ -2,7 +2,8 @@ import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
 const nextConfig: NextConfig = {
-  /* other config options */
+  // Helpful for diagnosing prod-only client errors (maps chunk stacks to source)
+  productionBrowserSourceMaps: true,
 }
 
 const withNextIntl = createNextIntlPlugin()

@@ -29,11 +29,13 @@ const valueFormatter = (n: number) =>
   `${Intl.NumberFormat('en-US').format(Number.isFinite(n) ? n : 0)}`
 
 export function CumulativeAreaChart({ daily }: { daily: DailyPoint[] }) {
+  // Normalize input to a safe array in case of unexpected values in prod
+  const safeDaily = Array.isArray(daily) ? daily : []
   // Pre-compute cumulative series once
   const series = useMemo(() => {
     let vAcc = 0
     let sAcc = 0
-    return daily
+    return safeDaily
       .slice()
       .sort((a, b) => a.date.localeCompare(b.date))
       .map((d) => {
@@ -45,7 +47,7 @@ export function CumulativeAreaChart({ daily }: { daily: DailyPoint[] }) {
           Visitors: vAcc,
         }
       })
-  }, [daily])
+  }, [safeDaily])
 
   const tabs = useMemo(() => {
     const last7 = series.slice(-7)
