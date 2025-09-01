@@ -1,7 +1,6 @@
 // 'use client'
 'use client'
 
-import { useMemo, useState } from 'react'
 import { AreaChart } from '@/components/atoms/area-chart'
 import { Card } from '@/components/atoms/card'
 import {
@@ -10,6 +9,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/atoms/tabs'
+import { useMemo, useState } from 'react'
 
 type DailyPoint = { date: string; visitors: number; signups: number }
 

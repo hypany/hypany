@@ -1,6 +1,3 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import { Card } from '@/components/atoms/card'
 import {
@@ -12,6 +9,7 @@ import {
   TableRoot,
   TableRow,
 } from '@/components/atoms/table'
+import { CumulativeAreaChart } from '@/components/molecules/analytics/cumulative-area'
 import { getActivityFeed, getAnalyticsMetrics } from '@/functions/analytics'
 import {
   getHypothesisById,
@@ -20,8 +18,9 @@ import {
   getWaitlistEntries,
 } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
-import { CumulativeAreaChart } from './analytics/cumulative-area'
-// Domain edit dialog handled via header button
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { DomainEditButton } from './domains/edit-button'
 
 export default async function HypothesisOverview({
@@ -80,7 +79,6 @@ export default async function HypothesisOverview({
         <div className='flex-1 min-w-0 flex flex-col gap-4'>
           {/* Analytics */}
           <CumulativeAreaChart daily={daily} />
-
           {/* Waitlist */}
           <Card className='p-0 overflow-hidden'>
             <div className='flex items-center justify-between px-4 py-4'>
@@ -260,12 +258,6 @@ export default async function HypothesisOverview({
               <h2 className='font-semibold text-gray-900 dark:text-gray-50'>
                 {t('pages.hypotheses.detail.headings.recent-activity')}
               </h2>
-              <Link
-                href={`/app/hypotheses/${id}/analytics`}
-                className='text-sm text-emerald-600 hover:underline dark:text-emerald-500'
-              >
-                {t('pages.analytics.title')}
-              </Link>
             </div>
             <ul className='divide-y divide-gray-200 border-t border-gray-200 dark:divide-gray-800 dark:border-gray-800'>
               {activities.length === 0 ? (
