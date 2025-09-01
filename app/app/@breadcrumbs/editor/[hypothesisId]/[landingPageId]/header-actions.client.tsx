@@ -18,7 +18,6 @@ export default function EditorHeaderActions({ previewUrl, landingPageId }: { pre
         <Button variant='secondary' onClick={() => setBreakpoint('sm')} aria-pressed={breakpoint==='sm'}>Phone</Button>
         <Button variant='secondary' onClick={() => setBreakpoint('md')} aria-pressed={breakpoint==='md'}>Tablet</Button>
         <Button variant='secondary' onClick={() => setBreakpoint('lg')} aria-pressed={breakpoint==='lg'}>Desktop</Button>
-        <Button variant='secondary' onClick={() => setBreakpoint('base')} aria-pressed={breakpoint==='base'}>Full</Button>
       </div>
       <div className='flex items-center gap-1'>
         <Button variant='secondary' onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}>-</Button>

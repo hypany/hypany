@@ -359,7 +359,7 @@ export default function EditorCanvas() {
   }, [width])
 
   return (
-    <div ref={containerRef} className='flex-1 overflow-y-auto overflow-x-hidden bg-gray-50 p-4 dark:bg-gray-950' onClick={() => select(null)}>
+    <div ref={containerRef} className='flex-1 overflow-auto bg-gray-50 p-4 dark:bg-gray-950' onClick={() => select(null)}>
       <div
         className='mx-auto rounded bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-800'
         style={{ width, transform: `scale(${fitMode ? fitScale : zoom})`, transformOrigin: 'top center' }}
