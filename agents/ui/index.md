@@ -4,7 +4,6 @@ This guide describes how to discover, evaluate, and integrate Tremor Blocks into
 
 **What You Have**
 - By‑section docs: `agents/tremor-blocks/index.md` (links to section files like `area-charts.md`, `tables.md`, `lib.md`).
-- Source catalog: `agents/TREMORBLOCKS.md` (scan the first ~400 lines for the directory tree and file index if needed).
 
 **Quick Start**
 - Review sections: open `agents/tremor-blocks/index.md` to browse components by category.
@@ -15,7 +14,6 @@ This guide describes how to discover, evaluate, and integrate Tremor Blocks into
 **Component Discovery**
 - Catalog first: use `agents/tremor-blocks/index.md` to find categories and counts.
 - Locate files: within a section file, search for the file header matching your target (e.g., `### src/content/components/tables/table-04.tsx`).
-- Alt path: when only the monolith exists, open `agents/TREMORBLOCKS.md` and scan the first ~400 lines; use the tree to find the exact `FILE:` anchor and jump there.
 
 **Choosing the Right Block**
 - Match use case: prefer blocks whose layout and interactivity already fit your scenario (e.g., pagination style, tooltip density, mobile affordances).
