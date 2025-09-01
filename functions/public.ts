@@ -63,6 +63,9 @@ export async function getPublicPageBySlug(slug: string) {
     landingPage: {
       customCss: landingPage.customCss,
       // Schema-aligned fields
+      builderDraftJson: (landingPage as { builderDraftJson?: string | null }).builderDraftJson ?? null,
+      builderPublishedJson:
+        (landingPage as { builderPublishedJson?: string | null }).builderPublishedJson ?? null,
       favicon: landingPage.favicon,
       hypothesisId: landingPage.hypothesisId,
       id: landingPage.id,

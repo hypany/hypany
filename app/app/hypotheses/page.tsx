@@ -1,6 +1,3 @@
-import { Pencil } from 'lucide-react'
-import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import { requireAuth } from '@/auth/server'
 import {
   Table,
@@ -20,6 +17,9 @@ import {
   getHypothesesMetrics,
 } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
+import { Pencil } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 type Row = {
   id: string
@@ -119,9 +119,6 @@ export default async function HypothesesPage() {
               <TableHeaderCell>
                 {t('pages.root.table.columns.signups')}
               </TableHeaderCell>
-              <TableHeaderCell>
-                {t('pages.root.table.columns.analytics')}
-              </TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -150,14 +147,6 @@ export default async function HypothesesPage() {
                     className='hover:underline'
                   >
                     {item.signupCount}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/app/hypotheses/${item.id}/analytics`}
-                    className='group inline-flex items-center gap-3 text-emerald-600 hover:underline dark:text-emerald-500'
-                  >
-                    {t('pages.root.table.analytics-link')}
                   </Link>
                 </TableCell>
               </TableRow>

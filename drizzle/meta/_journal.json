@@ -14,6 +14,13 @@
       "tag": "0001_nappy_radioactive_man",
       "version": "7",
       "when": 1756630793646
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756736132941,
+      "tag": "0002_classy_speedball",
+      "breakpoints": true
     }
   ],
   "version": "7"

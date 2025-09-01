@@ -95,9 +95,6 @@ export default async function Page() {
                     <TableHeaderCell>
                       {t('pages.root.table.columns.signups')}
                     </TableHeaderCell>
-                    <TableHeaderCell className='text-right'>
-                      {t('pages.root.table.columns.analytics')}
-                    </TableHeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -130,14 +127,6 @@ export default async function Page() {
                         </TableCell>
                         <TableCell className='capitalize'>{h.status}</TableCell>
                         <TableCell>{h.signupCount}</TableCell>
-                        <TableCell className='text-right'>
-                          <Link
-                            href={`/app/hypotheses/${h.id}/analytics`}
-                            className='text-emerald-600 hover:underline dark:text-emerald-500'
-                          >
-                            {t('pages.root.table.analytics-link')}
-                          </Link>
-                        </TableCell>
                       </TableRow>
                     ))
                   )}

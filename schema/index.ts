@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -166,6 +167,9 @@ export const landingPages = pgTable(
     name: text('name'),
     ogImage: text('og_image'),
     publishedAt: timestamp('published_at'),
+    // New builder JSON fields for draft/published PageDocument
+    builderDraftJson: text('builder_draft_json'),
+    builderPublishedJson: text('builder_published_json'),
     template: text('template').notNull().default('default'),
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
@@ -202,6 +206,36 @@ export const landingPageBlocks = pgTable(
   (table) => ({
     landingPageIdIdx: index('landing_page_blocks_landing_page_id_idx').on(
       table.landingPageId,
+    ),
+  }),
+)
+
+// Version history for landing pages (snapshots of builder JSON)
+export const landingPageVersions = pgTable(
+  'landing_page_versions',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => ulid()),
+    landingPageId: text('landing_page_id')
+      .notNull()
+      .references(() => landingPages.id, { onDelete: 'cascade' }),
+    version: integer('version').notNull().default(1),
+    snapshotJson: text('snapshot_json').notNull(),
+    authorId: text('author_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    message: text('message'),
+    createdAt: timestamp('created_at')
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => ({
+    lpIdx: index('landing_page_versions_landing_page_id_idx').on(
+      table.landingPageId,
+    ),
+    createdIdx: index('landing_page_versions_created_at_idx').on(
+      table.createdAt,
     ),
   }),
 )
@@ -391,6 +425,8 @@ export type LandingPage = typeof landingPages.$inferSelect
 export type NewLandingPage = typeof landingPages.$inferInsert
 export type LandingPageBlock = typeof landingPageBlocks.$inferSelect
 export type NewLandingPageBlock = typeof landingPageBlocks.$inferInsert
+export type LandingPageVersion = typeof landingPageVersions.$inferSelect
+export type NewLandingPageVersion = typeof landingPageVersions.$inferInsert
 export type Waitlist = typeof waitlists.$inferSelect
 export type NewWaitlist = typeof waitlists.$inferInsert
 export type WaitlistEntry = typeof waitlistEntries.$inferSelect

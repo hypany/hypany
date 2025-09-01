@@ -24,6 +24,14 @@ import { ulid } from 'ulid'
 import { ErrorResponse, SuccessResponse, UlidParam } from '../docs'
 import { getLandingPageIdForOrg } from '../utils'
 import { authPlugin } from './auth-plugin'
+import {
+  createVersion,
+  getLandingPageDocument,
+  publishLandingPage as publishDoc,
+  restoreVersion as restoreDocVersion,
+  listVersions,
+  saveLandingPageDraft,
+} from '@/functions/landing-page-docs'
 
 // Block types for landing pages (aligned with templates/types.ts)
 const BlockTypes = t.Union([
@@ -67,6 +75,236 @@ const LandingPageSchema = {
 
 export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
   .use(authPlugin)
+  // PageDocument: get draft/published JSON
+  .get(
+    '/by-id/:landingPageId/document',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      const { landingPage } = await getLandingPageDocument(
+        params.landingPageId,
+        orgId,
+      )
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      return jsonOk(set, HTTP_STATUS.OK, {
+        draft: landingPage.builderDraftJson || null,
+        published: landingPage.builderPublishedJson || null,
+        publishedAt: landingPage.publishedAt || null,
+        customCss: landingPage.customCss || null,
+      })
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'Get PageDocument draft/published JSON',
+        summary: 'Get PageDocument',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: {
+        200: t.Object({
+          draft: t.Nullable(t.String()),
+          published: t.Nullable(t.String()),
+          publishedAt: t.Nullable(t.Date()),
+          customCss: t.Nullable(t.String()),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
+    },
+  )
+  // PageDocument: save draft JSON
+  .put(
+    '/by-id/:landingPageId/document',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Ensure ownership
+      const { landingPage } = await getLandingPageDocument(
+        params.landingPageId,
+        orgId,
+      )
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      // Minimal validation of PageDocument
+      try {
+        const doc = JSON.parse(body.doc)
+        if (
+          !doc ||
+          typeof doc !== 'object' ||
+          doc.version !== 1 ||
+          !Array.isArray(doc.nodes)
+        ) {
+          return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'Invalid document')
+        }
+      } catch {
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'Invalid JSON')
+      }
+
+      await saveLandingPageDraft(params.landingPageId, JSON.parse(body.doc))
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      body: t.Object({ doc: t.String() }),
+      detail: {
+        description: 'Save PageDocument draft JSON',
+        summary: 'Save PageDocument draft',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 400: ErrorResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
+  // PageDocument: publish draft -> published
+  .post(
+    '/by-id/:landingPageId/publish',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+      const { landingPage } = await getLandingPageDocument(
+        params.landingPageId,
+        orgId,
+      )
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      await publishDoc(params.landingPageId)
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'Publish current draft to published PageDocument',
+        summary: 'Publish PageDocument',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
+  // PageDocument: list versions
+  .get(
+    '/by-id/:landingPageId/versions',
+    async ({ user, session, params, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+      const { landingPage } = await getLandingPageDocument(
+        params.landingPageId,
+        orgId,
+      )
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      const versions = await listVersions(params.landingPageId)
+      return jsonOk(set, HTTP_STATUS.OK, { versions })
+    },
+    {
+      auth: true,
+      detail: {
+        description: 'List saved versions of PageDocument',
+        summary: 'List versions',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: {
+        200: t.Object({
+          versions: t.Array(
+            t.Object({
+              id: t.String(),
+              version: t.Number(),
+              message: t.Nullable(t.String()),
+              createdAt: t.Date(),
+            }),
+          ),
+        }),
+        401: ErrorResponse,
+        404: ErrorResponse,
+      },
+    },
+  )
+  // PageDocument: save a new version (snapshot current draft)
+  .post(
+    '/by-id/:landingPageId/versions',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+      const { landingPage } = await getLandingPageDocument(
+        params.landingPageId,
+        orgId,
+      )
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      const draft = landingPage.builderDraftJson
+      if (!draft)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No draft to snapshot')
+      const id = await createVersion(
+        params.landingPageId,
+        draft,
+        user.id,
+        body.message ?? undefined,
+      )
+      return jsonOk(set, HTTP_STATUS.CREATED, { id })
+    },
+    {
+      auth: true,
+      body: t.Object({ message: t.Optional(t.String()) }),
+      detail: {
+        description: 'Create a version from current draft',
+        summary: 'Create version',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 201: t.Object({ id: t.String() }), 400: ErrorResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
+  // PageDocument: restore version into draft
+  .post(
+    '/by-id/:landingPageId/restore',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+      const { landingPage } = await getLandingPageDocument(
+        params.landingPageId,
+        orgId,
+      )
+      if (!landingPage)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+      await restoreDocVersion(params.landingPageId, body.version)
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      body: t.Object({ version: t.Number() }),
+      detail: {
+        description: 'Restore a saved version into draft',
+        summary: 'Restore version',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ landingPageId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
   // List landing pages for a hypothesis
   .get(
     '/hypothesis/:hypothesisId/list',
