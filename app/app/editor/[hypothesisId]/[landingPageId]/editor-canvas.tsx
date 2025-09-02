@@ -165,6 +165,7 @@ function NodeView({ node }: { node: Node }) {
     },
     onDrop: (e: React.DragEvent) => {
       e.preventDefault()
+      e.stopPropagation()
       if (dropPosition) {
         if (draggingId) {
           moveNode(draggingId, node.id, dropPosition)
