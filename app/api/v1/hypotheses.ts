@@ -570,7 +570,14 @@ export const hypothesesApi = new Elysia({ prefix: '/v1/hypotheses' })
         .where(eq(hypotheses.id, params.id))
         .returning()
 
-      return jsonOk(set, HTTP_STATUS.OK, { hypothesis: updated })
+      const responseHypothesis = {
+        description: (updated as any).description ?? null,
+        id: (updated as any).id as string,
+        name: (updated as any).name as string,
+        status: (updated as any).status as string,
+      }
+
+      return jsonOk(set, HTTP_STATUS.OK, { hypothesis: responseHypothesis })
     },
     {
       auth: true,

@@ -15,14 +15,6 @@ import {
   Circle,
   SquareDashed,
   FormInput,
-  Trash2,
-  Copy,
-  Lock,
-  Unlock,
-  Eye,
-  EyeOff,
-  ArrowUp,
-  ArrowDown,
   MoreHorizontal,
 } from 'lucide-react'
 import { Input } from '@/components/atoms/input'
@@ -212,10 +204,6 @@ export default function LayersPanel() {
         <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
           <DropdownMenuTrigger asChild>
             <div
-              className={
-                'group flex items-center justify-between rounded-sm px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-900 ' +
-                (isSelected ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-400 dark:bg-emerald-900/20 dark:text-emerald-200' : 'text-gray-700 dark:text-gray-300')
-              }
               style={{ paddingLeft: 8 + depth * 12 }}
               onClick={(e) => {
                 e.stopPropagation()

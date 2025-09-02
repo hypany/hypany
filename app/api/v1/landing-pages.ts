@@ -417,8 +417,7 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       await db
         .update(hypotheses)
         .set({
-          // @ts-expect-error new field added by migration
-          activeLandingPageId: body.landingPageId,
+          activeLandingPageId: body.landingPageId as unknown as string,
           updatedAt: new Date(),
         })
         .where(eq(hypotheses.id, params.hypothesisId))
@@ -805,9 +804,14 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       if (!landingPage)
         return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
 
-      // Get blocks
+      // Get blocks (limit to response shape)
       const blocks = await db
-        .select()
+        .select({
+          content: landingPageBlocks.content,
+          id: landingPageBlocks.id,
+          order: landingPageBlocks.order,
+          type: landingPageBlocks.type,
+        })
         .from(landingPageBlocks)
         .where(
           and(
@@ -830,9 +834,10 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       return jsonOk(set, HTTP_STATUS.OK, {
         blocks,
         landingPage: {
-          ...landingPage,
-          customDomain: hyp?.customDomain ?? null,
-          slug: hyp?.slug ?? null,
+          customDomain: (hyp?.customDomain as unknown as string) ?? null,
+          id: landingPage.id,
+          slug: (hyp?.slug as unknown as string) ?? null,
+          template: landingPage.template,
         },
       })
     },

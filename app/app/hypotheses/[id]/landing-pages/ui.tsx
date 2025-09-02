@@ -186,7 +186,6 @@ export function SetActiveLandingPageButton({
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const api = getClientApi()
-  const t = useTranslations('app')
   async function setActive() {
     setLoading(true)
     try {

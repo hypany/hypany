@@ -11,7 +11,7 @@ import { resolveActiveLandingPageIdBySlug } from '@/functions/public'
 
 export default async function Home() {
   // If we are on a slug subdomain like slug.hypany.app, redirect to published view
-  const host = headers().get('host') || ''
+  const host = (await headers()).get('host') || ''
   const parts = host.split('.')
   if (parts.length >= 3 && host.endsWith('hypany.app')) {
     const sub = parts[0]

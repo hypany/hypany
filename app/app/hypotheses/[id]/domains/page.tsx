@@ -38,8 +38,8 @@ export default async function DomainsPage({
         <div className='border-t border-gray-200 p-4 dark:border-gray-800'>
           <DomainForm
             hypothesisId={id}
-            initialSlug={hypothesis.slug}
-            initialCustomDomain={hypothesis.customDomain}
+            initialSlug={(hypothesis.slug as unknown as string) ?? null}
+            initialCustomDomain={(hypothesis.customDomain as unknown as string) ?? null}
           />
         </div>
       </Card>

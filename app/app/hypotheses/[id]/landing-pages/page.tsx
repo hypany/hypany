@@ -47,12 +47,11 @@ export default async function LandingPagesGallery({
   if (!hypothesis) notFound()
 
   const hyp = {
-    customDomain: hypothesis.customDomain,
+    customDomain: hypothesis.customDomain ?? null,
     id: hypothesis.id,
     name: hypothesis.name,
-    slug: hypothesis.slug,
-    // @ts-expect-error field added via migration
-    activeLandingPageId: (hypothesis as any).activeLandingPageId as string | null,
+    slug: hypothesis.slug ?? null,
+    activeLandingPageId: hypothesis.activeLandingPageId ?? null,
   }
 
   return (
