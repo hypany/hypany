@@ -63,9 +63,8 @@ export async function getPublicPageBySlug(slug: string) {
     landingPage: {
       customCss: landingPage.customCss,
       // Schema-aligned fields
-      builderDraftJson: (landingPage as { builderDraftJson?: string | null }).builderDraftJson ?? null,
-      builderPublishedJson:
-        (landingPage as { builderPublishedJson?: string | null }).builderPublishedJson ?? null,
+      builderDraftJson: landingPage.builderDraftJson ?? null,
+      builderPublishedJson: landingPage.builderPublishedJson ?? null,
       favicon: landingPage.favicon,
       hypothesisId: landingPage.hypothesisId,
       id: landingPage.id,
@@ -105,12 +104,12 @@ export async function resolveActiveLandingPageIdBySlug(slug: string) {
   const [hyp] = await db
     .select({
       id: hypotheses.id,
-      activeLandingPageId: (hypotheses as any).activeLandingPageId as unknown as string | null,
+      activeLandingPageId: hypotheses.activeLandingPageId,
     })
     .from(hypotheses)
     .where(and(eq(hypotheses.slug, slug), isNull(hypotheses.deletedAt)))
     .limit(1)
-  if (!hyp) return null as string | null
+  if (!hyp) return null
   if (hyp.activeLandingPageId) return hyp.activeLandingPageId
 
   // Prefer most recently published

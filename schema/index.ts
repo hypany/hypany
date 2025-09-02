@@ -134,8 +134,8 @@ export const hypotheses = pgTable(
     slug: text('slug').unique(),
     status: text('status').notNull().default('draft'), // draft, published, archived
     // Selected landing page to serve publicly when multiple exist
-    activeLandingPageId: text('active_landing_page_id')
-      .references(() => landingPages.id, { onDelete: 'set null' }),
+    // Use nullable text to avoid circular type inference with landingPages
+    activeLandingPageId: text('active_landing_page_id'),
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),

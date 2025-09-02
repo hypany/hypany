@@ -149,9 +149,12 @@ export const useEditorStore = create<EditorState>((set) => ({
   insertChild: (parentId, node, index) =>
     set((s) => {
       if (!s.isRestoring) {
-        const snapshot = JSON.parse(JSON.stringify(s.doc)) as PageDocument
+        const snapshot: PageDocument = JSON.parse(JSON.stringify(s.doc))
         const ts = Date.now()
-        const past = [...s.past, { doc: snapshot, timestamp: ts, action: 'insert', targetId: node.id }]
+        const past: EditorState['past'] = [
+          ...s.past,
+          { doc: snapshot, timestamp: ts, action: 'insert', targetId: node.id },
+        ]
         return {
           dirty: true,
           future: [],
@@ -181,7 +184,10 @@ export const useEditorStore = create<EditorState>((set) => ({
       const rest = s.past.slice(0, -1)
       const current: PageDocument = s.doc
       const ts = Date.now()
-      const future = [...s.future, { doc: current, timestamp: ts, action: 'set', targetId: null }]
+      const future: EditorState['future'] = [
+        ...s.future,
+        { doc: current, timestamp: ts, action: 'set', targetId: null },
+      ]
       return { doc: prev.doc, dirty: true, past: rest, future, isRestoring: true, lastHistory: { timestamp: ts, action: 'set', targetId: null } }
     }),
   redo: () =>
@@ -191,7 +197,10 @@ export const useEditorStore = create<EditorState>((set) => ({
       const rest = s.future.slice(0, -1)
       const current: PageDocument = s.doc
       const ts = Date.now()
-      const past = [...s.past, { doc: current, timestamp: ts, action: 'set', targetId: null }]
+      const past: EditorState['past'] = [
+        ...s.past,
+        { doc: current, timestamp: ts, action: 'set', targetId: null },
+      ]
       return { doc: next.doc, dirty: true, future: rest, past, isRestoring: true, lastHistory: { timestamp: ts, action: 'set', targetId: null } }
     }),
   setZoom: (z) => set({ fitMode: false, zoom: Math.min(2, Math.max(0.5, z)) }),
@@ -204,10 +213,10 @@ export const useEditorStore = create<EditorState>((set) => ({
         s.lastHistory.action === 'update' &&
         s.lastHistory.targetId === id &&
         now - s.lastHistory.timestamp < 500
-      let past = s.past
-      let lastHistory = s.lastHistory
+      let past: EditorState['past'] = s.past
+      let lastHistory: EditorState['lastHistory'] = s.lastHistory
       if (!s.isRestoring && !canMerge) {
-        const snapshot = JSON.parse(JSON.stringify(s.doc)) as PageDocument
+        const snapshot: PageDocument = JSON.parse(JSON.stringify(s.doc))
         past = [...past, { doc: snapshot, timestamp: now, action: 'update', targetId: id }]
         lastHistory = { timestamp: now, action: 'update', targetId: id }
       }
@@ -223,9 +232,12 @@ export const useEditorStore = create<EditorState>((set) => ({
   removeNode: (id) =>
     set((s) => {
       if (!s.isRestoring) {
-        const snapshot = JSON.parse(JSON.stringify(s.doc)) as PageDocument
+        const snapshot: PageDocument = JSON.parse(JSON.stringify(s.doc))
         const ts = Date.now()
-        const past = [...s.past, { doc: snapshot, timestamp: ts, action: 'remove', targetId: id }]
+        const past: EditorState['past'] = [
+          ...s.past,
+          { doc: snapshot, timestamp: ts, action: 'remove', targetId: id },
+        ]
         return {
           dirty: true,
           doc: { ...s.doc, nodes: removeNodeFromTree(s.doc.nodes, id) },
@@ -246,9 +258,13 @@ export const useEditorStore = create<EditorState>((set) => ({
   duplicateNode: (id) =>
     set((s) => {
       if (!s.isRestoring) {
-        const snapshot = JSON.parse(JSON.stringify(s.doc)) as PageDocument
+        const snapshot: PageDocument = JSON.parse(JSON.stringify(s.doc))
         const ts = Date.now()
-        s.past = [...s.past, { doc: snapshot, timestamp: ts, action: 'duplicate', targetId: id }]
+        const past: EditorState['past'] = [
+          ...s.past,
+          { doc: snapshot, timestamp: ts, action: 'duplicate', targetId: id },
+        ]
+        s.past = past
         s.future = []
         s.lastHistory = { timestamp: ts, action: 'duplicate', targetId: id }
       }
@@ -295,9 +311,13 @@ export const useEditorStore = create<EditorState>((set) => ({
   moveNode: (dragId, targetId, pos) =>
     set((s) => {
       if (!s.isRestoring) {
-        const snapshot = JSON.parse(JSON.stringify(s.doc)) as PageDocument
+        const snapshot: PageDocument = JSON.parse(JSON.stringify(s.doc))
         const ts = Date.now()
-        s.past = [...s.past, { doc: snapshot, timestamp: ts, action: 'move', targetId: dragId }]
+        const past: EditorState['past'] = [
+          ...s.past,
+          { doc: snapshot, timestamp: ts, action: 'move', targetId: dragId },
+        ]
+        s.past = past
         s.future = []
         s.lastHistory = { timestamp: ts, action: 'move', targetId: dragId }
       }

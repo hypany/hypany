@@ -1,7 +1,16 @@
 import 'server-only'
 import { and, eq, isNull, gt, gte, lt, sql } from 'drizzle-orm'
 import { db } from '@/drizzle'
-import { hypotheses, landingPages, waitlists, waitlistEntries, pageVisits } from '@/schema'
+import {
+  hypotheses,
+  landingPages,
+  waitlists,
+  waitlistEntries,
+  pageVisits,
+  type NewHypothesis,
+  type NewLandingPage,
+  type NewWaitlist,
+} from '@/schema'
 import { ulid } from 'ulid'
 
 export async function getHypothesisDomainAndSlugById(
@@ -20,7 +29,7 @@ export async function getHypothesisDomainAndSlugById(
     )
     .limit(1)
   if (!row) return null
-  return { customDomain: (row.customDomain as unknown as string) || null, slug: (row.slug as unknown as string) || null }
+  return { customDomain: row.customDomain ?? null, slug: row.slug ?? null }
 }
 
 export async function getHypothesisById(
@@ -74,7 +83,7 @@ export async function getHypothesesForOrganization(organizationId: string) {
       slug: hypotheses.slug,
       status: hypotheses.status,
       // Map active page to landingPageId for UI consumption
-      landingPageId: (hypotheses as any).activeLandingPageId as unknown as string | null,
+      landingPageId: hypotheses.activeLandingPageId,
     })
     .from(hypotheses)
     .where(and(eq(hypotheses.organizationId, organizationId), isNull(hypotheses.deletedAt)))
@@ -179,7 +188,7 @@ export async function createHypothesis({
   const now = new Date()
 
   await db.transaction(async (tx) => {
-    await tx.insert(hypotheses).values({
+    const newHypothesis: NewHypothesis = {
       id: hypothesisId,
       name,
       organizationId,
@@ -189,29 +198,42 @@ export async function createHypothesis({
       status: 'draft',
       createdAt: now,
       updatedAt: now,
-    } as any)
+      // activeLandingPageId set after creating first page
+    }
+    await tx.insert(hypotheses).values(newHypothesis)
 
-    await tx.insert(landingPages).values({
+    const newLandingPage: NewLandingPage = {
       id: landingPageId,
       hypothesisId,
       name: null,
       template: 'default',
       createdAt: now,
       updatedAt: now,
-    } as any)
+      customCss: null,
+      favicon: null,
+      metaDescription: null,
+      metaTitle: null,
+      ogImage: null,
+      publishedAt: null,
+      builderDraftJson: null,
+      builderPublishedJson: null,
+    }
+    await tx.insert(landingPages).values(newLandingPage)
 
-    await tx.insert(waitlists).values({
+    const newWaitlist: NewWaitlist = {
       id: waitlistId,
       hypothesisId,
       name: `${name} Waitlist`,
       createdAt: now,
       updatedAt: now,
-    } as any)
+      deletedAt: null,
+    }
+    await tx.insert(waitlists).values(newWaitlist)
 
     // Set activeLandingPageId on hypothesis to this first page (best-effort)
     await tx
       .update(hypotheses)
-      .set({ activeLandingPageId: landingPageId, updatedAt: new Date() } as any)
+      .set({ activeLandingPageId: landingPageId, updatedAt: new Date() })
       .where(eq(hypotheses.id, hypothesisId))
   })
 
