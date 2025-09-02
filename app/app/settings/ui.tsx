@@ -33,10 +33,9 @@ export default function SettingsForm({
     Boolean(initial?.marketingEmails ?? false),
   )
   function ensureLang(l?: string) {
-    const allowed = ['en', 'ko'] as const
-    return allowed.includes((l || 'en') as (typeof allowed)[number])
-      ? ((l || 'en') as string)
-      : 'en'
+    const allowed = ['en', 'ko']
+    const val = l || 'en'
+    return allowed.includes(val) ? val : 'en'
   }
   const [marketingEmailLanguage, setMarketingEmailLanguage] = useState<string>(
     ensureLang(initial?.marketingEmailLanguage),

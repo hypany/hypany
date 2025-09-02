@@ -270,7 +270,7 @@ export async function getWaitlistByHypothesisId(
   const [verifiedRow] = await db
     .select({ count: sql<number>`count(*)` })
     .from(waitlistEntries)
-    .where(and(eq(waitlistEntries.waitlistId, wl.id), eq(waitlistEntries.emailVerified, true as unknown as boolean)))
+    .where(and(eq(waitlistEntries.waitlistId, wl.id), eq(waitlistEntries.emailVerified, true)))
 
   return {
     id: wl.id,

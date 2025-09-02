@@ -270,11 +270,13 @@ export const getConditionalColorClassName = (
   return classes.critical
 }
 
+import type { AxisDomain } from 'recharts/types/util/types'
+
 export const getYAxisDomain = (
   autoMinValue: boolean,
   minValue: number | undefined,
   maxValue: number | undefined,
-) => {
+): AxisDomain => {
   const minDomain = autoMinValue ? 'auto' : (minValue ?? 0)
   const maxDomain = maxValue ?? 'auto'
   return [minDomain, maxDomain]

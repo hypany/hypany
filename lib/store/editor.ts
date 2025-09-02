@@ -102,7 +102,7 @@ function findParentAndIndex(nodes: Node[], id: NodeId, parent: Node | null = nul
 
 function cloneWithNewIds(node: Node): Node {
   const newId = ulid()
-  const base = { ...node, id: newId } as Node
+  const base: Node = { ...node, id: newId }
   if (node.children && node.children.length > 0) {
     base.children = node.children.map((c) => cloneWithNewIds(c))
   }
@@ -125,7 +125,8 @@ function isDescendant(nodes: Node[], ancestorId: NodeId, childId: NodeId): boole
   if (!node) return false
   const stack = [...(node.children || [])]
   while (stack.length) {
-    const n = stack.pop() as Node
+    const n = stack.pop()
+    if (!n) continue
     if (n.id === childId) return true
     if (n.children) stack.push(...n.children)
   }

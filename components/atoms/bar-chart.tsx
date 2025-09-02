@@ -158,7 +158,7 @@ interface ScrollButtonProps {
 const ScrollButton = ({ icon, onClick, disabled }: ScrollButtonProps) => {
   const Icon = icon
   const [isPressed, setIsPressed] = React.useState(false)
-  const intervalRef = React.useRef<NodeJS.Timeout | null>(null)
+  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null)
 
   React.useEffect(() => {
     if (isPressed) {
@@ -166,14 +166,16 @@ const ScrollButton = ({ icon, onClick, disabled }: ScrollButtonProps) => {
         onClick?.()
       }, 300)
     } else {
-      clearInterval(intervalRef.current as NodeJS.Timeout)
+      if (intervalRef.current) clearInterval(intervalRef.current)
     }
-    return () => clearInterval(intervalRef.current as NodeJS.Timeout)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
   }, [isPressed, onClick])
 
   React.useEffect(() => {
     if (disabled) {
-      clearInterval(intervalRef.current as NodeJS.Timeout)
+      if (intervalRef.current) clearInterval(intervalRef.current)
       setIsPressed(false)
     }
   }, [disabled])
@@ -234,7 +236,7 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
   const scrollButtonsRef = React.useRef<HTMLDivElement>(null)
   const [hasScroll, setHasScroll] = React.useState<HasScrollProps | null>(null)
   const [isKeyDowned, setIsKeyDowned] = React.useState<string | null>(null)
-  const intervalRef = React.useRef<NodeJS.Timeout | null>(null)
+  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null)
 
   const checkScroll = React.useCallback(() => {
     const scrollable = scrollableRef?.current
@@ -284,9 +286,11 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
         keyDownHandler(isKeyDowned)
       }, 300)
     } else {
-      clearInterval(intervalRef.current as NodeJS.Timeout)
+      if (intervalRef.current) clearInterval(intervalRef.current)
     }
-    return () => clearInterval(intervalRef.current as NodeJS.Timeout)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
   }, [isKeyDowned, scrollToTest])
 
   const keyDown = (e: KeyboardEvent) => {
@@ -337,7 +341,7 @@ const Legend = React.forwardRef<HTMLOListElement, LegendProps>((props, ref) => {
           <LegendItem
             key={`item-${index}`}
             name={category}
-            color={colors[index] as AvailableChartColorsKeys}
+            color={colors[index % colors.length]}
             onClick={onClickLegendItem}
             activeLegend={activeLegend}
           />
@@ -719,7 +723,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                   }
                 : {
                     allowDecimals: allowDecimals,
-                    domain: yAxisDomain as AxisDomain,
+                    domain: yAxisDomain,
                     tickFormatter:
                       type === 'percent' ? valueToPercent : valueFormatter,
                     type: 'number',
@@ -757,7 +761,7 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
               {...(layout !== 'vertical'
                 ? {
                     allowDecimals: allowDecimals,
-                    domain: yAxisDomain as AxisDomain,
+                    domain: yAxisDomain,
                     tickFormatter:
                       type === 'percent' ? valueToPercent : valueFormatter,
                     type: 'number',

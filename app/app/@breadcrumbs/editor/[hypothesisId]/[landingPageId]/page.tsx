@@ -35,7 +35,7 @@ export default async function EditorBreadcrumbs({
     activeOrgRes.activeOrganizationId,
   )
   const hasPublished = Boolean(
-    (landingPage as any)?.builderPublishedJson || (landingPage as any)?.publishedAt,
+    landingPage?.builderPublishedJson || landingPage?.publishedAt,
   )
   // Compute published URL: custom domain takes precedence, otherwise subdomain on publishedRootDomain
   let publishedUrl: string | null = null

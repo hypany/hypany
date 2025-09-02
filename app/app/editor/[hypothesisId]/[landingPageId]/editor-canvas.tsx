@@ -6,9 +6,7 @@ import type { Node } from '@/lib/page-document'
 import { ICONS, isIconName } from '@/lib/icons'
 
 function resolveResponsive<T>(v?: { base?: T } | undefined): T | undefined {
-  if (!v) return undefined
-  if (typeof v === 'object' && 'base' in v) return v.base as T
-  return undefined
+  return v?.base
 }
 
 function styleToInline(node: Node): React.CSSProperties | undefined {
@@ -45,7 +43,7 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
   const size = resolveResponsive(s.size)
   if (size) css.fontSize = size
   const weight = resolveResponsive(s.weight)
-  if (weight) css.fontWeight = weight as React.CSSProperties['fontWeight']
+  if (weight) css.fontWeight = weight
   const color = resolveResponsive(s.color)
   if (color) css.color = color
   const align = resolveResponsive(s.align)
@@ -100,11 +98,11 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
   const borderColor = resolveResponsive(s.color)
   if (borderColor) css.borderColor = borderColor
   const borderWidth = resolveResponsive(s.width)
-  if (borderWidth) css.borderWidth = borderWidth as unknown as number
+  if (borderWidth) css.borderWidth = borderWidth
   const bg = resolveResponsive(s.bg)
   if (bg) css.background = bg
   const shadow = resolveResponsive(s.shadow)
-  if (shadow) css.boxShadow = shadow as unknown as string
+  if (shadow) css.boxShadow = shadow
 
   return css
 }
@@ -112,8 +110,8 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
 function NodeView({ node }: { node: Node }) {
   const selectedId = useEditorStore((s) => s.selectedId)
   const select = useEditorStore((s) => s.select)
-  const editingId = useEditorStore((s) => (s as any).editingId)
-  const setEditingId = useEditorStore((s) => (s as any).setEditingId)
+  const editingId = useEditorStore((s) => s.editingId)
+  const setEditingId = useEditorStore((s) => s.setEditingId)
   const dragStart = useEditorStore((s) => s.dragStart)
   const dragHover = useEditorStore((s) => s.dragHover)
   const dragClear = useEditorStore((s) => s.dragClear)
@@ -122,8 +120,8 @@ function NodeView({ node }: { node: Node }) {
   const dropTargetId = useEditorStore((s) => s.dropTargetId)
   const dropPosition = useEditorStore((s) => s.dropPosition)
   const insertChild = useEditorStore((s) => s.insertChild)
-  const paletteNode = useEditorStore((s) => (s as any).paletteNode as Node | null)
-  const clearPaletteDrag = useEditorStore((s) => (s as any).clearPaletteDrag as () => void)
+  const paletteNode = useEditorStore((s) => s.paletteNode)
+  const clearPaletteDrag = useEditorStore((s) => s.clearPaletteDrag)
   const isSelected = selectedId === node.id
 
   const baseClass = 'relative group/node outline outline-0 outline-transparent hover:outline-1 hover:outline-sky-300 outline-offset-0 rounded-md'
@@ -135,8 +133,8 @@ function NodeView({ node }: { node: Node }) {
     return t.charAt(0).toUpperCase() + t.slice(1)
   })()
 
-  const isLocked = Boolean((node as any).locked)
-  const isHidden = Boolean((node as any).hidden)
+  const isLocked = Boolean(node.locked)
+  const isHidden = Boolean(node.hidden)
   const commonProps = {
     className: `${baseClass} ${selectedClass}`,
     onClick: (e: React.MouseEvent) => {
@@ -151,9 +149,9 @@ function NodeView({ node }: { node: Node }) {
     onDragEnd: () => {
       dragClear()
     },
-    onDragOver: (e: React.DragEvent) => {
+    onDragOver: (e: React.DragEvent<HTMLElement>) => {
       e.preventDefault()
-      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+      const rect = e.currentTarget.getBoundingClientRect()
       const y = e.clientY - rect.top
       const isContainer = node.type === 'section' || node.type === 'container' || node.type === 'grid'
       let pos: 'before' | 'after' | 'inside' = 'after'
@@ -259,8 +257,8 @@ function NodeView({ node }: { node: Node }) {
         </div>
       )
     case 'grid': {
-      const cols = (node.style as any)?.cols?.base as number | undefined
-      const gap = (node.style as any)?.gap?.base as string | undefined
+      const cols = resolveResponsive(node.style?.cols)
+      const gap = resolveResponsive(node.style?.gap)
       const gridStyle: React.CSSProperties = {
         ...inlineStyle,
         display: 'grid',
@@ -287,8 +285,8 @@ function NodeView({ node }: { node: Node }) {
       const contentRef = useRef<HTMLHeadingElement | null>(null)
       useEffect(() => {
         if (editingId === node.id) return
-        if (contentRef.current && contentRef.current.textContent !== (node as any).text) {
-          contentRef.current.textContent = (node as any).text || ''
+        if (contentRef.current && contentRef.current.textContent !== node.text) {
+          contentRef.current.textContent = node.text || ''
         }
       }, [editingId, node])
       return (
@@ -354,24 +352,24 @@ function NodeView({ node }: { node: Node }) {
       )
     }
     case 'button': {
-      const self = resolveResponsive((node.style as any)?.self)
+      const self = resolveResponsive(node.style?.self)
       const btnStyle: React.CSSProperties = { ...inlineStyle }
       if (self === 'center') {
         btnStyle.marginLeft = 'auto'
         btnStyle.marginRight = 'auto'
         btnStyle.display = 'flex'
         btnStyle.alignItems = 'center'
-        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+        btnStyle.width = btnStyle.width || 'fit-content'
       } else if (self === 'end') {
         btnStyle.marginLeft = 'auto'
         btnStyle.display = 'flex'
         btnStyle.alignItems = 'center'
-        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+        btnStyle.width = btnStyle.width || 'fit-content'
       } else if (self === 'start') {
         btnStyle.marginRight = 'auto'
         btnStyle.display = 'flex'
         btnStyle.alignItems = 'center'
-        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+        btnStyle.width = btnStyle.width || 'fit-content'
       }
       return (
         <a
@@ -424,7 +422,7 @@ function NodeView({ node }: { node: Node }) {
         </div>
       )
     case 'icon': {
-      const name = (node as any).name as string | undefined
+      const name = node.name
       const IconComp = name && isIconName(name) ? ICONS[name] : null
       if (!IconComp) {
         return (
@@ -436,12 +434,10 @@ function NodeView({ node }: { node: Node }) {
           />
         )
       }
-      const iw = (node.style as any)?.width?.base as string | undefined
-      const ih = (node.style as any)?.height?.base as string | undefined
+      const iw = resolveResponsive(node.style?.width)
+      const ih = resolveResponsive(node.style?.height)
       // Ensure container does not consume width/height meant for the icon
-      const wrapperStyle = { ...(inlineStyle || {}) }
-      if ('width' in (wrapperStyle as any)) delete (wrapperStyle as any).width
-      if ('height' in (wrapperStyle as any)) delete (wrapperStyle as any).height
+      const wrapperStyle: React.CSSProperties = { ...(inlineStyle || {}), width: undefined, height: undefined }
       return (
         <div {...commonProps} style={wrapperStyle}>
           {indicatorTop}

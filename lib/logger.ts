@@ -7,7 +7,8 @@ const levelOrder: Record<LogLevel, number> = {
   warn: 30,
 }
 
-const envLevel = (process.env.LOG_LEVEL as LogLevel) || 'info'
+const envVal = process.env.LOG_LEVEL
+const envLevel: LogLevel = envVal === 'debug' || envVal === 'info' || envVal === 'warn' || envVal === 'error' ? envVal : 'info'
 
 function shouldLog(level: LogLevel) {
   return levelOrder[level] >= levelOrder[envLevel]

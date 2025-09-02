@@ -3,9 +3,7 @@ import type { PageDocument, Node } from '@/lib/page-document'
 import { ICONS, isIconName } from '@/lib/icons'
 
 function resolveResponsive<T>(v?: { base?: T } | undefined): T | undefined {
-  if (!v) return undefined
-  if (typeof v === 'object' && 'base' in v) return v.base as T
-  return undefined
+  return v?.base
 }
 
 function styleToInline(node: Node): React.CSSProperties | undefined {
@@ -50,7 +48,7 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
   const size = resolveResponsive(s.size)
   if (size) css.fontSize = size
   const weight = resolveResponsive(s.weight)
-  if (weight) css.fontWeight = weight as React.CSSProperties['fontWeight']
+  if (weight) css.fontWeight = weight
   const color = resolveResponsive(s.color)
   if (color) css.color = color
   const align = resolveResponsive(s.align)
@@ -106,7 +104,7 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
   const bg = resolveResponsive(s.bg)
   if (bg) css.background = bg
   const shadow = resolveResponsive(s.shadow)
-  if (shadow) css.boxShadow = shadow as unknown as string
+  if (shadow) css.boxShadow = shadow
 
   return css
 }
@@ -128,8 +126,8 @@ function renderNode(node: Node) {
       )
     case 'grid':
       {
-        const cols = (node.style as any)?.cols?.base as number | undefined
-        const gap = (node.style as any)?.gap?.base as string | undefined
+        const cols = resolveResponsive(node.style?.cols)
+        const gap = resolveResponsive(node.style?.gap)
         const gridStyle: React.CSSProperties = {
           ...inlineStyle,
           display: 'grid',
@@ -158,24 +156,24 @@ function renderNode(node: Node) {
       // eslint-disable-next-line @next/next/no-img-element
       return <img key={node.id} src={node.src} alt={node.alt || ''} style={inlineStyle} />
     case 'button': {
-      const self = resolveResponsive((node.style as any)?.self)
+      const self = resolveResponsive(node.style?.self)
       const btnStyle: React.CSSProperties = { ...inlineStyle }
       if (self === 'center') {
         btnStyle.marginLeft = 'auto'
         btnStyle.marginRight = 'auto'
         btnStyle.display = 'flex'
         btnStyle.alignItems = 'center'
-        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+        btnStyle.width = btnStyle.width || 'fit-content'
       } else if (self === 'end') {
         btnStyle.marginLeft = 'auto'
         btnStyle.display = 'flex'
         btnStyle.alignItems = 'center'
-        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+        btnStyle.width = btnStyle.width || 'fit-content'
       } else if (self === 'start') {
         btnStyle.marginRight = 'auto'
         btnStyle.display = 'flex'
         btnStyle.alignItems = 'center'
-        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+        btnStyle.width = btnStyle.width || 'fit-content'
       }
       return (
         <a
@@ -192,14 +190,13 @@ function renderNode(node: Node) {
       return <hr key={node.id} className='my-6 border-gray-200 dark:border-gray-800' style={inlineStyle} />
     case 'spacer':
       return <div key={node.id} className='h-6' style={inlineStyle} />
-    case 'icon':
-      if ('name' in node && (node as any).name && isIconName((node as any).name as string)) {
-        const IconComp = ICONS[(node as any).name as keyof typeof ICONS]
-        const iw = (node.style as any)?.width?.base as string | undefined
-        const ih = (node.style as any)?.height?.base as string | undefined
-        const wrapperStyle = { ...(inlineStyle || {}) } as React.CSSProperties
-        if ('width' in (wrapperStyle as any)) delete (wrapperStyle as any).width
-        if ('height' in (wrapperStyle as any)) delete (wrapperStyle as any).height
+    case 'icon': {
+      const name = node.name
+      if (name && isIconName(name)) {
+        const IconComp = ICONS[name]
+        const iw = resolveResponsive(node.style?.width)
+        const ih = resolveResponsive(node.style?.height)
+        const wrapperStyle: React.CSSProperties = { ...(inlineStyle || {}), width: undefined, height: undefined }
         return (
           <span key={node.id} style={wrapperStyle} className='inline-flex items-center'>
             <IconComp style={{ width: iw, height: ih }} />
@@ -207,6 +204,7 @@ function renderNode(node: Node) {
         )
       }
       return <span key={node.id} aria-hidden className='inline-block' />
+    }
     case 'form':
       return null
     default:

@@ -58,13 +58,20 @@ export default async function Page() {
     .sort((a, b) => b.signupCount - a.signupCount)
     .slice(0, 5)
 
-  const activities: Activity[] = activity.items.map((item) => ({
-    email: item.email,
-    hypothesisId: item.hypothesisId,
-    source: item.source,
-    timestamp: new Date(item.timestamp),
-    type: item.type as 'page_view' | 'signup' | 'verification',
-  }))
+  const activities: Activity[] = activity.items.map((item) => {
+    const t = item.type
+    const type: Activity['type'] =
+      t === 'page_view' || t === 'signup' || t === 'verification'
+        ? t
+        : 'page_view'
+    return {
+      email: item.email,
+      hypothesisId: item.hypothesisId,
+      source: item.source,
+      timestamp: new Date(item.timestamp),
+      type,
+    }
+  })
 
   return (
     <section aria-label={t('pages.root.aria') || 'Dashboard'}>
