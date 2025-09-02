@@ -35,7 +35,6 @@ export const Footer = () => {
           href: '/app/hypotheses',
           label: t('sections.hypotheses.items.overview'),
         },
-        { href: '/app/assets', label: t('sections.hypotheses.items.assets') },
       ],
       title: t('sections.hypotheses.title'),
     },

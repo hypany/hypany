@@ -1,5 +1,18 @@
 {
   "app": {
+    "editor": {
+      "actions": {
+        "view-published": "게시된 페이지 보기",
+        "preview": "미리보기",
+        "publish": "게시",
+        "saving": "저장 중…"
+      },
+      "toasts": {
+        "published": "게시됐어요",
+        "publish-error": "게시에 실패했어요",
+        "save-error": "초안 저장에 실패했어요"
+      }
+    },
     "breadcrumbs": { "details": "상세", "home": "홈", "hypotheses": "가설" },
     "common": {
       "boolean": { "no": "아니오", "yes": "예" },
@@ -97,11 +110,7 @@
         "subtitle": "성과, 전환율, 참여도를 확인해요.",
         "title": "애널리틱스"
       },
-      "assets": {
-        "aria": "에셋",
-        "subtitle": "가설과 캠페인 에셋을 관리해요.",
-        "title": "에셋"
-      },
+      
 
       "hypotheses": {
         "aria": "가설",
@@ -235,8 +244,7 @@
       },
       "root": {
         "actions": {
-          "create-hypothesis": "가설 만들기",
-          "upload-asset": "에셋 업로드"
+          "create-hypothesis": "가설 만들기"
         },
         "activity": {
           "page-view": "{source}에서 페이지 조회",
@@ -295,7 +303,7 @@
         "overview": "개요",
         "waitlists": "전체 웨이트리스트"
       },
-      "hypotheses": { "_": "가설", "assets": "에셋", "overview": "개요" },
+      "hypotheses": { "_": "가설", "overview": "개요" },
       "overview": "개요",
       "search": "항목 검색...",
       "settings": { "_": "설정", "general": "일반", "organizations": "조직" }
@@ -444,10 +452,7 @@
           "title": "애널리틱스"
         },
 
-        "hypotheses": {
-          "items": { "assets": "에셋", "overview": "개요" },
-          "title": "가설"
-        },
+        "hypotheses": { "items": { "overview": "개요" }, "title": "가설" },
         "settings": {
           "items": { "general": "일반", "organizations": "조직" },
           "title": "설정"

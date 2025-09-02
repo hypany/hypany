@@ -133,6 +133,9 @@ export const hypotheses = pgTable(
       .references(() => organizations.id, { onDelete: 'cascade' }),
     slug: text('slug').unique(),
     status: text('status').notNull().default('draft'), // draft, published, archived
+    // Selected landing page to serve publicly when multiple exist
+    activeLandingPageId: text('active_landing_page_id')
+      .references(() => landingPages.id, { onDelete: 'set null' }),
     updatedAt: timestamp('updated_at')
       .$defaultFn(() => new Date())
       .notNull(),

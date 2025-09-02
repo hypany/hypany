@@ -175,3 +175,33 @@ export function RenameLandingPageInline({
     </div>
   )
 }
+
+export function SetActiveLandingPageButton({
+  hypothesisId,
+  landingPageId,
+}: {
+  hypothesisId: string
+  landingPageId: string
+}) {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const api = getClientApi()
+  const t = useTranslations('app')
+  async function setActive() {
+    setLoading(true)
+    try {
+      await api.v1['landing-pages'].hypothesis({ hypothesisId }).active.post({ landingPageId })
+      toast({ title: 'Active page updated', variant: 'success' })
+      router.refresh()
+    } catch {
+      toast({ title: 'Failed to set active page', variant: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+  return (
+    <Button variant='secondary' onClick={setActive} disabled={loading}>
+      {loading ? 'Setting…' : 'Set Active'}
+    </Button>
+  )
+}

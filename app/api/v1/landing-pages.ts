@@ -373,6 +373,70 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
       },
     },
   )
+  // Set active landing page for a hypothesis
+  .post(
+    '/hypothesis/:hypothesisId/active',
+    async ({ user, session, params, body, set }) => {
+      if (!user || !session)
+        return jsonError(set, HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+      const orgId = session.activeOrganizationId
+      if (!orgId)
+        return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'No active organization')
+
+      // Verify hypothesis ownership
+      const [hyp] = await db
+        .select({ id: hypotheses.id })
+        .from(hypotheses)
+        .where(
+          and(
+            eq(hypotheses.id, params.hypothesisId),
+            eq(hypotheses.organizationId, orgId),
+            isNull(hypotheses.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!hyp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Hypothesis not found')
+
+      // Verify landing page belongs to this hypothesis
+      const [lp] = await db
+        .select({ id: landingPages.id })
+        .from(landingPages)
+        .where(
+          and(
+            eq(landingPages.id, body.landingPageId),
+            eq(landingPages.hypothesisId, params.hypothesisId),
+            isNull(landingPages.deletedAt),
+          ),
+        )
+        .limit(1)
+      if (!lp)
+        return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Landing page not found')
+
+      // Update activeLandingPageId
+      await db
+        .update(hypotheses)
+        .set({
+          // @ts-expect-error new field added by migration
+          activeLandingPageId: body.landingPageId,
+          updatedAt: new Date(),
+        })
+        .where(eq(hypotheses.id, params.hypothesisId))
+
+      return jsonOk(set)
+    },
+    {
+      auth: true,
+      body: t.Object({ landingPageId: UlidParam }),
+      detail: {
+        description: 'Set the active landing page for a hypothesis',
+        summary: 'Set active landing page',
+        tags: ['Landing Pages'],
+      },
+      params: t.Object({ hypothesisId: UlidParam }),
+      response: { 200: SuccessResponse, 401: ErrorResponse, 404: ErrorResponse },
+    },
+  )
   // Create a new landing page for a hypothesis
   .post(
     '/hypothesis/:hypothesisId/create',

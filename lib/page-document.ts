@@ -45,6 +45,7 @@ export type Layout = {
   flex?: Responsive<'row' | 'col'>
   justify?: Responsive<'start' | 'center' | 'end' | 'between' | 'around'>
   items?: Responsive<'start' | 'center' | 'end' | 'stretch'>
+  self?: Responsive<'start' | 'center' | 'end' | 'stretch'>
   gap?: Responsive<string>
   cols?: Responsive<number> // for grids
   width?: Responsive<string>
@@ -77,6 +78,9 @@ export type Style = Spacing & Layout & Typography & Border & Effects & {
 export type BaseNode = {
   id: NodeId
   type: NodeType
+  name?: string
+  locked?: boolean
+  hidden?: boolean
   children?: Node[]
   style?: Style
 }
@@ -189,4 +193,3 @@ export function parseDocument(json: string | null | undefined): PageDocument | n
     return null
   }
 }
-

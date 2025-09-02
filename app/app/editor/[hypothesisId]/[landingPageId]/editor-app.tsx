@@ -9,6 +9,8 @@ import { toast } from '@/lib/use-toast'
 import { useEditorStore } from '@/lib/store/editor'
 import EditorCanvas from './editor-canvas'
 import LibraryPanel from './library'
+import LayersPanel from './layers'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs'
 import InspectorPanel from './inspector'
 
 export default function EditorApp({
@@ -77,6 +79,17 @@ export default function EditorApp({
     const onKeyDown = (e: KeyboardEvent) => {
       if (isTypingTarget(e.target)) return
       const meta = e.ctrlKey || e.metaKey
+      // Undo / Redo
+      if (meta && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        useEditorStore.getState().undo()
+        return
+      }
+      if ((meta && e.shiftKey && e.key.toLowerCase() === 'z') || (e.ctrlKey && e.key.toLowerCase() === 'y')) {
+        e.preventDefault()
+        useEditorStore.getState().redo()
+        return
+      }
       if (meta && e.key.toLowerCase() === 's') {
         e.preventDefault()
         if (!saveMutation.isPending) saveMutation.mutate()
@@ -106,9 +119,20 @@ export default function EditorApp({
 
   return (
     <div className='flex min-h-[calc(100dvh-4rem)] gap-4'>
-      {/* Library */}
-      <aside className='hidden w-64 shrink-0 rounded border p-3 dark:border-gray-800 md:block'>
-        <LibraryPanel />
+      {/* Left panel: Layers / Library */}
+      <aside className='hidden w-72 shrink-0 rounded border p-3 dark:border-gray-800 md:block'>
+        <Tabs defaultValue='layers'>
+          <TabsList variant='solid' className='mb-2'>
+            <TabsTrigger value='layers'>Layers</TabsTrigger>
+            <TabsTrigger value='library'>Library</TabsTrigger>
+          </TabsList>
+          <TabsContent value='layers' className='mt-0'>
+            <LayersPanel />
+          </TabsContent>
+          <TabsContent value='library' className='mt-0'>
+            <LibraryPanel />
+          </TabsContent>
+        </Tabs>
       </aside>
 
       {/* Canvas */}

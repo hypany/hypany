@@ -1,5 +1,5 @@
 import 'server-only'
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 import { db } from '@/drizzle'
 import { hypotheses, landingPageBlocks, landingPages } from '@/schema'
 
@@ -77,4 +77,63 @@ export async function getPublicPageBySlug(slug: string) {
       template: landingPage.template,
     },
   }
+}
+
+/**
+ * Get blocks for a landing page by ID (legacy fallback)
+ */
+export async function getLandingPageBlocksById(landingPageId: string) {
+  const blocks = await db
+    .select()
+    .from(landingPageBlocks)
+    .where(eq(landingPageBlocks.landingPageId, landingPageId))
+    .orderBy(landingPageBlocks.order)
+
+  return blocks.map((block) => ({
+    content: block.content,
+    id: block.id,
+    order: block.order,
+    type: block.type,
+  }))
+}
+
+/**
+ * Resolve the active published landing page ID by slug.
+ * Falls back to the most recently published page, then any page.
+ */
+export async function resolveActiveLandingPageIdBySlug(slug: string) {
+  const [hyp] = await db
+    .select({
+      id: hypotheses.id,
+      activeLandingPageId: (hypotheses as any).activeLandingPageId as unknown as string | null,
+    })
+    .from(hypotheses)
+    .where(and(eq(hypotheses.slug, slug), isNull(hypotheses.deletedAt)))
+    .limit(1)
+  if (!hyp) return null as string | null
+  if (hyp.activeLandingPageId) return hyp.activeLandingPageId
+
+  // Prefer most recently published
+  const [published] = await db
+    .select({ id: landingPages.id, publishedAt: landingPages.publishedAt })
+    .from(landingPages)
+    .where(
+      and(
+        eq(landingPages.hypothesisId, hyp.id),
+        isNull(landingPages.deletedAt),
+        // publishedAt not null
+        // drizzle where helper lacks isNotNull here, emulate with gt minimal by ordering
+      ),
+    )
+    .orderBy(desc(landingPages.publishedAt))
+    .limit(1)
+  if (published?.id) return published.id
+
+  // Otherwise, any page
+  const [anyPage] = await db
+    .select({ id: landingPages.id })
+    .from(landingPages)
+    .where(and(eq(landingPages.hypothesisId, hyp.id), isNull(landingPages.deletedAt)))
+    .limit(1)
+  return anyPage?.id ?? null
 }

@@ -1,5 +1,18 @@
 {
   "app": {
+    "editor": {
+      "actions": {
+        "view-published": "View Published",
+        "preview": "Preview",
+        "publish": "Publish",
+        "saving": "Saving…"
+      },
+      "toasts": {
+        "published": "Published",
+        "publish-error": "Failed to publish",
+        "save-error": "Failed to save draft"
+      }
+    },
     "breadcrumbs": {
       "details": "Details",
       "home": "Home",
@@ -109,11 +122,7 @@
         "subtitle": "Track performance, conversion, and user engagement.",
         "title": "Analytics"
       },
-      "assets": {
-        "aria": "Assets",
-        "subtitle": "Manage assets related to your hypotheses and campaigns.",
-        "title": "Assets"
-      },
+      
 
       "hypotheses": {
         "aria": "Hypotheses",
@@ -247,8 +256,7 @@
       },
       "root": {
         "actions": {
-          "create-hypothesis": "Create Hypothesis",
-          "upload-asset": "Upload Asset"
+          "create-hypothesis": "Create Hypothesis"
         },
         "activity": {
           "page-view": "Page view from {source}",
@@ -307,11 +315,7 @@
         "overview": "Overview",
         "waitlists": "All Waitlists"
       },
-      "hypotheses": {
-        "_": "Hypotheses",
-        "assets": "Assets",
-        "overview": "Overview"
-      },
+      "hypotheses": { "_": "Hypotheses", "overview": "Overview" },
       "overview": "Overview",
       "search": "Search items...",
       "settings": {
@@ -465,7 +469,7 @@
           "title": "Analytics"
         },
         "hypotheses": {
-          "items": { "assets": "Assets", "overview": "Overview" },
+          "items": { "overview": "Overview" },
           "title": "Hypotheses"
         },
         "settings": {

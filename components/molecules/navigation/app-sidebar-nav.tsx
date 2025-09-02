@@ -55,10 +55,6 @@ const navigation2: ReadonlyArray<NavGroup> = [
         href: '/app/hypotheses',
         name: 'app.sidebar.hypotheses.overview',
       },
-      {
-        href: '/app/assets',
-        name: 'app.sidebar.hypotheses.assets',
-      },
     ],
     href: '#',
     icon: Lightbulb,

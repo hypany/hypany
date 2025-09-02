@@ -24,11 +24,7 @@ export function TopRightActions() {
 
   return (
     <div className='ml-auto flex items-center gap-2'>
-      {onDashboard ? (
-        <Button asChild variant='secondary'>
-          <Link href='/app/assets'>{t('pages.root.actions.upload-asset')}</Link>
-        </Button>
-      ) : null}
+      {/* Removed Upload Asset entry: direct upload exists in photos block */}
       {onHypotheses && (
         <Button asChild>
           <Link href='/app/hypotheses/create'>

@@ -22,6 +22,7 @@ import {
   CreateLandingPageButton,
   DuplicateLandingPageButton,
   RenameLandingPageInline,
+  SetActiveLandingPageButton,
 } from './ui'
 
 export default async function LandingPagesGallery({
@@ -50,6 +51,8 @@ export default async function LandingPagesGallery({
     id: hypothesis.id,
     name: hypothesis.name,
     slug: hypothesis.slug,
+    // @ts-expect-error field added via migration
+    activeLandingPageId: (hypothesis as any).activeLandingPageId as string | null,
   }
 
   return (
@@ -106,6 +109,11 @@ export default async function LandingPagesGallery({
                           landingPageId={p.id}
                           initialName={p.name || null}
                         />
+                        {hyp.activeLandingPageId === p.id ? (
+                          <div className='mt-1 text-[10px] uppercase tracking-wide text-emerald-600 dark:text-emerald-500'>
+                            Active
+                          </div>
+                        ) : null}
                         {(hyp.customDomain || hyp.slug) && (
                           <div className='mt-1 text-xs text-gray-500'>
                             {hyp.customDomain ||
@@ -135,16 +143,16 @@ export default async function LandingPagesGallery({
                         />
                         {hyp.slug && (
                           <Button asChild variant='secondary'>
-                            <Link
-                              href={`/${hyp.slug}`}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                            >
+                            <Link href={hyp.customDomain ? `https://${hyp.customDomain}` : `https://${hyp.slug}.hypany.app`} target='_blank' rel='noopener noreferrer'>
                               {t(
                                 'pages.hypotheses.detail.landing-pages.actions.view',
                               )}
                             </Link>
                           </Button>
+                        )}
+                        {hyp.activeLandingPageId !== p.id && (
+                          // client button to set active
+                          <SetActiveLandingPageButton hypothesisId={id} landingPageId={p.id} />
                         )}
                       </div>
                     </TableCell>

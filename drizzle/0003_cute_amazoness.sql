@@ -1,0 +1,2 @@
+ALTER TABLE "hypotheses" ADD COLUMN "active_landing_page_id" text;--> statement-breakpoint
+ALTER TABLE "hypotheses" ADD CONSTRAINT "hypotheses_active_landing_page_id_landing_pages_id_fk" FOREIGN KEY ("active_landing_page_id") REFERENCES "public"."landing_pages"("id") ON DELETE set null ON UPDATE no action;

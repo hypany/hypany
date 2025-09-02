@@ -4,8 +4,10 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { getActiveOrganization } from '@/functions/organizations'
 import { resolveEntityNameById } from '@/functions/resolve'
+import { getLandingPageDocument } from '@/functions/landing-page-docs'
 import { getLandingPageByIdForOrg } from '@/functions/landing-pages'
-import { serviceUrl } from '@/lib/url'
+import { getHypothesisDomainAndSlugById } from '@/functions/hypotheses'
+import { serviceUrl, publishedRootDomain } from '@/lib/url'
 import EditorHeaderActions from './header-actions.client'
 
 export default async function EditorBreadcrumbs({
@@ -27,14 +29,37 @@ export default async function EditorBreadcrumbs({
   )
   if (!hypo) notFound()
 
-  // Fetch landing page meta (customDomain + slug) for preview URL
-  const lpMeta = await getLandingPageByIdForOrg(
+  // Preview should always point to draft by landingPageId
+  const previewUrl = `${serviceUrl}/preview/${landingPageId}`
+  const { landingPage } = await getLandingPageDocument(
     landingPageId,
     activeOrgRes.activeOrganizationId,
   )
-  const cd = (lpMeta as any)?.landingPage?.customDomain as string | undefined
-  const slug = (lpMeta as any)?.landingPage?.slug as string | undefined
-  const previewUrl = cd ? `https://${cd}` : slug ? `${serviceUrl}/preview/${slug}` : null
+  const hasPublished = Boolean(
+    (landingPage as any)?.builderPublishedJson || (landingPage as any)?.publishedAt,
+  )
+  // Compute published URL: custom domain takes precedence, otherwise subdomain on publishedRootDomain
+  let publishedUrl: string | null = null
+  if (hasPublished) {
+    // Always resolve domain/slug from the hypothesis record
+    const hypMeta = await getHypothesisDomainAndSlugById(
+      hypothesisId,
+      activeOrgRes.activeOrganizationId,
+    )
+    if (process.env.NODE_ENV !== 'production') {
+      // Local development: use slug.localhost:3000
+      if (hypMeta?.slug) {
+        const port = process.env.PORT || '3000'
+        publishedUrl = `http://${hypMeta.slug}.localhost:${port}`
+      }
+    } else {
+      if (hypMeta?.customDomain) {
+        publishedUrl = `https://${hypMeta.customDomain}`
+      } else if (hypMeta?.slug) {
+        publishedUrl = `https://${hypMeta.slug}.${publishedRootDomain}`
+      }
+    }
+  }
 
   return (
     <div className='ml-2 flex w-full items-center'>
@@ -103,7 +128,11 @@ export default async function EditorBreadcrumbs({
         ) : null}
         </ol>
       </nav>
-      <EditorHeaderActions previewUrl={previewUrl} landingPageId={landingPageId} />
+      <EditorHeaderActions
+        previewUrl={previewUrl}
+        publishedUrl={publishedUrl}
+        landingPageId={landingPageId}
+      />
     </div>
   )
 }

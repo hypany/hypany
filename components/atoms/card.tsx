@@ -16,6 +16,8 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         className={cx(
           // base
           'relative w-full rounded-lg border p-6 text-left shadow-xs',
+          // default outer spacing to match shadcn page templates
+          'mb-4',
           // background color
           'bg-white dark:bg-[#090E1A]',
           // border color

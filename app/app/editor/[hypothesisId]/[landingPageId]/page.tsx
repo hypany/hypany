@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { requireAuth } from '@/auth/server'
 import { getLandingPageByIdForOrg } from '@/functions/landing-pages'
+import { getHypothesisDomainAndSlugById } from '@/functions/hypotheses'
 import { getActiveOrganization } from '@/functions/organizations'
 import { getLandingPageDocument } from '@/functions/landing-page-docs'
 import { parseDocument } from '@/lib/page-document'
@@ -32,10 +33,12 @@ export default async function EditorByLandingPage({
   // The API already enforces org ownership; we just ensure the URL shape remains consistent.
   // We cannot verify hypothesis here without extra fetch; keep route as is.
 
-  // Compute preview URL (custom domain or slug)
-  const cd = legacy.landingPage.customDomain
-  const slug = legacy.landingPage.slug
-  const previewUrl = cd ? `https://${cd}` : slug ? `${serviceUrl}/${slug}` : null
+  // Compute preview URL: always point to app draft preview for editor
+  const hypMeta = await getHypothesisDomainAndSlugById(
+    hypothesisId,
+    activeOrgRes.activeOrganizationId,
+  )
+  const previewUrl = `${serviceUrl}/preview/${landingPageId}`
 
   return (
     <EditorApp

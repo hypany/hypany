@@ -27,6 +27,7 @@ import {
   waitlists,
 } from '@/schema'
 import { computeWaitlistPositionByCreatedAt } from '../utils'
+import { resolveActiveLandingPageIdBySlug } from '@/functions/public'
 import 'server-only'
 import { ulid } from 'ulid'
 
@@ -46,6 +47,23 @@ function parseCookie(cookieHeader?: string | null): Record<string, string> {
 }
 
 export const publicApi = new Elysia({ prefix: '/v1/public' })
+  // Resolve active published landing page ID by slug (no auth)
+  .get(
+    '/resolve/:slug',
+    async ({ params, set }) => {
+      const id = await resolveActiveLandingPageIdBySlug(params.slug)
+      if (!id) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Not found')
+      return jsonOk(set, HTTP_STATUS.OK, { id })
+    },
+    {
+      detail: {
+        description: 'Resolve active published landing page ID by slug',
+        summary: 'Resolve published landing page by slug',
+        tags: ['Public'],
+      },
+      params: t.Object({ slug: t.String() }),
+    },
+  )
   // Get public landing page data by hypothesis slug
   .get(
     '/by-slug/:slug',

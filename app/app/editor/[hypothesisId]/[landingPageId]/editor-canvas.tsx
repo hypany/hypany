@@ -29,6 +29,15 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
   if (width) css.width = width
   const height = resolveResponsive(s.height)
   if (height) css.height = height
+  const self = resolveResponsive(s.self)
+  if (self) {
+    css.alignSelf = self === 'start' ? 'flex-start' : self === 'end' ? 'flex-end' : self
+    // Fallback centering when not in flex/grid context
+    if (self === 'center') {
+      css.marginLeft = css.marginLeft ?? 'auto'
+      css.marginRight = css.marginRight ?? 'auto'
+    }
+  }
 
   // Typography
   const font = resolveResponsive(s.font)
@@ -103,6 +112,8 @@ function styleToInline(node: Node): React.CSSProperties | undefined {
 function NodeView({ node }: { node: Node }) {
   const selectedId = useEditorStore((s) => s.selectedId)
   const select = useEditorStore((s) => s.select)
+  const editingId = useEditorStore((s) => (s as any).editingId)
+  const setEditingId = useEditorStore((s) => (s as any).setEditingId)
   const dragStart = useEditorStore((s) => s.dragStart)
   const dragHover = useEditorStore((s) => s.dragHover)
   const dragClear = useEditorStore((s) => s.dragClear)
@@ -110,19 +121,29 @@ function NodeView({ node }: { node: Node }) {
   const draggingId = useEditorStore((s) => s.draggingId)
   const dropTargetId = useEditorStore((s) => s.dropTargetId)
   const dropPosition = useEditorStore((s) => s.dropPosition)
+  const insertChild = useEditorStore((s) => s.insertChild)
+  const paletteNode = useEditorStore((s) => (s as any).paletteNode as Node | null)
+  const clearPaletteDrag = useEditorStore((s) => (s as any).clearPaletteDrag as () => void)
   const isSelected = selectedId === node.id
 
-  const baseClass = 'relative outline-offset-0'
+  const baseClass = 'relative group/node outline outline-0 outline-transparent hover:outline-1 hover:outline-sky-300 outline-offset-0 rounded-md'
   const selectedClass = isSelected ? 'ring-2 ring-emerald-500' : ''
   const inlineStyle = styleToInline(node)
 
+  const label = (() => {
+    const t = node.type
+    return t.charAt(0).toUpperCase() + t.slice(1)
+  })()
+
+  const isLocked = Boolean((node as any).locked)
+  const isHidden = Boolean((node as any).hidden)
   const commonProps = {
     className: `${baseClass} ${selectedClass}`,
     onClick: (e: React.MouseEvent) => {
       e.stopPropagation()
       select(node.id)
     },
-    draggable: true,
+    draggable: !isLocked,
     onDragStart: (e: React.DragEvent) => {
       dragStart(node.id)
       e.dataTransfer.effectAllowed = 'move'
@@ -144,10 +165,38 @@ function NodeView({ node }: { node: Node }) {
     },
     onDrop: (e: React.DragEvent) => {
       e.preventDefault()
-      if (draggingId && dropPosition) {
-        moveNode(draggingId, node.id, dropPosition)
+      if (dropPosition) {
+        if (draggingId) {
+          moveNode(draggingId, node.id, dropPosition)
+        } else if (paletteNode) {
+          if (dropPosition === 'inside') {
+            insertChild(node.id, paletteNode)
+            select(paletteNode.id)
+          } else {
+            // find parent and index of target
+            const findParentAndIndex = (nodes: Node[], id: string, parent: Node | null = null): { parent: Node | null; index: number } | null => {
+              for (let i = 0; i < nodes.length; i++) {
+                const n = nodes[i]
+                if (n.id === id) return { parent, index: i }
+                if (n.children && n.children.length > 0) {
+                  const res = findParentAndIndex(n.children, id, n)
+                  if (res) return res
+                }
+              }
+              return null
+            }
+            const doc = useEditorStore.getState().doc
+            const place = findParentAndIndex(doc.nodes, node.id, null)
+            const parentId = place?.parent ? place.parent.id : null
+            const index = place ? place.index : 0
+            const insertIndex = dropPosition === 'before' ? index : index + 1
+            insertChild(parentId, paletteNode, insertIndex)
+            select(paletteNode.id)
+          }
+        }
       }
       dragClear()
+      clearPaletteDrag()
     },
   }
 
@@ -161,15 +210,28 @@ function NodeView({ node }: { node: Node }) {
     <div className='pointer-events-none absolute inset-x-0 -bottom-px h-0.5 bg-emerald-500'></div>
   ) : null
 
+  if (isHidden) {
+    return (
+      <div
+        {...commonProps}
+        className={`${commonProps.className} pointer-events-none opacity-40`}
+        aria-hidden
+      />
+    )
+  }
+
   switch (node.type) {
     case 'section':
       return (
-        <section {...commonProps} style={inlineStyle}>
+        <section {...commonProps} style={inlineStyle} className={`${commonProps.className} min-h-10`}>
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           {indicatorInside ? (
             <div className='pointer-events-none absolute inset-0 rounded-md ring-2 ring-emerald-500/60 bg-emerald-500/5' />
           ) : null}
-          <div className='space-y-3'>
+          <div className='space-y-4 md:space-y-6'>
             {(node.children || []).map((c) => (
               <NodeView key={c.id} node={c} />
             ))}
@@ -179,12 +241,15 @@ function NodeView({ node }: { node: Node }) {
       )
     case 'container':
       return (
-        <div {...commonProps} style={inlineStyle}>
+        <div {...commonProps} style={inlineStyle} className={`${commonProps.className} min-h-10`}>
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           {indicatorInside ? (
             <div className='pointer-events-none absolute inset-0 rounded-md ring-2 ring-emerald-500/60 bg-emerald-500/5' />
           ) : null}
-          <div className='mx-auto max-w-5xl px-4'>
+          <div className='mx-auto max-w-5xl px-4 space-y-4 md:space-y-6'>
             {(node.children || []).map((c) => (
               <NodeView key={c.id} node={c} />
             ))}
@@ -199,11 +264,14 @@ function NodeView({ node }: { node: Node }) {
         ...inlineStyle,
         display: 'grid',
         gridTemplateColumns: `repeat(${cols && cols > 0 ? cols : 2}, minmax(0, 1fr))`,
-        gap: gap || '16px',
+        gap: gap || '1rem',
       }
       return (
-        <div {...commonProps} style={gridStyle}>
+        <div {...commonProps} style={gridStyle} className={`${commonProps.className} min-h-10`}>
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           {indicatorInside ? (
             <div className='pointer-events-none absolute inset-0 rounded-md ring-2 ring-emerald-500/60 bg-emerald-500/5' />
           ) : null}
@@ -214,63 +282,121 @@ function NodeView({ node }: { node: Node }) {
         </div>
       )
     }
-    case 'heading':
+    case 'heading': {
+      const contentRef = useRef<HTMLHeadingElement | null>(null)
+      useEffect(() => {
+        if (editingId === node.id) return
+        if (contentRef.current && contentRef.current.textContent !== (node as any).text) {
+          contentRef.current.textContent = (node as any).text || ''
+        }
+      }, [editingId, node])
       return (
-        <h1
-          {...commonProps}
-          style={inlineStyle}
-          className={`${commonProps.className} text-3xl font-bold`}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={(e) => {
-            const txt = (e.currentTarget.textContent || '').replace(/\s+/g, ' ').trim()
-            useEditorStore.getState().updateNode(node.id, (n) => ({ ...n, text: txt }))
-          }}
-          onFocus={() => select(node.id)}
-        >
+        <div {...commonProps} style={inlineStyle} className={`${commonProps.className}`}>
           {indicatorTop}
-          {node.text}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
+          <h1
+            className='text-3xl font-bold'
+            contentEditable={!isLocked}
+            suppressContentEditableWarning
+            ref={contentRef}
+            onFocus={() => {
+              select(node.id)
+              setEditingId(node.id)
+            }}
+            onBlur={() => {
+              const txt = (contentRef.current?.textContent || '').replace(/\s+/g, ' ').trim()
+              useEditorStore.getState().updateNode(node.id, (n) => ({ ...n, text: txt }))
+              setEditingId(null)
+            }}
+          >
+            {node.text}
+          </h1>
           {indicatorBottom}
-        </h1>
+        </div>
       )
-    case 'text':
+    }
+    case 'text': {
+      const contentRef = useRef<HTMLParagraphElement | null>(null)
+      useEffect(() => {
+        if (editingId === node.id) return
+        if (contentRef.current && contentRef.current.textContent !== (node as any).text) {
+          contentRef.current.textContent = (node as any).text || ''
+        }
+      }, [editingId, node])
       return (
-        <p
-          {...commonProps}
-          style={inlineStyle}
-          className={`${commonProps.className} text-gray-600 dark:text-gray-300`}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={(e) => {
-            const txt = (e.currentTarget.textContent || '').replace(/\s+/g, ' ').trim()
-            useEditorStore.getState().updateNode(node.id, (n) => ({ ...n, text: txt }))
-          }}
-          onFocus={() => select(node.id)}
-        >
+        <div {...commonProps} style={inlineStyle} className={`${commonProps.className}`}>
           {indicatorTop}
-          {node.text}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
+          <p
+            className='text-gray-600 dark:text-gray-300'
+            contentEditable={!isLocked}
+            suppressContentEditableWarning
+            ref={contentRef}
+            onFocus={() => {
+              select(node.id)
+              setEditingId(node.id)
+            }}
+            onBlur={() => {
+              const txt = (contentRef.current?.textContent || '').replace(/\s+/g, ' ').trim()
+              useEditorStore.getState().updateNode(node.id, (n) => ({ ...n, text: txt }))
+              setEditingId(null)
+            }}
+          >
+            {node.text}
+          </p>
           {indicatorBottom}
-        </p>
+        </div>
       )
-    case 'button':
+    }
+    case 'button': {
+      const self = resolveResponsive((node.style as any)?.self)
+      const btnStyle: React.CSSProperties = { ...inlineStyle }
+      if (self === 'center') {
+        btnStyle.marginLeft = 'auto'
+        btnStyle.marginRight = 'auto'
+        btnStyle.display = 'flex'
+        btnStyle.alignItems = 'center'
+        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+      } else if (self === 'end') {
+        btnStyle.marginLeft = 'auto'
+        btnStyle.display = 'flex'
+        btnStyle.alignItems = 'center'
+        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+      } else if (self === 'start') {
+        btnStyle.marginRight = 'auto'
+        btnStyle.display = 'flex'
+        btnStyle.alignItems = 'center'
+        ;(btnStyle as any).width = (btnStyle as any).width || 'fit-content'
+      }
       return (
         <a
           {...commonProps}
-          style={inlineStyle}
+          style={btnStyle}
           className={`${commonProps.className} inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm text-white dark:bg-gray-100 dark:text-gray-900`}
           href={node.href || '#'}
         >
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           {node.label}
           {indicatorBottom}
         </a>
       )
+    }
     case 'image':
       // biome-ignore lint/a11y/useAltText: placeholder
       // eslint-disable-next-line @next/next/no-img-element
       return (
         <div {...commonProps} style={inlineStyle}>
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           <img src={node.src} alt={node.alt || ''} />
           {indicatorBottom}
         </div>
@@ -279,6 +405,9 @@ function NodeView({ node }: { node: Node }) {
       return (
         <div {...commonProps} style={inlineStyle} className={`${commonProps.className} my-2`}>
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           <hr className='border-gray-200 dark:border-gray-800' />
           {indicatorBottom}
         </div>
@@ -287,6 +416,9 @@ function NodeView({ node }: { node: Node }) {
       return (
         <div {...commonProps} style={inlineStyle} className={`${commonProps.className} h-6`}>
           {indicatorTop}
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
           {indicatorBottom}
         </div>
       )
@@ -303,10 +435,19 @@ function NodeView({ node }: { node: Node }) {
           />
         )
       }
+      const iw = (node.style as any)?.width?.base as string | undefined
+      const ih = (node.style as any)?.height?.base as string | undefined
+      // Ensure container does not consume width/height meant for the icon
+      const wrapperStyle = { ...(inlineStyle || {}) }
+      if ('width' in (wrapperStyle as any)) delete (wrapperStyle as any).width
+      if ('height' in (wrapperStyle as any)) delete (wrapperStyle as any).height
       return (
-        <div {...commonProps} style={inlineStyle}>
+        <div {...commonProps} style={wrapperStyle}>
           {indicatorTop}
-          <IconComp />
+          <div className='pointer-events-none absolute -top-2 left-2 z-10 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-800 shadow-sm ring-1 ring-sky-200 opacity-0 group-hover/node:opacity-100 transition dark:bg-sky-900 dark:text-sky-100 dark:ring-sky-800'>
+            {label}
+          </div>
+          <IconComp style={{ width: iw, height: ih }} />
           {indicatorBottom}
         </div>
       )

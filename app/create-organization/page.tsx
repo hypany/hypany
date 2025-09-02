@@ -33,7 +33,7 @@ export default async function CreateOrganizationPage() {
             Create your organization
           </h1>
           <p className='text-sm text-gray-600 dark:text-gray-400'>
-            You’ll use this workspace to manage your hypotheses and assets.
+            You’ll use this workspace to manage your hypotheses and landing pages.
           </p>
         </div>
         <CreateOrganizationForm />

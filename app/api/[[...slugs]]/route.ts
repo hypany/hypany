@@ -10,7 +10,6 @@ import { Elysia } from 'elysia'
 import { auth } from '@/app/api/auth'
 import { swaggerInfo, swaggerTags } from '../docs'
 import { analyticsApi } from '../v1/analytics'
-import { assetsApi } from '../v1/assets'
 import { gdprApi } from '../v1/gdpr'
 import { hypothesesApi } from '../v1/hypotheses'
 import { landingPagesApi } from '../v1/landing-pages'
@@ -43,7 +42,6 @@ const app = new Elysia({ prefix: '/api' })
   .use(sessionsApi)
   .use(gdprApi)
   .use(publicApi)
-  .use(assetsApi)
   .use(uploadsApi)
   .use(analyticsApi)
   .use(settingsApi)
