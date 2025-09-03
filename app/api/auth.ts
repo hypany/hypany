@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 import { admin, openAPI, organization } from 'better-auth/plugins'
+import { and, desc, eq, isNotNull } from 'drizzle-orm'
 import { db } from '@/drizzle'
 import OrganizationInvitationEmail from '@/emails/organization-invitation-email'
 import ResetPasswordEmail from '@/emails/reset-password-email'
@@ -114,6 +115,52 @@ export const auth = betterAuth({
     openAPI(),
     nextCookies(),
   ],
+  // Ensure a user's session always has an active organization.
+  // We set it to the last active organization seen in prior sessions,
+  // falling back to the most recently created membership.
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          try {
+            // If already set (e.g., via API), keep it.
+            if (session.activeOrganizationId) return
+
+            // Try last used active org from recent sessions for this user
+            const [last] = await db
+              .select({ activeOrg: schema.sessions.activeOrganizationId })
+              .from(schema.sessions)
+              .where(
+                and(
+                  eq(schema.sessions.userId, session.userId),
+                  isNotNull(schema.sessions.activeOrganizationId),
+                ),
+              )
+              .orderBy(desc(schema.sessions.updatedAt))
+              .limit(1)
+
+            if (last?.activeOrg) {
+              return { data: { activeOrganizationId: last.activeOrg } }
+            }
+
+            // Fallback: user's most recent organization membership
+            const [m] = await db
+              .select({ orgId: schema.members.organizationId })
+              .from(schema.members)
+              .where(eq(schema.members.userId, session.userId))
+              .orderBy(desc(schema.members.createdAt))
+              .limit(1)
+
+            if (m?.orgId) {
+              return { data: { activeOrganizationId: m.orgId } }
+            }
+          } catch (_) {
+            // Non-fatal; fall through with default behavior
+          }
+        },
+      },
+    },
+  },
   rateLimit: {
     enabled: true,
     max: 10, // 10 requests per minute

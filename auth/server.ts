@@ -3,9 +3,26 @@ import { headers } from 'next/headers'
 import { auth } from '@/app/api/auth'
 
 export async function getSession() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const hdrs = await headers()
+  let session = await auth.api.getSession({ headers: hdrs })
+
+  // Ensure an active organization is set if the user has orgs
+  if (session && !session.session?.activeOrganizationId) {
+    try {
+      const orgs = await auth.api.listOrganizations({ headers: hdrs })
+      const first = Array.isArray(orgs) && orgs.length > 0 ? orgs[0] : null
+      if (first?.id) {
+        await auth.api.setActiveOrganization({
+          body: { organizationId: first.id },
+          headers: hdrs,
+        })
+        // Re-fetch to return an updated session
+        session = await auth.api.getSession({ headers: hdrs })
+      }
+    } catch {
+      // Non-fatal: leave session as-is
+    }
+  }
 
   return session
 }
