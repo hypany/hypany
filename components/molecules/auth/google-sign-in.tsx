@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { RiGoogleFill } from '@remixicon/react'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
 
@@ -41,11 +42,12 @@ export function GoogleSignIn({ next }: GoogleSignInProps) {
     <Button
       type='button'
       variant='secondary'
-      className='w-full'
+      className='w-full gap-2'
       onClick={handleGoogleSignIn}
       isLoading={loading}
       loadingText='Redirecting…'
     >
+      <RiGoogleFill className='size-4' aria-hidden='true' />
       Continue with Google
     </Button>
   )
