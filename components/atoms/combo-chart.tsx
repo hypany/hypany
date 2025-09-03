@@ -835,7 +835,7 @@ const ComboChart = React.forwardRef<HTMLDivElement, ComboChartProps>(
               dataKey={index}
               interval={startEndOnly ? 'preserveStartEnd' : intervalType}
               ticks={
-                startEndOnly
+                startEndOnly && data.length
                   ? [data[0][index], data[data.length - 1][index]]
                   : undefined
               }

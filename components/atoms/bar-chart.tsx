@@ -717,9 +717,10 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                       left: paddingValue,
                       right: paddingValue,
                     },
-                    ticks: startEndOnly
-                      ? [data[0][index], data[data.length - 1][index]]
-                      : undefined,
+                    ticks:
+                      startEndOnly && data.length
+                        ? [data[0][index], data[data.length - 1][index]]
+                        : undefined,
                   }
                 : {
                     allowDecimals: allowDecimals,
@@ -769,9 +770,10 @@ const BarChart = React.forwardRef<HTMLDivElement, BarChartProps>(
                 : {
                     dataKey: index,
                     interval: 'equidistantPreserveStart',
-                    ticks: startEndOnly
-                      ? [data[0][index], data[data.length - 1][index]]
-                      : undefined,
+                    ticks:
+                      startEndOnly && data.length
+                        ? [data[0][index], data[data.length - 1][index]]
+                        : undefined,
                     type: 'category',
                   })}
             >

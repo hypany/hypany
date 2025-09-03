@@ -634,7 +634,7 @@ const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
               interval={startEndOnly ? 'preserveStartEnd' : intervalType}
               tick={{ transform: 'translate(0, 6)' }}
               ticks={
-                startEndOnly
+                startEndOnly && data.length
                   ? [data[0][index], data[data.length - 1][index]]
                   : undefined
               }
