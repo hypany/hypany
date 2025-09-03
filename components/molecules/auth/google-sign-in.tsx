@@ -21,17 +21,9 @@ export function GoogleSignIn(_: GoogleSignInProps) {
         callbackURL: `${serviceUrl}/app`,
       })
       if (error) {
-        // Errors are rare here because the flow redirects, but handle just in case
         console.error('Google sign-in error:', error)
         setLoading(false)
       }
-      // If flow doesn’t redirect (e.g., ID token), hard-redirect as fallback
-      if (!error) {
-        window.location.href = `${serviceUrl}/app`
-      }
-      // On success, Better Auth redirects via the OAuth flow/callback.
-      // If no redirect happens (e.g., idToken flow), we can navigate:
-      // router.push(next || '/app')
     } catch (e) {
       console.error('Google sign-in unexpected error:', e)
       setLoading(false)
