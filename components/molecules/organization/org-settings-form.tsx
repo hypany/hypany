@@ -99,7 +99,7 @@ export function OrgSettingsForm({
               setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
             }
             disabled={isPending}
-            pattern='[a-z0-9]([a-z0-9-]*[a-z0-9])?'
+            pattern='[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?'
             minLength={3}
             className='font-mono'
           />

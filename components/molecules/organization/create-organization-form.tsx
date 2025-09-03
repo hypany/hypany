@@ -110,7 +110,7 @@ export function CreateOrganizationForm() {
           value={derivedSlug}
           onChange={(e) => setSlug(slugify(e.target.value))}
           disabled={submitting}
-          pattern='[a-z0-9]([a-z0-9-]*[a-z0-9])?'
+          pattern='[a-z0-9](?:[a-z0-9\-]*[a-z0-9])?'
           minLength={3}
         />
         <p className='text-xs text-gray-500 dark:text-gray-500'>

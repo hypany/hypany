@@ -17,7 +17,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import type { AxisDomain } from 'recharts/types/util/types'
 import {
   AvailableChartColors,
   type AvailableChartColorsKeys,

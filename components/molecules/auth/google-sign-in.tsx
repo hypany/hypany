@@ -18,13 +18,15 @@ export function GoogleSignIn({ next }: GoogleSignInProps) {
       setLoading(true)
       const { error } = await client.signIn.social({
         provider: 'google',
-        // If your Better Auth client supports it, you can pass callbackURL:
-        // callbackURL: next || '/app',
       })
       if (error) {
         // Errors are rare here because the flow redirects, but handle just in case
         console.error('Google sign-in error:', error)
         setLoading(false)
+      }
+      // If flow doesn’t redirect (e.g., ID token), navigate as fallback
+      if (!error && next) {
+        router.push(next)
       }
       // On success, Better Auth redirects via the OAuth flow/callback.
       // If no redirect happens (e.g., idToken flow), we can navigate:
@@ -48,4 +50,3 @@ export function GoogleSignIn({ next }: GoogleSignInProps) {
     </Button>
   )
 }
-
