@@ -16,14 +16,28 @@ export function GoogleSignIn(_: GoogleSignInProps) {
   async function handleGoogleSignIn() {
     try {
       setLoading(true)
-      const { error } = await client.signIn.social({
+      const result: any = await client.signIn.social({
         provider: 'google',
         callbackURL: `${serviceUrl}/app`,
       })
+
+      const error = result?.error
+      const url: string | undefined = result?.url ?? result?.data?.url
+      const shouldRedirect: boolean | undefined =
+        result?.redirect ?? result?.data?.redirect
+
+      if (url && (shouldRedirect ?? true)) {
+        window.location.href = url
+        return
+      }
+
       if (error) {
         console.error('Google sign-in error:', error)
         setLoading(false)
+        return
       }
+
+      window.location.href = `${serviceUrl}/app`
     } catch (e) {
       console.error('Google sign-in unexpected error:', e)
       setLoading(false)
