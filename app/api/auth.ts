@@ -15,6 +15,15 @@ import * as schema from '@/schema'
 const { AUTH_SECRET } = getEnv()
 
 export const auth = betterAuth({
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      // Uncomment to always force account picker and issue refresh tokens
+      // accessType: 'offline',
+      // prompt: 'select_account consent',
+    },
+  },
   account: {
     accountLinking: {
       enabled: true,

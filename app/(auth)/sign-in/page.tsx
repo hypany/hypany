@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { getSession } from '@/auth/server'
 import { Divider } from '@/components/atoms/divider'
+import { GoogleSignIn } from '@/components/molecules/auth/google-sign-in'
 import { SignInForm } from '@/components/molecules/auth/sign-in-form'
 
 export const metadata: Metadata = {
@@ -35,9 +36,10 @@ export default async function SignInPage({
         </p>
       </div>
 
-      {/** Optional social logins could go here */}
-      {/* <div className='mt-8 flex w-full gap-4'>...</div> */}
-      {/* <Divider>or</Divider> */}
+      <div className='mt-6'>
+        <GoogleSignIn next={next} />
+      </div>
+      <Divider>or</Divider>
 
       <div className='mt-6'>
         <SignInForm next={next} />
