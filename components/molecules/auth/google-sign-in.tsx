@@ -1,33 +1,33 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { RiGoogleFill } from '@remixicon/react'
 import { client } from '@/auth/client'
 import { Button } from '@/components/atoms/button'
+import { serviceUrl } from '@/lib/url'
+import { RiGoogleFill } from '@remixicon/react'
+import { useState } from 'react'
 
 interface GoogleSignInProps {
   next?: string
 }
 
-export function GoogleSignIn({ next }: GoogleSignInProps) {
+export function GoogleSignIn(_: GoogleSignInProps) {
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   async function handleGoogleSignIn() {
     try {
       setLoading(true)
       const { error } = await client.signIn.social({
         provider: 'google',
+        callbackURL: `${serviceUrl}/app`,
       })
       if (error) {
         // Errors are rare here because the flow redirects, but handle just in case
         console.error('Google sign-in error:', error)
         setLoading(false)
       }
-      // If flow doesn’t redirect (e.g., ID token), navigate as fallback
-      if (!error && next) {
-        router.push(next)
+      // If flow doesn’t redirect (e.g., ID token), hard-redirect as fallback
+      if (!error) {
+        window.location.href = `${serviceUrl}/app`
       }
       // On success, Better Auth redirects via the OAuth flow/callback.
       // If no redirect happens (e.g., idToken flow), we can navigate:
