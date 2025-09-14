@@ -118,7 +118,7 @@ export default function EditorApp({
   }, [saveMutation])
 
   return (
-    <div className='flex min-h-[calc(100dvh-4rem)] gap-4'>
+    <div className='flex min-h-[calc(100dvh-4rem)]'>
       <aside className='hidden w-72 shrink-0 rounded p-2 md:block'>
         <Tabs defaultValue='layers' className='w-full'>
           <TabsList variant='solid' className='w-full'>
