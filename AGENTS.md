@@ -11,6 +11,8 @@ This document outlines the engineering principles and patterns used in this code
 - Use React Server Components
 - Use React Query for data mutations
 - Do not use Unicode Icons or Emojis; use Lucide Icons instead
+- Document all work logs in `/work-logs`
+- Always read `/work-logs` in full before starting any codework
 
 ## Core Principles
 
