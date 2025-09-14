@@ -9,7 +9,7 @@ import { Footer } from '@/components/molecules/landing/footer'
 import { Hero } from '@/components/molecules/landing/hero'
 import { NavBar } from '@/components/molecules/landing/navbar'
 import RandomIdeasSection from '@/components/molecules/landing/random-ideas-section'
-import { resolveActiveLandingPageIdBySlug } from '@/functions/public'
+import { resolveActiveLandingPageIdByCustomDomain, resolveActiveLandingPageIdBySlug } from '@/functions/public'
 
 export default async function Home() {
   // If we are on a slug subdomain like slug.hypany.app, redirect to published view
@@ -17,6 +17,10 @@ export default async function Home() {
   const sub = extractSubdomainFromHost(host, publishedRootDomain)
   if (sub) {
     const id = await resolveActiveLandingPageIdBySlug(sub)
+    if (id) redirect(`/published/${id}`)
+  } else {
+    // Fallback for custom domains if middleware didn't rewrite
+    const id = await resolveActiveLandingPageIdByCustomDomain(host)
     if (id) redirect(`/published/${id}`)
   }
 

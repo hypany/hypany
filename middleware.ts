@@ -32,6 +32,19 @@ export async function middleware(request: NextRequest) {
         }
       }
     }
+
+    // Custom domain routing: if no subdomain match, try resolving host as a custom domain
+    if (!sub && !pathname.startsWith('/published')) {
+      const url = new URL(`/api/v1/public/resolve-domain?host=${encodeURIComponent(host)}`, request.url)
+      const res = await fetch(url, { cache: 'no-store' })
+      if (res.ok) {
+        const { id } = (await res.json()) as { id?: string }
+        if (id) {
+          const rewriteUrl = new URL(`/published/${id}`, request.url)
+          return NextResponse.rewrite(rewriteUrl)
+        }
+      }
+    }
   } catch {}
 
   const url = new URL(request.url)

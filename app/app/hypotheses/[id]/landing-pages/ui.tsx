@@ -5,6 +5,8 @@ import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/atoms/dropdown-menu'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/atoms/dialog'
+import { Input } from '@/components/atoms/input'
 import { useSaveStatusStore } from '@/lib/store/save-status'
 import { serviceUrl } from '@/lib/url'
 import { toast } from '@/lib/use-toast'
@@ -255,7 +257,28 @@ export function LandingPageCard({
   t?: any
 }) {
   const isActive = hypothesis.activeLandingPageId === page.id
-  const [isEditing, setIsEditing] = useState(false)
+  const [renameOpen, setRenameOpen] = useState(false)
+  const [renameValue, setRenameValue] = useState<string>(page.name || '')
+  const [renaming, setRenaming] = useState(false)
+  const api = getClientApi()
+  const router = useRouter()
+  const t = useTranslations('app')
+
+  async function saveRename() {
+    const name = renameValue.trim()
+    if (!name || renaming) return
+    setRenaming(true)
+    try {
+      await api.v1['landing-pages']['by-id']({ landingPageId: page.id }).patch({ name })
+      toast({ title: 'Saved', variant: 'success' })
+      setRenameOpen(false)
+      router.refresh()
+    } catch {
+      toast({ title: t('pages.hypotheses.detail.landing-pages.toasts.save-name-error.title'), variant: 'error' })
+    } finally {
+      setRenaming(false)
+    }
+  }
 
   return (
     <Card className='group relative overflow-hidden hover:shadow-lg transition-all duration-300 border-gray-200 dark:border-gray-800'>
@@ -263,17 +286,9 @@ export function LandingPageCard({
         {/* Header */}
         <div className='flex items-start justify-between'>
           <div className='flex-1 space-y-1'>
-            {isEditing ? (
-              <RenameLandingPageInline
-                landingPageId={page.id}
-                initialName={page.name || null}
-                onComplete={() => setIsEditing(false)}
-              />
-            ) : (
-              <h3 className='font-semibold text-gray-900 dark:text-gray-100 truncate'>
-                {page.name || 'Untitled Page'}
-              </h3>
-            )}
+            <h3 className='font-semibold text-gray-900 dark:text-gray-100 truncate'>
+              {page.name || 'Untitled Page'}
+            </h3>
           </div>
 
           {/* Actions Dropdown */}
@@ -284,7 +299,10 @@ export function LandingPageCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='w-48'>
-              <DropdownMenuItem onClick={() => setIsEditing(true)}>
+              <DropdownMenuItem onClick={() => {
+                setRenameValue(page.name || '')
+                setRenameOpen(true)
+              }}>
                 <Edit3 className='h-4 w-4 mr-2' />
                 Edit Name
               </DropdownMenuItem>
@@ -325,6 +343,36 @@ export function LandingPageCard({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        {/* Rename Dialog */}
+        <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
+          <DialogContent className='sm:max-w-md'>
+            <DialogHeader>
+              <DialogTitle>Edit Name</DialogTitle>
+            </DialogHeader>
+            <div className='grid gap-3'>
+              <label className='text-sm text-gray-700 dark:text-gray-300'>Name</label>
+              <Input
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    void saveRename()
+                  }
+                }}
+              />
+            </div>
+            <DialogFooter className='mt-4'>
+              <DialogClose asChild>
+                <Button variant='secondary' disabled={renaming}>Cancel</Button>
+              </DialogClose>
+              <Button onClick={() => void saveRename()} disabled={renaming || !renameValue.trim()}>
+                {renaming ? 'Saving…' : 'Save'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Status Badges */}
         <div className='flex items-center gap-2'>

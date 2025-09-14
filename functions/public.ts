@@ -136,3 +136,59 @@ export async function resolveActiveLandingPageIdBySlug(slug: string) {
     .limit(1)
   return anyPage?.id ?? null
 }
+
+/**
+ * Resolve the active published landing page ID by custom domain.
+ * Accepts hosts with or without www and ignores protocol/port.
+ */
+export async function resolveActiveLandingPageIdByCustomDomain(host: string) {
+  const h = host.trim().toLowerCase().split(':')[0]
+  const normalized = h.startsWith('www.') ? h.slice(4) : h
+
+  const [hyp] = await db
+    .select({ id: hypotheses.id, activeLandingPageId: hypotheses.activeLandingPageId, customDomain: hypotheses.customDomain })
+    .from(hypotheses)
+    .where(
+      and(
+        isNull(hypotheses.deletedAt),
+        // match exact or stored-with-www variant
+        // drizzle lacks ilike here; compare normalized strings in JS after fetch would be inefficient
+        // so attempt both variants explicitly
+        // Note: If multiple rows match (www vs non-www), prefer exact normalization match by ordering below
+        eq(hypotheses.customDomain, normalized),
+      ),
+    )
+    .limit(1)
+
+  // If exact match not found, try www variant
+  let hypothesis = hyp
+  if (!hypothesis) {
+    const withWww = `www.${normalized}`
+    const [hyp2] = await db
+      .select({ id: hypotheses.id, activeLandingPageId: hypotheses.activeLandingPageId, customDomain: hypotheses.customDomain })
+      .from(hypotheses)
+      .where(and(isNull(hypotheses.deletedAt), eq(hypotheses.customDomain, withWww)))
+      .limit(1)
+    hypothesis = hyp2
+  }
+
+  if (!hypothesis) return null
+  if (hypothesis.activeLandingPageId) return hypothesis.activeLandingPageId
+
+  // Prefer most recently published for the hypothesis
+  const [published] = await db
+    .select({ id: landingPages.id, publishedAt: landingPages.publishedAt })
+    .from(landingPages)
+    .where(and(eq(landingPages.hypothesisId, hypothesis.id), isNull(landingPages.deletedAt)))
+    .orderBy(desc(landingPages.publishedAt))
+    .limit(1)
+  if (published?.id) return published.id
+
+  // Fallback to any page
+  const [anyPage] = await db
+    .select({ id: landingPages.id })
+    .from(landingPages)
+    .where(and(eq(landingPages.hypothesisId, hypothesis.id), isNull(landingPages.deletedAt)))
+    .limit(1)
+  return anyPage?.id ?? null
+}

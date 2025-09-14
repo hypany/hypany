@@ -672,6 +672,10 @@ export const landingPagesApi = new Elysia({ prefix: '/v1/landing-pages' })
 
           if (normalized) {
             await ensureVercelProjectDomains(normalized)
+            // If domain changed, remove previous domain(s) from project
+            if (prev?.customDomain && prev.customDomain !== normalized) {
+              await removeVercelProjectDomains(prev.customDomain)
+            }
           } else {
             // Remove prior domain(s) from project if any
             if (prev?.customDomain) {

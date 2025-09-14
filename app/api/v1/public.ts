@@ -27,7 +27,7 @@ import {
   waitlists,
 } from '@/schema'
 import { computeWaitlistPositionByCreatedAt } from '../utils'
-import { resolveActiveLandingPageIdBySlug } from '@/functions/public'
+import { resolveActiveLandingPageIdBySlug, resolveActiveLandingPageIdByCustomDomain } from '@/functions/public'
 import 'server-only'
 import { ulid } from 'ulid'
 
@@ -62,6 +62,25 @@ export const publicApi = new Elysia({ prefix: '/v1/public' })
         tags: ['Public'],
       },
       params: t.Object({ slug: t.String() }),
+    },
+  )
+  // Resolve active published landing page ID by custom domain (no auth)
+  .get(
+    '/resolve-domain',
+    async ({ query, set }) => {
+      const host = (query?.host as string | undefined) || ''
+      if (!host) return jsonError(set, HTTP_STATUS.BAD_REQUEST, 'Missing host')
+      const id = await resolveActiveLandingPageIdByCustomDomain(host)
+      if (!id) return jsonError(set, HTTP_STATUS.NOT_FOUND, 'Not found')
+      return jsonOk(set, HTTP_STATUS.OK, { id })
+    },
+    {
+      detail: {
+        description: 'Resolve active published landing page ID by custom domain',
+        summary: 'Resolve published landing page by custom domain',
+        tags: ['Public'],
+      },
+      query: t.Object({ host: t.String() }),
     },
   )
   // Get public landing page data by hypothesis slug
