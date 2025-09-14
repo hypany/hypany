@@ -1,17 +1,17 @@
 "use client"
 
-import { useEffect, useMemo } from 'react'
-import { useMutation } from '@tanstack/react-query'
 import { getClientApi } from '@/app/api/client'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs'
 import type { PageDocument } from '@/lib/page-document'
 import { emptyDocument } from '@/lib/page-document'
-import { toast } from '@/lib/use-toast'
 import { useEditorStore } from '@/lib/store/editor'
+import { toast } from '@/lib/use-toast'
+import { useMutation } from '@tanstack/react-query'
+import { useEffect, useMemo } from 'react'
 import EditorCanvas from './editor-canvas'
-import LibraryPanel from './library'
-import LayersPanel from './layers'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs'
 import InspectorPanel from './inspector'
+import LayersPanel from './layers'
+import LibraryPanel from './library'
 
 export default function EditorApp({
   landingPageId,
@@ -55,7 +55,7 @@ export default function EditorApp({
   useEffect(() => {
     setDoc(baseDoc)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [baseDoc, setDoc])
 
   // Autosave on doc changes (debounced)
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function EditorApp({
       if (!saveMutation.isPending) saveMutation.mutate()
     }, 800)
     return () => clearTimeout(id)
-  }, [doc, dirty])
+  }, [dirty, saveMutation.isPending, saveMutation.mutate])
 
   // Keyboard shortcuts: delete, duplicate, save, escape
   useEffect(() => {
@@ -119,17 +119,16 @@ export default function EditorApp({
 
   return (
     <div className='flex min-h-[calc(100dvh-4rem)] gap-4'>
-      {/* Left panel: Layers / Library */}
-      <aside className='hidden w-72 shrink-0 rounded border p-3 dark:border-gray-800 md:block'>
-        <Tabs defaultValue='layers'>
-          <TabsList variant='solid' className='mb-2'>
-            <TabsTrigger value='layers'>Layers</TabsTrigger>
-            <TabsTrigger value='library'>Library</TabsTrigger>
+      <aside className='hidden w-72 shrink-0 rounded p-2 md:block'>
+        <Tabs defaultValue='layers' className='w-full'>
+          <TabsList variant='solid' className='w-full'>
+            <TabsTrigger className='w-full' value='layers'>Layers</TabsTrigger>
+            <TabsTrigger className='w-full' value='library'>Library</TabsTrigger>
           </TabsList>
-          <TabsContent value='layers' className='mt-0'>
+          <TabsContent value='layers'>
             <LayersPanel />
           </TabsContent>
-          <TabsContent value='library' className='mt-0'>
+          <TabsContent value='library'>
             <LibraryPanel />
           </TabsContent>
         </Tabs>

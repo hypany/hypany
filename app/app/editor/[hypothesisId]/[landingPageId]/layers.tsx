@@ -1,29 +1,29 @@
 "use client"
 
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { useEditorStore } from '@/lib/store/editor'
-import type { Node as EditorNode, NodeType } from '@/lib/page-document'
-import {
-  Box,
-  LayoutTemplate,
-  Grid2X2,
-  Heading1,
-  Type,
-  Image as ImageIcon,
-  MousePointerSquareDashed,
-  Minus,
-  Circle,
-  SquareDashed,
-  FormInput,
-  MoreHorizontal,
-} from 'lucide-react'
-import { Input } from '@/components/atoms/input'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
+import { Input } from '@/components/atoms/input'
+import type { Node as EditorNode, NodeType } from '@/lib/page-document'
+import { useEditorStore } from '@/lib/store/editor'
+import {
+  Box,
+  Circle,
+  FormInput,
+  Grid2X2,
+  Heading1,
+  Image as ImageIcon,
+  LayoutTemplate,
+  Minus,
+  MoreHorizontal,
+  MousePointerSquareDashed,
+  SquareDashed,
+  Type,
+} from 'lucide-react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { ulid } from 'ulid'
 
 function NodeIcon({ type }: { type: NodeType }) {
@@ -347,8 +347,7 @@ export default function LayersPanel() {
 
   return (
     <div className='min-h-0 overflow-auto' tabIndex={0} onKeyDown={onKeyDown}>
-      <div className='text-xs text-gray-500 mb-2'>Layers</div>
-      <div className='space-y-0.5'>
+      <div className='gap-0.5 p-0.5'>
         {rows.map((n) => (
           <Row key={n.id} node={n} depth={0} />
         ))}
