@@ -1,5 +1,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { extractSubdomainFromHost } from '@/lib/domains'
+import { publishedRootDomain } from '@/lib/url'
 import { CallToAction } from '@/components/molecules/landing/call-to-action'
 import FeatureDivider from '@/components/molecules/landing/feature-divider'
 import Features from '@/components/molecules/landing/features'
@@ -12,15 +14,10 @@ import { resolveActiveLandingPageIdBySlug } from '@/functions/public'
 export default async function Home() {
   // If we are on a slug subdomain like slug.hypany.app, redirect to published view
   const host = (await headers()).get('host') || ''
-  const parts = host.split('.')
-  if (parts.length >= 3 && host.endsWith('hypany.app')) {
-    const sub = parts[0]
-    if (sub && sub !== 'www') {
-      const id = await resolveActiveLandingPageIdBySlug(sub)
-      if (id) {
-        redirect(`/published/${id}`)
-      }
-    }
+  const sub = extractSubdomainFromHost(host, publishedRootDomain)
+  if (sub) {
+    const id = await resolveActiveLandingPageIdBySlug(sub)
+    if (id) redirect(`/published/${id}`)
   }
 
   return (
