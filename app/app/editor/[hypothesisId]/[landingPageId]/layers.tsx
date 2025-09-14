@@ -17,6 +17,8 @@ import {
   Heading1,
   Image as ImageIcon,
   LayoutTemplate,
+  ChevronDown,
+  ChevronRight,
   Minus,
   MoreHorizontal,
   MousePointerSquareDashed,
@@ -188,7 +190,6 @@ export default function LayersPanel() {
     const hasChildren = (node.children?.length || 0) > 0
     const isCollapsed = collapsed[node.id]
     const [editing, setEditing] = useState(false)
-    const [menuOpen, setMenuOpen] = useState(false)
     const inputRef = useRef<HTMLInputElement | null>(null)
     const startRename = () => {
       setEditing(true)
@@ -201,9 +202,7 @@ export default function LayersPanel() {
     const isDropInside = dropTargetId === node.id && dropPosition === 'inside'
     return (
       <div>
-        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-          <DropdownMenuTrigger asChild>
-            <div
+        <div
               style={{ paddingLeft: 8 + depth * 12 }}
               onClick={(e) => {
                 e.stopPropagation()
@@ -212,12 +211,6 @@ export default function LayersPanel() {
               onDoubleClick={(e) => {
                 e.stopPropagation()
                 startRename()
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                select(node.id)
-                setMenuOpen(true)
               }}
               draggable
               onDragStart={(e) => {
@@ -249,9 +242,9 @@ export default function LayersPanel() {
               aria-selected={isSelected}
               aria-level={depth + 1}
               aria-expanded={hasChildren ? !isCollapsed : undefined}
-              className={'relative ' + (
+              className={'relative z-0 ' + (
                 'group flex items-center justify-between rounded-sm px-2 py-1 text-xs hover:bg-gray-100 dark:hover:bg-gray-900 ' +
-                (isSelected ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-400 dark:bg-emerald-900/20 dark:text-emerald-200' : 'text-gray-700 dark:text-gray-300')
+                (isSelected ? 'bg-emerald-50 text-emerald-700 ring-inset ring-1 ring-emerald-400 dark:bg-emerald-900/20 dark:text-emerald-200' : 'text-gray-700 dark:text-gray-300')
               )}
             >
               {/* Drop indicators */}
@@ -275,9 +268,11 @@ export default function LayersPanel() {
                 }}
                 aria-label={isCollapsed ? 'Expand' : 'Collapse'}
               >
-                <svg className='size-3' viewBox='0 0 20 20' fill='currentColor'>
-                  <path d='M6 8l4 4 4-4' className={isCollapsed ? '' : 'rotate-90 origin-center'} />
-                </svg>
+                {isCollapsed ? (
+                  <ChevronRight className='size-3' />
+                ) : (
+                  <ChevronDown className='size-3' />
+                )}
               </button>
             ) : (
               <span className='ml-4' />
@@ -302,22 +297,22 @@ export default function LayersPanel() {
               <span className='truncate'>{labelFor(node)}</span>
             )}
           </div>
-              <div className='flex items-center gap-1 opacity-0 transition group-hover:opacity-100'>
-            <button
-              type='button'
-              className='rounded p-1 text-gray-500 hover:bg-gray-200 hover:text-gray-800 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-200'
-              onClick={(e) => {
-                e.stopPropagation()
-                setMenuOpen((v) => !v)
-              }}
-              aria-label='More'
-            >
-              <MoreHorizontal className='size-3.5' />
-            </button>
-          </div>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
+          <div className='flex items-center gap-1 opacity-0 transition group-hover:opacity-100'>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type='button'
+                  className='rounded p-1 text-gray-500 hover:bg-gray-200 hover:text-gray-800 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    select(node.id)
+                  }}
+                  aria-label='More'
+                >
+                  <MoreHorizontal className='size-3.5' />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
             <DropdownMenuItem onClick={() => startRename()}>Rename</DropdownMenuItem>
             <DropdownMenuItem onClick={() => moveUp(node.id)}>Move up</DropdownMenuItem>
             <DropdownMenuItem onClick={() => moveDown(node.id)}>Move down</DropdownMenuItem>
@@ -332,8 +327,10 @@ export default function LayersPanel() {
             <DropdownMenuItem onClick={() => wrapInContainer(node.id)}>
               Wrap in Container
             </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
         {hasChildren && !isCollapsed ? (
           <div>
             {(node.children || []).map((c) => (
@@ -347,7 +344,7 @@ export default function LayersPanel() {
 
   return (
     <div className='min-h-0 overflow-auto' tabIndex={0} onKeyDown={onKeyDown}>
-      <div className='gap-0.5 p-0.5'>
+      <div className='flex flex-col gap-0.5 p-0.5'>
         {rows.map((n) => (
           <Row key={n.id} node={n} depth={0} />
         ))}
