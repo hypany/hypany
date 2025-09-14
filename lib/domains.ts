@@ -4,12 +4,22 @@ export function normalizeHostname(hostname: string): string {
   return hostname.trim().toLowerCase()
 }
 
+function stripProtocolAndWww(value: string): string {
+  let v = value.trim().toLowerCase()
+  if (v.startsWith('http://')) v = v.slice(7)
+  else if (v.startsWith('https://')) v = v.slice(8)
+  if (v.startsWith('www.')) v = v.slice(4)
+  // remove trailing slashes
+  if (v.endsWith('/')) v = v.replace(/\/+$/, '')
+  return v
+}
+
 export function extractSubdomainFromHost(
   hostname: string,
   tenantRoot?: string,
 ): string | null {
-  const cleanHost = hostname.split(':')[0]
-  const root = (tenantRoot || 'hypany.app').split(':')[0]
+  const cleanHost = stripProtocolAndWww(hostname.split(':')[0])
+  const root = stripProtocolAndWww((tenantRoot || 'hypany.app').split(':')[0])
 
   if (cleanHost.endsWith('.localhost')) {
     const candidate = cleanHost.replace('.localhost', '')
