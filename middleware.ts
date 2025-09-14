@@ -14,37 +14,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Subdomain routing
+  // Subdomain routing (always rewrite subdomains to published pages)
   try {
     const host = request.headers.get('host') || ''
     const root = (publishedRootDomain || '').split(':')[0]
     const sub = extractSubdomainFromHost(host, root)
 
-    // Optional: Platforms-style routing to /s/[subdomain]
-    // Enable by setting NEXT_PUBLIC_ENABLE_PLATFORM_SUBDOMAINS=1
-    const enablePlatforms =
-      process.env.NEXT_PUBLIC_ENABLE_PLATFORM_SUBDOMAINS === '1' ||
-      process.env.NEXT_PUBLIC_ENABLE_PLATFORM_SUBDOMAINS === 'true'
-
-    if (sub) {
-      // Avoid loops if already on a platform or published route
-      if (enablePlatforms && !pathname.startsWith('/s/')) {
-        const url = request.nextUrl.clone()
-        // Preserve nested paths under subdomain if desired
-        url.pathname = `/s/${sub}${pathname === '/' ? '' : pathname}`
-        return NextResponse.rewrite(url)
-      }
-
-      if (!enablePlatforms && !pathname.startsWith('/published')) {
-        // Resolve published landing page id via API and rewrite
-        const url = new URL(`/api/v1/public/resolve/${sub}`, request.url)
-        const res = await fetch(url, { cache: 'no-store' })
-        if (res.ok) {
-          const { id } = (await res.json()) as { id?: string }
-          if (id) {
-            const rewriteUrl = new URL(`/published/${id}`, request.url)
-            return NextResponse.rewrite(rewriteUrl)
-          }
+    if (sub && !pathname.startsWith('/published')) {
+      // Resolve published landing page id via API and rewrite
+      const url = new URL(`/api/v1/public/resolve/${sub}`, request.url)
+      const res = await fetch(url, { cache: 'no-store' })
+      if (res.ok) {
+        const { id } = (await res.json()) as { id?: string }
+        if (id) {
+          const rewriteUrl = new URL(`/published/${id}`, request.url)
+          return NextResponse.rewrite(rewriteUrl)
         }
       }
     }

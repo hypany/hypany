@@ -1,4 +1,5 @@
 import { db } from '@/drizzle'
+import { eq } from 'drizzle-orm'
 import OrganizationInvitationEmail from '@/emails/organization-invitation-email'
 import ResetPasswordEmail from '@/emails/reset-password-email'
 import VerificationEmail from '@/emails/verification-email'
@@ -8,6 +9,7 @@ import { serviceUrl } from '@/lib/url'
 import * as schema from '@/schema'
 import { render } from '@react-email/render'
 import { betterAuth } from 'better-auth'
+import type { Session as BASession, User as BAUser } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 import { admin, openAPI, organization } from 'better-auth/plugins'
@@ -111,6 +113,57 @@ export const auth = betterAuth({
     openAPI(),
     nextCookies(),
   ],
+  // Ensure a default active organization is set right after session creation
+  databaseHooks: {
+    session: {
+      create: {
+        after: async (session, ctx) => {
+          try {
+            // If already set, nothing to do
+            type ExtendedSession = BASession & { activeOrganizationId?: string | null }
+            if ((session as unknown as ExtendedSession).activeOrganizationId) return
+
+            // Find the first organization this user is a member of
+            const memberships = await db
+              .select({ organizationId: schema.members.organizationId })
+              .from(schema.members)
+              .where(eq(schema.members.userId, session.userId))
+              .limit(1)
+
+            const orgId = memberships?.[0]?.organizationId
+            if (!orgId) return
+
+            // Persist onto the session row
+            await db
+              .update(schema.sessions)
+              .set({ activeOrganizationId: orgId })
+              .where(eq(schema.sessions.id, session.id))
+
+            // Update the in-flight session so cookie cache (if enabled) has the value
+            const users = await db
+              .select()
+              .from(schema.users)
+              .where(eq(schema.users.id, session.userId))
+              .limit(1)
+
+            const user = users?.[0]
+            if (user && ctx?.context?.setNewSession) {
+              const updatedSession = {
+                ...(session as unknown as ExtendedSession),
+                activeOrganizationId: orgId,
+              } satisfies ExtendedSession
+              ctx.context.setNewSession({
+                session: updatedSession as unknown as BASession & Record<string, unknown>,
+                user: user as unknown as BAUser & Record<string, unknown>,
+              })
+            }
+          } catch {
+            // Non-fatal; leave session as-is
+          }
+        },
+      },
+    },
+  },
   rateLimit: {
     enabled: true,
     max: 10, // 10 requests per minute
